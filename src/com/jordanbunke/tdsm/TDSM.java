@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm;
 
 import com.jordanbunke.delta_time.OnStartup;
+import com.jordanbunke.delta_time._core.GameManager;
 import com.jordanbunke.delta_time._core.Program;
 import com.jordanbunke.delta_time._core.ProgramContext;
 import com.jordanbunke.delta_time.debug.GameDebugger;
@@ -11,7 +12,9 @@ import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.Version;
 import com.jordanbunke.delta_time.window.GameWindow;
+import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.util.Constants;
+import com.jordanbunke.tdsm.util.Layout;
 import com.jordanbunke.tdsm.util.ParserUtils;
 
 import java.nio.file.Path;
@@ -90,10 +93,17 @@ public final class TDSM implements ProgramContext {
         }
     }
 
+    public static String getVersion() {
+        return "v" + VERSION + (IS_DEVBUILD ? " (devbuild)" : "");
+    }
+
     private TDSM() {
-        // TODO
-        window = null; // here();
-        program = null; // new Program(window, here);
+        ProgramState.set(ProgramState.SPLASH, null);
+
+        window = makeWindow();
+        program = new Program(window, new GameManager(0, this),
+                Constants.TICK_HZ, Constants.FPS);
+        program.getDebugger().muteChannel(GameDebugger.FRAME_RATE);
     }
 
     public static TDSM get() {
@@ -101,26 +111,31 @@ public final class TDSM implements ProgramContext {
     }
 
     public static void main(final String[] args) {
-
+        // Leave method body empty
+        // Program is initialized via static {} invocation
     }
 
     @Override
     public void process(final InputEventLogger eventLogger) {
-
+        // TODO
     }
 
     @Override
     public void update(final double deltaTime) {
-
+        // TODO
     }
 
     @Override
     public void render(final GameImage canvas) {
-
+        // TODO
     }
 
     @Override
-    public void debugRender(final GameImage canvas, final GameDebugger debugger) {
+    public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
 
+    private GameWindow makeWindow() {
+        return new GameWindow(PROGRAM_NAME + " " + getVersion(),
+                Layout.WIDTH, Layout.HEIGHT,
+                GameImage.dummy() /* TODO */, true, false, false);
     }
 }
