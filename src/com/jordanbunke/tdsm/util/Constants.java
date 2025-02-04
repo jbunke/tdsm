@@ -1,0 +1,11 @@
+package com.jordanbunke.tdsm.util;
+
+import java.nio.file.Path;
+
+public final class Constants {
+    public static final String
+            NAME_CODE = "name", VERSION_CODE = "version",
+            IS_DEVBUILD_CODE = "devbuild";
+
+    public static final Path PROGRAM_FILE = Path.of("program");
+}
