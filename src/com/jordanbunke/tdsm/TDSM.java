@@ -23,16 +23,12 @@ public final class TDSM implements ProgramContext {
     private static Version VERSION = new Version(1, 0, 0);
     private static boolean IS_DEVBUILD = false;
 
-    private static final TDSM INSTANCE;
-
     public final Program program;
-    public GameWindow window;
+    public final GameWindow window;
 
     static {
         OnStartup.run();
         readProgramFile();
-
-        INSTANCE = new TDSM();
     }
 
     private static void readProgramFile() {
@@ -101,31 +97,28 @@ public final class TDSM implements ProgramContext {
         window = makeWindow();
         program = new Program(window, new GameManager(0, this),
                 Constants.TICK_HZ, Constants.FPS);
+        program.setCanvasSize(Layout.CANVAS_W, Layout.CANVAS_H);
+        program.setScheduleUpdates(false);
         program.getDebugger().muteChannel(GameDebugger.FRAME_RATE);
     }
 
-    public static TDSM get() {
-        return INSTANCE;
-    }
-
     public static void main(final String[] args) {
-        // Leave method body empty
-        // Program is initialized via static {} invocation
+        new TDSM();
     }
 
     @Override
     public void process(final InputEventLogger eventLogger) {
-        // TODO
+        ProgramState.get().process(eventLogger);
     }
 
     @Override
     public void update(final double deltaTime) {
-        // TODO
+        ProgramState.get().update(deltaTime);
     }
 
     @Override
     public void render(final GameImage canvas) {
-        // TODO
+        ProgramState.get().render(canvas);
     }
 
     @Override
@@ -133,7 +126,7 @@ public final class TDSM implements ProgramContext {
 
     private GameWindow makeWindow() {
         return new GameWindow(PROGRAM_NAME + " " + getVersion(),
-                Layout.WIDTH, Layout.HEIGHT,
+                Layout.width(), Layout.height(),
                 Graphics.readIcon(ResourceCodes.ICON), true, false, false);
     }
 }
