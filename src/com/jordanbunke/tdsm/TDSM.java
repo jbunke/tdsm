@@ -13,9 +13,7 @@ import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.Version;
 import com.jordanbunke.delta_time.window.GameWindow;
 import com.jordanbunke.tdsm.flow.ProgramState;
-import com.jordanbunke.tdsm.util.Constants;
-import com.jordanbunke.tdsm.util.Layout;
-import com.jordanbunke.tdsm.util.ParserUtils;
+import com.jordanbunke.tdsm.util.*;
 
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -136,6 +134,6 @@ public final class TDSM implements ProgramContext {
     private GameWindow makeWindow() {
         return new GameWindow(PROGRAM_NAME + " " + getVersion(),
                 Layout.WIDTH, Layout.HEIGHT,
-                GameImage.dummy() /* TODO */, true, false, false);
+                Graphics.readIcon(ResourceCodes.ICON), true, false, false);
     }
 }
