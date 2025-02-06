@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
+import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
 import java.awt.*;
 import java.nio.file.Path;
@@ -32,17 +33,32 @@ public final class Graphics {
     }
 
     // UI Elements
-    public static GameImage drawTextButtonBase(final String text) {
+    public static int naiveButtonWidth(final String label) {
+        final GameImage textImage = uiText(Colors.def())
+                .addText(label).build().draw();
+
+        return textImage.getWidth() + TEXT_BUTTON_EXTRA_W;
+    }
+
+    public static GameImage drawTextButton(final TextButton tb) {
         // TODO - temp MVP implementation
+        // TODO - account for button type and state (stub, highlighted, dropdown)
 
         final GameImage textImage = uiText(Colors.def())
-                .addText(text).build().draw();
-        final GameImage button = new GameImage(
-                textImage.getWidth() + TEXT_BUTTON_EXTRA_W, TEXT_BUTTON_H);
+                .addText(tb.getLabel()).build().draw();
+        final GameImage button = new GameImage(tb.getWidth(), TEXT_BUTTON_H);
 
         button.drawRectangle(Colors.def(), 2f, 0, 0,
                 button.getWidth(), button.getHeight());
-        button.draw(textImage, TEXT_BUTTON_EXTRA_W / 2, TEXT_IN_BUTTON_OFFSET_Y);
+
+        final int x = switch (tb.getAlignment()) {
+            case LEFT -> TEXT_BUTTON_RENDER_BUFFER_X;
+            case CENTER -> (button.getWidth() - textImage.getWidth()) / 2;
+            case RIGHT -> button.getWidth() -
+                    (TEXT_BUTTON_RENDER_BUFFER_X + textImage.getWidth());
+        };
+
+        button.draw(textImage, x, TEXT_IN_BUTTON_OFFSET_Y);
 
         return button.submit();
     }

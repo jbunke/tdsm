@@ -62,6 +62,7 @@ public final class Layout {
 
     public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
+            TEXT_BUTTON_RENDER_BUFFER_X = 4,
             PX_PER_SCROLL = 20, DROPDOWN_EXTRA_W = 32;
 
     public static Coord2D labelPosFor(final int x, final int y) {

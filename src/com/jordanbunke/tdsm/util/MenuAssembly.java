@@ -7,7 +7,7 @@ import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
-import com.jordanbunke.tdsm.menu.TextButton;
+import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
 import static com.jordanbunke.tdsm.util.Layout.labelPosFor;
@@ -51,7 +51,7 @@ public final class MenuAssembly {
         // TODO - Layers
 
         // TODO - Bottom bar
-        final MenuElement toSaveButton = TextButton.make(
+        final MenuElement toSaveButton = StaticTextButton.make(
                 "Save / Export >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
                 MenuElement.Anchor.RIGHT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.SAVE, null));
