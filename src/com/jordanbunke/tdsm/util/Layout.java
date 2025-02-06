@@ -58,9 +58,13 @@ public final class Layout {
         }
     }
 
-    private static final int TEXT_OFFSET_X = 10, TEXT_OFFSET_Y = -4;
+    private static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -4;
+
+    public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
+            TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
+            PX_PER_SCROLL = 20, DROPDOWN_EXTRA_W = 32;
 
     public static Coord2D labelPosFor(final int x, final int y) {
-        return new Coord2D(x + TEXT_OFFSET_X, y + TEXT_OFFSET_Y);
+        return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);
     }
 }

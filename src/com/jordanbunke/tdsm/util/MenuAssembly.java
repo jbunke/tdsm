@@ -4,11 +4,12 @@ import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.TextButton;
 
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.PREVIEW;
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.TOP;
+import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
 import static com.jordanbunke.tdsm.util.Layout.labelPosFor;
 
 public final class MenuAssembly {
@@ -50,6 +51,12 @@ public final class MenuAssembly {
         // TODO - Layers
 
         // TODO - Bottom bar
+        final MenuElement toSaveButton = TextButton.make(
+                "Save / Export >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
+                MenuElement.Anchor.RIGHT_CENTRAL, () -> true,
+                () -> ProgramState.set(ProgramState.SAVE, null));
+
+        mb.addAll(toSaveButton);
 
         return mb.build();
     }

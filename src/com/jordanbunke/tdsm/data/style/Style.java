@@ -9,6 +9,7 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;
@@ -108,6 +109,10 @@ public abstract class Style {
         }
 
         return -1;
+    }
+
+    public int getPreviewScaleUp() {
+        return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
     public abstract String name();

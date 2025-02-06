@@ -36,7 +36,8 @@ public final class Customization {
                 box -> renderCustomizationBox(box, canvas));
 
         final GameImage sprite = ImageProcessing.scale(
-                Sprite.get().renderSprite(), Layout.SPRITE_PREVIEW_SCALE_UP);
+                Sprite.get().renderSprite(),
+                Sprite.get().getStyle().getPreviewScaleUp());
 
         canvas.draw(sprite, (PREVIEW.width - sprite.getWidth()) / 2,
                 Layout.PREVIEW_RENDER_Y);

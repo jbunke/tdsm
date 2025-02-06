@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class AssetChoice {
-    public final String id;
+    public final String id, name;
     private final Style style;
     private final AssetChoiceLayer layer;
 
@@ -23,12 +23,14 @@ public final class AssetChoice {
     private GameImage render;
 
     AssetChoice(
-            final String id, final Style style,
+            final String id, final String name,
+            final Style style,
             final AssetChoiceLayer layer,
             final ColorSelection[] colorSelections,
             final Function<Color, Integer> colorReplacementFunc
     ) {
         this.id = id;
+        this.name = name;
         this.style = style;
         this.layer = layer;
         this.colorSelections = colorSelections;
