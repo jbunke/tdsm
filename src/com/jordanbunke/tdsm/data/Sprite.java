@@ -29,4 +29,8 @@ public final class Sprite {
         if (!style.equals(this.style))
             INSTANCE = new Sprite(style);
     }
+
+    public Style getStyle() {
+        return style;
+    }
 }

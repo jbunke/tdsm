@@ -7,7 +7,8 @@ public final class Constants {
             NAME_CODE = "name", VERSION_CODE = "version",
             IS_DEVBUILD_CODE = "devbuild";
 
-    public static final Path PROGRAM_FILE = Path.of("program");
+    public static final Path PROGRAM_FILE = Path.of("program"),
+            ASSET_ROOT_FOLDER = Path.of("sprite_assets");
 
     public static final double TICK_HZ = 30d, FPS = 30d;
 

@@ -20,6 +20,8 @@ public final class ColorSelection {
 
     public void setSelection(final Color selection) {
         this.selection = selection;
+
+        // TODO - update dependents on this selection
     }
 
     public Color getSelection() {

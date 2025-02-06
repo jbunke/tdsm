@@ -6,6 +6,7 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.*;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
+import com.jordanbunke.tdsm.data.layer.Layers;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
@@ -18,7 +19,9 @@ public final class PokemonStyle extends Style {
     }
 
     private PokemonStyle() {
-        super(ID, DIMS, setUpDirections(), setUpAnimations(), setUpLayers());
+        super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
+
+        setUpLayers();
     }
 
     public static PokemonStyle get() {
@@ -34,15 +37,17 @@ public final class PokemonStyle extends Style {
         final boolean vertical = false;
 
         return new Animation[] {
-                Animation.make("idle", 3, new Coord2D(0, 0),
+                Animation.make("idle", 1, new Coord2D(0, 0),
+                        vertical, Animation.PlaybackMode.PONG),
+                Animation.make("walk", 3, new Coord2D(0, 1),
                         vertical, Animation.PlaybackMode.PONG),
                 // TODO
         };
     }
 
-    private static CustomizationLayer[] setUpLayers() {
+    private void setUpLayers() {
         // TODO
-        return null;
+        layers.get().add(null);
     }
 
     @Override
