@@ -12,7 +12,7 @@ public class ProgramFont {
         final FontBuilder builder = new FontBuilder().setPixelSpacing(1)
                 .setWhitespaceBreadthMultiplier(0.5);
         final Path FOLDER = Path.of("font");
-        FONT = builder.build(FOLDER, true, "tdsm-clipped");
+        FONT = builder.build(FOLDER, true, "tdsm");
     }
 
     public static Font get() {

@@ -5,6 +5,7 @@ import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.Menu;
+import com.jordanbunke.tdsm.flow.screens.Customization;
 
 public enum ProgramState implements ProgramContext {
     SPLASH, CUSTOMIZATION, SAVE, MENU;
@@ -25,17 +26,27 @@ public enum ProgramState implements ProgramContext {
 
     @Override
     public void process(final InputEventLogger eventLogger) {
-        // TODO
+        switch (state) {
+            case CUSTOMIZATION -> Customization.process(eventLogger);
+            case MENU -> {
+                // TODO - global
+                menu.process(eventLogger);
+            }
+        }
     }
 
     @Override
     public void update(final double deltaTime) {
-        // TODO
+        switch (state) {
+            case CUSTOMIZATION -> Customization.update(deltaTime);
+        }
     }
 
     @Override
     public void render(final GameImage canvas) {
-        // TODO
+        switch (state) {
+            case CUSTOMIZATION -> Customization.render(canvas);
+        }
     }
 
     @Override

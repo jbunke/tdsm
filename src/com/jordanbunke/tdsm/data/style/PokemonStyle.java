@@ -1,15 +1,26 @@
 package com.jordanbunke.tdsm.data.style;
 
+import com.jordanbunke.delta_time.sprite.SpriteSheet;
+import com.jordanbunke.delta_time.sprite.SpriteStates;
+import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
+import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
-import com.jordanbunke.tdsm.data.Directions.*;
-import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
+import com.jordanbunke.tdsm.data.Directions.Dir;
+import com.jordanbunke.tdsm.data.Directions.NumDirs;
+import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
+import com.jordanbunke.tdsm.data.layer.AssetChoiceTemplate;
+import com.jordanbunke.tdsm.data.layer.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.Layers;
+
+import java.util.function.Function;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
+
+    private static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
 
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
@@ -22,6 +33,7 @@ public final class PokemonStyle extends Style {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
 
         setUpLayers();
+        update();
     }
 
     public static PokemonStyle get() {
@@ -46,8 +58,29 @@ public final class PokemonStyle extends Style {
     }
 
     private void setUpLayers() {
-        // TODO
-        layers.get().add(null);
+        final Function<SpriteSheet, SpriteConstituent<String>>
+                DEFAULT_COMPOSER_BUILDER = sheet ->
+                new InterpretedSpriteSheet<>(sheet, id -> {
+                    final Dir dir = Dir.valueOf(
+                            SpriteStates.extractContributor(DIRECTION, id)
+                                    .toUpperCase());
+                    final String anim =
+                            SpriteStates.extractContributor(ANIM, id);
+                    final int frame = Integer.parseInt(
+                            SpriteStates.extractContributor(FRAME, id));
+
+                    final int x = indexOfDir(dir),
+                            y = startingIndexForAnim(anim) + frame;
+
+                    return new Coord2D(x, y);
+                });
+
+        // TODO - temp
+        layers.get().add(new AssetChoiceLayer(
+                "body", this, new AssetChoiceTemplate[] {
+                        new AssetChoiceTemplate("body-temp",
+                                new ColorSelection[0], c -> -1)
+                }, DEFAULT_COMPOSER_BUILDER));
     }
 
     @Override

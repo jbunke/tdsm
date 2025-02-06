@@ -1,10 +1,18 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.io.FileIO;
+import com.jordanbunke.delta_time.io.ResourceLoader;
+
 public final class ParserUtils {
     public static final int CODE = 0, VALUE = 1, DESIRED = 2;
     private static final String
             OPEN_SETTING_VAL = "{", CLOSE_SETTING_VAL = "}",
             SETTING_SEPARATOR = ":";
+
+    public static String readTooltip(final String code) {
+        return FileIO.readResource(ResourceLoader.loadResource(
+                Constants.TOOLTIPS_FOLDER.resolve(code + ".txt")), code);
+    }
 
     public static String[] splitIntoCodeAndValue(final String line) {
         final int oi = line.indexOf(OPEN_SETTING_VAL),

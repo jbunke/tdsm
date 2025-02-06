@@ -3,7 +3,7 @@ package com.jordanbunke.tdsm.util;
 import java.awt.*;
 
 public final class Colors {
-    static final Color BLACK = new Color(0, 0, 0),
+    private static final Color BLACK = new Color(0, 0, 0),
             WHITE = new Color(0xff, 0xff, 0xff),
             GREY = new Color(0x80, 0x80, 0x80),
             RED = new Color(0xe0, 0x20, 0x20),
@@ -20,4 +20,8 @@ public final class Colors {
             BLACK, WHITE, GREY, RED, GREEN, BLUE,
             ORANGE, BROWN, YELLOW, PURPLE, PINK, CYAN
     };
+
+    public static Color def() {
+        return BLACK;
+    }
 }

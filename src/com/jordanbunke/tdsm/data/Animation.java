@@ -6,22 +6,22 @@ import com.jordanbunke.tdsm.util.Constants;
 import java.util.function.Function;
 
 public final class Animation {
-    private final String id;
-    private final int[] frameTimings;
+    public final String id;
+    private final int[] ticksPerFrame;
     private final Function<Integer, Coord2D> coordFunc;
-    private final PlaybackMode playbackMode;
+    public final PlaybackMode playbackMode;
 
     public enum PlaybackMode {
         LOOP, PONG
     }
 
     private Animation(
-            final String id, final int[] frameTimings,
+            final String id, final int[] ticksPerFrame,
             final Function<Integer, Coord2D> coordFunc,
             final PlaybackMode playbackMode
     ) {
         this.id = id;
-        this.frameTimings = frameTimings;
+        this.ticksPerFrame = ticksPerFrame;
         this.playbackMode = playbackMode;
         this.coordFunc = coordFunc;
     }
@@ -45,7 +45,11 @@ public final class Animation {
     }
 
     public int frameCount() {
-        return frameTimings.length;
+        return ticksPerFrame.length;
+    }
+
+    public int ticksForFrame(final int frameIndex) {
+        return ticksPerFrame[frameIndex];
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.data.style;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteMap;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
@@ -16,10 +17,13 @@ import java.util.stream.IntStream;
 public abstract class Style {
     public final String id;
 
-    private final Bounds2D dims;
-    private final Directions directions;
-    private final Animation[] animations;
+    public final Bounds2D dims;
+    public final Directions directions;
+    public final Animation[] animations;
     final Layers layers;
+
+    private final SpriteStates<String> states;
+    private SpriteMap<String> map;
 
     Style(
             final String id, final Bounds2D dims, final Directions directions,
@@ -30,9 +34,20 @@ public abstract class Style {
         this.directions = directions;
         this.animations = animations;
         this.layers = layers;
+
+        states = generateSpriteStates();
+        update();
     }
 
-    public void build() {
+    public GameImage renderSprite(
+            final Directions.Dir dir, final Animation anim, final int frame
+    ) {
+        return map.getSprite(
+                String.join(SpriteStates.STANDARD_SEPARATOR,
+                        dir.toString(), anim.id, String.valueOf(frame)));
+    }
+
+    private SpriteStates<String> generateSpriteStates() {
         final int highestFrameCount = Arrays.stream(animations)
                 .map(Animation::frameCount).reduce(1, Math::max);
 
@@ -41,7 +56,7 @@ public abstract class Style {
                         .map(Directions.Dir::toString)
                         .toArray(String[]::new),
                 Arrays.stream(animations)
-                        .map(Animation::toString)
+                        .map(a -> a.id)
                         .toArray(String[]::new),
                 IntStream.range(0, highestFrameCount)
                         .mapToObj(String::valueOf)
@@ -55,9 +70,15 @@ public abstract class Style {
                             anim.toString(), String.valueOf(f));
         }
 
-        for (String spriteID : states.getValidSpriteIDs())
-            System.out.println(spriteID);
+        return states;
+    }
 
+    public void randomize() {
+        layers.get().forEach(CustomizationLayer::randomize);
+        update();
+    }
+
+    public void update() {
         final SpriteAssembler<String, String> assembler =
                 new SpriteAssembler<>(dims.width(), dims.height());
 
@@ -65,7 +86,28 @@ public abstract class Style {
             if (layer.rendered)
                 assembler.addLayer(layer.id, layer.getComposer());
 
-        final SpriteMap<String> map = new SpriteMap<>(assembler, states);
+        map = new SpriteMap<>(assembler, states);
+    }
+
+    final int indexOfDir(final Directions.Dir dir) {
+        for (int i = 0; i < directions.order().length; i++)
+            if (dir == directions.order()[i])
+                return i;
+
+        return -1;
+    }
+
+    final int startingIndexForAnim(final String anim) {
+        int totalFrames = 0;
+
+        for (Animation a : animations) {
+            if (a.id.equals(anim))
+                return totalFrames;
+            else
+                totalFrames += a.frameCount();
+        }
+
+        return -1;
     }
 
     public abstract String name();

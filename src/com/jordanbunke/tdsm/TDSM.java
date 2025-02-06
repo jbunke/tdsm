@@ -92,7 +92,8 @@ public final class TDSM implements ProgramContext {
     }
 
     private TDSM() {
-        ProgramState.set(ProgramState.SPLASH, null);
+        // TODO - initially set to splash
+        ProgramState.set(ProgramState.CUSTOMIZATION, null);
 
         window = makeWindow();
         program = new Program(window, new GameManager(0, this),
