@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.data.layer;
 
+import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.StringUtils;
 

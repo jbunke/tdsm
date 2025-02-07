@@ -7,9 +7,9 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 
 public final class VigilanteStyle extends Style {
     private static final VigilanteStyle INSTANCE;
@@ -53,21 +53,18 @@ public final class VigilanteStyle extends Style {
 
     private void setUpLayers() {
         layers.add(
-                new AssetChoiceLayer("base", this,
-                        new AssetChoiceTemplate[] {
+                ACLBuilder.of("base", this,
                                 new AssetChoiceTemplate("black"),
                                 new AssetChoiceTemplate("mixed"),
-                                new AssetChoiceTemplate("white"),
-                        }),
-                new AssetChoiceLayer("torso", this,
-                        new AssetChoiceTemplate[] {
-                                new AssetChoiceTemplate("chestplate-1"),
-                        }),
-                new AssetChoiceLayer("headwear", this,
-                        new AssetChoiceTemplate[] {
+                                new AssetChoiceTemplate("white"))
+                        .build(),
+                ACLBuilder.of("torso", this,
+                                new AssetChoiceTemplate("chestplate-1"))
+                        .build(),
+                ACLBuilder.of("headwear", this,
                                 new AssetChoiceTemplate("helmet-1"),
-                                new AssetChoiceTemplate("helmet-2"),
-                        })
+                                new AssetChoiceTemplate("helmet-2"))
+                        .build()
         );
     }
 

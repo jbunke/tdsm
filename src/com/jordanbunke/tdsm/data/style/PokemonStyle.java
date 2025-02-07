@@ -8,6 +8,7 @@ import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
 import com.jordanbunke.tdsm.data.layer.*;
+import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
@@ -57,10 +58,11 @@ public final class PokemonStyle extends Style {
 
     private void setUpLayers() {
         // TODO - temp
-        layers.add(new AssetChoiceLayer("body", this,
-                new AssetChoiceTemplate[] {
-                        new AssetChoiceTemplate("body-temp")
-        }));
+        layers.add(
+                ACLBuilder.of("body", this,
+                                new AssetChoiceTemplate("body-temp"))
+                        .build()
+        );
     }
 
     @Override

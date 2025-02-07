@@ -1,15 +1,14 @@
 package com.jordanbunke.tdsm.data;
 
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.data.func.CoordFunc;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.StringUtils;
-
-import java.util.function.Function;
 
 public final class Animation {
     public final String id;
     private final int[] ticksPerFrame;
-    public final Function<Integer, Coord2D> coordFunc;
+    public final CoordFunc coordFunc;
     public final PlaybackMode playbackMode;
 
     public enum PlaybackMode {
@@ -18,7 +17,7 @@ public final class Animation {
 
     private Animation(
             final String id, final int[] ticksPerFrame,
-            final Function<Integer, Coord2D> coordFunc,
+            final CoordFunc coordFunc,
             final PlaybackMode playbackMode
     ) {
         this.id = id;
@@ -32,7 +31,7 @@ public final class Animation {
             final Coord2D firstFrame, final boolean horizontal,
             final PlaybackMode playbackMode
     ) {
-        final Function<Integer, Coord2D> coordFunc = f -> new Coord2D(
+        final CoordFunc coordFunc = f -> new Coord2D(
                 firstFrame.x + (horizontal ? f : 0),
                 firstFrame.y + (horizontal ? 0 : f)
         );
@@ -42,7 +41,7 @@ public final class Animation {
 
     public static Animation make(
             final String id, final int frameCount,
-            final Function<Integer, Coord2D> coordFunc,
+            final CoordFunc coordFunc,
             final PlaybackMode playbackMode
     ) {
         final int[] frameTimings = new int[frameCount];

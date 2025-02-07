@@ -5,11 +5,10 @@ import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.RNG;
+import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.util.StringUtils;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 public final class AssetChoiceLayer extends CustomizationLayer {
     private final Bounds2D dims;
@@ -19,38 +18,14 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     private int selection;
 
     private final GameImage[] previews;
-    private final Function<SpriteSheet, SpriteConstituent<String>> composerBuilder;
+    private final ComposerBuilder composerBuilder;
     private SpriteSheet sheet;
-
-    public AssetChoiceLayer(
-            final String id, final Style style,
-            final AssetChoiceTemplate[] choices
-    ) {
-        this(id, style, choices, style::defaultBuildComposer);
-    }
-
-    public AssetChoiceLayer(
-            final String id, final Style style,
-            final AssetChoiceTemplate[] choices,
-            final Function<SpriteSheet, SpriteConstituent<String>> composerBuilder
-    ) {
-        this(id, style.dims, style, choices, composerBuilder);
-    }
-
-    public AssetChoiceLayer(
-            final String id, final Bounds2D dims,
-            final Style style, final AssetChoiceTemplate[] choices,
-            final Function<SpriteSheet, SpriteConstituent<String>> composerBuilder
-    ) {
-        this(id, StringUtils.nameFromID(id), dims,
-                style, choices, composerBuilder);
-    }
 
     public AssetChoiceLayer(
             final String id, final String name,
             final Bounds2D dims, final Style style,
             final AssetChoiceTemplate[] choices,
-            final Function<SpriteSheet, SpriteConstituent<String>> composerBuilder
+            final ComposerBuilder composerBuilder
     ) {
         super(id, true);
 
@@ -79,7 +54,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     @Override
     public SpriteConstituent<String> getComposer() {
-        return composerBuilder.apply(sheet);
+        return composerBuilder.build(sheet);
     }
 
     @Override

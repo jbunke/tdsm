@@ -1,4 +1,4 @@
-package com.jordanbunke.tdsm.data.layer;
+package com.jordanbunke.tdsm.data.func;
 
 import com.jordanbunke.delta_time.utility.math.Pair;
 
