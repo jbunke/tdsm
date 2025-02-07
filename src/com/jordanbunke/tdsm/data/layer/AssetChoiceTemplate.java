@@ -8,6 +8,10 @@ public final class AssetChoiceTemplate {
     public final ColorSelection[] colorSelections;
     public final ColorReplacementFunc colorReplacementFunc;
 
+    public AssetChoiceTemplate(final String id) {
+        this(id, new ColorSelection[0], ColorReplacementFunc.trivial());
+    }
+
     public AssetChoiceTemplate(
             final String id, final ColorSelection[] colorSelections,
             final ColorReplacementFunc colorReplacementFunc

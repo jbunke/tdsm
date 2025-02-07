@@ -35,7 +35,7 @@ public final class Sprite {
 
     private void setup() {
         previewDir = this.style.directions.order()[0];
-        Playback.get().setAnimation(this.style.animations[1]); // TODO - temp, should be 0
+        Playback.get().setAnimation(this.style.animations[0]);
     }
 
     public GameImage renderSprite() {

@@ -24,6 +24,13 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     public AssetChoiceLayer(
             final String id, final Style style,
+            final AssetChoiceTemplate[] choices
+    ) {
+        this(id, style, choices, style::defaultBuildComposer);
+    }
+
+    public AssetChoiceLayer(
+            final String id, final Style style,
             final AssetChoiceTemplate[] choices,
             final Function<SpriteSheet, SpriteConstituent<String>> composerBuilder
     ) {

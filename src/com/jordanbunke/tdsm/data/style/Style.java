@@ -3,8 +3,11 @@ package com.jordanbunke.tdsm.data.style;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteMap;
+import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
+import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
@@ -16,6 +19,9 @@ import java.util.stream.IntStream;
 
 // TODO
 public abstract class Style {
+
+    static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
+
     public final String id;
 
     public final Bounds2D dims;
@@ -90,6 +96,33 @@ public abstract class Style {
         map = new SpriteMap<>(assembler, states);
     }
 
+    public final InterpretedSpriteSheet<String> defaultBuildComposer(
+            final SpriteSheet sheet
+    ) {
+        final Coord2D FAIL = new Coord2D();
+
+        return new InterpretedSpriteSheet<>(sheet, id -> {
+            final Directions.Dir dir = Directions.Dir.valueOf(
+                    SpriteStates.extractContributor(DIRECTION, id)
+                            .toUpperCase());
+            final String animID =
+                    SpriteStates.extractContributor(ANIM, id);
+            final int frame = Integer.parseInt(
+                    SpriteStates.extractContributor(FRAME, id));
+
+            final int dirIndex = indexOfDir(dir);
+            final Animation anim = animFromID(animID);
+
+            if (anim == null)
+                return FAIL;
+
+            if (directions.horizontal())
+                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
+            else
+                return anim.coordFunc.apply(frame).displace(0, dirIndex);
+        });
+    }
+
     final int indexOfDir(final Directions.Dir dir) {
         for (int i = 0; i < directions.order().length; i++)
             if (dir == directions.order()[i])
@@ -98,17 +131,12 @@ public abstract class Style {
         return -1;
     }
 
-    final int startingIndexForAnim(final String anim) {
-        int totalFrames = 0;
+    final Animation animFromID(final String animID) {
+        for (Animation a : animations)
+            if (a.id.equals(animID))
+                return a;
 
-        for (Animation a : animations) {
-            if (a.id.equals(anim))
-                return totalFrames;
-            else
-                totalFrames += a.frameCount();
-        }
-
-        return -1;
+        return null;
     }
 
     public int getPreviewScaleUp() {

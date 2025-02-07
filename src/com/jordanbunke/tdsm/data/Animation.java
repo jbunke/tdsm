@@ -9,7 +9,7 @@ import java.util.function.Function;
 public final class Animation {
     public final String id;
     private final int[] ticksPerFrame;
-    private final Function<Integer, Coord2D> coordFunc;
+    public final Function<Integer, Coord2D> coordFunc;
     public final PlaybackMode playbackMode;
 
     public enum PlaybackMode {
@@ -37,6 +37,14 @@ public final class Animation {
                 firstFrame.y + (horizontal ? 0 : f)
         );
 
+        return make(id, frameCount, coordFunc, playbackMode);
+    }
+
+    public static Animation make(
+            final String id, final int frameCount,
+            final Function<Integer, Coord2D> coordFunc,
+            final PlaybackMode playbackMode
+    ) {
         final int[] frameTimings = new int[frameCount];
 
         for (int i = 0; i < frameCount; i++)
