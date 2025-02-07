@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
+import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.StringUtils;
 
@@ -19,6 +20,7 @@ public final class ACLBuilder {
     private Bounds2D dims;
     private final List<AssetChoiceTemplate> choices;
     private ComposerBuilder composerBuilder;
+    private NoAssetChoice noAssetChoice;
 
     public static ACLBuilder init(
             final String id, final Style style
@@ -43,11 +45,13 @@ public final class ACLBuilder {
         dims = style.dims;
         name = StringUtils.nameFromID(id);
         choices = new ArrayList<>();
+        noAssetChoice = NoAssetChoice.invalid();
     }
 
     public AssetChoiceLayer build() {
         return new AssetChoiceLayer(id, name, dims, style,
-                choices.toArray(AssetChoiceTemplate[]::new), composerBuilder);
+                choices.toArray(AssetChoiceTemplate[]::new),
+                composerBuilder, noAssetChoice);
     }
 
     public ACLBuilder setName(final String name) {
@@ -69,6 +73,11 @@ public final class ACLBuilder {
             final ComposerBuilder composerBuilder
     ) {
         this.composerBuilder = composerBuilder;
+        return this;
+    }
+
+    public ACLBuilder setNoAssetChoice(final NoAssetChoice noAssetChoice) {
+        this.noAssetChoice = noAssetChoice;
         return this;
     }
 }

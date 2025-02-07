@@ -10,6 +10,7 @@ import com.jordanbunke.tdsm.data.Directions.NumDirs;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 public final class VigilanteStyle extends Style {
     private static final VigilanteStyle INSTANCE;
@@ -43,7 +44,13 @@ public final class VigilanteStyle extends Style {
         return new Animation[] {
                 Animation.make("idle", 1, new Coord2D(0, 0),
                         vertical, PlaybackMode.LOOP),
-                Animation.make("walk", 3, new Coord2D(0, 1),
+                Animation.make("walk", 2, new Coord2D(0, 1),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("box", 2, new Coord2D(0, 3),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("pistol_reload", 3, new Coord2D(0, 18),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("rifle_reload", 3, new Coord2D(0, 30),
                         vertical, PlaybackMode.LOOP),
                 Animation.make("death", 5, new Coord2D(0, 39),
                         vertical, PlaybackMode.LOOP),
@@ -60,10 +67,11 @@ public final class VigilanteStyle extends Style {
                         .build(),
                 ACLBuilder.of("torso", this,
                                 new AssetChoiceTemplate("chestplate-1"))
-                        .build(),
+                        .setNoAssetChoice(NoAssetChoice.equal()).build(),
                 ACLBuilder.of("headwear", this,
                                 new AssetChoiceTemplate("helmet-1"),
                                 new AssetChoiceTemplate("helmet-2"))
+                        .setNoAssetChoice(NoAssetChoice.prob(0.1))
                         .build()
         );
     }

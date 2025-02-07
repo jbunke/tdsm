@@ -8,11 +8,14 @@ import com.jordanbunke.delta_time.utility.math.RNG;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
+import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.Arrays;
 
 public final class AssetChoiceLayer extends CustomizationLayer {
+    private static final int NONE = -1;
+
     private final Bounds2D dims;
     private final String name;
 
@@ -21,13 +24,15 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     private final GameImage[] previews;
     private final ComposerBuilder composerBuilder;
+    private final NoAssetChoice noAssetChoice;
     private SpriteSheet sheet;
 
     public AssetChoiceLayer(
             final String id, final String name,
             final Bounds2D dims, final Style style,
             final AssetChoiceTemplate[] choices,
-            final ComposerBuilder composerBuilder
+            final ComposerBuilder composerBuilder,
+            final NoAssetChoice noAssetChoice
     ) {
         super(id, true);
 
@@ -36,10 +41,12 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         this.choices = Arrays.stream(choices)
                 .map(a -> a.realize(style, this))
                 .toArray(AssetChoice[]::new);
-        this.selection = 0;
 
         this.previews = new GameImage[this.choices.length];
         this.composerBuilder = composerBuilder;
+        this.noAssetChoice = noAssetChoice;
+
+        this.selection = noAssetChoice.valid ? NONE : 0;
 
         update();
     }
@@ -50,13 +57,19 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     }
 
     private void rebuildSpriteSheet() {
-        sheet = new SpriteSheet(choices[selection].retrieve(),
-                dims.width(), dims.height());
+        if (hasChoice())
+            sheet = new SpriteSheet(choices[selection].retrieve(),
+                    dims.width(), dims.height());
+        else
+            sheet = null;
     }
 
     @Override
     public SpriteConstituent<String> getComposer() {
-        return composerBuilder.build(sheet);
+        if (hasChoice())
+            return composerBuilder.build(sheet);
+
+        return s -> GameImage.dummy();
     }
 
     @Override
@@ -71,17 +84,34 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             previews[i] = choices[i].retrieve().section(0, 0, dims.width(), dims.height());
         }
 
-        sheet = new SpriteSheet(choices[selection].retrieve(),
-                dims.width(), dims.height());
+        rebuildSpriteSheet();
     }
 
     @Override
     public void randomize() {
-        final int index = RNG.randomInRange(0, choices.length);
+        // final int index = RNG.randomInRange(0, choices.length);
+        final int index;
+
+        if (noAssetChoice.valid) {
+            if (noAssetChoice.equalRandomOdds)
+                index = RNG.randomInRange(NONE, choices.length);
+            else {
+                final boolean noChoice = RNG.prob(noAssetChoice.randomProb);
+
+                index = noChoice ? NONE : RNG.randomInRange(0, choices.length);
+            }
+        } else
+            index = RNG.randomInRange(0, choices.length);
+
         select(index);
 
-        choices[selection].randomize();
+        if (hasChoice())
+            choices[selection].randomize();
 
         update();
+    }
+
+    private boolean hasChoice() {
+        return selection != NONE;
     }
 }
