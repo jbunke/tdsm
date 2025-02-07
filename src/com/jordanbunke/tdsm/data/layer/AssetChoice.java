@@ -2,13 +2,16 @@ package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.Constants;
 
 import java.awt.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 public final class AssetChoice {
@@ -17,7 +20,7 @@ public final class AssetChoice {
     private final AssetChoiceLayer layer;
 
     private final ColorSelection[] colorSelections;
-    private final Function<Color, Integer> colorReplacementFunc;
+    private final ColorReplacementFunc colorReplacementFunc;
 
     private final GameImage asset;
     private GameImage render;
@@ -27,7 +30,7 @@ public final class AssetChoice {
             final Style style,
             final AssetChoiceLayer layer,
             final ColorSelection[] colorSelections,
-            final Function<Color, Integer> colorReplacementFunc
+            final ColorReplacementFunc colorReplacementFunc
     ) {
         this.id = id;
         this.name = name;
@@ -75,12 +78,14 @@ public final class AssetChoice {
                 if (replacements.containsKey(c))
                     render.setRGB(x, y, replacements.get(c).getRGB());
                 else {
-                    final int index = colorReplacementFunc.apply(c);
+                    final Pair<Integer, Function<Color, Color>> out =
+                            colorReplacementFunc.apply(c);
+                    final int index = out.a();
 
                     if (index < 0 || index >= selections.size())
                         render.setRGB(x, y, c.getRGB());
                     else {
-                        final Color set = selections.get(index);
+                        final Color set = out.b().apply(selections.get(index));
                         replacements.put(c, set);
                         render.setRGB(x, y, set.getRGB());
                     }

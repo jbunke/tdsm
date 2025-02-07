@@ -10,10 +10,7 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceTemplate;
-import com.jordanbunke.tdsm.data.layer.ColorSelection;
-import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.data.layer.*;
 
 import java.util.function.Function;
 
@@ -79,7 +76,8 @@ public final class PokemonStyle extends Style {
         layers.get().add(new AssetChoiceLayer(
                 "body", this, new AssetChoiceTemplate[] {
                         new AssetChoiceTemplate("body-temp",
-                                new ColorSelection[0], c -> -1)
+                                new ColorSelection[0],
+                                ColorReplacementFunc.trivial())
                 }, DEFAULT_COMPOSER_BUILDER));
     }
 
