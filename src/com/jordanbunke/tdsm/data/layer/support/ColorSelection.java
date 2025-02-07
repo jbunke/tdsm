@@ -1,6 +1,7 @@
-package com.jordanbunke.tdsm.data.layer;
+package com.jordanbunke.tdsm.data.layer.support;
 
 import com.jordanbunke.delta_time.utility.math.RNG;
+import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.util.Colors;
 
 import java.awt.*;

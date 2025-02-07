@@ -9,6 +9,7 @@ import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;

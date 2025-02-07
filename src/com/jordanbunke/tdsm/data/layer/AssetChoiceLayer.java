@@ -6,6 +6,8 @@ import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.RNG;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.Arrays;

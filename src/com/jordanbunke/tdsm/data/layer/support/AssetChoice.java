@@ -1,9 +1,10 @@
-package com.jordanbunke.tdsm.data.layer;
+package com.jordanbunke.tdsm.data.layer.support;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
+import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.Constants;
 

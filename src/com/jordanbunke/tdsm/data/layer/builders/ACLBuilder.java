@@ -3,7 +3,7 @@ package com.jordanbunke.tdsm.data.layer.builders;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceTemplate;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.StringUtils;
 

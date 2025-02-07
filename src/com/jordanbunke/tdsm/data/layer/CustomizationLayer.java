@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
+import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 
 import java.util.ArrayList;
 import java.util.List;
