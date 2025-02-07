@@ -8,6 +8,8 @@ import com.jordanbunke.tdsm.util.Graphics;
 
 import java.awt.*;
 
+import static com.jordanbunke.tdsm.util.Layout.*;
+
 public final class StaticLabel extends StaticMenuElement {
     private StaticLabel(
             final Coord2D position, final Anchor anchor, final GameImage image
@@ -27,5 +29,10 @@ public final class StaticLabel extends StaticMenuElement {
     ) {
         return new StaticLabel(position, Anchor.LEFT_TOP,
                 Graphics.uiText(color, textSize).addText(text).build().draw());
+    }
+
+    public Coord2D after() {
+        return getRenderPosition().displace(
+                getWidth() + POST_LABEL_BUFFER_X, POST_LABEL_OFFSET_Y);
     }
 }

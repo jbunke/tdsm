@@ -53,6 +53,16 @@ public final class StaticTextButton extends MenuButton implements TextButton {
     ) {
         final int width = Graphics.naiveButtonWidth(label);
 
+        return make(label, buttonType, alignment, width,
+                position, anchor, precondition, behaviour);
+    }
+
+    public static ThinkingMenuElement make(
+            final String label, final ButtonType buttonType,
+            final Alignment alignment, final int width,
+            final Coord2D position, final Anchor anchor,
+            final Supplier<Boolean> precondition, final Runnable behaviour
+    ) {
         final StaticTextButton button =
                 new StaticTextButton(label, buttonType, width,
                         alignment, position, anchor, behaviour);

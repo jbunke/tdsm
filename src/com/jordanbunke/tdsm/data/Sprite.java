@@ -16,18 +16,21 @@ public final class Sprite {
 
     static {
         INSTANCE = new Sprite(Styles.PKMN.get());
+        rebuildMenus();
     }
 
     private Sprite(final Style style) {
         this.style = style;
         setup();
-
-        Customization.rebuildMenu();
-        // TODO
     }
 
     public static Sprite get() {
         return INSTANCE;
+    }
+
+    private static void rebuildMenus() {
+        Customization.rebuildMenu();
+        // TODO
     }
 
     private void setup() {
@@ -41,8 +44,10 @@ public final class Sprite {
     }
 
     public void setStyle(final Style style) {
-        if (!style.equals(this.style))
+        if (!style.equals(this.style)) {
             INSTANCE = new Sprite(style);
+            rebuildMenus();
+        }
     }
 
     public Style getStyle() {

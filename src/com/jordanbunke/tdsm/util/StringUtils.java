@@ -11,6 +11,7 @@ public final class StringUtils {
     }
 
     private static String capitalizeFirstLetter(final String word) {
-        return word.charAt(0) + word.substring(1).toLowerCase();
+        return String.valueOf(word.charAt(0)).toUpperCase() +
+                word.substring(1).toLowerCase();
     }
 }

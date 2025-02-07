@@ -8,7 +8,8 @@ import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.funke.core.Property;
 
 // TODO
-public sealed abstract class Slider extends AbstractSlider permits HorizontalSlider, VerticalSlider {
+public sealed abstract class Slider extends AbstractSlider
+        permits HorizontalSlider, VerticalSlider {
 
     public Slider(
             Coord2D position, Bounds2D dimensions, Anchor anchor,

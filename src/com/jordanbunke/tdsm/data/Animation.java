@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.data;
 
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.util.Constants;
+import com.jordanbunke.tdsm.util.StringUtils;
 
 import java.util.function.Function;
 
@@ -55,6 +56,10 @@ public final class Animation {
     @Override
     public String toString() {
         return id;
+    }
+
+    public String name() {
+        return StringUtils.nameFromID(id);
     }
 
     @Override
