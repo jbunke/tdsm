@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
+import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
 import java.awt.*;
@@ -43,6 +44,7 @@ public final class Graphics {
     public static GameImage drawTextButton(final TextButton tb) {
         // TODO - temp MVP implementation
         // TODO - account for button type and state (stub, highlighted, dropdown)
+        final ButtonType type = tb.getButtonType();
 
         final GameImage textImage = uiText(Colors.def())
                 .addText(tb.getLabel()).build().draw();
@@ -59,6 +61,15 @@ public final class Graphics {
         };
 
         button.draw(textImage, x, TEXT_IN_BUTTON_OFFSET_Y);
+
+        // dropdown list button
+        if (type == ButtonType.DD_HEAD) {
+            final GameImage icon = readIcon(tb.isSelected()
+                    ? ResourceCodes.COLLAPSE : ResourceCodes.EXPAND);
+
+            button.draw(icon, button.getWidth() -
+                    (icon.getWidth() + TEXT_BUTTON_RENDER_BUFFER_X), 0);
+        }
 
         return button.submit();
     }
