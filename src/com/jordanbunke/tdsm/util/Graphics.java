@@ -103,10 +103,6 @@ public final class Graphics {
                 outlineColor = typing ? Colors.selected() :
                         (highlighted ? Colors.highlight() : mainColor);
 
-        final GameImage box = new GameImage(width, TEXT_BUTTON_H);
-        box.drawRectangle(outlineColor, 2f, 0, 0,
-                box.getWidth(), box.getHeight());
-
         // text and cursor
 
         final String preSel = text.substring(0, left),
@@ -122,6 +118,8 @@ public final class Graphics {
                         .addText(sel).build().draw(),
                 postSelImage = uiText(mainColor)
                         .addText(postSel).build().draw();
+
+        final GameImage box = new GameImage(width, TEXT_BUTTON_H);
 
         Coord2D textPos = new Coord2D(TEXT_BUTTON_RENDER_BUFFER_X,
                 TEXT_IN_BUTTON_OFFSET_Y);
@@ -162,6 +160,9 @@ public final class Graphics {
 
         // possible suffix
         box.draw(suffixImage, textPos.x, textPos.y);
+
+        box.drawRectangle(outlineColor, 2f, 0, 0,
+                box.getWidth(), box.getHeight());
 
         return box.submit();
     }
