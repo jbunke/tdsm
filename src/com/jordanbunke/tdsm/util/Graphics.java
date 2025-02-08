@@ -4,8 +4,8 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.menu.Button;
-import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
@@ -83,19 +83,87 @@ public final class Graphics {
             final boolean valid, final boolean highlighted, final boolean typing
     ) {
         // TODO - temp MVP implementation
-        final TextButton tb = TextButton.of(prefix + text + suffix, width,
-                        Alignment.LEFT, ButtonType.STANDARD)
-                .sim(typing, highlighted);
-        return drawTextButton(tb);
+//        final TextButton tb = TextButton.of(prefix + text + suffix, width,
+//                        Alignment.LEFT, ButtonType.STANDARD)
+//                .sim(typing, highlighted);
+//        return drawTextButton(tb);
 
-//        final GameImage button = new GameImage(width, TEXT_BUTTON_H);
-//
-//        button.drawRectangle(Colors.def(), 2f, 0, 0,
-//                button.getWidth(), button.getHeight());
+        // pre-processing
+        final int left = Math.min(cursorIndex, selectionIndex),
+                right = Math.max(cursorIndex, selectionIndex),
+                INC = TEXTBOX_SEG_INC;
 
-        // TODO
+        final boolean hasSelection = left != right,
+                cursorAtRight = cursorIndex == right;
 
-//        return button.submit();
+        // setup
+        final Color mainColor = valid ? Colors.black() : Colors.invalid(),
+                affixColor = Colors.shiftRGB(mainColor, 0x60),
+                highlightOverlay = Colors.highlightOverlay(),
+                outlineColor = typing ? Colors.selected() :
+                        (highlighted ? Colors.highlight() : mainColor);
+
+        final GameImage box = new GameImage(width, TEXT_BUTTON_H);
+        box.drawRectangle(outlineColor, 2f, 0, 0,
+                box.getWidth(), box.getHeight());
+
+        // text and cursor
+
+        final String preSel = text.substring(0, left),
+                sel = text.substring(left, right),
+                postSel = text.substring(right);
+        final GameImage prefixImage = uiText(affixColor)
+                .addText(prefix).build().draw(),
+                suffixImage = uiText(affixColor)
+                        .addText(suffix).build().draw(),
+                preSelImage = uiText(mainColor)
+                        .addText(preSel).build().draw(),
+                selImage = uiText(mainColor)
+                        .addText(sel).build().draw(),
+                postSelImage = uiText(mainColor)
+                        .addText(postSel).build().draw();
+
+        Coord2D textPos = new Coord2D(TEXT_BUTTON_RENDER_BUFFER_X,
+                TEXT_IN_BUTTON_OFFSET_Y);
+
+        // possible prefix
+        box.draw(prefixImage, textPos.x, textPos.y);
+        if (!prefix.isEmpty())
+            textPos = textPos.displace(prefixImage.getWidth() + INC, 0);
+
+        // main text prior to possible selection
+        box.draw(preSelImage, textPos.x, textPos.y);
+        if (!preSel.isEmpty())
+            textPos = textPos.displace(preSelImage.getWidth() + INC, 0);
+
+        // possible selection text
+        if (hasSelection) {
+            if (!cursorAtRight)
+                textPos = textPos.displace(2 * INC, 0);
+
+            box.draw(selImage, textPos.x, textPos.y);
+            box.fillRectangle(highlightOverlay, textPos.x - INC, 0,
+                    selImage.getWidth() + (2 * INC), box.getHeight());
+            textPos = textPos.displace(selImage.getWidth() + INC, 0);
+        }
+
+        // cursor
+        box.fillRectangle(mainColor,
+                textPos.x - (cursorAtRight ? 0
+                        : selImage.getWidth() + (3 * INC)),
+                0, INC, box.getHeight());
+        if (cursorAtRight)
+            textPos = textPos.displace(2 * INC, 0);
+
+        // main text following possible selection
+        box.draw(postSelImage, textPos.x, textPos.y);
+        if (!postSel.isEmpty())
+            textPos = textPos.displace(postSelImage.getWidth() + INC, 0);
+
+        // possible suffix
+        box.draw(suffixImage, textPos.x, textPos.y);
+
+        return box.submit();
     }
 
     public static GameImage drawSwatchButton(

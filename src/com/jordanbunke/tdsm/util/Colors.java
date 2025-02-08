@@ -14,7 +14,10 @@ public final class Colors {
             YELLOW = new Color(0xe0, 0xc0, 0),
             PURPLE = new Color(0xb0, 0, 0xb0),
             PINK = new Color(0xff, 0x80, 0xc0),
-            CYAN = new Color(0, 0xb0, 0xb0);
+            CYAN = new Color(0, 0xb0, 0xb0),
+            VEIL = new Color(0x80, 0x80, 0x80, 0x80),
+            HIGHLIGHT_OVERLAY = new Color(0x80, 0x80, 0xff, 0x80),
+            INVALID = new Color(0x80, 0, 0);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {
             BLACK, WHITE, GREY, RED, GREEN, BLUE,
@@ -38,6 +41,28 @@ public final class Colors {
     }
 
     public static Color veil() {
-        return new Color(0x80, 0x80, 0x80, 0x80);
+        return VEIL;
+    }
+
+    public static Color highlightOverlay() {
+        return HIGHLIGHT_OVERLAY;
+    }
+
+    public static Color invalid() {
+        return INVALID;
+    }
+
+    public static Color shiftRGB(final Color base, final int shift) {
+        return new Color(
+                shiftChannel(base.getRed(), Math.abs(shift)),
+                shiftChannel(base.getGreen(), Math.abs(shift)),
+                shiftChannel(base.getBlue(), Math.abs(shift)));
+    }
+
+    private static int shiftChannel(final int c, final int shift) {
+        final int MIDDLE = 0x80;
+        final boolean increase = Math.signum((double) (MIDDLE - c)) >= 0.0;
+
+        return c + (increase ? shift : -shift);
     }
 }
