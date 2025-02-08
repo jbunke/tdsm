@@ -109,6 +109,11 @@ public final class Sampler extends MenuElementContainer {
         selection = null;
     }
 
+    public void jolt() {
+        if (isActive())
+            setColor(selection.getColor(), null);
+    }
+
     @Override
     public MenuElement[] getMenuElements() {
         return menuElements;

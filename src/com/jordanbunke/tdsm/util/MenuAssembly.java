@@ -13,7 +13,7 @@ import com.jordanbunke.tdsm.menu.Dropdown;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.menu.Veil;
-import com.jordanbunke.tdsm.menu.layer.ColorSelectionButton;
+import com.jordanbunke.tdsm.menu.layer.ColorSelectionElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
@@ -23,8 +23,8 @@ import com.jordanbunke.tdsm.visual_misc.Playback;
 import java.awt.*;
 import java.util.Arrays;
 
-import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
+import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class MenuAssembly {
     public static Menu stub() {
@@ -93,18 +93,20 @@ public final class MenuAssembly {
 
         // TODO - LAYER
         // TODO - temp dummy elements
-        final ColorSelection ds1 = new ColorSelection("", true),
-                ds2 = new ColorSelection("", false,
+        final ColorSelection ds1 = new ColorSelection("Test 1", true),
+                ds2 = new ColorSelection("Test 2 @ Middle", false,
                         new Color(0x28, 0x28, 0x3c),
                         new Color(0x80, 0, 0));
-        final ColorSelectionButton csb1 =
-                new ColorSelectionButton(LAYERS.at(BUFFER, BUFFER),
-                        MenuElement.Anchor.LEFT_TOP, ds1),
-                csb2 = new ColorSelectionButton(
-                        LAYERS.at(LAYERS.width - BUFFER, BUFFER),
-                        MenuElement.Anchor.RIGHT_TOP, ds2);
+        final ColorSelectionElement
+                cse1 = ColorSelectionElement.of(ds1, LAYERS.pos()),
+                cse2 = ColorSelectionElement.of(ds2, LAYERS.at(0.5, 0.0));
 
-        mb.addAll(csb1, csb2);
+        final StaticLabel test = StaticLabel.mini(
+                miniLabelPosFor(LAYERS.x, LAYERS.atY(0.5)),
+                "The quick brown fox jumped", Colors.def(),
+                MenuElement.Anchor.LEFT_TOP);
+
+        mb.addAll(cse1, cse2, test);
 
         // TODO - BOTTOM BAR
         final MenuElement toMainButton = StaticTextButton.make(

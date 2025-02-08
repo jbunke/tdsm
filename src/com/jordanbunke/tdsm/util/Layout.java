@@ -76,7 +76,8 @@ public final class Layout {
         }
     }
 
-    private static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3;
+    private static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
+            MINI_LABEL_OFFSET_Y = -8;
 
     public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
@@ -90,10 +91,15 @@ public final class Layout {
             COL_SEL_BUTTON_DIM = SWATCH_BUTTON_DIM,
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
             TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
-            TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8;
+            TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
+            MINI_TEXT_LINE_INC_Y = 8, COL_SEL_DROPOFF = 30;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);
+    }
+
+    public static Coord2D miniLabelPosFor(final int x, final int y) {
+        return new Coord2D(x + LABEL_OFFSET_X, y + MINI_LABEL_OFFSET_Y);
     }
 
     public static Coord2D centerOn(final Coord2D pos, final GameImage icon) {
