@@ -11,9 +11,8 @@ import com.jordanbunke.tdsm.util.Colors;
 
 import java.awt.*;
 
-import static com.jordanbunke.tdsm.util.Layout.BUFFER;
+import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.SAMPLER;
-import static com.jordanbunke.tdsm.util.Layout.SWATCH_BUTTON_INC;
 
 public final class Sampler extends MenuElementContainer {
     private static final Sampler INSTANCE;
@@ -47,15 +46,20 @@ public final class Sampler extends MenuElementContainer {
                 Anchor.RIGHT_BOTTOM, this::isActive, () -> submit(true));
 
         // textbox
+        final int postSwatchesX = BUFFER + (2 * SWATCH_BUTTON_INC);
         final ColorTextbox colorTextbox = new ColorTextbox(
-                SAMPLER.at(BUFFER + (2 * SWATCH_BUTTON_INC),
-                        SAMPLER.height - BUFFER), Anchor.LEFT_BOTTOM, color);
+                SAMPLER.at(postSwatchesX, SAMPLER.height - BUFFER),
+                Anchor.LEFT_BOTTOM, color);
 
-        // TODO - sampler itself
-        // - hue bar
-        // - SV matrix
+        // color picker
+        final ColorPicker colorPicker = new ColorPicker(
+                SAMPLER.at(postSwatchesX, BUFFER),
+                new Bounds2D(SAMPLER.width - (BUFFER + postSwatchesX),
+                        (SWATCH_BUTTON_INC * 5) -
+                                (SWATCH_BUTTON_INC - SWATCH_BUTTON_DIM)),
+                Anchor.LEFT_TOP, color);
 
-        mb.addAll(swatchManager, submitButton, colorTextbox);
+        mb.addAll(swatchManager, submitButton, colorTextbox, colorPicker);
 
         return mb.build().getMenuElements();
     }
@@ -112,7 +116,6 @@ public final class Sampler extends MenuElementContainer {
 
     @Override
     public boolean hasNonTrivialBehaviour() {
-        // TODO - test
         return false;
     }
 }

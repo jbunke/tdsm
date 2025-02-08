@@ -7,7 +7,9 @@ public final class ResourceCodes {
             EXPAND = "expand",
             RANDOM = "random",
             TURN_CLOCKWISE = "turn_cw",
-            TURN_COUNTERCLOCKWISE = "turn_ccw";
+            TURN_COUNTERCLOCKWISE = "turn_ccw",
+            HUE_SLIDER = "hue_slider",
+            SV_MATRIX = "sv_matrix";
 
     // tooltips
     public static final String NO_TOOLTIP = "no_tooltip",

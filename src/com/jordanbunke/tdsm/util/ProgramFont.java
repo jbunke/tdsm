@@ -5,7 +5,7 @@ import com.jordanbunke.delta_time.fonts.FontBuilder;
 
 import java.nio.file.Path;
 
-public class ProgramFont {
+public final class ProgramFont {
     private static final Font FONT;
 
     static {

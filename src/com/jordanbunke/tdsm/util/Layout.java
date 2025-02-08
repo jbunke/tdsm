@@ -84,10 +84,10 @@ public final class Layout {
             POST_LABEL_BUFFER_X = 4, POST_LABEL_OFFSET_Y = 8,
             SWATCH_BUTTON_DIM = TEXT_BUTTON_H,
             SWATCH_BUTTON_INC = SWATCH_BUTTON_DIM + 4,
-            SWATCH_BUTTON_COLUMN = 6,
+            SWATCH_BUTTON_ROW = 2,
             COL_SEL_BUTTON_DIM = SWATCH_BUTTON_DIM,
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
-            TEXTBOX_SEG_INC = 1;
+            TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.menu.Button;
+import com.jordanbunke.tdsm.menu.sampler.ColorPicker;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
@@ -17,6 +18,13 @@ import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class Graphics {
     private static final Path ICONS_FOLDER = Path.of("icons");
+
+    private static final GameImage HUE_SLIDER, SV_MATRIX;
+
+    static {
+        HUE_SLIDER = readIcon(ResourceCodes.HUE_SLIDER);
+        SV_MATRIX = readIcon(ResourceCodes.SV_MATRIX);
+    }
 
     // IO
 
@@ -192,7 +200,50 @@ public final class Graphics {
         return drawSwatchButton(color, b);
     }
 
+    public static GameImage drawColorPicker(
+            final ColorPicker picker
+    ) {
+        // TODO - temp MVP implementation
+        // pre-processing
+        final int w = picker.getWidth(), h = picker.getHeight();
+
+        final GameImage asset = new GameImage(w, h);
+
+        // hue spectrum
+        for (int y = 0; y < h; y++) {
+            final Color at = picker.getHypothetical(0, y);
+            asset.fillRectangle(at, 0, y, HUE_SLIDER_W, 1);
+        }
+
+        // SV matrix
+        for (int x = HUE_SLIDER_W; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                final Color at = picker.getHypothetical(x, y);
+                asset.setRGB(x, y, at.getRGB());
+            }
+        }
+
+        // outlines
+        final Color outline = Colors.def();
+        asset.drawRectangle(outline, 2f, 0, 0, w, h);
+        asset.drawLine(outline, 1f, HUE_SLIDER_W, 0, HUE_SLIDER_W, h);
+
+        // selection indicators
+        final Coord2D hsp = picker.localHuePos()
+                .displace(1, -(HUE_SLIDER.getHeight() / 2)),
+                svp = centerOn(picker.localSVPos(), SV_MATRIX);
+        asset.draw(HUE_SLIDER, hsp.x, hsp.y);
+        asset.draw(SV_MATRIX, svp.x, svp.y);
+
+        return asset.submit();
+    }
+
     // Algo
+
+    private static Coord2D centerOn(final Coord2D pos, final GameImage icon) {
+        return pos.displace(-(icon.getWidth() / 2),
+                -(icon.getHeight() / 2));
+    }
 
     public static GameImage pixelWiseTransformation(
             final GameImage input, final Function<Color, Color> f

@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.utility.math.MathPlus;
+
 import java.awt.*;
 
 public final class Colors {
@@ -64,5 +66,113 @@ public final class Colors {
         final boolean increase = Math.signum((double) (MIDDLE - c)) >= 0.0;
 
         return c + (increase ? shift : -shift);
+    }
+
+    public static Color fromHSV(
+            final double hue, final double sat, final double val
+    ) {
+        final double SIX = 6d, c = sat * val,
+                x = c * (1d - Math.abs(((SIX * hue) % 2) - 1)),
+                m = val - c, r, g, b;
+
+        if (hue < 1 / SIX) {
+            r = c;
+            g = x;
+            b = 0d;
+        } else if (hue < 2 / SIX) {
+            r = x;
+            g = c;
+            b = 0d;
+        } else if (hue < 3 / SIX) {
+            r = 0d;
+            g = c;
+            b = x;
+        } else if (hue < 4 / SIX) {
+            r = 0d;
+            g = x;
+            b = c;
+        } else if (hue < 5 / SIX) {
+            r = x;
+            g = 0d;
+            b = c;
+        } else {
+            r = c;
+            g = 0d;
+            b = x;
+        }
+
+        return new Color(scaleUpChannel(r + m),
+                scaleUpChannel(g + m), scaleUpChannel(b + m));
+    }
+
+    public static double rgbToHue(final Color c) {
+        final int R = 0, G = 1, B = 2;
+        final double[] rgb = rgbAsArray(c);
+        final double max = getMaxOfRGB(rgb), range = getRangeOfRGB(rgb),
+                multiplier = 1 / 6d;
+
+        if (range == 0d)
+            return 0d;
+
+        if (max == rgb[R]) {
+            // red maximum case
+            double value = (rgb[G] - rgb[B]) / range;
+
+            while (value < 0)
+                value += 6;
+            while (value >= 6)
+                value -= 6;
+
+            return multiplier * value;
+        } else if (max == rgb[G]) {
+            // green maximum case
+            return multiplier * (((rgb[B] - rgb[R]) / range) + 2);
+
+        } else if (max == rgb[B]) {
+            // blue maximum case
+            return multiplier * (((rgb[R] - rgb[G]) / range) + 4);
+        }
+
+        return 0d;
+    }
+
+    public static double rgbToSat(final Color c) {
+        final double[] rgb = rgbAsArray(c);
+        final double max = getMaxOfRGB(rgb);
+
+        if (max == 0d)
+            return 0;
+        else
+            return getRangeOfRGB(rgb) / max;
+    }
+
+    public static double rgbToValue(final Color c) {
+        return getMaxOfRGB(rgbAsArray(c));
+    }
+
+    private static int scaleUpChannel(final double n) {
+        return MathPlus.bounded(0,
+                (int) Math.round(n * Constants.RGB_SCALE),
+                Constants.RGB_SCALE);
+    }
+
+    private static double getRangeOfRGB(final double[] rgb) {
+        return getMaxOfRGB(rgb) - getMinOfRGB(rgb);
+    }
+
+    private static double getMaxOfRGB(final double[] rgb) {
+        return MathPlus.max(rgb);
+    }
+
+    private static double getMinOfRGB(final double[] rgb) {
+        return MathPlus.min(rgb);
+    }
+
+    private static double[] rgbAsArray(final Color c) {
+        return new double[] {
+                c.getRed() / (double) Constants.RGB_SCALE,
+                c.getGreen() / (double) Constants.RGB_SCALE,
+                c.getBlue() / (double) Constants.RGB_SCALE
+        };
     }
 }
