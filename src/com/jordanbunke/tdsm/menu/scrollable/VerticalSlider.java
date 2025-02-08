@@ -17,6 +17,16 @@ public final class VerticalSlider extends Slider {
     }
 
     @Override
+    public void drawSlider(final GameImage slider) {
+        // TODO
+    }
+
+    @Override
+    public Coord2D getSliderBallRenderPos(final int sliderBallRenderDim) {
+        return new Coord2D(0, sliderBallRenderDim);
+    }
+
+    @Override
     protected GameImage drawSliding() {
         return null;
     }
@@ -33,16 +43,11 @@ public final class VerticalSlider extends Slider {
 
     @Override
     protected int getCoordDimension(final Coord2D position) {
-        return 0;
+        return position.y;
     }
 
     @Override
     protected int getSizeDimension() {
-        return 0;
-    }
-
-    @Override
-    protected void updateAssets() {
-
+        return getHeight();
     }
 }

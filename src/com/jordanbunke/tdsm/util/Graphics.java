@@ -36,11 +36,16 @@ public final class Graphics {
     // Text
     public static TextBuilder uiText(final Color color, final double textSize) {
         return new TextBuilder(textSize, Text.Orientation.CENTER,
-                color, ProgramFont.get());
+                color, ProgramFont.getLarge());
     }
 
     public static TextBuilder uiText(final Color color) {
         return uiText(color, 1.0);
+    }
+
+    public static TextBuilder miniText(final Color color) {
+        return new TextBuilder(1.0, Text.Orientation.CENTER,
+                color, ProgramFont.getMini());
     }
 
     // UI Elements

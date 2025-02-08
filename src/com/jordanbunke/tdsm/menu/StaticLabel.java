@@ -31,6 +31,14 @@ public final class StaticLabel extends StaticMenuElement {
                 Graphics.uiText(color, textSize).addText(text).build().draw());
     }
 
+    public static StaticLabel mini(
+            final Coord2D position, final String text,
+            final Color color, final Anchor anchor
+    ) {
+        return new StaticLabel(position, anchor,
+                Graphics.miniText(color).addText(text).build().draw());
+    }
+
     public Coord2D after() {
         return getRenderPosition().displace(
                 getWidth() + POST_LABEL_BUFFER_X, POST_LABEL_OFFSET_Y);

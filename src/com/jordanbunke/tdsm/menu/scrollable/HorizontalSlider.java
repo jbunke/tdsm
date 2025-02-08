@@ -17,6 +17,16 @@ public final class HorizontalSlider extends Slider {
     }
 
     @Override
+    public void drawSlider(final GameImage slider) {
+        // TODO
+    }
+
+    @Override
+    public Coord2D getSliderBallRenderPos(final int sliderBallRenderDim) {
+        return new Coord2D(sliderBallRenderDim, 0);
+    }
+
+    @Override
     protected GameImage drawSliding() {
         return null;
     }
@@ -33,16 +43,11 @@ public final class HorizontalSlider extends Slider {
 
     @Override
     protected int getCoordDimension(final Coord2D position) {
-        return 0;
+        return position.x;
     }
 
     @Override
     protected int getSizeDimension() {
-        return 0;
-    }
-
-    @Override
-    protected void updateAssets() {
-
+        return getWidth();
     }
 }

@@ -10,6 +10,7 @@ import com.jordanbunke.funke.core.Property;
 // TODO
 public sealed abstract class Slider extends AbstractSlider
         permits HorizontalSlider, VerticalSlider {
+    private GameImage baseImage, highlightedImage, slidingImage;
 
     public Slider(
             Coord2D position, Bounds2D dimensions, Anchor anchor,
@@ -20,6 +21,14 @@ public sealed abstract class Slider extends AbstractSlider
                 property, canSetImplicitly, sliderBallDim);
     }
 
+    public abstract void drawSlider(final GameImage slider);
+    public abstract Coord2D getSliderBallRenderPos(final int sliderBallRenderDim);
+
     @Override
     public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
+
+    @Override
+    protected void updateAssets() {
+        // TODO
+    }
 }
