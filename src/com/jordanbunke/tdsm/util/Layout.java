@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 
 public final class Layout {
@@ -43,10 +44,24 @@ public final class Layout {
             this.height = height;
         }
 
+        public Coord2D pos() {
+            return new Coord2D(x, y);
+        }
+
+        public Bounds2D dims() {
+            return new Bounds2D(width, height);
+        }
+
         public Coord2D at(
                 final double percX, final double percY
         ) {
             return new Coord2D(atX(percX), atY(percY));
+        }
+
+        public Coord2D at(
+                final int deltaX, final int deltaY
+        ) {
+            return pos().displace(deltaX, deltaY);
         }
 
         public int atX(final double percentage) {
@@ -65,7 +80,10 @@ public final class Layout {
             TEXT_BUTTON_RENDER_BUFFER_X = 4,
             PX_PER_SCROLL = 20, DROPDOWN_EXTRA_W = 32,
             DD_SLIDER_W = 20, DD_ELEMENT_ALLOWANCE = 5,
-            POST_LABEL_BUFFER_X = 4, POST_LABEL_OFFSET_Y = 8;
+            POST_LABEL_BUFFER_X = 4, POST_LABEL_OFFSET_Y = 8,
+            SWATCH_BUTTON_DIM = TEXT_BUTTON_H,
+            SWATCH_BUTTON_INC = SWATCH_BUTTON_DIM + 4,
+            SWATCH_BUTTON_COLUMN = 6;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

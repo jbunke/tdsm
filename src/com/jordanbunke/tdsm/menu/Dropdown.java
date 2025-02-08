@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
-public class Dropdown extends AbstractDropdownList {
+public final class Dropdown extends AbstractDropdownList {
     private static final int DEFAULT_RENDER_ORDER = 1;
 
     private Dropdown(

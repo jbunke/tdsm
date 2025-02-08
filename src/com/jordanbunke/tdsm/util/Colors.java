@@ -24,4 +24,20 @@ public final class Colors {
     public static Color def() {
         return BLACK;
     }
+
+    public static Color highlight() {
+        return WHITE;
+    }
+
+    public static Color selected() {
+        return BLUE;
+    }
+
+    public static Color black() {
+        return BLACK;
+    }
+
+    public static Color veil() {
+        return new Color(0x80, 0x80, 0x80, 0x80);
+    }
 }

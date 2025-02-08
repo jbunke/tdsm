@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
+import com.jordanbunke.tdsm.menu.Button;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
@@ -70,6 +71,24 @@ public final class Graphics {
             button.draw(icon, button.getWidth() -
                     (icon.getWidth() + TEXT_BUTTON_RENDER_BUFFER_X), 0);
         }
+
+        return button.submit();
+    }
+
+    public static GameImage drawSwatchButton(
+            final Color color, final Button b
+    ) {
+        // TODO - temp MVP implementation
+        final GameImage button = new GameImage(
+                SWATCH_BUTTON_DIM, SWATCH_BUTTON_INC);
+
+        button.fill(color);
+
+        final Color outline = b.outcomes(Colors.selected(),
+                Colors.highlight(), Colors.def());
+
+        button.drawRectangle(outline, 2f, 0, 0,
+                button.getWidth(), button.getHeight());
 
         return button.submit();
     }

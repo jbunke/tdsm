@@ -11,6 +11,8 @@ import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.menu.Dropdown;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.Veil;
+import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
@@ -81,6 +83,10 @@ public final class MenuAssembly {
         mb.addAll(styleLabel, styleDropdown, randomSpriteButton);
 
         // TODO - Layers
+        final Veil veil = new Veil(SAMPLER.pos(), SAMPLER.dims(),
+                Sampler.get(), () -> Sampler.get().isActive());
+
+        mb.addAll(veil);
 
         // TODO - Bottom bar
         final MenuElement toSaveButton = StaticTextButton.make(
