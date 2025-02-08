@@ -1,6 +1,8 @@
 package com.jordanbunke.tdsm.menu.sampler;
 
 import com.jordanbunke.delta_time.debug.GameDebugger;
+import com.jordanbunke.delta_time.events.GameEvent;
+import com.jordanbunke.delta_time.events.GameMouseEvent;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
@@ -10,13 +12,14 @@ import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Graphics;
 
 import java.awt.*;
+import java.util.List;
 
 import static com.jordanbunke.tdsm.util.Layout.HUE_SLIDER_W;
 
 public final class ColorPicker extends MenuElement implements ColorTransmitter {
     private Color color;
     private double hue, sat, val;
-    private boolean active;
+    private boolean active, interacting;
 
     private GameImage asset;
 
@@ -26,6 +29,7 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
     ) {
         super(position, dimensions, anchor, true);
 
+        interacting = false;
         setColor(initialColor);
     }
 
@@ -91,7 +95,52 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
     @Override
     public void process(final InputEventLogger eventLogger) {
         if (active) {
-            // TODO
+            final Coord2D mp = eventLogger.getAdjustedMousePosition();
+            final boolean mouseInBounds = mouseIsWithinBounds(mp);
+            final Coord2D localMP = mp.displace(getRenderPosition().scale(-1));
+
+            // stop interacting on release
+            if (interacting) {
+                final List<GameEvent> unprocessed = eventLogger.getUnprocessedEvents();
+                for (GameEvent e : unprocessed) {
+                    if (e instanceof GameMouseEvent me &&
+                            me.matchesAction(GameMouseEvent.Action.UP)) {
+                        interacting = false;
+                        me.markAsProcessed();
+                        break;
+                    }
+                }
+            }
+
+            // TODO - consider adding cursor free check to condition
+            if (mouseInBounds) {
+                // check for mouse down and for click
+                final List<GameEvent> unprocessed = eventLogger.getUnprocessedEvents();
+                for (GameEvent e : unprocessed) {
+                    if (e instanceof GameMouseEvent me &&
+                            !me.matchesAction(GameMouseEvent.Action.UP)) {
+                        switch (me.action) {
+                            case DOWN -> interacting = true;
+                            case CLICK -> {
+                                pickColor(localMP);
+                                interacting = false;
+                            }
+                        }
+
+                        me.markAsProcessed();
+                        break;
+                    }
+                }
+            }
+
+            // adjustment logic
+            if (interacting)
+                pickColor(localMP);
+
+            // TODO cursor
+//            if (mouseInBounds && cursorFree)
+//                Cursor.setCursorCode(interacting
+//                        ? SECursor.NONE : SECursor.RETICLE);
         }
     }
 
@@ -127,5 +176,12 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
 
         updateHSV();
         updateAsset();
+    }
+
+    private void pickColor(final Coord2D localPos) {
+        final Color determined = getHypothetical(localPos.x, localPos.y);
+
+        setColor(determined);
+        send();
     }
 }
