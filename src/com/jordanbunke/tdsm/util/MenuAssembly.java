@@ -21,6 +21,7 @@ import com.jordanbunke.tdsm.visual_misc.Playback;
 import java.awt.*;
 import java.util.Arrays;
 
+import static com.jordanbunke.tdsm.util.Layout.BUFFER;
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
 import static com.jordanbunke.tdsm.util.Layout.labelPosFor;
 
@@ -96,10 +97,10 @@ public final class MenuAssembly {
                         new Color(0x28, 0x28, 0x3c),
                         new Color(0x80, 0, 0));
         final ColorSelectionButton csb1 =
-                new ColorSelectionButton(LAYERS.at(10, 10),
+                new ColorSelectionButton(LAYERS.at(BUFFER, BUFFER),
                         MenuElement.Anchor.LEFT_TOP, ds1),
                 csb2 = new ColorSelectionButton(
-                        LAYERS.at(LAYERS.width - 10, 10),
+                        LAYERS.at(LAYERS.width - BUFFER, BUFFER),
                         MenuElement.Anchor.RIGHT_TOP, ds2);
 
         mb.addAll(csb1, csb2);

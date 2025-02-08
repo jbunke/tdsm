@@ -5,6 +5,7 @@ import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.tdsm.menu.Button;
+import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
@@ -73,6 +74,28 @@ public final class Graphics {
         }
 
         return button.submit();
+    }
+
+    public static GameImage drawTextbox(
+            final int width,
+            final String prefix, final String text, final String suffix,
+            final int cursorIndex, final int selectionIndex,
+            final boolean valid, final boolean highlighted, final boolean typing
+    ) {
+        // TODO - temp MVP implementation
+        final TextButton tb = TextButton.of(prefix + text + suffix, width,
+                        Alignment.LEFT, ButtonType.STANDARD)
+                .sim(typing, highlighted);
+        return drawTextButton(tb);
+
+//        final GameImage button = new GameImage(width, TEXT_BUTTON_H);
+//
+//        button.drawRectangle(Colors.def(), 2f, 0, 0,
+//                button.getWidth(), button.getHeight());
+
+        // TODO
+
+//        return button.submit();
     }
 
     public static GameImage drawSwatchButton(

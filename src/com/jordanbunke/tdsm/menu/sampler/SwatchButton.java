@@ -39,7 +39,7 @@ public final class SwatchButton extends MenuButton implements Button {
     ) {
         final int x = index / SWATCH_BUTTON_COLUMN,
                 y = index % SWATCH_BUTTON_COLUMN;
-        final Coord2D pos = SAMPLER.at(10, 10)
+        final Coord2D pos = SAMPLER.at(BUFFER, BUFFER)
                 .displace(x * SWATCH_BUTTON_INC, y * SWATCH_BUTTON_INC);
 
         final Runnable behaviour = () -> manager.setColor(color);

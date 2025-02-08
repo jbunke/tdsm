@@ -11,7 +11,9 @@ import com.jordanbunke.tdsm.util.Colors;
 
 import java.awt.*;
 
+import static com.jordanbunke.tdsm.util.Layout.BUFFER;
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.SAMPLER;
+import static com.jordanbunke.tdsm.util.Layout.SWATCH_BUTTON_INC;
 
 public final class Sampler extends MenuElementContainer {
     private static final Sampler INSTANCE;
@@ -39,18 +41,21 @@ public final class Sampler extends MenuElementContainer {
     private MenuElement[] setUpMenuElements() {
         final MenuBuilder mb = new MenuBuilder();
 
-        // TODO - textbox
-
         // submit button
         final MenuElement submitButton = StaticTextButton.make("Submit",
-                SAMPLER.at(1.0, 1.0).displace(-10, -10),
+                SAMPLER.at(1.0, 1.0).displace(-BUFFER, -BUFFER),
                 Anchor.RIGHT_BOTTOM, this::isActive, () -> submit(true));
+
+        // textbox
+        final ColorTextbox colorTextbox = new ColorTextbox(
+                SAMPLER.at(BUFFER + (2 * SWATCH_BUTTON_INC),
+                        SAMPLER.height - BUFFER), Anchor.LEFT_BOTTOM, color);
 
         // TODO - sampler itself
         // - hue bar
         // - SV matrix
 
-        mb.addAll(swatchManager, submitButton);
+        mb.addAll(swatchManager, submitButton, colorTextbox);
 
         return mb.build().getMenuElements();
     }
