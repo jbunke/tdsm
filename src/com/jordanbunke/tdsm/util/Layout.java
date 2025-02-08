@@ -21,12 +21,13 @@ public final class Layout {
             SCROLL_BAR_W = 25, LEFT_W = CANVAS_W - (LAYERS_W + SCROLL_BAR_W),
             BAR_W = LAYERS_W + SCROLL_BAR_W,
             SCROLL_BAR_X = CANVAS_W - SCROLL_BAR_W,
-            HALF_H = CANVAS_H / 2, BAR_H = 30,
-            LAYERS_H = CANVAS_H - (BAR_H * 2);
+            PREVIEW_H = (CANVAS_H / 2) - 10,
+            SAMPLER_H = CANVAS_H - PREVIEW_H,
+            BAR_H = 30, LAYERS_H = CANVAS_H - (BAR_H * 2);
 
     public enum CustomizationBox {
-        PREVIEW(0, 0, LEFT_W, HALF_H),
-        SAMPLER(0, HALF_H, LEFT_W, HALF_H),
+        PREVIEW(0, 0, LEFT_W, PREVIEW_H),
+        SAMPLER(0, PREVIEW_H, LEFT_W, SAMPLER_H),
         LAYERS(LEFT_W, BAR_H, LAYERS_W, LAYERS_H),
         TOP(LEFT_W, 0, BAR_W, BAR_H),
         BOTTOM(LEFT_W, BAR_H + LAYERS_H, BAR_W, BAR_H),

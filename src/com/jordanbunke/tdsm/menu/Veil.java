@@ -39,6 +39,9 @@ public final class Veil extends MenuElement {
     @Override
     public void update(final double deltaTime) {
         passing = condition.get();
+
+        if (passing)
+            content.update(deltaTime);
     }
 
     @Override

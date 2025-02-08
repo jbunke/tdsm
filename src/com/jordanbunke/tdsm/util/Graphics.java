@@ -80,7 +80,7 @@ public final class Graphics {
     ) {
         // TODO - temp MVP implementation
         final GameImage button = new GameImage(
-                SWATCH_BUTTON_DIM, SWATCH_BUTTON_INC);
+                SWATCH_BUTTON_DIM, SWATCH_BUTTON_DIM);
 
         button.fill(color);
 

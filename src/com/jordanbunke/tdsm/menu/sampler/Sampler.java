@@ -41,10 +41,10 @@ public final class Sampler extends MenuElementContainer {
 
         // TODO - textbox
 
-        // submit button - TODO - potentially illegal precondition
-        final MenuElement submitButton = StaticTextButton.make(
-                "Submit", SAMPLER.at(10, 10), Anchor.LEFT_TOP,
-                this::isActive, () -> submit(true));
+        // submit button
+        final MenuElement submitButton = StaticTextButton.make("Submit",
+                SAMPLER.at(1.0, 1.0).displace(-10, -10),
+                Anchor.RIGHT_BOTTOM, this::isActive, () -> submit(true));
 
         // TODO - sampler itself
         // - hue bar
