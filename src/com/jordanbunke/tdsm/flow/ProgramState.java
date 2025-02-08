@@ -39,6 +39,7 @@ public enum ProgramState implements ProgramContext {
     public void update(final double deltaTime) {
         switch (state) {
             case CUSTOMIZATION -> Customization.update(deltaTime);
+            case MENU -> menu.update(deltaTime);
         }
     }
 
@@ -46,6 +47,10 @@ public enum ProgramState implements ProgramContext {
     public void render(final GameImage canvas) {
         switch (state) {
             case CUSTOMIZATION -> Customization.render(canvas);
+            case MENU -> {
+                // TODO - global
+                menu.render(canvas);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 
@@ -87,9 +89,27 @@ public final class Layout {
             SWATCH_BUTTON_ROW = 2,
             COL_SEL_BUTTON_DIM = SWATCH_BUTTON_DIM,
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
-            TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM;
+            TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
+            TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);
+    }
+
+    public static Coord2D centerOn(final Coord2D pos, final GameImage icon) {
+        return pos.displace(-(icon.getWidth() / 2),
+                -(icon.getHeight() / 2));
+    }
+
+    public static Coord2D canvasAt(final double percX, final double percY) {
+        return new Coord2D((int) (percX * CANVAS_W), (int) (percY * CANVAS_H));
+    }
+
+    public static int screenWidth(final double perc) {
+        return (int) (perc * CANVAS_W);
+    }
+
+    public static Coord2D textButtonBelow(final MenuElement ref) {
+        return ref.getPosition().displace(0, TEXT_BUTTON_INC_Y);
     }
 }

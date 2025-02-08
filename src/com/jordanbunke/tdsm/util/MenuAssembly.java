@@ -15,15 +15,16 @@ import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.menu.Veil;
 import com.jordanbunke.tdsm.menu.layer.ColorSelectionButton;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
+import com.jordanbunke.tdsm.menu.text_button.Alignment;
+import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
 import java.util.Arrays;
 
-import static com.jordanbunke.tdsm.util.Layout.BUFFER;
+import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
-import static com.jordanbunke.tdsm.util.Layout.labelPosFor;
 
 public final class MenuAssembly {
     public static Menu stub() {
@@ -121,8 +122,31 @@ public final class MenuAssembly {
     }
 
     public static Menu main() {
-        // TODO
+        final MenuBuilder mb = new MenuBuilder();
 
-        return stub();
+        // TODO - logo
+
+        final int buttonW = screenWidth(0.3);
+        final MenuElement startButton = StaticTextButton.make(
+                "Start", ButtonType.STANDARD, Alignment.CENTER,
+                buttonW, canvasAt(0.5, 0.65),
+                MenuElement.Anchor.CENTRAL, () -> true,
+                () -> ProgramState.set(ProgramState.CUSTOMIZATION, null)),
+                aboutButton = StaticTextButton.make(
+                        "About", ButtonType.STANDARD, Alignment.CENTER,
+                        buttonW, textButtonBelow(startButton),
+                        MenuElement.Anchor.CENTRAL, () -> true,
+                        () -> {} /* TODO */),
+                quitButton = StaticTextButton.make(
+                        "Quit", ButtonType.STANDARD, Alignment.CENTER,
+                        buttonW, textButtonBelow(aboutButton),
+                        MenuElement.Anchor.CENTRAL, () -> true,
+                        () -> System.exit(0) /* TODO */);
+
+        mb.addAll(startButton, aboutButton, quitButton);
+
+        // TODO - version
+
+        return mb.build();
     }
 }

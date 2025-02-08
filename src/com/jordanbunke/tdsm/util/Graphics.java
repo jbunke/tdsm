@@ -211,14 +211,14 @@ public final class Graphics {
 
         // hue spectrum
         for (int y = 0; y < h; y++) {
-            final Color at = picker.getHypothetical(0, y);
+            final Color at = Colors.fromHSV(picker.getHypothetical(0, y));
             asset.fillRectangle(at, 0, y, HUE_SLIDER_W, 1);
         }
 
         // SV matrix
         for (int x = HUE_SLIDER_W; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                final Color at = picker.getHypothetical(x, y);
+                final Color at = Colors.fromHSV(picker.getHypothetical(x, y));
                 asset.setRGB(x, y, at.getRGB());
             }
         }
@@ -239,11 +239,6 @@ public final class Graphics {
     }
 
     // Algo
-
-    private static Coord2D centerOn(final Coord2D pos, final GameImage icon) {
-        return pos.displace(-(icon.getWidth() / 2),
-                -(icon.getHeight() / 2));
-    }
 
     public static GameImage pixelWiseTransformation(
             final GameImage input, final Function<Color, Color> f

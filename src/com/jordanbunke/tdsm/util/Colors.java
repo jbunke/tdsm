@@ -69,6 +69,15 @@ public final class Colors {
     }
 
     public static Color fromHSV(
+            final double[] hsv
+    ) {
+        if (hsv.length != 3)
+            return def();
+
+        return fromHSV(hsv[0], hsv[1], hsv[2]);
+    }
+
+    public static Color fromHSV(
             final double hue, final double sat, final double val
     ) {
         final double SIX = 6d, c = sat * val,

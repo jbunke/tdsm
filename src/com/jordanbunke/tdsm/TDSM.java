@@ -92,8 +92,7 @@ public final class TDSM implements ProgramContext {
     }
 
     private TDSM() {
-        // TODO - initially set to main menu
-        ProgramState.set(ProgramState.CUSTOMIZATION, null);
+        ProgramState.set(ProgramState.MENU, MenuAssembly.main());
 
         window = makeWindow();
         program = new Program(window, new GameManager(0, this),
