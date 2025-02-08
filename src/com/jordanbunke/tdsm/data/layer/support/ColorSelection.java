@@ -13,7 +13,7 @@ public final class ColorSelection {
     private final Color[] swatches;
     private final boolean anyColor;
 
-    private Color selection;
+    private Color color;
 
     private final Set<CustomizationLayer> dependents;
 
@@ -27,7 +27,7 @@ public final class ColorSelection {
         this.anyColor = anyColor;
         this.dependents = new HashSet<>();
 
-        this.selection = this.swatches[0];
+        this.color = this.swatches[0];
     }
 
     public void addDependent(final CustomizationLayer dependent) {
@@ -36,17 +36,17 @@ public final class ColorSelection {
 
     public void randomize() {
         final int index = RNG.randomInRange(0, swatches.length);
-        setSelection(swatches[index]);
+        setColor(swatches[index]);
     }
 
-    public void setSelection(final Color selection) {
-        this.selection = selection;
+    public void setColor(final Color color) {
+        this.color = color;
 
         dependents.forEach(CustomizationLayer::update);
     }
 
-    public Color getSelection() {
-        return selection;
+    public Color getColor() {
+        return color;
     }
 
     public Color[] getSwatches() {

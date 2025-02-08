@@ -8,7 +8,7 @@ import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 
 public enum ProgramState implements ProgramContext {
-    SPLASH, CUSTOMIZATION, SAVE, MENU;
+    CUSTOMIZATION, CONFIGURATION, MENU;
 
     private static ProgramState state;
     private static Menu menu;

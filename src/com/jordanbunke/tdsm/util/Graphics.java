@@ -93,6 +93,13 @@ public final class Graphics {
         return button.submit();
     }
 
+    public static GameImage drawColSelButton(
+            final Color color, final Button b
+    ) {
+        // TODO - temp MVP implementation
+        return drawSwatchButton(color, b);
+    }
+
     // Algo
 
     public static GameImage pixelWiseTransformation(

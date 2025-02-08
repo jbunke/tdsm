@@ -92,7 +92,7 @@ public final class TDSM implements ProgramContext {
     }
 
     private TDSM() {
-        // TODO - initially set to splash
+        // TODO - initially set to main menu
         ProgramState.set(ProgramState.CUSTOMIZATION, null);
 
         window = makeWindow();

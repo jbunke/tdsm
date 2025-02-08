@@ -58,11 +58,11 @@ public final class AssetChoice {
         final List<Color> selections = new ArrayList<>();
 
         for (ColorSelection colorSelection : colorSelections)
-            selections.add(colorSelection.getSelection());
+            selections.add(colorSelection.getColor());
 
         selections.addAll(
                 layer.getInfluencingSelections().stream()
-                        .map(ColorSelection::getSelection).toList());
+                        .map(ColorSelection::getColor).toList());
 
         if (selections.size() == 0) {
             render = new GameImage(asset);

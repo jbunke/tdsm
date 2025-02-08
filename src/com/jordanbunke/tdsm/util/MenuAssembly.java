@@ -89,13 +89,23 @@ public final class MenuAssembly {
         mb.addAll(veil);
 
         // TODO - Bottom bar
+        final MenuElement toMainButton = StaticTextButton.make(
+                "< Main Menu", BOTTOM.at(0.0, 0.5).displace(4, 0),
+                MenuElement.Anchor.LEFT_CENTRAL, () -> true,
+                () -> ProgramState.set(ProgramState.MENU, main()));
         final MenuElement toSaveButton = StaticTextButton.make(
-                "Save / Export >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
+                "Configure... >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
                 MenuElement.Anchor.RIGHT_CENTRAL, () -> true,
-                () -> ProgramState.set(ProgramState.SAVE, null));
+                () -> ProgramState.set(ProgramState.CONFIGURATION, null));
 
-        mb.addAll(toSaveButton);
+        mb.addAll(toMainButton, toSaveButton);
 
         return mb.build();
+    }
+
+    public static Menu main() {
+        // TODO
+
+        return stub();
     }
 }

@@ -85,15 +85,19 @@ public final class Sampler extends MenuElementContainer {
         this.selection = selection;
 
         swatchManager.newColorSelection(selection);
-        setColor(selection.getSelection(), null);
+        setColor(selection.getColor(), null);
     }
 
     public void submit(final boolean close) {
         if (isActive())
-            selection.setSelection(color);
+            selection.setColor(color);
 
         if (close)
-            selection = null;
+            close();
+    }
+
+    public void close() {
+        selection = null;
     }
 
     @Override
