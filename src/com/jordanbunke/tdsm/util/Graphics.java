@@ -84,8 +84,10 @@ public final class Graphics {
             final GameImage icon = readIcon(tb.isSelected()
                     ? ResourceCodes.COLLAPSE : ResourceCodes.EXPAND);
 
-            button.draw(icon, button.getWidth() -
-                    (icon.getWidth() + TEXT_BUTTON_RENDER_BUFFER_X), 0);
+            final int iconX = button.getWidth() -
+                    (icon.getWidth() + DD_ICON_LEFT_NUDGE),
+                    iconY = (TEXT_BUTTON_H - icon.getHeight()) / 2;
+            button.draw(icon, iconX, iconY);
         }
 
         return button.submit();
@@ -260,6 +262,38 @@ public final class Graphics {
     }
 
     // Algo
+    public static GameImage highlightIcon(
+            final GameImage icon
+    ) {
+        final int w = icon.getWidth(), h = icon.getHeight();
+        final GameImage highlight = new GameImage(icon);
+
+        for (int x = 1; x < w - 1; x++) {
+            for (int y = 1; y < h - 1; y++) {
+                final Color c = icon.getColorAt(x, y);
+
+                if (c.getAlpha() == 0 && hasAdjacent(icon, x, y))
+                    highlight.dot(Colors.highlight(), x, y);
+            }
+        }
+
+        return highlight.submit();
+    }
+
+    private static boolean hasAdjacent(
+            final GameImage image, final int x, final int y
+    ) {
+        return notTransparent(image, x - 1, y) ||
+                notTransparent(image, x + 1, y) ||
+                notTransparent(image, x, y - 1) ||
+                notTransparent(image, x, y + 1);
+    }
+
+    private static boolean notTransparent(
+            final GameImage image, final int x, final int y
+    ) {
+        return image.getColorAt(x, y).getAlpha() > 0;
+    }
 
     public static GameImage pixelWiseTransformation(
             final GameImage input, final Function<Color, Color> f

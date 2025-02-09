@@ -104,7 +104,7 @@ public final class MenuAssembly {
 
         final StaticLabel test = StaticLabel.mini(
                 miniLabelPosFor(LAYERS.x, LAYERS.atY(0.5)),
-                "The quick brown fox jumped", Colors.def(),
+                "The quick brown fox jumped over the lazy dog.", Colors.def(),
                 MenuElement.Anchor.LEFT_TOP);
 
         mb.addAll(cse1, cse2, test);

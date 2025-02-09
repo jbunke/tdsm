@@ -78,7 +78,7 @@ public final class Layout {
 
     public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
-            TEXT_BUTTON_RENDER_BUFFER_X = 4,
+            TEXT_BUTTON_RENDER_BUFFER_X = 4, DD_ICON_LEFT_NUDGE = 2,
             PX_PER_SCROLL = 20, DROPDOWN_EXTRA_W = 32,
             VERT_SCROLL_BAR_W = 20, DD_ELEMENT_ALLOWANCE = 3,
             POST_LABEL_BUFFER_X = 4, POST_LABEL_OFFSET_Y = 8,

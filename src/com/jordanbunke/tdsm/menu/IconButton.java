@@ -20,7 +20,8 @@ public final class IconButton extends SimpleMenuButton {
             final GameImage base, final String tooltip
     ) {
         super(position, new Bounds2D(base.getWidth(), base.getHeight()),
-                Anchor.CENTRAL, true, behaviour, base, highlight(base));
+                Anchor.CENTRAL, true, behaviour,
+                base, Graphics.highlightIcon(base));
 
         this.tooltip = tooltip;
     }
@@ -50,11 +51,6 @@ public final class IconButton extends SimpleMenuButton {
 
         return new ThinkingMenuElement(
                 () -> precondition.get() ? icon : stub);
-    }
-
-    private static GameImage highlight(final GameImage base) {
-        // TODO
-        return new GameImage(base);
     }
 
     // TODO - tooltip functionality

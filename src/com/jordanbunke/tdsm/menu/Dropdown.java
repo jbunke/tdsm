@@ -79,7 +79,12 @@ public final class Dropdown extends AbstractDropdownList {
         final int size = getSize();
         final MenuElement[] scrollables = new MenuElement[size];
 
-        final int buttonWidth = getWidth() - VERT_SCROLL_BAR_W;
+        final Bounds2D dimensions = new Bounds2D(getWidth(),
+                TEXT_BUTTON_H * Math.min(DD_ELEMENT_ALLOWANCE, size));
+        final int realBottomY = position.y + (size * TEXT_BUTTON_H);
+
+        final boolean canScroll = realBottomY > position.y + dimensions.height();
+        final int buttonWidth = getWidth() - (canScroll ? VERT_SCROLL_BAR_W : 0);
 
         for (int i = 0; i < size; i++) {
             final int index = i;
@@ -90,14 +95,9 @@ public final class Dropdown extends AbstractDropdownList {
                     Anchor.LEFT_TOP, () -> true, () -> select(index));
         }
 
-        final Bounds2D dimensions = new Bounds2D(getWidth(),
-                TEXT_BUTTON_H * Math.min(DD_ELEMENT_ALLOWANCE, size));
-
         return new VertScrollBox(position, dimensions,
-                Arrays.stream(scrollables)
-                        .map(Scrollable::new)
-                        .toArray(Scrollable[]::new),
-                position.y + (size * TEXT_BUTTON_H), 0);
+                Arrays.stream(scrollables).map(Scrollable::new)
+                        .toArray(Scrollable[]::new), realBottomY, 0);
     }
 
     @Override
