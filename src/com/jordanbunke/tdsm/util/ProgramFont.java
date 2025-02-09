@@ -14,7 +14,7 @@ public final class ProgramFont {
                 .setWhitespaceBreadthMultiplier(0.5);
         LARGE = builder.build(FOLDER, true, "tdsm");
 
-        builder.setWhitespaceBreadthMultiplier(0.2);
+        builder.setWhitespaceBreadthMultiplier(0.35);
         MINI = builder.build(FOLDER, true, "mini");
     }
 

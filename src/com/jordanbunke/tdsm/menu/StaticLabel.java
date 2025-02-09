@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.menu;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.menu_elements.visual.StaticMenuElement;
+import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Graphics;
@@ -37,6 +38,12 @@ public final class StaticLabel extends StaticMenuElement {
     ) {
         return new StaticLabel(position, anchor,
                 Graphics.miniText(color).addText(text).build().draw());
+    }
+
+    public static StaticLabel make(
+            final Coord2D position, final Anchor anchor, final Text text
+    ) {
+        return new StaticLabel(position, anchor, text.draw());
     }
 
     public Coord2D after() {

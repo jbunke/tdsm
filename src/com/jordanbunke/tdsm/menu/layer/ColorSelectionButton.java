@@ -2,12 +2,14 @@ package com.jordanbunke.tdsm.menu.layer;
 
 import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.button.MenuButtonStub;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.menu.Button;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
+import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 
 import java.awt.*;
@@ -69,6 +71,14 @@ public final class ColorSelectionButton extends MenuButtonStub
     @Override
     public void render(final GameImage canvas) {
         draw(getAsset(false), canvas);
+    }
+
+    @Override
+    public void process(final InputEventLogger eventLogger) {
+        super.process(eventLogger);
+
+        if (mouseIsWithinBounds(eventLogger.getAdjustedMousePosition()))
+            Cursor.ping(Cursor.POINTER);
     }
 
     @Override

@@ -57,7 +57,7 @@ public final class Graphics {
     }
 
     public static TextBuilder miniText(final Color color) {
-        return new TextBuilder(1.0, Text.Orientation.CENTER,
+        return new TextBuilder(1.0, 0.3, Text.Orientation.CENTER,
                 color, ProgramFont.getMini());
     }
 
@@ -284,7 +284,7 @@ public final class Graphics {
         final int ls = lines.length,
                 w = Arrays.stream(lineImages)
                         .map(GameImage::getWidth)
-                        .reduce(1, Math::max) + TOOLTIP_PADDING_X,
+                        .reduce(1, Math::max) + TOOLTIP_PADDING_W,
                 h = TOOLTIP_LINE_INC_Y * ls;
 
         final GameImage tooltip = new GameImage(w, h);

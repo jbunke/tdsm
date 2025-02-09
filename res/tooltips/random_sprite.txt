@@ -1,1 +1,2 @@
-Generate a random sprite
+Generate a random
+sprite in this style

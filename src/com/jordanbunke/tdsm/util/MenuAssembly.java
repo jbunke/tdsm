@@ -3,6 +3,7 @@ package com.jordanbunke.tdsm.util;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
+import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
@@ -144,11 +145,19 @@ public final class MenuAssembly {
                         "Quit", ButtonType.STANDARD, Alignment.CENTER,
                         buttonW, textButtonBelow(aboutButton),
                         MenuElement.Anchor.CENTRAL, () -> true,
-                        () -> System.exit(0) /* TODO */);
+                        TDSM::quitProgram);
 
         mb.addAll(startButton, aboutButton, quitButton);
 
-        // TODO - version
+        // Version and credits
+        final StaticLabel programLabel = StaticLabel.make(
+                canvasAt(0.5, 0.98),
+                MenuElement.Anchor.CENTRAL_BOTTOM,
+                Graphics.miniText(Colors.darkSystem())
+                        .addText(TDSM.getVersion()).addLineBreak()
+                        .addText("(c) 2025 Jordan Bunke").build());
+
+        mb.add(programLabel);
 
         return mb.build();
     }

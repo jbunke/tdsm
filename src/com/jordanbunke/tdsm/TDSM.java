@@ -130,4 +130,9 @@ public final class TDSM implements ProgramContext {
                 Layout.width(), Layout.height(),
                 Graphics.readIcon(ResourceCodes.ICON), true, false, false);
     }
+
+    public static void quitProgram() {
+        // TODO - potential write settings
+        System.exit(0);
+    }
 }

@@ -9,10 +9,7 @@ import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
-import com.jordanbunke.tdsm.menu.text_button.Alignment;
-import com.jordanbunke.tdsm.menu.text_button.ButtonType;
-import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
-import com.jordanbunke.tdsm.menu.text_button.TextButton;
+import com.jordanbunke.tdsm.menu.text_button.*;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Graphics;
 
@@ -117,10 +114,8 @@ public final class Dropdown extends AbstractDropdownList {
                 Graphics.drawTextButton(base.sim(true, true))
         };
 
-        return new SimpleToggleMenuButton(new Coord2D(getX(), getY()),
-                new Bounds2D(getWidth(), TEXT_BUTTON_H),
-                getAnchor(), true, bases, highlighted,
-                new Runnable[] { () -> {}, () -> {} },
+        return new DropdownButton(new Coord2D(getX(), getY()),
+                getWidth(), getAnchor(), bases, highlighted,
                 () -> isDroppedDown() ? 1 : 0, this::toggleDropDown);
     }
 

@@ -74,8 +74,7 @@ public final class Layout {
     }
 
     private static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
-            MINI_LABEL_OFFSET_Y = -8,
-            TOOLTIP_OFFSET_LEFT = -8, TOOLTIP_OFFSET_RIGHT = 2;
+            TOOLTIP_OFFSET_LEFT = -7, TOOLTIP_OFFSET_RIGHT = 5;
 
     public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
@@ -90,8 +89,8 @@ public final class Layout {
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
             TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
             TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
-            TOOLTIP_LINE_INC_Y = 8, TOOLTIP_INITIAL_OFFSET_Y = -16,
-            TOOLTIP_PADDING_X = 4,
+            TOOLTIP_LINE_INC_Y = 8, TOOLTIP_INITIAL_OFFSET_Y = -4,
+            TOOLTIP_PADDING_W = 2,
             COL_SEL_DROPOFF = 30, MIN_VERT_SCROLL_BAR_H = 10;
 
     public static Coord2D labelPosFor(final int x, final int y) {
@@ -99,7 +98,7 @@ public final class Layout {
     }
 
     public static Coord2D miniLabelPosFor(final int x, final int y) {
-        return new Coord2D(x + LABEL_OFFSET_X, y + MINI_LABEL_OFFSET_Y);
+        return new Coord2D(x + LABEL_OFFSET_X, y);
     }
 
     public static Coord2D centerOn(final Coord2D pos, final GameImage icon) {

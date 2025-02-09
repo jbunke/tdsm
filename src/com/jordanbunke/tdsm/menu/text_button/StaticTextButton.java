@@ -2,11 +2,13 @@ package com.jordanbunke.tdsm.menu.text_button;
 
 import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.button.MenuButton;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.visual.StaticMenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 import com.jordanbunke.tdsm.util.Layout;
 
@@ -78,6 +80,14 @@ public final class StaticTextButton extends MenuButton implements TextButton {
     @Override
     public void render(final GameImage canvas) {
         draw(isHighlighted() ? highlight : base, canvas);
+    }
+
+    @Override
+    public void process(final InputEventLogger eventLogger) {
+        super.process(eventLogger);
+
+        if (isHighlighted())
+            Cursor.ping(Cursor.POINTER);
     }
 
     @Override
