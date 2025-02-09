@@ -10,6 +10,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.tdsm.util.Colors;
+import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 
 import java.awt.*;
@@ -142,8 +143,7 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
                 }
             }
 
-            // TODO - consider adding cursor free check to condition
-            if (mouseInBounds) {
+            if (mouseInBounds && Cursor.get() != Cursor.POINTER) {
                 // check for mouse down and for click
                 final List<GameEvent> unprocessed = eventLogger.getUnprocessedEvents();
                 for (GameEvent e : unprocessed) {
@@ -167,10 +167,9 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
             if (interacting)
                 pickColor(localMP);
 
-            // TODO cursor
-//            if (mouseInBounds && cursorFree)
-//                Cursor.setCursorCode(interacting
-//                        ? SECursor.NONE : SECursor.RETICLE);
+            // cursor
+            if (mouseInBounds)
+                Cursor.ping(interacting ? Cursor.NONE : Cursor.RETICLE);
         }
     }
 

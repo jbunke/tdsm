@@ -34,4 +34,8 @@ public enum Cursor {
         final Coord2D crp = Layout.cursorRenderPos(cursor.image, mousePos);
         canvas.draw(cursor.image, crp.x, crp.y);
     }
+
+    public static Cursor get() {
+        return cursor;
+    }
 }

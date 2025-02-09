@@ -38,9 +38,6 @@ public final class Graphics {
     }
 
     public static GameImage readCursor(final Cursor cursor) {
-        if (cursor == Cursor.NONE)
-            return GameImage.dummy();
-
         final Path cursorFile = CURSORS_FOLDER.resolve(
                 cursor.name().toLowerCase() + ".png");
         return ResourceLoader.loadImageResource(cursorFile);
