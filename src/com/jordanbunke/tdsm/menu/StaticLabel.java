@@ -20,7 +20,7 @@ public final class StaticLabel extends StaticMenuElement {
     public static StaticLabel make(
             final Coord2D position, final String text
     ) {
-        return make(position, text, Colors.def(), 1.0);
+        return make(position, text, Colors.darkSystem(), 1.0);
     }
 
     public static StaticLabel make(

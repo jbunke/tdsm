@@ -20,6 +20,8 @@ public final class Colors {
             VEIL = new Color(0x80, 0x80, 0x80, 0x80),
             HIGHLIGHT_OVERLAY = new Color(0x80, 0x80, 0xff, 0x80),
             INVALID = new Color(0x80, 0, 0),
+            DARK_SYSTEM = new Color(0x1e, 0x1b, 0x34),
+            LIGHT_SYSTEM = new Color(0xe8, 0xe8, 0xe8),
             BACKGROUND = new Color(0x88, 0x9f, 0xbc); // new Color(0x6b, 0x8e, 0xbc);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {
@@ -27,8 +29,12 @@ public final class Colors {
             ORANGE, BROWN, YELLOW, PURPLE, PINK, CYAN
     };
 
-    public static Color def() {
-        return BLACK;
+    public static Color darkSystem() {
+        return DARK_SYSTEM;
+    }
+
+    public static Color lightSystem() {
+        return LIGHT_SYSTEM;
     }
 
     public static Color bg() {
@@ -36,7 +42,7 @@ public final class Colors {
     }
 
     public static Color highlight() {
-        return WHITE;
+        return LIGHT_SYSTEM;
     }
 
     public static Color selected() {
@@ -77,7 +83,7 @@ public final class Colors {
             final double[] hsv
     ) {
         if (hsv.length != 3)
-            return def();
+            return darkSystem();
 
         return fromHSV(hsv[0], hsv[1], hsv[2]);
     }

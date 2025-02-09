@@ -95,6 +95,7 @@ public final class TDSM implements ProgramContext {
         ProgramState.set(ProgramState.MENU, MenuAssembly.main());
 
         window = makeWindow();
+        window.hideCursor();
         program = new Program(window, new GameManager(0, this),
                 Constants.TICK_HZ, Constants.FPS);
         program.setCanvasSize(Layout.CANVAS_W, Layout.CANVAS_H);

@@ -12,12 +12,14 @@ import com.jordanbunke.tdsm.menu.text_button.TextButton;
 
 import java.awt.*;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.function.Function;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class Graphics {
-    private static final Path ICONS_FOLDER = Path.of("icons");
+    private static final Path ICONS_FOLDER = Path.of("icons"),
+            CURSORS_FOLDER = Path.of("cursors");
 
     private static final GameImage HUE_SLIDER, SV_MATRIX;
     public static final GameImage BLUEPRINT;
@@ -33,6 +35,15 @@ public final class Graphics {
     public static GameImage readIcon(final String code) {
         final Path iconFile = ICONS_FOLDER.resolve(code.toLowerCase() + ".png");
         return ResourceLoader.loadImageResource(iconFile);
+    }
+
+    public static GameImage readCursor(final Cursor cursor) {
+        if (cursor == Cursor.NONE)
+            return GameImage.dummy();
+
+        final Path cursorFile = CURSORS_FOLDER.resolve(
+                cursor.name().toLowerCase() + ".png");
+        return ResourceLoader.loadImageResource(cursorFile);
     }
 
     // Text
@@ -52,7 +63,7 @@ public final class Graphics {
 
     // UI Elements
     public static int naiveButtonWidth(final String label) {
-        final GameImage textImage = uiText(Colors.def())
+        final GameImage textImage = uiText(Colors.darkSystem())
                 .addText(label).build().draw();
 
         return textImage.getWidth() + TEXT_BUTTON_EXTRA_W;
@@ -63,11 +74,11 @@ public final class Graphics {
         // TODO - account for button type and state (stub, highlighted, dropdown)
         final ButtonType type = tb.getButtonType();
 
-        final GameImage textImage = uiText(Colors.def())
+        final GameImage textImage = uiText(Colors.darkSystem())
                 .addText(tb.getLabel()).build().draw();
         final GameImage button = new GameImage(tb.getWidth(), TEXT_BUTTON_H);
 
-        button.drawRectangle(Colors.def(), 2f, 0, 0,
+        button.drawRectangle(Colors.darkSystem(), 2f, 0, 0,
                 button.getWidth(), button.getHeight());
 
         final int x = switch (tb.getAlignment()) {
@@ -114,7 +125,7 @@ public final class Graphics {
                 cursorAtRight = cursorIndex == right;
 
         // setup
-        final Color mainColor = valid ? Colors.black() : Colors.invalid(),
+        final Color mainColor = valid ? Colors.darkSystem() : Colors.invalid(),
                 affixColor = Colors.shiftRGB(mainColor, 0x60),
                 highlightOverlay = Colors.highlightOverlay(),
                 outlineColor = typing ? Colors.selected() :
@@ -194,7 +205,7 @@ public final class Graphics {
         button.fill(color);
 
         final Color outline = b.outcomes(Colors.selected(),
-                Colors.highlight(), Colors.def());
+                Colors.highlight(), Colors.darkSystem());
 
         button.drawRectangle(outline, 2f, 0, 0,
                 button.getWidth(), button.getHeight());
@@ -217,7 +228,7 @@ public final class Graphics {
 
         // TODO - temp MVP implementation
         final Color fill = b.outcomes(
-                Colors.selected(), Colors.highlight(), Colors.def());
+                Colors.selected(), Colors.highlight(), Colors.darkSystem());
         slider.fillRectangle(fill, 0, barY, w, barH);
 
         return slider.submit();
@@ -247,7 +258,7 @@ public final class Graphics {
         }
 
         // outlines
-        final Color outline = Colors.def();
+        final Color outline = Colors.darkSystem();
         asset.drawRectangle(outline, 2f, 0, 0, w, h);
         asset.drawLine(outline, 1f, HUE_SLIDER_W, 0, HUE_SLIDER_W, h);
 
@@ -259,6 +270,38 @@ public final class Graphics {
         asset.draw(SV_MATRIX, svp.x, svp.y);
 
         return asset.submit();
+    }
+
+    // Draw additional
+
+    public static GameImage drawTooltip(final String text) {
+        // TODO - temp MVP implementation
+        final Color textColor = Colors.darkSystem();
+        final String[] lines = text.split("\n");
+        final GameImage[] lineImages = Arrays.stream(lines)
+                .map(l -> miniText(textColor).addText(l).build().draw())
+                .toArray(GameImage[]::new);
+        final int ls = lines.length,
+                w = Arrays.stream(lineImages)
+                        .map(GameImage::getWidth)
+                        .reduce(1, Math::max) + TOOLTIP_PADDING_X,
+                h = TOOLTIP_LINE_INC_Y * ls;
+
+        final GameImage tooltip = new GameImage(w, h);
+
+        // background
+        tooltip.fill(Colors.lightSystem());
+
+        for (int l = 0; l < ls; l++) {
+            final GameImage line = lineImages[l];
+            final int x = (w - line.getWidth()) / 2,
+                    y = TOOLTIP_INITIAL_OFFSET_Y + (l * TOOLTIP_LINE_INC_Y);
+            tooltip.draw(line, x, y);
+        }
+
+        // TODO - foreground
+
+        return tooltip.submit();
     }
 
     // Algo

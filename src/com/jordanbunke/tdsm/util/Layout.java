@@ -74,7 +74,8 @@ public final class Layout {
     }
 
     private static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
-            MINI_LABEL_OFFSET_Y = -8;
+            MINI_LABEL_OFFSET_Y = -8,
+            TOOLTIP_OFFSET_LEFT = -8, TOOLTIP_OFFSET_RIGHT = 2;
 
     public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
@@ -89,8 +90,9 @@ public final class Layout {
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
             TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
             TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
-            TOOLTIP_LINE_INC_Y = 8, COL_SEL_DROPOFF = 30,
-            MIN_VERT_SCROLL_BAR_H = 10;
+            TOOLTIP_LINE_INC_Y = 8, TOOLTIP_INITIAL_OFFSET_Y = -16,
+            TOOLTIP_PADDING_X = 4,
+            COL_SEL_DROPOFF = 30, MIN_VERT_SCROLL_BAR_H = 10;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);
@@ -115,5 +117,25 @@ public final class Layout {
 
     public static Coord2D textButtonBelow(final MenuElement ref) {
         return ref.getPosition().displace(0, TEXT_BUTTON_INC_Y);
+    }
+
+    public static Coord2D tooltipRenderPos(
+            final GameImage tooltip, final Coord2D mousePos
+    ) {
+        final boolean left = mousePos.x <= CANVAS_W / 2,
+                top = mousePos.y <= CANVAS_H / 2;
+        final int w = tooltip.getWidth(), h = tooltip.getHeight(),
+                x = mousePos.x - (left ? TOOLTIP_OFFSET_LEFT
+                        : w + TOOLTIP_OFFSET_RIGHT),
+                y = mousePos.y - (top ? 0 : h);
+
+        return new Coord2D(x, y);
+    }
+
+    public static Coord2D cursorRenderPos(
+            final GameImage cursor, final Coord2D mousePos
+    ) {
+        final int w = cursor.getWidth(), h = cursor.getHeight();
+        return mousePos.displace(new Coord2D(w / 2, h / 2).scale(-1));
     }
 }

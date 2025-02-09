@@ -5,8 +5,11 @@ import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.Menu;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 import com.jordanbunke.tdsm.util.Colors;
+import com.jordanbunke.tdsm.util.Cursor;
+import com.jordanbunke.tdsm.util.Tooltip;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
@@ -29,6 +32,10 @@ public enum ProgramState implements ProgramContext {
 
     @Override
     public void process(final InputEventLogger eventLogger) {
+        final Coord2D mousePos = eventLogger.getAdjustedMousePosition();
+        Tooltip.get().ping(Tooltip.NONE, mousePos);
+        Cursor.reset(mousePos);
+
         switch (state) {
             case CUSTOMIZATION -> Customization.process(eventLogger);
             case MENU -> {
@@ -36,6 +43,8 @@ public enum ProgramState implements ProgramContext {
                 menu.process(eventLogger);
             }
         }
+
+        Tooltip.get().check();
     }
 
     @Override
@@ -57,6 +66,9 @@ public enum ProgramState implements ProgramContext {
                 menu.render(canvas);
             }
         }
+
+        Tooltip.get().render(canvas);
+        Cursor.render(canvas);
     }
 
     @Override

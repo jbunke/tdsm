@@ -49,6 +49,6 @@ public final class Customization {
     private static void renderCustomizationBox(
             final CustomizationBox box, final GameImage canvas
     ) {
-        canvas.drawRectangle(Colors.def(), 1f, box.x, box.y, box.width, box.height);
+        canvas.drawRectangle(Colors.darkSystem(), 1f, box.x, box.y, box.width, box.height);
     }
 }

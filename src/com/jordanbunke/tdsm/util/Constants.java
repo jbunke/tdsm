@@ -11,7 +11,7 @@ public final class Constants {
             ASSET_ROOT_FOLDER = Path.of("sprite_assets"),
             TOOLTIPS_FOLDER = Path.of("tooltips");
 
-    public static final double TICK_HZ = 30d, FPS = 30d;
+    public static final double TICK_HZ = 60d, FPS = 60d;
 
-    public static final int RGB_SCALE = 0xff, FRAME_TICKS = 5;
+    public static final int RGB_SCALE = 0xff, FRAME_TICKS = 12, TOOLTIP_TICKS = 24;
 }

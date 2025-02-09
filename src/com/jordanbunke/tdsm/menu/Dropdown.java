@@ -50,7 +50,7 @@ public final class Dropdown extends AbstractDropdownList {
             final Supplier<Integer> initialIndexFunction
     ) {
         final int widest = Arrays.stream(labels)
-                .map(l -> Graphics.uiText(Colors.def())
+                .map(l -> Graphics.uiText(Colors.darkSystem())
                         .addText(l).build().draw().getWidth())
                 .reduce(1, Math::max);
 

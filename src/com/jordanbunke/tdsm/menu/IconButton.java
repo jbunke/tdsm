@@ -1,14 +1,13 @@
 package com.jordanbunke.tdsm.menu;
 
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.button.SimpleMenuButton;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.visual.StaticMenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
-import com.jordanbunke.tdsm.util.Graphics;
-import com.jordanbunke.tdsm.util.ParserUtils;
-import com.jordanbunke.tdsm.util.ResourceCodes;
+import com.jordanbunke.tdsm.util.*;
 
 import java.util.function.Supplier;
 
@@ -42,7 +41,7 @@ public final class IconButton extends SimpleMenuButton {
                         iconImage, Graphics::greyscale);
 
         final String tooltip = tooltipCode.equals(ResourceCodes.NO_TOOLTIP)
-                ? null : ParserUtils.readTooltip(tooltipCode);
+                ? Tooltip.NONE : ParserUtils.readTooltip(tooltipCode);
 
         final IconButton icon = new IconButton(
                 position, behaviour, iconImage, tooltip);
@@ -53,5 +52,14 @@ public final class IconButton extends SimpleMenuButton {
                 () -> precondition.get() ? icon : stub);
     }
 
-    // TODO - tooltip functionality
+    @Override
+    public void process(final InputEventLogger eventLogger) {
+        super.process(eventLogger);
+
+        if (isHighlighted()) {
+            final Coord2D mousePos = eventLogger.getAdjustedMousePosition();
+            Tooltip.get().ping(tooltip, mousePos);
+            Cursor.ping(Cursor.POINTER);
+        }
+    }
 }

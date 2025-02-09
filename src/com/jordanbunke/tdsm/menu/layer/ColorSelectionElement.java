@@ -35,7 +35,7 @@ public final class ColorSelectionElement extends MenuElementGrouping {
 
         if (!rootOfLayer) {
             final StaticLabel nameLabel =
-                    StaticLabel.mini(position, selection.name, Colors.def(), anchor);
+                    StaticLabel.mini(position, selection.name, Colors.darkSystem(), anchor);
             position = position.displace(0, COL_SEL_DROPOFF);
 
             mb.add(nameLabel);
