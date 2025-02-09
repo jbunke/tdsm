@@ -5,13 +5,10 @@ import com.jordanbunke.delta_time.image.ImageProcessing;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.tdsm.data.Sprite;
-import com.jordanbunke.tdsm.util.Colors;
-import com.jordanbunke.tdsm.util.EnumUtils;
-import com.jordanbunke.tdsm.util.Layout;
-import com.jordanbunke.tdsm.util.MenuAssembly;
+import com.jordanbunke.tdsm.util.*;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox;
+import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
 
 public final class Customization {
@@ -34,6 +31,10 @@ public final class Customization {
         // TODO - draw boxes
         EnumUtils.stream(CustomizationBox.class).forEach(
                 box -> renderCustomizationBox(box, canvas));
+
+        final GameImage blueprint = Graphics.BLUEPRINT;
+        final int bHalfW = blueprint.getWidth() / 2;
+        canvas.draw(blueprint, PREVIEW.atX(0.5) - bHalfW, BUFFER);
 
         final GameImage sprite = ImageProcessing.scale(
                 Sprite.get().renderSprite(),

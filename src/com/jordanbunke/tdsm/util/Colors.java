@@ -19,7 +19,8 @@ public final class Colors {
             CYAN = new Color(0, 0xb0, 0xb0),
             VEIL = new Color(0x80, 0x80, 0x80, 0x80),
             HIGHLIGHT_OVERLAY = new Color(0x80, 0x80, 0xff, 0x80),
-            INVALID = new Color(0x80, 0, 0);
+            INVALID = new Color(0x80, 0, 0),
+            BACKGROUND = new Color(0x88, 0x9f, 0xbc); // new Color(0x6b, 0x8e, 0xbc);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {
             BLACK, WHITE, GREY, RED, GREEN, BLUE,
@@ -28,6 +29,10 @@ public final class Colors {
 
     public static Color def() {
         return BLACK;
+    }
+
+    public static Color bg() {
+        return BACKGROUND;
     }
 
     public static Color highlight() {

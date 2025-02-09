@@ -6,6 +6,9 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.tdsm.flow.screens.Customization;
+import com.jordanbunke.tdsm.util.Colors;
+
+import static com.jordanbunke.tdsm.util.Layout.*;
 
 public enum ProgramState implements ProgramContext {
     CUSTOMIZATION, CONFIGURATION, MENU;
@@ -45,6 +48,8 @@ public enum ProgramState implements ProgramContext {
 
     @Override
     public void render(final GameImage canvas) {
+        canvas.fillRectangle(Colors.bg(), 0, 0, CANVAS_W, CANVAS_H);
+
         switch (state) {
             case CUSTOMIZATION -> Customization.render(canvas);
             case MENU -> {

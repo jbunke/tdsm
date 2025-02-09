@@ -36,7 +36,7 @@ public final class MenuAssembly {
 
         // TODO - PREVIEW
         final StaticLabel animationLabel = StaticLabel.make(
-                labelPosFor(PREVIEW.x, PREVIEW.atY(0.7)), "Animation:");
+                labelPosFor(PREVIEW.x, PREVIEW.atY(0.75)), "Animation:");
 
         final Animation[] anims = Sprite.get().getStyle().animations;
         final Dropdown animationDropdown = Dropdown.create(
@@ -49,14 +49,15 @@ public final class MenuAssembly {
                 () -> Arrays.stream(anims).toList()
                         .indexOf(Playback.get().getAnimation()));
 
-        final double ARROW_HEIGHT = 0.4;
+        final double ARROW_HEIGHT = 0.4, DIVERGENCE = 0.3;
         final MenuElement turnCWButton = IconButton.make(
-                ResourceCodes.TURN_CLOCKWISE, PREVIEW.at(0.2, ARROW_HEIGHT),
+                ResourceCodes.TURN_CLOCKWISE,
+                PREVIEW.at(0.5 - DIVERGENCE, ARROW_HEIGHT),
                 () -> true, () -> Sprite.get().turn(true)),
                 turnCCWButton = IconButton.make(
                         ResourceCodes.TURN_COUNTERCLOCKWISE,
-                        PREVIEW.at(0.8, ARROW_HEIGHT), () -> true,
-                        () -> Sprite.get().turn(false));
+                        PREVIEW.at(0.5 + DIVERGENCE, ARROW_HEIGHT),
+                        () -> true, () -> Sprite.get().turn(false));
 
         mb.addAll(animationLabel, animationDropdown,
                 turnCWButton, turnCCWButton);

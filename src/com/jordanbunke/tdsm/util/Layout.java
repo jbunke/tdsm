@@ -19,10 +19,8 @@ public final class Layout {
 
     // Customization boxes: preview, sampler, top bar, layers, bottom bar
 
-    private static final int LAYERS_W = (int) (CANVAS_W * 0.55),
-            SCROLL_BAR_W = 25, LEFT_W = CANVAS_W - (LAYERS_W + SCROLL_BAR_W),
-            BAR_W = LAYERS_W + SCROLL_BAR_W,
-            SCROLL_BAR_X = CANVAS_W - SCROLL_BAR_W,
+    private static final int RIGHT_W = (int) (CANVAS_W * 0.6),
+            LEFT_W = CANVAS_W - RIGHT_W,
             PREVIEW_H = (CANVAS_H / 2) - 10,
             SAMPLER_H = CANVAS_H - PREVIEW_H,
             BAR_H = 30, LAYERS_H = CANVAS_H - (BAR_H * 2);
@@ -30,10 +28,9 @@ public final class Layout {
     public enum CustomizationBox {
         PREVIEW(0, 0, LEFT_W, PREVIEW_H),
         SAMPLER(0, PREVIEW_H, LEFT_W, SAMPLER_H),
-        LAYERS(LEFT_W, BAR_H, LAYERS_W, LAYERS_H),
-        TOP(LEFT_W, 0, BAR_W, BAR_H),
-        BOTTOM(LEFT_W, BAR_H + LAYERS_H, BAR_W, BAR_H),
-        SCROLL(SCROLL_BAR_X, BAR_H, SCROLL_BAR_W, LAYERS_H);
+        LAYERS(LEFT_W, BAR_H, RIGHT_W, LAYERS_H),
+        TOP(LEFT_W, 0, RIGHT_W, BAR_H),
+        BOTTOM(LEFT_W, BAR_H + LAYERS_H, RIGHT_W, BAR_H);
 
         public final int x, y, width, height;
 

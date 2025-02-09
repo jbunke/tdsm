@@ -8,6 +8,7 @@ public final class ResourceCodes {
             RANDOM = "random",
             TURN_CLOCKWISE = "turn_cw",
             TURN_COUNTERCLOCKWISE = "turn_ccw",
+            BLUEPRINT = "blueprint",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 

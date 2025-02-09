@@ -20,10 +20,12 @@ public final class Graphics {
     private static final Path ICONS_FOLDER = Path.of("icons");
 
     private static final GameImage HUE_SLIDER, SV_MATRIX;
+    public static final GameImage BLUEPRINT;
 
     static {
         HUE_SLIDER = readIcon(ResourceCodes.HUE_SLIDER);
         SV_MATRIX = readIcon(ResourceCodes.SV_MATRIX);
+        BLUEPRINT = readIcon(ResourceCodes.BLUEPRINT);
     }
 
     // IO
