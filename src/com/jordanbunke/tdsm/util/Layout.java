@@ -92,7 +92,7 @@ public final class Layout {
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
             TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
             TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
-            MINI_TEXT_LINE_INC_Y = 8, COL_SEL_DROPOFF = 30;
+            TOOLTIP_LINE_INC_Y = 8, COL_SEL_DROPOFF = 30;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

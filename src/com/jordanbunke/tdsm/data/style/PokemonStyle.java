@@ -68,6 +68,6 @@ public final class PokemonStyle extends Style {
 
     @Override
     public String name() {
-        return "PKMN Gen IV";
+        return "Pokemon Gen IV"; // TODO - with é
     }
 }
