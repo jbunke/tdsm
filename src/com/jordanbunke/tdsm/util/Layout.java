@@ -83,7 +83,7 @@ public final class Layout {
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
             TEXT_BUTTON_RENDER_BUFFER_X = 4,
             PX_PER_SCROLL = 20, DROPDOWN_EXTRA_W = 32,
-            DD_SLIDER_W = 20, DD_ELEMENT_ALLOWANCE = 3,
+            VERT_SCROLL_BAR_W = 20, DD_ELEMENT_ALLOWANCE = 3,
             POST_LABEL_BUFFER_X = 4, POST_LABEL_OFFSET_Y = 8,
             SWATCH_BUTTON_DIM = TEXT_BUTTON_H,
             SWATCH_BUTTON_INC = SWATCH_BUTTON_DIM + 4,
@@ -92,7 +92,8 @@ public final class Layout {
             COLOR_TEXTBOX_W = 78, BUFFER = 10,
             TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
             TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
-            TOOLTIP_LINE_INC_Y = 8, COL_SEL_DROPOFF = 30;
+            TOOLTIP_LINE_INC_Y = 8, COL_SEL_DROPOFF = 30,
+            MIN_VERT_SCROLL_BAR_H = 10;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

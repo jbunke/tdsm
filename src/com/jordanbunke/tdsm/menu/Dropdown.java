@@ -79,7 +79,7 @@ public final class Dropdown extends AbstractDropdownList {
         final int size = getSize();
         final MenuElement[] scrollables = new MenuElement[size];
 
-        final int buttonWidth = getWidth() - DD_SLIDER_W;
+        final int buttonWidth = getWidth() - VERT_SCROLL_BAR_W;
 
         for (int i = 0; i < size; i++) {
             final int index = i;
@@ -97,7 +97,7 @@ public final class Dropdown extends AbstractDropdownList {
                 Arrays.stream(scrollables)
                         .map(Scrollable::new)
                         .toArray(Scrollable[]::new),
-                position.y + (size * TEXT_BUTTON_H), 0, GameImage::new);
+                position.y + (size * TEXT_BUTTON_H), 0);
     }
 
     @Override
