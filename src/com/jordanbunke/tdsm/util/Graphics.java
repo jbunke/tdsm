@@ -205,6 +205,20 @@ public final class Graphics {
         return drawSwatchButton(color, b);
     }
 
+    public static GameImage drawVertScrollSlider(
+            final int w, final int h, final int barH,
+            final int barY, final Button b
+    ) {
+        final GameImage slider = new GameImage(w, h);
+
+        // TODO - temp MVP implementation
+        final Color fill = b.outcomes(
+                Colors.selected(), Colors.highlight(), Colors.def());
+        slider.fillRectangle(fill, 0, barY, w, barH);
+
+        return slider.submit();
+    }
+
     public static GameImage drawColorPicker(
             final ColorPicker picker
     ) {

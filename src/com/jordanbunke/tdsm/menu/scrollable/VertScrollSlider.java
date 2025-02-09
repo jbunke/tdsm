@@ -6,7 +6,8 @@ import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.AbstractSlider;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.funke.core.ConcreteProperty;
-import com.jordanbunke.tdsm.util.Colors;
+import com.jordanbunke.tdsm.menu.Button;
+import com.jordanbunke.tdsm.util.Graphics;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -22,7 +23,6 @@ public final class VertScrollSlider extends AbstractSlider {
         super(position, dimensions, Anchor.LEFT_TOP, 0, maxValue,
                 new ConcreteProperty<>(getter, setter),
                 true, sliderBallDim);
-        // TODO - test if safe to call here and not after construction
         updateAssets();
     }
 
@@ -53,19 +53,16 @@ public final class VertScrollSlider extends AbstractSlider {
 
     @Override
     protected void updateAssets() {
-        final GameImage slider = new GameImage(getWidth(), getHeight());
-
         // pre-processing
         final int barH = sliderBallDim, rangeY = getHeight() - barH,
                 barY = (int) (getSliderFraction() * rangeY);
 
-        // TODO - temp MVP implementation
-        slider.fillRectangle(Colors.def(), 0, barY, getWidth(), barH);
-
-        slider.free();
-        base = slider;
-        highlight = slider;
-        sliding = slider;
+        base = Graphics.drawVertScrollSlider(getWidth(), getHeight(),
+                barH, barY, Button.sim(false, false));
+        highlight = Graphics.drawVertScrollSlider(getWidth(), getHeight(),
+                barH, barY, Button.sim(false, true));
+        sliding = Graphics.drawVertScrollSlider(getWidth(), getHeight(),
+                barH, barY, Button.sim(true, false));
     }
 
     @Override
