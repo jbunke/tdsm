@@ -21,9 +21,9 @@ public final class SequenceEntry<T> extends MenuElementContainer {
 
     public final Sequencer<T> sequencer;
     public final T data;
-    // TODO - index is not final in case I find a solution (pinging sequencer?)
-    //  that doesn't require rebuilding menu on drag release
     public final int index;
+
+    private Coord2D lockedPos;
 
     SequenceEntry(
             final Coord2D position, final Bounds2D dims, final T data,
@@ -63,10 +63,26 @@ public final class SequenceEntry<T> extends MenuElementContainer {
     }
 
     public void lockPosition() {
-        // TODO
+        lockedPos = getPosition();
     }
 
     public void releasedAt(int destIndex) {
         sequencer.orderUpdate.accept(data, destIndex);
+    }
+
+    @Override
+    public void incrementX(final int deltaX) {
+        if (sequencer.dragLogic.isMoving())
+            lockedPos = lockedPos.displace(deltaX, 0);
+        else
+            super.incrementX(deltaX);
+    }
+
+    @Override
+    public void incrementY(final int deltaY) {
+        if (sequencer.dragLogic.isMoving())
+            lockedPos = lockedPos.displace(0, deltaY);
+        else
+            super.incrementY(deltaY);
     }
 }
