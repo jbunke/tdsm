@@ -3,14 +3,17 @@ package com.jordanbunke.tdsm.util;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
+import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.menu.*;
+import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
 import com.jordanbunke.tdsm.menu.layer.ColorSelectionElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
@@ -139,6 +142,19 @@ public final class MenuAssembly {
         final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
                 paddingLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
 
+        final double EDGES_Y = 0.12, EDGES_Y_INC = 0.08;
+        EnumUtils.stream(Edge.class).forEach(e -> {
+            final Coord2D edgeLabelPos = LAYOUT.at(
+                    0.0 + (e.ordinal() / 2 == 0 ? 0.0 : 0.5),
+                    EDGES_Y + (e.ordinal() % 2 == 0 ? 0.0 : EDGES_Y_INC))
+                    .displace(BUFFER, 0);
+            final StaticLabel edgeLabel = StaticLabel.make(edgeLabelPos,
+                    StringUtils.nameFromID(e.name().toLowerCase()) + ":");
+            final PaddingTextbox edgeTextbox =
+                    new PaddingTextbox(edgeLabel.followTBStandard(), e);
+            mb.addAll(edgeLabel, edgeTextbox);
+        });
+
         mb.addAll(paddingLabel, paddingInfo);
 
         // BOTTOM BAR
@@ -148,7 +164,8 @@ public final class MenuAssembly {
                 () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
         final MenuElement toExportButton = StaticTextButton.make(
                 "Export... >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
-                MenuElement.Anchor.RIGHT_CENTRAL, () -> true,
+                MenuElement.Anchor.RIGHT_CENTRAL,
+                () -> Sprite.get().getStyle().exportsASprite(),
                 () -> ProgramState.set(ProgramState.MENU, export()));
 
         mb.addAll(toCustomButton, toExportButton);

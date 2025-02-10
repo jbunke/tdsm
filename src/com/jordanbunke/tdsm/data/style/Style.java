@@ -10,12 +10,16 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
+import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.stream.IntStream;
+
+import static com.jordanbunke.tdsm.util.Constants.*;
 
 // TODO
 public abstract class Style {
@@ -32,6 +36,15 @@ public abstract class Style {
     private final SpriteStates<String> states;
     private SpriteMap<String> map;
 
+    // Sprite sheet sequencing
+    private final Set<Animation> animationInclusion;
+    private final Set<Directions.Dir> directionInclusion;
+    private final List<Animation> animationOrder;
+    private final List<Directions.Dir> directionOrder;
+
+    // Sprite sheet layout
+    private final Map<Edge, Integer> padding;
+
     Style(
             final String id, final Bounds2D dims, final Directions directions,
             final Animation[] animations, final Layers layers
@@ -43,7 +56,45 @@ public abstract class Style {
         this.layers = layers;
 
         states = generateSpriteStates();
+
+        animationInclusion = new HashSet<>();
+        directionInclusion = new HashSet<>();
+
+        animationOrder = new ArrayList<>();
+        directionOrder = new ArrayList<>();
+
+        padding = new HashMap<>();
+
+        initSequencing();
+        initLayout();
         update();
+    }
+
+    public GameImage renderSpriteSheet() {
+        // TODO
+
+        return GameImage.dummy();
+    }
+
+    private GameImage renderSpriteForExport(
+            final Directions.Dir dir, final Animation anim, final int frame
+    ) {
+        final GameImage sprite = renderSprite(dir, anim, frame);
+        return renderSpriteForExport(sprite);
+    }
+
+    private GameImage renderSpriteForExport(
+            final GameImage spriteMapSprite
+    ) {
+        final Bounds2D dims = getExportSpriteDims();
+        final Coord2D pos = new Coord2D(
+                -padding.get(Edge.LEFT),
+                -padding.get(Edge.TOP));
+
+        final GameImage sprite = new GameImage(dims.width(), dims.height());
+        sprite.draw(spriteMapSprite, pos.x, pos.y);
+
+        return sprite.submit();
     }
 
     public GameImage renderSprite(
@@ -52,6 +103,25 @@ public abstract class Style {
         return map.getSprite(String.join(
                 SpriteStates.STANDARD_SEPARATOR,
                 directions.name(dir), anim.id, String.valueOf(frame)));
+    }
+
+    private void initSequencing() {
+        Arrays.stream(animations).forEach(a -> {
+            animationInclusion.add(a);
+            animationOrder.add(a);
+        });
+
+        Arrays.stream(directions.order()).forEach(d -> {
+            directionInclusion.add(d);
+            directionOrder.add(d);
+        });
+    }
+
+    private void initLayout() {
+        EnumUtils.stream(Edge.class).forEach(e -> padding.put(e, 0));
+
+        // TODO - horizontal / vertical
+        // TODO - animations per dimension -- boundless?
     }
 
     private SpriteStates<String> generateSpriteStates() {
@@ -86,6 +156,8 @@ public abstract class Style {
     }
 
     public void update() {
+        // TODO - proper handling of masking layers
+
         final SpriteAssembler<String, String> assembler =
                 new SpriteAssembler<>(dims.width(), dims.height());
 
@@ -138,9 +210,106 @@ public abstract class Style {
         return null;
     }
 
+    // override in inheritors if different
     public int getPreviewScaleUp() {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
     public abstract String name();
+
+    // SEQUENCING
+    public void updateAnimationInclusion(
+            final Animation animation, final boolean included
+    ) {
+        if (included)
+            animationInclusion.add(animation);
+        else
+            animationInclusion.remove(animation);
+    }
+
+    public void reorderAnimation(
+            final Animation animation, final int newIndex
+    ) {
+        animationOrder.remove(animation);
+        animationOrder.add(newIndex, animation);
+    }
+
+    public boolean isAnimationIncluded(
+            final Animation animation
+    ) {
+        return animationInclusion.contains(animation);
+    }
+
+    public Animation[] animationExportOrder() {
+        return animationOrder.toArray(Animation[]::new);
+    }
+
+    // TODO - direction
+
+    public boolean exportsASprite() {
+        return !(directionInclusion.isEmpty() || animationInclusion.isEmpty());
+    }
+
+    private GameImage firstIncludedSprite() {
+        if (!exportsASprite())
+            return null;
+
+        Directions.Dir dir = null;
+        Animation anim = null;
+
+        for (Directions.Dir d : directionOrder)
+            if (directionInclusion.contains(d)) {
+                dir = d;
+                break;
+            }
+
+        for (Animation a : animationOrder)
+            if (animationInclusion.contains(a)) {
+                anim = a;
+                break;
+            }
+
+        assert anim != null;
+        return renderSprite(dir, anim, 0);
+    }
+
+    public GameImage firstIncludedSpritePreview() {
+        final GameImage fis = firstIncludedSprite();
+
+        if (fis == null)
+            return null;
+
+        return renderSpriteForExport(fis);
+    }
+
+    // dims
+
+    public boolean validateEdgePadding(final Edge edge, final int px) {
+        final int t = edge == Edge.TOP ? px : padding.get(Edge.TOP),
+                l = edge == Edge.LEFT ? px : padding.get(Edge.LEFT),
+                b = edge == Edge.BOTTOM ? px : padding.get(Edge.BOTTOM),
+                r = edge == Edge.RIGHT ? px : padding.get(Edge.RIGHT);
+        final int w = l + dims.width() + r, h = t + dims.height() + b;
+
+        return w >= MIN_SPRITE_EXPORT_W && w <= MAX_SPRITE_EXPORT_W &&
+                h >= MIN_SPRITE_EXPORT_H && h <= MAX_SPRITE_EXPORT_H;
+    }
+
+    public void setEdgePadding(final Edge edge, final int px) {
+        padding.put(edge, px);
+    }
+
+    public int getEdgePadding(final Edge edge) {
+        return padding.get(edge);
+    }
+
+    public Bounds2D getExportSpriteDims() {
+        final int t = padding.get(Edge.TOP), l = padding.get(Edge.LEFT),
+                b = padding.get(Edge.BOTTOM), r = padding.get(Edge.RIGHT);
+        return new Bounds2D(l + dims.width() + r, t + dims.height() + b);
+    }
+
+    // TODO - horizontal / vertical
+
+    // TODO - animations per dimension -- boundless?
 }

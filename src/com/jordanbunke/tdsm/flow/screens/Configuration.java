@@ -44,10 +44,10 @@ public final class Configuration implements ProgramContext {
 
     @Override
     public void render(final GameImage canvas) {
+        // TODO - render preview of first sprite
+
         Arrays.stream(configurationBoxes()).forEach(
                 box -> Graphics.drawScreenBox(box, canvas));
-
-        // TODO - render preview of first sprite
 
         menu.render(canvas);
     }

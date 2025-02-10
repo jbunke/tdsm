@@ -51,6 +51,19 @@ public final class StaticLabel extends StaticMenuElement {
                 getWidth() + POST_LABEL_BUFFER_X, POST_LABEL_OFFSET_Y);
     }
 
+    /**
+     * Provides a position to render an element a standard amount of pixels
+     * after the label.
+     * */
+    public Coord2D followTBStandard() {
+        return followTBStandard(0);
+    }
+
+    public Coord2D followTBStandard(final int additionalX) {
+        return getRenderPosition().displace(
+                STANDARD_FOLLOW_X + additionalX, POST_LABEL_OFFSET_Y);
+    }
+
     public Coord2D followIcon17() {
         return followTB().displace(0, ICON_TEXTBOX_RELATIVE_DIFF_Y);
     }
