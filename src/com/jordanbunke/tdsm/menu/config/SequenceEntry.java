@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.config.drag.DragLogic;
 import com.jordanbunke.tdsm.menu.config.drag.DragNode;
 import com.jordanbunke.tdsm.util.Colors;
 
@@ -59,7 +60,25 @@ public final class SequenceEntry<T> extends MenuElementContainer {
     // dragging
 
     public void drag() {
-        // TODO
+        final DragLogic<T> logic = sequencer.dragLogic;
+        final int DIM = getHeight(), movingIndex = logic.getMovingIndex();
+        final int deltaY = (int) Math.round(
+                logic.deltaMousePosition().y / (double) DIM),
+                diff;
+
+        if (movingIndex == index) {
+            logic.setWouldBeIndex(index + deltaY);
+
+            diff = (logic.getWouldBeIndex() - index) * DIM;
+        } else {
+            final int adjustedIndex = index + (movingIndex > index
+                    ? (logic.getWouldBeIndex() > index ? 0 : 1)
+                    : (logic.getWouldBeIndex() < index ? 0 : -1));
+
+            diff = (adjustedIndex - index) * DIM;
+        }
+
+        setY(lockedPos.y + diff);
     }
 
     public void lockPosition() {

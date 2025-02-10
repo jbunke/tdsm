@@ -133,6 +133,12 @@ public final class MenuAssembly {
     public static Menu configuration() {
         final MenuBuilder mb = new MenuBuilder();
 
+        // PREVIEW
+        final Indicator firstSpriteInfo = Indicator.make(
+                ResourceCodes.FIRST_SPRITE, PREVIEW.pos(),
+                MenuElement.Anchor.LEFT_TOP);
+        mb.add(firstSpriteInfo);
+
         // INCLUSION
         final StaticLabel sequencingLabel = StaticLabel.make(
                 labelPosFor(SEQUENCING.x, SEQUENCING.y), "Sequencing");
