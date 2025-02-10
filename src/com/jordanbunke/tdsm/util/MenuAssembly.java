@@ -3,6 +3,7 @@ package com.jordanbunke.tdsm.util;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
+import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
@@ -24,6 +25,7 @@ import com.jordanbunke.tdsm.visual_misc.Playback;
 import java.awt.*;
 import java.util.Arrays;
 
+import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
 
@@ -155,7 +157,19 @@ public final class MenuAssembly {
             mb.addAll(edgeLabel, edgeTextbox);
         });
 
-        mb.addAll(paddingLabel, paddingInfo);
+        final double SPRITE_SIZE_Y = 0.32;
+        final String spriteSizePrefix = "Individual sprite size: ";
+        final DynamicLabel spriteSizeLabel = DynamicLabel.mini(
+                miniLabelPosFor(LAYOUT.x, LAYOUT.atY(SPRITE_SIZE_Y)),
+                MenuElement.Anchor.LEFT_TOP, () -> {
+                    final Bounds2D dims = Sprite.get()
+                            .getStyle().getExportSpriteDims();
+                    return spriteSizePrefix + dims.width() + "x" + dims.height();
+                },
+                spriteSizePrefix + MAX_SPRITE_EXPORT_W + "x" +
+                        MAX_SPRITE_EXPORT_H, Colors.darkSystem());
+
+        mb.addAll(paddingLabel, paddingInfo, spriteSizeLabel);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
