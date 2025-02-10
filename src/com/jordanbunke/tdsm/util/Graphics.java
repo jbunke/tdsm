@@ -196,6 +196,15 @@ public final class Graphics {
         return box.submit();
     }
 
+    public static GameImage drawCheckbox(
+            final boolean highlighted, final boolean checked
+    ) {
+        final GameImage icon = readIcon(checked
+                ? ResourceCodes.CHECKED : ResourceCodes.UNCHECKED);
+
+        return highlighted ? highlightIcon(icon) : icon;
+    }
+
     public static GameImage drawSwatchButton(
             final Color color, final Button b
     ) {

@@ -14,6 +14,8 @@ import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.menu.*;
+import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
+import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
 import com.jordanbunke.tdsm.menu.layer.ColorSelectionElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
@@ -130,15 +132,21 @@ public final class MenuAssembly {
     public static Menu configuration() {
         final MenuBuilder mb = new MenuBuilder();
 
-        // TODO - INCLUSION
-        final StaticLabel inclusionLabel = StaticLabel.make(
-                labelPosFor(INCLUSION.x, INCLUSION.y), "Sequencing");
-        final Indicator inclusionInfo = Indicator.make(ResourceCodes.INCLUSION,
-                inclusionLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
+        // INCLUSION
+        final StaticLabel sequencingLabel = StaticLabel.make(
+                labelPosFor(SEQUENCING.x, SEQUENCING.y), "Sequencing");
+        final Indicator sequencingInfo = Indicator.make(ResourceCodes.INCLUSION,
+                sequencingLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
 
-        mb.addAll(inclusionLabel, inclusionInfo);
+        final double SEQUENCER_Y = 0.17;
+        final DirectionSequencer dirSequencer = new DirectionSequencer(
+                new Coord2D(BUFFER, SEQUENCING.atY(SEQUENCER_Y)));
+        final AnimationSequencer animSequencer = new AnimationSequencer(
+                SEQUENCING.at(0.5, SEQUENCER_Y).displace(-BUFFER, 0));
 
-        // TODO - LAYOUT
+        mb.addAll(sequencingLabel, sequencingInfo, dirSequencer, animSequencer);
+
+        // LAYOUT
         final StaticLabel paddingLabel = StaticLabel.make(
                 labelPosFor(LAYOUT.x, LAYOUT.y), "Padding");
         final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
@@ -168,6 +176,10 @@ public final class MenuAssembly {
                 },
                 spriteSizePrefix + MAX_SPRITE_EXPORT_W + "x" +
                         MAX_SPRITE_EXPORT_H, Colors.darkSystem());
+
+        // TODO - horizontal / vertical
+
+        // TODO - animations per dimension -- boundless?
 
         mb.addAll(paddingLabel, paddingInfo, spriteSizeLabel);
 

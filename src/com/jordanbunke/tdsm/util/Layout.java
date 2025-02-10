@@ -6,7 +6,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 
 public final class Layout {
-    public static final int SCALE_UP = 2, CANVAS_W = 500, CANVAS_H = 300,
+    public static final int SCALE_UP = 3, CANVAS_W = 500, CANVAS_H = 300,
             SPRITE_PREVIEW_SCALE_UP = 2, PREVIEW_RENDER_Y = 20;
 
     public static int width() {
@@ -32,7 +32,7 @@ public final class Layout {
         TOP(LEFT_W, 0, RIGHT_W, BAR_H),
         BOTTOM(LEFT_W, BAR_H + LAYERS_H, RIGHT_W, BAR_H),
         LAYOUT(LEFT_W, 0, RIGHT_W, BAR_H + LAYERS_H),
-        INCLUSION(0, PREVIEW_H, LEFT_W, SAMPLER_H);
+        SEQUENCING(0, PREVIEW_H, LEFT_W, SAMPLER_H);
 
         public final int x, y, width, height;
 
@@ -54,7 +54,7 @@ public final class Layout {
 
         public static ScreenBox[] configurationBoxes() {
             return new ScreenBox[] {
-                    PREVIEW, INCLUSION, LAYOUT, BOTTOM
+                    PREVIEW, SEQUENCING, LAYOUT, BOTTOM
             };
         }
 
@@ -108,7 +108,8 @@ public final class Layout {
             COL_SEL_DROPOFF = 13, MIN_VERT_SCROLL_BAR_H = 10,
             ICON_TEXTBOX_RELATIVE_DIFF_Y = 2,
             PADDING_TEXTBOX_W = 60, STANDARD_FOLLOW_X = 48,
-            CHECKERBOARD_SQUARE = 10;
+            CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
+            SEQUENCE_ENTRY_INC_Y = 17;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

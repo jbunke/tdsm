@@ -243,7 +243,31 @@ public abstract class Style {
         return animationOrder.toArray(Animation[]::new);
     }
 
-    // TODO - direction
+    public void updateDirectionInclusion(
+            final Directions.Dir dir, final boolean included
+    ) {
+        if (included)
+            directionInclusion.add(dir);
+        else
+            directionInclusion.remove(dir);
+    }
+
+    public void reorderDirection(
+            final Directions.Dir dir, final int newIndex
+    ) {
+        directionOrder.remove(dir);
+        directionOrder.add(newIndex, dir);
+    }
+
+    public boolean isDirectionIncluded(
+            final Directions.Dir dir
+    ) {
+        return directionOrder.contains(dir);
+    }
+
+    public Directions.Dir[] directionExportOrder() {
+        return directionOrder.toArray(Directions.Dir[]::new);
+    }
 
     public boolean exportsASprite() {
         return !(directionInclusion.isEmpty() || animationInclusion.isEmpty());

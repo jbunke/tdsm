@@ -10,6 +10,8 @@ public final class ResourceCodes {
             TURN_COUNTERCLOCKWISE = "turn_ccw",
             BLUEPRINT = "blueprint",
             INFO = "info",
+            CHECKED = "checked",
+            UNCHECKED = "unchecked",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
