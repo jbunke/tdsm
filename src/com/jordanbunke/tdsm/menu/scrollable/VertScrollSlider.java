@@ -2,11 +2,13 @@ package com.jordanbunke.tdsm.menu.scrollable;
 
 import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.AbstractSlider;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.funke.core.ConcreteProperty;
 import com.jordanbunke.tdsm.menu.Button;
+import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 
 import java.util.function.Consumer;
@@ -67,4 +69,12 @@ public final class VertScrollSlider extends AbstractSlider {
 
     @Override
     public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
+
+    @Override
+    public void process(final InputEventLogger eventLogger) {
+        super.process(eventLogger);
+
+        if (isSliding() || isHighlighted())
+            Cursor.ping(Cursor.VERT_SCROLL);
+    }
 }

@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.config.drag.DragIndicator;
 import com.jordanbunke.tdsm.util.Colors;
 
 /* TODO - draggable behaviour and visual
@@ -16,6 +17,7 @@ import com.jordanbunke.tdsm.util.Colors;
 public final class SequenceEntry<T> extends MenuElementContainer {
     private final Checkbox checkbox;
     private final StaticLabel label;
+    private final DragIndicator dragIndicator;
     // TODO - index is not final in case I find a solution (pinging sequencer?)
     //  that doesn't require rebuilding menu on drag release
     private int index;
@@ -32,13 +34,15 @@ public final class SequenceEntry<T> extends MenuElementContainer {
         label = StaticLabel.mini(checkbox.followMiniLabel(),
                 sequencer.nameFunc.apply(data), Colors.darkSystem(),
                 Anchor.LEFT_TOP);
+        dragIndicator = DragIndicator.make(
+                position.displace(dims.width(), 0), Anchor.RIGHT_TOP);
 
         this.index = index;
     }
 
     @Override
     public MenuElement[] getMenuElements() {
-        return new MenuElement[] { checkbox, label };
+        return new MenuElement[] { checkbox, label, dragIndicator };
     }
 
     @Override
