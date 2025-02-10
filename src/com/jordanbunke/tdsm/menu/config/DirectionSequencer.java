@@ -10,6 +10,6 @@ public final class DirectionSequencer extends Sequencer<Directions.Dir> {
                 Sprite.get().getStyle()::updateDirectionInclusion,
                 Sprite.get().getStyle()::reorderDirection,
                 Sprite.get().getStyle()::isDirectionIncluded,
-                Sprite.get().getStyle().directions::name, 0.3);
+                Sprite.get().getStyle().directions::name, 0.33);
     }
 }

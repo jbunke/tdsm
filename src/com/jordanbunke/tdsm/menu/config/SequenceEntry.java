@@ -8,9 +8,6 @@ import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.util.Colors;
 
-import static com.jordanbunke.tdsm.util.Layout.*;
-import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
-
 /* TODO - draggable behaviour and visual
 *   - Index is NECESSARY because draggable needs to have an idea of how
 *     many indices it has moved
@@ -24,11 +21,10 @@ public final class SequenceEntry<T> extends MenuElementContainer {
     private int index;
 
     SequenceEntry(
-            final Coord2D position, final T data,
+            final Coord2D position, final Bounds2D dims, final T data,
             final Sequencer<T> sequencer, final int index
     ) {
-        super(position, new Bounds2D((int) (SEQUENCING.width * sequencer.relW),
-                SEQUENCE_ENTRY_INC_Y), Anchor.LEFT_TOP, false);
+        super(position, dims, Anchor.LEFT_TOP, false);
 
         checkbox = new Checkbox(position, Anchor.LEFT_TOP,
                 () -> sequencer.inclusionCheck.apply(data),

@@ -54,6 +54,18 @@ public final class VigilanteStyle extends Style {
                         vertical, PlaybackMode.LOOP),
                 Animation.make("death", 5, new Coord2D(0, 39),
                         vertical, PlaybackMode.LOOP),
+                Animation.make("idle_copy", 1, new Coord2D(0, 0),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("walk_copy", 2, new Coord2D(0, 1),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("box_copy", 2, new Coord2D(0, 3),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("reload_1_copy", 3, new Coord2D(0, 18),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("reload_2_copy", 3, new Coord2D(0, 30),
+                        vertical, PlaybackMode.LOOP),
+                Animation.make("death_copy", 5, new Coord2D(0, 39),
+                        vertical, PlaybackMode.LOOP),
                 // TODO
         };
     }

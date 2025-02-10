@@ -10,7 +10,7 @@ import com.jordanbunke.tdsm.util.Layout;
 import static com.jordanbunke.tdsm.util.Layout.VERT_SCROLL_BAR_W;
 import static com.jordanbunke.tdsm.util.Layout.MIN_VERT_SCROLL_BAR_H;
 
-public final class VertScrollBox extends AbstractVerticalScrollBox {
+public class VertScrollBox extends AbstractVerticalScrollBox {
     public VertScrollBox(
             final Coord2D position, final Bounds2D dimensions,
             final Scrollable[] menuElements,
@@ -23,13 +23,17 @@ public final class VertScrollBox extends AbstractVerticalScrollBox {
     @Override
     protected VertScrollSlider makeSlider(final int maxOffsetY) {
         final Coord2D position = new Coord2D(getX(), getY())
-                .displace(getWidth() - VERT_SCROLL_BAR_W, 0);
+                .displace(getWidth() - getScrollBarWidth(), 0);
         final int h = getHeight(),
                 scrollBarH = Math.max(MIN_VERT_SCROLL_BAR_H,
                         (int) (Math.pow(h, 2) / (double) (maxOffsetY + h)));
 
         return new VertScrollSlider(position,
-                new Bounds2D(VERT_SCROLL_BAR_W, h), maxOffsetY,
+                new Bounds2D(getScrollBarWidth(), h), maxOffsetY,
                 () -> -getOffset().y, o -> setOffsetY(-o), scrollBarH);
+    }
+
+    public int getScrollBarWidth() {
+        return VERT_SCROLL_BAR_W;
     }
 }
