@@ -1,0 +1,4 @@
+The order of sprite directions and animations
+to be included in the exported sprite sheet
+
+(Uncheck an option to exclude it)

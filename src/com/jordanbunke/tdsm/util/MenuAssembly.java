@@ -10,10 +10,7 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
-import com.jordanbunke.tdsm.menu.Dropdown;
-import com.jordanbunke.tdsm.menu.IconButton;
-import com.jordanbunke.tdsm.menu.StaticLabel;
-import com.jordanbunke.tdsm.menu.Veil;
+import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.layer.ColorSelectionElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
@@ -41,7 +38,7 @@ public final class MenuAssembly {
 
         final Animation[] anims = Sprite.get().getStyle().animations;
         final Dropdown animationDropdown = Dropdown.create(
-                animationLabel.after(), MenuElement.Anchor.LEFT_TOP,
+                animationLabel.followTB(), MenuElement.Anchor.LEFT_TOP,
                 Arrays.stream(anims).map(Animation::name)
                         .toArray(String[]::new),
                 Arrays.stream(anims)
@@ -76,7 +73,7 @@ public final class MenuAssembly {
         final Style[] styles = EnumUtils.stream(Styles.class)
                 .map(Styles::get).toArray(Style[]::new);
         final Dropdown styleDropdown = Dropdown.create(
-                styleLabel.after(), MenuElement.Anchor.LEFT_TOP,
+                styleLabel.followTB(), MenuElement.Anchor.LEFT_TOP,
                 Arrays.stream(styles).map(Style::name)
                         .toArray(String[]::new),
                 Arrays.stream(styles)
@@ -130,12 +127,19 @@ public final class MenuAssembly {
 
         // TODO - INCLUSION
         final StaticLabel inclusionLabel = StaticLabel.make(
-                labelPosFor(INCLUSION.x, INCLUSION.y),
-                "Output Sequence & Inclusion");
+                labelPosFor(INCLUSION.x, INCLUSION.y), "Sequencing");
+        final Indicator inclusionInfo = Indicator.make(ResourceCodes.INCLUSION,
+                inclusionLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
 
-        mb.addAll(inclusionLabel);
+        mb.addAll(inclusionLabel, inclusionInfo);
 
         // TODO - LAYOUT
+        final StaticLabel paddingLabel = StaticLabel.make(
+                labelPosFor(LAYOUT.x, LAYOUT.y), "Padding");
+        final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
+                paddingLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
+
+        mb.addAll(paddingLabel, paddingInfo);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(

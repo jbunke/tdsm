@@ -105,7 +105,8 @@ public final class Layout {
             TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
             TOOLTIP_LINE_INC_Y = 8, TOOLTIP_INITIAL_OFFSET_Y = -4,
             TOOLTIP_PADDING_W = 2,
-            COL_SEL_DROPOFF = 13, MIN_VERT_SCROLL_BAR_H = 10;
+            COL_SEL_DROPOFF = 13, MIN_VERT_SCROLL_BAR_H = 10,
+            ICON_TEXTBOX_RELATIVE_DIFF_Y = 2;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

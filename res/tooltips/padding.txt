@@ -1,0 +1,6 @@
+Set the dimensions of an individual sprite
+in the sprite sheet to suit your needs.
+
+Dimensions may range from 1x1 to 128x128.
+
+(Negative numbers will crop rather than pad)

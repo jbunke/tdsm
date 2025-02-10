@@ -49,9 +49,9 @@ public abstract class Style {
     public GameImage renderSprite(
             final Directions.Dir dir, final Animation anim, final int frame
     ) {
-        return map.getSprite(
-                String.join(SpriteStates.STANDARD_SEPARATOR,
-                        dir.toString(), anim.id, String.valueOf(frame)));
+        return map.getSprite(String.join(
+                SpriteStates.STANDARD_SEPARATOR,
+                directions.name(dir), anim.id, String.valueOf(frame)));
     }
 
     private SpriteStates<String> generateSpriteStates() {
@@ -60,7 +60,7 @@ public abstract class Style {
 
         final SpriteStates<String> states = new SpriteStates<>(
                 Arrays.stream(directions.order())
-                        .map(Directions.Dir::toString)
+                        .map(directions::name)
                         .toArray(String[]::new),
                 Arrays.stream(animations)
                         .map(a -> a.id)
@@ -102,9 +102,8 @@ public abstract class Style {
         final Coord2D FAIL = new Coord2D();
 
         return new InterpretedSpriteSheet<>(sheet, id -> {
-            final Directions.Dir dir = Directions.Dir.valueOf(
-                    SpriteStates.extractContributor(DIRECTION, id)
-                            .toUpperCase());
+            final Directions.Dir dir = Directions.get(
+                    SpriteStates.extractContributor(DIRECTION, id));
             final String animID =
                     SpriteStates.extractContributor(ANIM, id);
             final int frame = Integer.parseInt(
