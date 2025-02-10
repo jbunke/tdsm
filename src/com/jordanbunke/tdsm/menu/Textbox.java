@@ -1,10 +1,12 @@
 package com.jordanbunke.tdsm.menu;
 
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.AbstractTextbox;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.drawing_functions.TextboxDrawingFunction;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 
 import java.util.function.Consumer;
@@ -37,5 +39,13 @@ public class Textbox extends AbstractTextbox {
     ) {
         return Graphics.drawTextbox(dims.x, prefix, text, suffix,
                 cursorIndex, selectionIndex, valid, highlighted, typing);
+    }
+
+    @Override
+    public void process(final InputEventLogger eventLogger) {
+        super.process(eventLogger);
+
+        if (isHighlighted())
+            Cursor.ping(Cursor.TEXT);
     }
 }

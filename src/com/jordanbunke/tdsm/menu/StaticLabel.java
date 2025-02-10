@@ -65,6 +65,6 @@ public final class StaticLabel extends StaticMenuElement {
     }
 
     public Coord2D followIcon17() {
-        return followTB().displace(0, ICON_TEXTBOX_RELATIVE_DIFF_Y);
+        return followTB().displace(-POST_LABEL_BUFFER_X, ICON_TEXTBOX_RELATIVE_DIFF_Y);
     }
 }
