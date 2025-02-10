@@ -332,7 +332,7 @@ public final class Graphics {
         final GameImage line = new GameImage(horz ? l : 1, horz ? 1 : l);
 
         for (int px = 0; px < l; px++)
-            line.dot(Colors.line(px % 2 == 0), horz ? px : 0, horz ? 0 : px);
+            line.dot(Colors.line(px % 8 < 4), horz ? px : 0, horz ? 0 : px);
 
         return line.submit();
     }
