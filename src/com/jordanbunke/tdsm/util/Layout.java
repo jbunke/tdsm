@@ -25,16 +25,18 @@ public final class Layout {
             SAMPLER_H = CANVAS_H - PREVIEW_H,
             BAR_H = 30, LAYERS_H = CANVAS_H - (BAR_H * 2);
 
-    public enum CustomizationBox {
+    public enum ScreenBox {
         PREVIEW(0, 0, LEFT_W, PREVIEW_H),
         SAMPLER(0, PREVIEW_H, LEFT_W, SAMPLER_H),
         LAYERS(LEFT_W, BAR_H, RIGHT_W, LAYERS_H),
         TOP(LEFT_W, 0, RIGHT_W, BAR_H),
-        BOTTOM(LEFT_W, BAR_H + LAYERS_H, RIGHT_W, BAR_H);
+        BOTTOM(LEFT_W, BAR_H + LAYERS_H, RIGHT_W, BAR_H),
+        LAYOUT(LEFT_W, 0, RIGHT_W, BAR_H + LAYERS_H),
+        INCLUSION(0, PREVIEW_H, LEFT_W, SAMPLER_H);
 
         public final int x, y, width, height;
 
-        CustomizationBox(
+        ScreenBox(
                 final int x, final int y,
                 final int width, final int height
         ) {
@@ -42,6 +44,18 @@ public final class Layout {
             this.y = y;
             this.width = width;
             this.height = height;
+        }
+
+        public static ScreenBox[] customizationBoxes() {
+            return new ScreenBox[] {
+                    PREVIEW, SAMPLER, LAYERS, TOP, BOTTOM
+            };
+        }
+
+        public static ScreenBox[] configurationBoxes() {
+            return new ScreenBox[] {
+                    PREVIEW, INCLUSION, LAYOUT, BOTTOM
+            };
         }
 
         public Coord2D pos() {

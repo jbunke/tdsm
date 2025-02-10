@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.flow.screens.Configuration;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Cursor;
@@ -37,7 +38,8 @@ public enum ProgramState implements ProgramContext {
         Cursor.reset(mousePos);
 
         switch (state) {
-            case CUSTOMIZATION -> Customization.process(eventLogger);
+            case CUSTOMIZATION -> Customization.get().process(eventLogger);
+            case CONFIGURATION -> Configuration.get().process(eventLogger);
             case MENU -> {
                 // TODO - global
                 menu.process(eventLogger);
@@ -50,7 +52,8 @@ public enum ProgramState implements ProgramContext {
     @Override
     public void update(final double deltaTime) {
         switch (state) {
-            case CUSTOMIZATION -> Customization.update(deltaTime);
+            case CUSTOMIZATION -> Customization.get().update(deltaTime);
+            case CONFIGURATION -> Configuration.get().update(deltaTime);
             case MENU -> menu.update(deltaTime);
         }
     }
@@ -60,7 +63,8 @@ public enum ProgramState implements ProgramContext {
         canvas.fillRectangle(Colors.bg(), 0, 0, CANVAS_W, CANVAS_H);
 
         switch (state) {
-            case CUSTOMIZATION -> Customization.render(canvas);
+            case CUSTOMIZATION -> Customization.get().render(canvas);
+            case CONFIGURATION -> Configuration.get().render(canvas);
             case MENU -> {
                 // TODO - global
                 menu.render(canvas);

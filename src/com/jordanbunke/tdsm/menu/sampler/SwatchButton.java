@@ -13,7 +13,7 @@ import com.jordanbunke.tdsm.util.Graphics;
 import java.awt.*;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
 
 public final class SwatchButton extends MenuButton implements Button {
     private static final Bounds2D DIMS = new Bounds2D(

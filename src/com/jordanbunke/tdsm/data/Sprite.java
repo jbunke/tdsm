@@ -3,6 +3,7 @@ package com.jordanbunke.tdsm.data;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
+import com.jordanbunke.tdsm.flow.screens.Configuration;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.visual_misc.Playback;
@@ -30,7 +31,8 @@ public final class Sprite {
     }
 
     private static void rebuildMenus() {
-        Customization.rebuildMenu();
+        Customization.get().rebuildMenu();
+        Configuration.get().rebuildMenu();
         Sampler.get().close();
         // TODO
     }

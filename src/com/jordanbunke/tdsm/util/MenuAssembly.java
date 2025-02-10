@@ -24,7 +24,7 @@ import com.jordanbunke.tdsm.visual_misc.Playback;
 import java.awt.*;
 import java.util.Arrays;
 
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class MenuAssembly {
@@ -110,17 +110,44 @@ public final class MenuAssembly {
 
         mb.addAll(cse1, cse2, test);
 
-        // TODO - BOTTOM BAR
+        // BOTTOM BAR
         final MenuElement toMainButton = StaticTextButton.make(
                 "< Main Menu", BOTTOM.at(0.0, 0.5).displace(4, 0),
                 MenuElement.Anchor.LEFT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.MENU, main()));
-        final MenuElement toSaveButton = StaticTextButton.make(
+        final MenuElement toConfigButton = StaticTextButton.make(
                 "Configure... >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
                 MenuElement.Anchor.RIGHT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CONFIGURATION, null));
 
-        mb.addAll(toMainButton, toSaveButton);
+        mb.addAll(toMainButton, toConfigButton);
+
+        return mb.build();
+    }
+
+    public static Menu configuration() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        // TODO - INCLUSION
+        final StaticLabel inclusionLabel = StaticLabel.make(
+                labelPosFor(INCLUSION.x, INCLUSION.y),
+                "Output Sequence & Inclusion");
+
+        mb.addAll(inclusionLabel);
+
+        // TODO - LAYOUT
+
+        // BOTTOM BAR
+        final MenuElement toCustomButton = StaticTextButton.make(
+                "< Customize...", BOTTOM.at(0.0, 0.5).displace(4, 0),
+                MenuElement.Anchor.LEFT_CENTRAL, () -> true,
+                () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
+        final MenuElement toExportButton = StaticTextButton.make(
+                "Export... >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
+                MenuElement.Anchor.RIGHT_CENTRAL, () -> true,
+                () -> ProgramState.set(ProgramState.MENU, export()));
+
+        mb.addAll(toCustomButton, toExportButton);
 
         return mb.build();
     }
@@ -158,6 +185,14 @@ public final class MenuAssembly {
                         .addText("(c) 2025 Jordan Bunke").build());
 
         mb.add(programLabel);
+
+        return mb.build();
+    }
+
+    public static Menu export() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        // TODO
 
         return mb.build();
     }

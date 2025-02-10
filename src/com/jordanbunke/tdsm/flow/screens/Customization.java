@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.flow.screens;
 
+import com.jordanbunke.delta_time._core.ProgramContext;
+import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.image.ImageProcessing;
 import com.jordanbunke.delta_time.io.InputEventLogger;
@@ -8,29 +10,43 @@ import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.util.*;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
+import java.util.Arrays;
+
 import static com.jordanbunke.tdsm.util.Layout.*;
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.*;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
 
-public final class Customization {
-    private static Menu menu = MenuAssembly.stub();
+public final class Customization implements ProgramContext {
+    private static final Customization INSTANCE;
+    private Menu menu;
 
-    public static void rebuildMenu() {
+    static {
+        INSTANCE = new Customization();
+    }
+
+    private Customization() {
+        menu = MenuAssembly.stub();
+    }
+
+    public static Customization get() {
+        return INSTANCE;
+    }
+
+    public void rebuildMenu() {
         menu = MenuAssembly.customization();
     }
 
-    public static void process(final InputEventLogger eventLogger) {
+    public void process(final InputEventLogger eventLogger) {
         menu.process(eventLogger);
     }
 
-    public static void update(final double deltaTime) {
+    public void update(final double deltaTime) {
         Playback.get().tick();
         menu.update(deltaTime);
     }
 
-    public static void render(final GameImage canvas) {
-        // TODO - draw boxes
-        EnumUtils.stream(CustomizationBox.class).forEach(
-                box -> renderCustomizationBox(box, canvas));
+    public void render(final GameImage canvas) {
+        Arrays.stream(customizationBoxes()).forEach(
+                box -> Graphics.drawScreenBox(box, canvas));
 
         final GameImage blueprint = Graphics.BLUEPRINT;
         final int bHalfW = blueprint.getWidth() / 2;
@@ -46,9 +62,6 @@ public final class Customization {
         menu.render(canvas);
     }
 
-    private static void renderCustomizationBox(
-            final CustomizationBox box, final GameImage canvas
-    ) {
-        canvas.drawRectangle(Colors.darkSystem(), 1f, box.x, box.y, box.width, box.height);
-    }
+    @Override
+    public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
 }

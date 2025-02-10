@@ -301,6 +301,14 @@ public final class Graphics {
         return tooltip.submit();
     }
 
+    public static void drawScreenBox(
+            final ScreenBox box, final GameImage canvas
+    ) {
+        // TODO - temp MVP implementation
+        canvas.drawRectangle(Colors.darkSystem(),
+                1f, box.x, box.y, box.width, box.height);
+    }
+
     // Algo
     public static GameImage highlightIcon(
             final GameImage icon

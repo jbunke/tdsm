@@ -12,7 +12,7 @@ import com.jordanbunke.tdsm.util.Colors;
 import java.awt.*;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
-import static com.jordanbunke.tdsm.util.Layout.CustomizationBox.SAMPLER;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.SAMPLER;
 
 public final class Sampler extends MenuElementContainer {
     private static final Sampler INSTANCE;
