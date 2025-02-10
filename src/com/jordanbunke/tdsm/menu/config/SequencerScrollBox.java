@@ -9,13 +9,19 @@ import com.jordanbunke.tdsm.util.Layout;
 public final class SequencerScrollBox extends VertScrollBox {
     public SequencerScrollBox(
             final Coord2D position, final Bounds2D dimensions,
-            final Scrollable[] menuElements, final int realBottomY
+            final Scrollable[] menuElements, final int realBottomY,
+            final int initialOffsetY
     ) {
-        super(position, dimensions, menuElements, realBottomY, 0);
+        super(position, dimensions, menuElements, realBottomY, initialOffsetY);
     }
 
     @Override
     public int getScrollBarWidth() {
         return Layout.SEQUENCER_SCROLL_BAR_W;
+    }
+
+    @Override
+    public Coord2D getOffset() {
+        return super.getOffset();
     }
 }

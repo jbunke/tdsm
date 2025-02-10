@@ -6,7 +6,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.StaticLabel;
-import com.jordanbunke.tdsm.menu.config.drag.DragIndicator;
+import com.jordanbunke.tdsm.menu.config.drag.DragNode;
 import com.jordanbunke.tdsm.util.Colors;
 
 /* TODO - draggable behaviour and visual
@@ -17,10 +17,13 @@ import com.jordanbunke.tdsm.util.Colors;
 public final class SequenceEntry<T> extends MenuElementContainer {
     private final Checkbox checkbox;
     private final StaticLabel label;
-    private final DragIndicator dragIndicator;
+    private final DragNode<T> dragNode;
+
+    public final Sequencer<T> sequencer;
+    public final T data;
     // TODO - index is not final in case I find a solution (pinging sequencer?)
     //  that doesn't require rebuilding menu on drag release
-    private int index;
+    public final int index;
 
     SequenceEntry(
             final Coord2D position, final Bounds2D dims, final T data,
@@ -34,19 +37,36 @@ public final class SequenceEntry<T> extends MenuElementContainer {
         label = StaticLabel.mini(checkbox.followMiniLabel(),
                 sequencer.nameFunc.apply(data), Colors.darkSystem(),
                 Anchor.LEFT_TOP);
-        dragIndicator = DragIndicator.make(
-                position.displace(dims.width(), 0), Anchor.RIGHT_TOP);
 
+        this.sequencer = sequencer;
+        this.data = data;
         this.index = index;
+
+        dragNode = new DragNode<>(position.displace(dims.width(), 0),
+                Anchor.RIGHT_TOP, this);
     }
 
     @Override
     public MenuElement[] getMenuElements() {
-        return new MenuElement[] { checkbox, label, dragIndicator };
+        return new MenuElement[] { checkbox, label, dragNode};
     }
 
     @Override
     public boolean hasNonTrivialBehaviour() {
         return false;
+    }
+
+    // dragging
+
+    public void drag() {
+        // TODO
+    }
+
+    public void lockPosition() {
+        // TODO
+    }
+
+    public void releasedAt(int destIndex) {
+        sequencer.orderUpdate.accept(data, destIndex);
     }
 }

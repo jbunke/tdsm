@@ -6,10 +6,10 @@ import com.jordanbunke.tdsm.data.Sprite;
 
 public final class DirectionSequencer extends Sequencer<Directions.Dir> {
     public DirectionSequencer(final Coord2D position) {
-        super(position, Sprite.get().getStyle().directionExportOrder(),
-                Sprite.get().getStyle()::updateDirectionInclusion,
+        super(position, Sprite.get().getStyle()::updateDirectionInclusion,
                 Sprite.get().getStyle()::reorderDirection,
                 Sprite.get().getStyle()::isDirectionIncluded,
+                Sprite.get().getStyle()::directionExportOrder,
                 Sprite.get().getStyle().directions::name, 0.33);
     }
 }
