@@ -5,9 +5,14 @@ import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.Menu;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Graphics;
+import com.jordanbunke.tdsm.util.Layout;
 import com.jordanbunke.tdsm.util.MenuAssembly;
 
+import java.awt.*;
 import java.util.Arrays;
 
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
@@ -44,12 +49,43 @@ public final class Configuration implements ProgramContext {
 
     @Override
     public void render(final GameImage canvas) {
-        // TODO - render preview of first sprite
+        canvas.draw(drawPreview(), PREVIEW.x, PREVIEW.y);
 
         Arrays.stream(configurationBoxes()).forEach(
                 box -> Graphics.drawScreenBox(box, canvas));
 
         menu.render(canvas);
+    }
+
+    private GameImage drawPreview() {
+        final GameImage preview = new GameImage(Graphics.CHECKERBOARD);
+        final int w = preview.getWidth(), h = preview.getHeight();
+
+        final GameImage sprite = Sprite.get()
+                .getStyle().firstIncludedSpritePreview();
+
+        if (sprite == null)
+            return preview.submit();
+
+        final Coord2D tl = Layout.centerWithin(preview, sprite),
+                br = tl.displace(sprite.getWidth(), sprite.getHeight());
+
+        preview.draw(sprite, tl.x, tl.y);
+
+        // shadows
+        final Color shadow = Colors.shadow();
+        preview.fillRectangle(shadow, 0, 0, tl.x, h);
+        preview.fillRectangle(shadow, br.x, 0, w - br.x, h);
+        preview.fillRectangle(shadow, tl.x, 0, br.x - tl.x, tl.y);
+        preview.fillRectangle(shadow, tl.x, br.y, br.x - tl.x, h - br.y);
+
+        // lines
+        preview.draw(Graphics.H_LINE, 0, tl.y - 1);
+        preview.draw(Graphics.V_LINE, tl.x - 1, 0);
+        preview.draw(Graphics.H_LINE, 0, br.y);
+        preview.draw(Graphics.V_LINE, br.x, 0);
+
+        return preview.submit();
     }
 
     @Override

@@ -88,8 +88,7 @@ public abstract class Style {
     ) {
         final Bounds2D dims = getExportSpriteDims();
         final Coord2D pos = new Coord2D(
-                -padding.get(Edge.LEFT),
-                -padding.get(Edge.TOP));
+                padding.get(Edge.LEFT), padding.get(Edge.TOP));
 
         final GameImage sprite = new GameImage(dims.width(), dims.height());
         sprite.draw(spriteMapSprite, pos.x, pos.y);

@@ -19,6 +19,11 @@ public final class Colors {
             CYAN = new Color(0, 0xb0, 0xb0),
             VEIL = new Color(0x80, 0x80, 0x80, 0x80),
             HIGHLIGHT_OVERLAY = new Color(0x80, 0x80, 0xff, 0x80),
+            SHADOW = new Color(0x20, 0x20, 0x20, 0x80),
+            LINE_1 = new Color(0x20, 0x20, 0x20),
+            LINE_2 = new Color(0x38, 0x38, 0x38),
+            CB_1 = new Color(0xa0, 0xa0, 0xa0),
+            CB_2 = new Color(0xc0, 0xc0, 0xc0),
             INVALID = new Color(0x80, 0, 0),
             DARK_SYSTEM = new Color(0x1e, 0x1b, 0x34),
             LIGHT_SYSTEM = new Color(0xe8, 0xe8, 0xe8),
@@ -39,6 +44,18 @@ public final class Colors {
 
     public static Color bg() {
         return BACKGROUND;
+    }
+
+    public static Color checkerboard(final boolean _1) {
+        return _1 ? CB_1 : CB_2;
+    }
+
+    public static Color line(final boolean _1) {
+        return _1 ? LINE_1 : LINE_2;
+    }
+
+    public static Color shadow() {
+        return SHADOW;
     }
 
     public static Color highlight() {

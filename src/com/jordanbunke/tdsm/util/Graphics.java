@@ -16,18 +16,22 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.PREVIEW;
 
 public final class Graphics {
     private static final Path ICONS_FOLDER = Path.of("icons"),
             CURSORS_FOLDER = Path.of("cursors");
 
     private static final GameImage HUE_SLIDER, SV_MATRIX;
-    public static final GameImage BLUEPRINT;
+    public static final GameImage BLUEPRINT, CHECKERBOARD, H_LINE, V_LINE;
 
     static {
         HUE_SLIDER = readIcon(ResourceCodes.HUE_SLIDER);
         SV_MATRIX = readIcon(ResourceCodes.SV_MATRIX);
         BLUEPRINT = readIcon(ResourceCodes.BLUEPRINT);
+        CHECKERBOARD = drawCheckerboard();
+        H_LINE = drawLine(true);
+        V_LINE = drawLine(false);
     }
 
     // IO
@@ -307,6 +311,30 @@ public final class Graphics {
         // TODO - temp MVP implementation
         canvas.drawRectangle(Colors.darkSystem(),
                 1f, box.x, box.y, box.width, box.height);
+    }
+
+    private static GameImage drawCheckerboard() {
+        final int w = PREVIEW.width, h = PREVIEW.height,
+                px = CHECKERBOARD_SQUARE;
+        final GameImage checkerboard = new GameImage(w, h);
+
+        for (int x = 0; x < w / px; x++)
+            for (int y = 0; y < h / px; y++)
+                checkerboard.fillRectangle(
+                        Colors.checkerboard((x + y) % 2 == 0),
+                        x * px, y * px, px, px);
+
+        return checkerboard.submit();
+    }
+
+    private static GameImage drawLine(final boolean horz) {
+        final int l = horz ? PREVIEW.width : PREVIEW.height;
+        final GameImage line = new GameImage(horz ? l : 1, horz ? 1 : l);
+
+        for (int px = 0; px < l; px++)
+            line.dot(Colors.line(px % 2 == 0), horz ? px : 0, horz ? 0 : px);
+
+        return line.submit();
     }
 
     // Algo
