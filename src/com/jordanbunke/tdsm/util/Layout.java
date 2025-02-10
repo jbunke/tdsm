@@ -5,9 +5,18 @@ import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 
+import java.awt.*;
+
 public final class Layout {
-    public static final int SCALE_UP = 3, CANVAS_W = 500, CANVAS_H = 300,
+    public static final int SCALE_UP, CANVAS_W = 500, CANVAS_H = 300,
             SPRITE_PREVIEW_SCALE_UP = 2, PREVIEW_RENDER_Y = 20;
+
+    static {
+        final int TASKBAR_ALLOCATION_H = 100,
+                screenH = Toolkit.getDefaultToolkit().getScreenSize().height;
+
+        SCALE_UP = (screenH - TASKBAR_ALLOCATION_H) / CANVAS_H;
+    }
 
     public static int width() {
         return SCALE_UP * CANVAS_W;

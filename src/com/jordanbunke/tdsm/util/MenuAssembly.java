@@ -27,9 +27,10 @@ import com.jordanbunke.tdsm.visual_misc.Playback;
 import java.awt.*;
 import java.util.Arrays;
 
-import static com.jordanbunke.tdsm.util.Constants.*;
-import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
+import static com.jordanbunke.tdsm.util.Constants.MAX_SPRITE_EXPORT_H;
+import static com.jordanbunke.tdsm.util.Constants.MAX_SPRITE_EXPORT_W;
 import static com.jordanbunke.tdsm.util.Layout.*;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
 
 public final class MenuAssembly {
     public static Menu stub() {
@@ -142,9 +143,18 @@ public final class MenuAssembly {
         final DirectionSequencer dirSequencer = new DirectionSequencer(
                 new Coord2D(BUFFER, SEQUENCING.atY(SEQUENCER_Y)));
         final AnimationSequencer animSequencer = new AnimationSequencer(
-                SEQUENCING.at(0.5, SEQUENCER_Y).displace(-BUFFER, 0));
+                SEQUENCING.at(0.4, SEQUENCER_Y));
 
-        mb.addAll(sequencingLabel, sequencingInfo, dirSequencer, animSequencer);
+        final String NO_FRAMES = "Configuration produces no frames!";
+        final DynamicLabel frameCountLabel = DynamicLabel.mini(
+                SEQUENCING.at(0.5, 0.98), MenuElement.Anchor.CENTRAL_BOTTOM,
+                () -> Sprite.get().getStyle().exportsASprite()
+                        ? (Sprite.get().getStyle().exportFrameCount() +
+                        " animation frames")
+                        : NO_FRAMES, NO_FRAMES, Colors.darkSystem());
+
+        mb.addAll(sequencingLabel, sequencingInfo,
+                dirSequencer, animSequencer, frameCountLabel);
 
         // LAYOUT
         final StaticLabel paddingLabel = StaticLabel.make(

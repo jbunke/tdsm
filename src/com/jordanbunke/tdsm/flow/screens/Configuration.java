@@ -58,14 +58,17 @@ public final class Configuration implements ProgramContext {
     }
 
     private GameImage drawPreview() {
+        final Color shadow = Colors.shadow();
         final GameImage preview = new GameImage(Graphics.CHECKERBOARD);
         final int w = preview.getWidth(), h = preview.getHeight();
 
         final GameImage sprite = Sprite.get()
                 .getStyle().firstIncludedSpritePreview();
 
-        if (sprite == null)
+        if (sprite == null) {
+            preview.fill(shadow);
             return preview.submit();
+        }
 
         final Coord2D tl = Layout.centerWithin(preview, sprite),
                 br = tl.displace(sprite.getWidth(), sprite.getHeight());
@@ -73,7 +76,6 @@ public final class Configuration implements ProgramContext {
         preview.draw(sprite, tl.x, tl.y);
 
         // shadows
-        final Color shadow = Colors.shadow();
         preview.fillRectangle(shadow, 0, 0, tl.x, h);
         preview.fillRectangle(shadow, br.x, 0, w - br.x, h);
         preview.fillRectangle(shadow, tl.x, 0, br.x - tl.x, tl.y);

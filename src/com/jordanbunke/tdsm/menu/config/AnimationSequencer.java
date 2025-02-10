@@ -10,6 +10,6 @@ public final class AnimationSequencer extends Sequencer<Animation> {
                 Sprite.get().getStyle()::updateAnimationInclusion,
                 Sprite.get().getStyle()::reorderAnimation,
                 Sprite.get().getStyle()::isAnimationIncluded,
-                Animation::name, 0.5);
+                a -> a.name() + " (" + a.frameCount() + ")", 0.55);
     }
 }

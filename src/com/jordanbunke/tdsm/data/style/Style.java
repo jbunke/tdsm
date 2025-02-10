@@ -262,7 +262,7 @@ public abstract class Style {
     public boolean isDirectionIncluded(
             final Directions.Dir dir
     ) {
-        return directionOrder.contains(dir);
+        return directionInclusion.contains(dir);
     }
 
     public Directions.Dir[] directionExportOrder() {
@@ -271,6 +271,12 @@ public abstract class Style {
 
     public boolean exportsASprite() {
         return !(directionInclusion.isEmpty() || animationInclusion.isEmpty());
+    }
+
+    public int exportFrameCount() {
+        final int animFrames = animationInclusion.stream()
+                .map(Animation::frameCount).reduce(0, Integer::sum);
+        return animFrames * directionInclusion.size();
     }
 
     private GameImage firstIncludedSprite() {
