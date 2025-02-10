@@ -139,17 +139,32 @@ public final class MenuAssembly {
                 MenuElement.Anchor.LEFT_TOP);
         mb.add(firstSpriteInfo);
 
-        // INCLUSION
+        // SEQUENCING
         final StaticLabel sequencingLabel = StaticLabel.make(
                 labelPosFor(SEQUENCING.x, SEQUENCING.y), "Sequencing");
         final Indicator sequencingInfo = Indicator.make(ResourceCodes.INCLUSION,
                 sequencingLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
 
-        final double SEQUENCER_Y = 0.17;
+        final double TYPE_Y = 0.17, SEQUENCER_Y = 0.29;
+        final StaticLabel dirLabel = StaticLabel.mini(
+                SEQUENCING.at(0.22, TYPE_Y), "Directions",
+                Colors.darkSystem(), MenuElement.Anchor.CENTRAL_TOP),
+                animLabel = StaticLabel.mini(
+                        SEQUENCING.at(0.675, TYPE_Y), "Animations",
+                        Colors.darkSystem(), MenuElement.Anchor.CENTRAL_TOP);
+
         final DirectionSequencer dirSequencer = new DirectionSequencer(
                 new Coord2D(BUFFER, SEQUENCING.atY(SEQUENCER_Y)));
         final AnimationSequencer animSequencer = new AnimationSequencer(
                 SEQUENCING.at(0.4, SEQUENCER_Y));
+
+        final MenuElement resetSequencingButton = IconButton.make(
+                ResourceCodes.RESET, sequencingInfo.following(),
+                MenuElement.Anchor.LEFT_TOP, () -> true, () -> {
+                    Sprite.get().getStyle().resetSequencing();
+                    dirSequencer.refreshScrollBox();
+                    animSequencer.refreshScrollBox();
+                });
 
         final String NO_FRAMES = "Configuration produces no frames!";
         final DynamicLabel frameCountLabel = DynamicLabel.mini(
@@ -159,14 +174,18 @@ public final class MenuAssembly {
                         " animation frames")
                         : NO_FRAMES, NO_FRAMES, Colors.darkSystem());
 
-        mb.addAll(sequencingLabel, sequencingInfo,
-                dirSequencer, animSequencer, frameCountLabel);
+        mb.addAll(sequencingLabel, sequencingInfo, resetSequencingButton,
+                dirLabel, animLabel, dirSequencer, animSequencer, frameCountLabel);
 
         // LAYOUT
         final StaticLabel paddingLabel = StaticLabel.make(
                 labelPosFor(LAYOUT.x, LAYOUT.y), "Padding");
         final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
                 paddingLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
+        final MenuElement resetPaddingButton = IconButton.make(
+                ResourceCodes.RESET, paddingInfo.following(),
+                MenuElement.Anchor.LEFT_TOP, () -> true,
+                Sprite.get().getStyle()::resetPadding);
 
         final double EDGES_Y = 0.12, EDGES_Y_INC = 0.08;
         EnumUtils.stream(Edge.class).forEach(e -> {
@@ -197,7 +216,8 @@ public final class MenuAssembly {
 
         // TODO - animations per dimension -- boundless?
 
-        mb.addAll(paddingLabel, paddingInfo, spriteSizeLabel);
+        mb.addAll(paddingLabel, paddingInfo,
+                resetPaddingButton, spriteSizeLabel);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(

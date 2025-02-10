@@ -15,12 +15,12 @@ public final class IconButton extends SimpleMenuButton {
     private final String tooltip;
 
     private IconButton(
-            final Coord2D position, final Runnable behaviour,
-            final GameImage base, final String tooltip
+            final Coord2D position, final Anchor anchor,
+            final Runnable behaviour, final GameImage base,
+            final String tooltip
     ) {
         super(position, new Bounds2D(base.getWidth(), base.getHeight()),
-                Anchor.CENTRAL, true, behaviour,
-                base, Graphics.highlightIcon(base));
+                anchor, true, behaviour, base, Graphics.highlightIcon(base));
 
         this.tooltip = tooltip;
     }
@@ -33,7 +33,23 @@ public final class IconButton extends SimpleMenuButton {
     }
 
     public static ThinkingMenuElement make(
+            final String code, final Coord2D position, final Anchor anchor,
+            final Supplier<Boolean> precondition, final Runnable behaviour
+    ) {
+        return make(code, code, position, anchor, precondition, behaviour);
+    }
+
+    public static ThinkingMenuElement make(
             final String code, final String tooltipCode, final Coord2D position,
+            final Supplier<Boolean> precondition, final Runnable behaviour
+    ) {
+        return make(code, tooltipCode, position,
+                Anchor.CENTRAL, precondition, behaviour);
+    }
+
+    public static ThinkingMenuElement make(
+            final String code, final String tooltipCode,
+            final Coord2D position, final Anchor anchor,
             final Supplier<Boolean> precondition, final Runnable behaviour
     ) {
         final GameImage iconImage = Graphics.readIcon(code),
@@ -44,9 +60,9 @@ public final class IconButton extends SimpleMenuButton {
                 ? Tooltip.NONE : ParserUtils.readTooltip(tooltipCode);
 
         final IconButton icon = new IconButton(
-                position, behaviour, iconImage, tooltip);
+                position, anchor, behaviour, iconImage, tooltip);
         final StaticMenuElement stub =
-                new StaticMenuElement(position, Anchor.CENTRAL, greyedOut);
+                new StaticMenuElement(position, anchor, greyedOut);
 
         return new ThinkingMenuElement(
                 () -> precondition.get() ? icon : stub);

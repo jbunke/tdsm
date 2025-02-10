@@ -11,11 +11,14 @@ import java.util.function.Function;
 
 public final class PaddingTextbox extends Textbox {
     private static final int MAX = 4;
+    private final Edge edge;
 
     public PaddingTextbox(final Coord2D position, final Edge edge) {
         super(position, Layout.PADDING_TEXTBOX_W, Anchor.LEFT_TOP, "",
                 String.valueOf(Sprite.get().getStyle().getEdgePadding(edge)),
                 "px", makeValidator(edge), makeSetter(edge), MAX);
+
+        this.edge = edge;
     }
 
     private static Function<String, Boolean> makeValidator(final Edge edge) {
@@ -34,5 +37,13 @@ public final class PaddingTextbox extends Textbox {
             final int px = Integer.parseInt(s);
             Sprite.get().getStyle().setEdgePadding(edge, px);
         };
+    }
+
+    @Override
+    public void update(double deltaTime) {
+        super.update(deltaTime);
+
+        if (!isTyping())
+            setText(String.valueOf(Sprite.get().getStyle().getEdgePadding(edge)));
     }
 }

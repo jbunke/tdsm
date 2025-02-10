@@ -49,4 +49,8 @@ public final class Indicator extends StaticMenuElement {
         if (mouseIsWithinBounds(mousePos))
             Tooltip.get().ping(tooltip, mousePos);
     }
+
+    public Coord2D following() {
+        return getRenderPosition().displace(getWidth(), 0);
+    }
 }

@@ -120,7 +120,7 @@ public final class Layout {
             CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
             SEQUENCE_ENTRY_INC_Y = 17, SEQUENCER_SCROLL_BAR_W = 8;
 
-    public static double SEQUENCER_REL_H = 0.75;
+    public static double SEQUENCER_REL_H = 0.58;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

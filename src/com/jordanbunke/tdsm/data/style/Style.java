@@ -65,8 +65,9 @@ public abstract class Style {
 
         padding = new HashMap<>();
 
-        initSequencing();
-        initLayout();
+        resetSequencing();
+        resetPadding();
+
         update();
     }
 
@@ -104,7 +105,12 @@ public abstract class Style {
                 directions.name(dir), anim.id, String.valueOf(frame)));
     }
 
-    private void initSequencing() {
+    public void resetSequencing() {
+        animationInclusion.clear();
+        directionInclusion.clear();
+        animationOrder.clear();
+        directionOrder.clear();
+
         Arrays.stream(animations).forEach(a -> {
             animationInclusion.add(a);
             animationOrder.add(a);
@@ -116,12 +122,13 @@ public abstract class Style {
         });
     }
 
-    private void initLayout() {
+    public void resetPadding() {
+        padding.clear();
         EnumUtils.stream(Edge.class).forEach(e -> padding.put(e, 0));
-
-        // TODO - horizontal / vertical
-        // TODO - animations per dimension -- boundless?
     }
+
+    // TODO - horizontal / vertical
+    // TODO - animations per dimension -- boundless?
 
     private SpriteStates<String> generateSpriteStates() {
         final int highestFrameCount = Arrays.stream(animations)
