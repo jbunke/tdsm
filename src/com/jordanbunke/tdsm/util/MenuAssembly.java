@@ -3,6 +3,8 @@ package com.jordanbunke.tdsm.util;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
+import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementGrouping;
+import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.TDSM;
@@ -254,7 +256,7 @@ public final class MenuAssembly {
                 DIR_PREFIX + Orientation.VERTICAL.complementaryAdverb() + ")",
                 Colors.darkSystem());
 
-        layoutY += LAYOUT_INC_Y;
+        layoutY += LAYOUT_INC_Y * 0.75;
         final String ANIMS_PER_DIM_PREFIX = "Multiple animations per ";
         final Checkbox animsPerDimCheckbox = new Checkbox(
                 new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
@@ -269,11 +271,30 @@ public final class MenuAssembly {
                 ANIMS_PER_DIM_PREFIX + Orientation.VERTICAL.animationDim(),
                 Colors.darkSystem());
 
+        layoutY += LAYOUT_INC_Y * 0.6;
+        final String SINGLE_DIM_PREFIX = "All animation frames on a single ";
+        final Checkbox singleDimCheckbox = new Checkbox(
+                new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
+                MenuElement.Anchor.LEFT_TOP,
+                Sprite.get().getStyle()::isSingleDim,
+                Sprite.get().getStyle()::setSingleDim);
+        final DynamicLabel singleDimLabel = DynamicLabel.mini(
+                singleDimCheckbox.followMiniLabel(),
+                MenuElement.Anchor.LEFT_TOP,
+                () -> SINGLE_DIM_PREFIX + Sprite.get().getStyle()
+                        .getAnimationOrientation().animationDim(),
+                SINGLE_DIM_PREFIX + Orientation.VERTICAL.animationDim(),
+                Colors.darkSystem());
+
+        final GatewayMenuElement multAnimsPerDimLogic = new GatewayMenuElement(
+                new MenuElementGrouping(singleDimCheckbox, singleDimLabel /* TODO - inner logic */),
+                () -> Sprite.get().getStyle().isMultipleAnimsPerDim());
+
         // TODO - animations per dimension -- boundless?
 
         mb.addAll(layoutLabel, layoutInfo, resetLayoutButton,
                 orientationLabel, orientationDropdown, directionDimLabel,
-                animsPerDimLabel, animsPerDimCheckbox);
+                animsPerDimLabel, animsPerDimCheckbox, multAnimsPerDimLogic);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
