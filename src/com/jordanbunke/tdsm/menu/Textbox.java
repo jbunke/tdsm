@@ -13,6 +13,7 @@ import com.jordanbunke.tdsm.util.Graphics;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static com.jordanbunke.tdsm.util.Layout.ICON_TEXTBOX_RELATIVE_DIFF_Y;
 import static com.jordanbunke.tdsm.util.Layout.TEXT_BUTTON_H;
 
 public class Textbox extends AbstractTextbox {
@@ -48,6 +49,10 @@ public class Textbox extends AbstractTextbox {
 
         if (isHighlighted())
             Cursor.ping(Cursor.TEXT);
+    }
+
+    public Coord2D followIcon17() {
+        return getRenderPosition().displace(getWidth(), ICON_TEXTBOX_RELATIVE_DIFF_Y);
     }
 
     // TEXT VALIDATORS HERE

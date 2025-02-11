@@ -22,6 +22,7 @@ public final class ResourceCodes {
             INCLUSION = "inclusion",
             PADDING = "padding",
             LAYOUT = "layout",
+            FRAMES_PER_DIM = "frames_per_dim",
             FIRST_SPRITE = "first_sprite",
             RANDOM_SPRITE = "random_sprite";
 }

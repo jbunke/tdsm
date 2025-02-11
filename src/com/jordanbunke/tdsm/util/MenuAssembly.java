@@ -298,16 +298,33 @@ public final class MenuAssembly {
                         .setFramesPerDim(Integer.parseInt(s)))
                 .setMaxLength(2).setTextValidator(Textbox::validFramesPerDim)
                 .build();
+        final Indicator framesPerDimInfo = Indicator.make(
+                ResourceCodes.FRAMES_PER_DIM,
+                framesPerDimTextbox.followIcon17(), Anchor.LEFT_TOP);
+
+        layoutY += LAYOUT_INC_Y;
+        final String WRAP_PREFIX = "Wrap animations across ";
+        final Checkbox wrapCheckbox = new Checkbox(
+                new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
+                Anchor.LEFT_TOP,
+                Sprite.get().getStyle()::isWrapAnimsAcrossDims,
+                Sprite.get().getStyle()::setWrapAnimsAcrossDims);
+        final DynamicLabel wrapLabel = DynamicLabel.init(
+                        wrapCheckbox.followMiniLabel(),
+                        () -> WRAP_PREFIX + Sprite.get().getStyle()
+                                .getAnimationOrientation().animationDim() + "s",
+                        WRAP_PREFIX + Orientation.VERTICAL.animationDim() + "s")
+                .setMini().build();
 
         final GatewayMenuElement notSingleRowLogic = new GatewayMenuElement(
-                new MenuElementGrouping(framesPerDimLabel, framesPerDimTextbox),
+                new MenuElementGrouping(framesPerDimLabel,
+                        framesPerDimTextbox, framesPerDimInfo,
+                        wrapCheckbox, wrapLabel),
                 () -> !Sprite.get().getStyle().isSingleDim()),
                 multAnimsPerDimLogic = new GatewayMenuElement(
                         new MenuElementGrouping(singleDimCheckbox,
                                 singleDimLabel, notSingleRowLogic),
                         () -> Sprite.get().getStyle().isMultipleAnimsPerDim());
-
-        // TODO - animations per dimension -- boundless?
 
         mb.addAll(layoutLabel, layoutInfo, resetLayoutButton,
                 orientationLabel, orientationDropdown, directionDimLabel,
