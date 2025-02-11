@@ -21,6 +21,7 @@ public final class ResourceCodes {
     public static final String NO_TOOLTIP = "no_tooltip",
             INCLUSION = "inclusion",
             PADDING = "padding",
+            LAYOUT = "layout",
             FIRST_SPRITE = "first_sprite",
             RANDOM_SPRITE = "random_sprite";
 }

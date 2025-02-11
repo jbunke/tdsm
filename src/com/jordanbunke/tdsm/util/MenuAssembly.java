@@ -187,7 +187,7 @@ public final class MenuAssembly {
                 MenuElement.Anchor.LEFT_TOP, () -> true,
                 Sprite.get().getStyle()::resetPadding);
 
-        final double EDGES_Y = 0.12, EDGES_Y_INC = 0.08;
+        final double EDGES_Y = 0.1, EDGES_Y_INC = 0.08;
         EnumUtils.stream(Edge.class).forEach(e -> {
             final Coord2D edgeLabelPos = LAYOUT.at(
                     0.0 + (e.ordinal() / 2 == 0 ? 0.0 : 0.5),
@@ -200,7 +200,7 @@ public final class MenuAssembly {
             mb.addAll(edgeLabel, edgeTextbox);
         });
 
-        final double SPRITE_SIZE_Y = 0.32;
+        final double SPRITE_SIZE_Y = EDGES_Y + 0.2;
         final String spriteSizePrefix = "Individual sprite size: ";
         final DynamicLabel spriteSizeLabel = DynamicLabel.mini(
                 miniLabelPosFor(LAYOUT.x, LAYOUT.atY(SPRITE_SIZE_Y)),
@@ -212,12 +212,23 @@ public final class MenuAssembly {
                 spriteSizePrefix + MAX_SPRITE_EXPORT_W + "x" +
                         MAX_SPRITE_EXPORT_H, Colors.darkSystem());
 
+        mb.addAll(paddingLabel, paddingInfo,
+                resetPaddingButton, spriteSizeLabel);
+
         // TODO - horizontal / vertical
+
+        final StaticLabel layoutLabel = StaticLabel.make(
+                labelPosFor(LAYOUT.x, LAYOUT.atY(0.4)), "Sprite sheet layout");
+        final Indicator layoutInfo = Indicator.make(ResourceCodes.LAYOUT,
+                layoutLabel.followIcon17(), MenuElement.Anchor.LEFT_TOP);
+        final MenuElement resetLayoutButton = IconButton.make(
+                ResourceCodes.RESET, layoutInfo.following(),
+                MenuElement.Anchor.LEFT_TOP, () -> true,
+                () -> {}  /* TODO */);
 
         // TODO - animations per dimension -- boundless?
 
-        mb.addAll(paddingLabel, paddingInfo,
-                resetPaddingButton, spriteSizeLabel);
+        mb.addAll(layoutLabel, layoutInfo, resetLayoutButton);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
