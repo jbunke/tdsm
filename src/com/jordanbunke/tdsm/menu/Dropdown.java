@@ -37,7 +37,7 @@ public final class Dropdown extends AbstractDropdownList {
             final String[] labels, final Runnable[] behaviours,
             final Supplier<Integer> initialIndexFunction
     ) {
-        return create(position, Anchor.LEFT_CENTRAL, labels,
+        return create(position, Anchor.LEFT_TOP, labels,
                 behaviours, initialIndexFunction);
     }
 

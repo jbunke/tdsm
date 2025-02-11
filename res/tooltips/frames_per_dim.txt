@@ -1,0 +1,2 @@
+Must be at least the number of frames
+of the longest included animation

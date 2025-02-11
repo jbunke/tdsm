@@ -3,22 +3,20 @@ package com.jordanbunke.tdsm.menu.config;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Sprite;
-import com.jordanbunke.tdsm.menu.Textbox;
+import com.jordanbunke.tdsm.menu.DynamicTextbox;
 import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public final class PaddingTextbox extends Textbox {
+public final class PaddingTextbox extends DynamicTextbox {
     private static final int MAX = 4;
-    private final Edge edge;
 
     public PaddingTextbox(final Coord2D position, final Edge edge) {
-        super(position, Layout.PADDING_TEXTBOX_W, Anchor.LEFT_TOP, "",
-                String.valueOf(Sprite.get().getStyle().getEdgePadding(edge)),
-                "px", makeValidator(edge), makeSetter(edge), MAX);
-
-        this.edge = edge;
+        super(position, Layout.PADDING_TEXTBOX_W, Anchor.LEFT_TOP,
+                "", "px", makeValidator(edge), () -> String.valueOf(
+                        Sprite.get().getStyle().getEdgePadding(edge)),
+                makeSetter(edge), MAX);
     }
 
     private static Function<String, Boolean> makeValidator(final Edge edge) {
@@ -37,13 +35,5 @@ public final class PaddingTextbox extends Textbox {
             final int px = Integer.parseInt(s);
             Sprite.get().getStyle().setEdgePadding(edge, px);
         };
-    }
-
-    @Override
-    public void update(double deltaTime) {
-        super.update(deltaTime);
-
-        if (!isTyping())
-            setText(String.valueOf(Sprite.get().getStyle().getEdgePadding(edge)));
     }
 }

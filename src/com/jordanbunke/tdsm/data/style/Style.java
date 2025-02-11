@@ -11,6 +11,7 @@ import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
+import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.util.EnumUtils;
@@ -44,6 +45,9 @@ public abstract class Style {
 
     // Sprite sheet layout
     private final Map<Edge, Integer> padding;
+    private Orientation animationOrientation;
+    private boolean multipleAnimsPerDim, singleDim, wrapAnimsAcrossDims;
+    private int framesPerDim;
 
     Style(
             final String id, final Bounds2D dims, final Directions directions,
@@ -67,6 +71,7 @@ public abstract class Style {
 
         resetSequencing();
         resetPadding();
+        resetLayout();
 
         update();
     }
@@ -127,8 +132,13 @@ public abstract class Style {
         EnumUtils.stream(Edge.class).forEach(e -> padding.put(e, 0));
     }
 
-    // TODO - horizontal / vertical
-    // TODO - animations per dimension -- boundless?
+    public void resetLayout() {
+        animationOrientation = Orientation.HORIZONTAL;
+        multipleAnimsPerDim = false;
+        singleDim = true;
+        framesPerDim = DEF_FRAMES_PER_DIM;
+        wrapAnimsAcrossDims = false;
+    }
 
     private SpriteStates<String> generateSpriteStates() {
         final int highestFrameCount = Arrays.stream(animations)
@@ -286,6 +296,11 @@ public abstract class Style {
         return animFrames * directionInclusion.size();
     }
 
+    public int longestAnimFrameCount() {
+        return animationInclusion.stream()
+                .map(Animation::frameCount).reduce(1, Math::max);
+    }
+
     private GameImage firstIncludedSprite() {
         if (!exportsASprite())
             return null;
@@ -343,6 +358,48 @@ public abstract class Style {
         final int t = padding.get(Edge.TOP), l = padding.get(Edge.LEFT),
                 b = padding.get(Edge.BOTTOM), r = padding.get(Edge.RIGHT);
         return new Bounds2D(l + dims.width() + r, t + dims.height() + b);
+    }
+
+    public void setAnimationOrientation(
+            final Orientation animationOrientation
+    ) {
+        this.animationOrientation = animationOrientation;
+    }
+
+    public void setFramesPerDim(final int framesPerDim) {
+        this.framesPerDim = framesPerDim;
+    }
+
+    public void setMultipleAnimsPerDim(final boolean multipleAnimsPerDim) {
+        this.multipleAnimsPerDim = multipleAnimsPerDim;
+    }
+
+    public void setSingleDim(final boolean singleDim) {
+        this.singleDim = singleDim;
+    }
+
+    public void setWrapAnimsAcrossDims(final boolean wrapAnimsAcrossDims) {
+        this.wrapAnimsAcrossDims = wrapAnimsAcrossDims;
+    }
+
+    public Orientation getAnimationOrientation() {
+        return animationOrientation;
+    }
+
+    public int getFramesPerDim() {
+        return framesPerDim;
+    }
+
+    public boolean isMultipleAnimsPerDim() {
+        return multipleAnimsPerDim;
+    }
+
+    public boolean isSingleDim() {
+        return singleDim;
+    }
+
+    public boolean isWrapAnimsAcrossDims() {
+        return wrapAnimsAcrossDims;
     }
 
     // TODO - horizontal / vertical

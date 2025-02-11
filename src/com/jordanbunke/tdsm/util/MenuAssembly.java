@@ -8,6 +8,7 @@ import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Edge;
+import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
@@ -46,7 +47,7 @@ public final class MenuAssembly {
 
         final Animation[] anims = Sprite.get().getStyle().animations;
         final Dropdown animationDropdown = Dropdown.create(
-                animationLabel.followTB(), MenuElement.Anchor.LEFT_TOP,
+                animationLabel.followTB(),
                 Arrays.stream(anims).map(Animation::name)
                         .toArray(String[]::new),
                 Arrays.stream(anims)
@@ -81,7 +82,7 @@ public final class MenuAssembly {
         final Style[] styles = EnumUtils.stream(Styles.class)
                 .map(Styles::get).toArray(Style[]::new);
         final Dropdown styleDropdown = Dropdown.create(
-                styleLabel.followTB(), MenuElement.Anchor.LEFT_TOP,
+                styleLabel.followTB(),
                 Arrays.stream(styles).map(Style::name)
                         .toArray(String[]::new),
                 Arrays.stream(styles)
@@ -224,11 +225,38 @@ public final class MenuAssembly {
         final MenuElement resetLayoutButton = IconButton.make(
                 ResourceCodes.RESET, layoutInfo.following(),
                 MenuElement.Anchor.LEFT_TOP, () -> true,
-                () -> {}  /* TODO */);
+                Sprite.get().getStyle()::resetLayout);
+
+        final double LAYOUT_INC_Y = 0.1;
+        double layoutY = 0.5;
+        final StaticLabel orientationLabel = StaticLabel.make(
+                new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
+                "Animation orientation:");
+        final Dropdown orientationDropdown = Dropdown.create(
+                orientationLabel.followTB(),
+                EnumUtils.stream(Orientation.class)
+                        .map(Orientation::format).toArray(String[]::new),
+                EnumUtils.stream(Orientation.class).map(o ->
+                                (Runnable) () -> Sprite.get().getStyle()
+                                        .setAnimationOrientation(o))
+                        .toArray(Runnable[]::new),
+                () -> Sprite.get().getStyle()
+                        .getAnimationOrientation().ordinal());
+
+        layoutY += LAYOUT_INC_Y;
+        final String DIR_PREFIX = "(Directions are oriented ";
+        final DynamicLabel directionDimLabel = DynamicLabel.mini(
+                miniLabelPosFor(LAYOUT.x, LAYOUT.atY(layoutY)),
+                MenuElement.Anchor.LEFT_TOP, () -> DIR_PREFIX + Sprite.get()
+                        .getStyle().getAnimationOrientation()
+                        .complementaryAdverb() + ")",
+                DIR_PREFIX + Orientation.VERTICAL.complementaryAdverb() + ")",
+                Colors.darkSystem());
 
         // TODO - animations per dimension -- boundless?
 
-        mb.addAll(layoutLabel, layoutInfo, resetLayoutButton);
+        mb.addAll(layoutLabel, layoutInfo, resetLayoutButton,
+                orientationLabel, orientationDropdown, directionDimLabel);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
