@@ -15,6 +15,7 @@ import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.menu.*;
+import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
@@ -155,7 +156,7 @@ public final class MenuAssembly {
                         Colors.darkSystem(), MenuElement.Anchor.CENTRAL_TOP);
 
         final DirectionSequencer dirSequencer = new DirectionSequencer(
-                new Coord2D(BUFFER, SEQUENCING.atY(SEQUENCER_Y)));
+                new Coord2D(SEQUENCING.x + BUFFER, SEQUENCING.atY(SEQUENCER_Y)));
         final AnimationSequencer animSequencer = new AnimationSequencer(
                 SEQUENCING.at(0.4, SEQUENCER_Y));
 
@@ -253,10 +254,26 @@ public final class MenuAssembly {
                 DIR_PREFIX + Orientation.VERTICAL.complementaryAdverb() + ")",
                 Colors.darkSystem());
 
+        layoutY += LAYOUT_INC_Y;
+        final String ANIMS_PER_DIM_PREFIX = "Multiple animations per ";
+        final Checkbox animsPerDimCheckbox = new Checkbox(
+                new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
+                MenuElement.Anchor.LEFT_TOP,
+                Sprite.get().getStyle()::isMultipleAnimsPerDim,
+                Sprite.get().getStyle()::setMultipleAnimsPerDim);
+        final DynamicLabel animsPerDimLabel = DynamicLabel.mini(
+                animsPerDimCheckbox.followMiniLabel(),
+                MenuElement.Anchor.LEFT_TOP,
+                () -> ANIMS_PER_DIM_PREFIX + Sprite.get().getStyle()
+                        .getAnimationOrientation().animationDim(),
+                ANIMS_PER_DIM_PREFIX + Orientation.VERTICAL.animationDim(),
+                Colors.darkSystem());
+
         // TODO - animations per dimension -- boundless?
 
         mb.addAll(layoutLabel, layoutInfo, resetLayoutButton,
-                orientationLabel, orientationDropdown, directionDimLabel);
+                orientationLabel, orientationDropdown, directionDimLabel,
+                animsPerDimLabel, animsPerDimCheckbox);
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
