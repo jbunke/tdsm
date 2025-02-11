@@ -6,11 +6,12 @@ import com.jordanbunke.delta_time.menu.menu_elements.ext.AbstractTextbox;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.drawing_functions.TextboxDrawingFunction;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.jordanbunke.tdsm.util.Layout.TEXT_BUTTON_H;
 
@@ -18,12 +19,12 @@ public class Textbox extends AbstractTextbox {
     public Textbox(
             final Coord2D position, final int width, final Anchor anchor,
             final String prefix, String initialText, final String suffix,
-            final Function<String, Boolean> textValidator,
+            final Predicate<String> textValidator,
             final Consumer<String> setter, final int maxLength
     ) {
         super(position, new Bounds2D(width, TEXT_BUTTON_H), anchor,
                 () -> prefix, initialText, () -> suffix,
-                textValidator, setter, Textbox::draw, maxLength);
+                textValidator::test, setter, Textbox::draw, maxLength);
     }
 
     /**
@@ -47,5 +48,17 @@ public class Textbox extends AbstractTextbox {
 
         if (isHighlighted())
             Cursor.ping(Cursor.TEXT);
+    }
+
+    // TEXT VALIDATORS HERE
+
+    public static boolean validFramesPerDim(final String s) {
+        try {
+            final int i = Integer.parseInt(s);
+
+            return i >= Sprite.get().getStyle().longestAnimFrameCount();
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 }

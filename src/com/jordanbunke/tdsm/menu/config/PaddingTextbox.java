@@ -8,6 +8,7 @@ import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class PaddingTextbox extends DynamicTextbox {
     private static final int MAX = 4;
@@ -19,7 +20,7 @@ public final class PaddingTextbox extends DynamicTextbox {
                 makeSetter(edge), MAX);
     }
 
-    private static Function<String, Boolean> makeValidator(final Edge edge) {
+    private static Predicate<String> makeValidator(final Edge edge) {
         return s -> {
             try {
                 final int px = Integer.parseInt(s);
