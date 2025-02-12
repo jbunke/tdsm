@@ -14,6 +14,9 @@ import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.io.json.JSONBuilder;
+import com.jordanbunke.tdsm.io.json.JSONObject;
+import com.jordanbunke.tdsm.io.json.JSONPair;
 import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
@@ -107,6 +110,24 @@ public abstract class Style {
         }
 
         return spriteSheet.submit();
+    }
+
+    public String buildJSON() {
+        final JSONBuilder jb = new JSONBuilder();
+
+        final Bounds2D spriteDims = getExportSpriteDims();
+        final int spriteW = spriteDims.width(), spriteH = spriteDims.height(),
+                spritesX = getSpritesX(), spritesY = getSpritesY(),
+                w = spriteW * spritesX, h = spriteH * spritesY;
+
+        jb.add(new JSONPair("size", new JSONObject(
+                new JSONPair("w", w), new JSONPair("h", h),
+                new JSONPair("sprite_w", spriteW),
+                new JSONPair("sprite_h", spriteH))));
+
+        // TODO
+
+        return jb.write();
     }
 
     private Coord2D getSpriteCoord(

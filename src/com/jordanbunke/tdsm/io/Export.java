@@ -1,8 +1,9 @@
-package com.jordanbunke.tdsm.data;
+package com.jordanbunke.tdsm.io;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.GameImageIO;
+import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.util.EnumUtils;
 
@@ -86,7 +87,10 @@ public final class Export {
     }
 
     private void exportJSON() {
-        // TODO
+        final Path jsonPath = getPath(FileType.JSON);
+        final String json = Sprite.get().getStyle().buildJSON();
+
+        FileIO.writeFile(jsonPath, json);
     }
 
     private void exportStip() {
