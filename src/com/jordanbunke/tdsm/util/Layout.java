@@ -119,6 +119,7 @@ public final class Layout {
             STANDARD_TEXTBOX_W = 60,
             PADDING_TEXTBOX_W = STANDARD_TEXTBOX_W, STANDARD_FOLLOW_X = 48,
             CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
+            STANDARD_ICON_DIM = 17,
             SEQUENCE_ENTRY_INC_Y = 17, SEQUENCER_SCROLL_BAR_W = 8;
 
     public static double SEQUENCER_REL_H = 0.58;

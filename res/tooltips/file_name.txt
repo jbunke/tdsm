@@ -1,0 +1,2 @@
+File extension(s) (".png", ".json") will be added
+on export and should not be included in the name

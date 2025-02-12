@@ -17,5 +17,6 @@ public final class Constants {
             RGB_SCALE = 0xff, FRAME_TICKS = 12, TOOLTIP_TICKS = 24,
             MIN_SPRITE_EXPORT_W = 1, MIN_SPRITE_EXPORT_H = 1,
             MAX_SPRITE_EXPORT_W = 128, MAX_SPRITE_EXPORT_H = 128,
-            DEF_FRAMES_PER_DIM = 8, DEF_TEXTBOX_CHAR_MAX = 12;
+            DEF_FRAMES_PER_DIM = 8, DEF_TEXTBOX_CHAR_MAX = 12,
+            FILE_NAME_MAX_LENGTH = 40;
 }

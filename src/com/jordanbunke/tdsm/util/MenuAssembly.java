@@ -9,10 +9,7 @@ import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElemen
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.TDSM;
-import com.jordanbunke.tdsm.data.Animation;
-import com.jordanbunke.tdsm.data.Edge;
-import com.jordanbunke.tdsm.data.Orientation;
-import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.data.*;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
@@ -30,10 +27,10 @@ import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.Arrays;
 
-import static com.jordanbunke.tdsm.util.Constants.MAX_SPRITE_EXPORT_H;
-import static com.jordanbunke.tdsm.util.Constants.MAX_SPRITE_EXPORT_W;
+import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.*;
 
@@ -388,34 +385,42 @@ public final class MenuAssembly {
 
         final double REL_W = 0.6;
         final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W),
-                INC_Y = atY(1 / 9.0), SECTION_INC_Y = atY(0.15);
+                INC_Y = atY(1 / 9.0);
 
         int y = atY(0.3);
 
         final StaticLabel folderLabel = StaticLabel.make(
                 new Coord2D(LEFT, y), "Folder:");
-        final Coord2D fbPos = folderLabel.followTB();
         final MenuElement folderButton = StaticTextButton.make("Choose",
-                ButtonType.STANDARD, Alignment.CENTER, RIGHT - fbPos.x, fbPos,
-                Anchor.LEFT_TOP, () -> true, () -> {} /* TODO */);
+                ButtonType.STANDARD, Alignment.CENTER, folderLabel.followTB(),
+                Anchor.LEFT_TOP, () -> true, Export.get()::chooseFolder);
 
         y += INC_Y;
         final DynamicLabel folderPathLabel = DynamicLabel.init(
-                new Coord2D(LEFT, y), /* TODO */ () -> "For now", "For now")
+                new Coord2D(LEFT, y), () -> {
+                    final Path folder = Export.get().getFolder();
+                    return folder == null ? "No folder selected!"
+                            : folder.toString();
+                    }, "X".repeat(50))
                 .setMini().build();
 
-        y += SECTION_INC_Y;
+        y += INC_Y;
         final StaticLabel fileNameLabel = StaticLabel.make(
                 new Coord2D(LEFT, y), "File name:");
         final Coord2D fntbPos = fileNameLabel.followTB();
         final DynamicTextbox fileNameTextbox = DynamicTextbox.init(
-                fntbPos, /* TODO */ () -> "", s -> {})
-                .setWidth(RIGHT - fntbPos.x).build();
+                fntbPos, Export.get()::getFileName, Export.get()::setFileName)
+                .setTextValidator(Export::validFileName)
+                .setMaxLength(FILE_NAME_MAX_LENGTH)
+                .setWidth((RIGHT - STANDARD_ICON_DIM) - fntbPos.x).build();
+        final Indicator fileNameInfo = Indicator.make(
+                ResourceCodes.FILE_NAME,
+                fileNameTextbox.followIcon17(), Anchor.LEFT_TOP);
 
-        y += SECTION_INC_Y;
+        y += INC_Y;
         final Checkbox jsonCheckbox = new Checkbox(
                 new Coord2D(LEFT, y), Anchor.LEFT_TOP,
-                /* TODO */ () -> true, b -> {});
+                Export.get()::isExportJSON, Export.get()::setExportJSON);
         final StaticLabel jsonLabel = StaticLabel.mini(
                 jsonCheckbox.followMiniLabel(), "Export JSON",
                 Colors.darkSystem(), Anchor.LEFT_TOP);
@@ -426,12 +431,12 @@ public final class MenuAssembly {
                 () -> ProgramState.set(ProgramState.CONFIGURATION, null)),
                 exportButton = StaticTextButton.make("Export",
                         new Coord2D(RIGHT, CANVAS_H - BUFFER),
-                        Anchor.RIGHT_BOTTOM, () -> true /* TODO */,
-                        () -> {} /* TODO */);
+                        Anchor.RIGHT_BOTTOM, Export.get()::canExport,
+                        Export.get()::export);
 
         mb.addAll(folderLabel, folderButton, folderPathLabel,
-                fileNameLabel, fileNameTextbox, jsonCheckbox, jsonLabel,
-                backButton, exportButton);
+                fileNameLabel, fileNameTextbox, fileNameInfo,
+                jsonCheckbox, jsonLabel, backButton, exportButton);
 
         return mb.build();
     }
