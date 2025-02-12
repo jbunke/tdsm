@@ -21,7 +21,7 @@ public final class Colors {
             HIGHLIGHT_OVERLAY = new Color(0x80, 0x80, 0xff, 0x80),
             SHADOW = new Color(0x20, 0x20, 0x20, 0x60),
             LINE_1 = new Color(0x20, 0x20, 0x20),
-            LINE_2 = new Color(0, 0, 0, 0),
+            TRANSPARENT = new Color(0, 0, 0, 0),
             CB_1 = new Color(0xa0, 0xa0, 0xa0),
             CB_2 = new Color(0xc0, 0xc0, 0xc0),
             INVALID = new Color(0x80, 0, 0),
@@ -29,7 +29,7 @@ public final class Colors {
             LIGHT_SYSTEM = new Color(0xe8, 0xe8, 0xe8),
             LIGHT_ACCENT = new Color(0x73, 0x88, 0xa3),
             DARK_ACCENT = new Color(0x56, 0x4f, 0x84),
-            BACKGROUND = new Color(0x88, 0x9f, 0xbc); // new Color(0x6b, 0x8e, 0xbc);
+            BACKGROUND = new Color(0x88, 0x9f, 0xbc);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {
             BLACK, WHITE, GREY, RED, GREEN, BLUE,
@@ -56,12 +56,16 @@ public final class Colors {
         return BACKGROUND;
     }
 
+    public static Color transparent() {
+        return TRANSPARENT;
+    }
+
     public static Color checkerboard(final boolean _1) {
         return _1 ? CB_1 : CB_2;
     }
 
     public static Color line(final boolean _1) {
-        return _1 ? LINE_1 : LINE_2;
+        return _1 ? LINE_1 : TRANSPARENT;
     }
 
     public static Color shadow() {

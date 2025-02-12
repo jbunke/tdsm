@@ -122,11 +122,18 @@ public final class Graphics {
                 cursorAtRight = cursorIndex == right;
 
         // setup
-        final Color mainColor = valid ? Colors.darkSystem() : Colors.invalid(),
-                affixColor = Colors.shiftRGB(mainColor, 0x60),
-                highlightOverlay = Colors.highlightOverlay(),
+        final Color
+                mainColor = valid ? Colors.darkSystem() : Colors.invalid(),
+                backgroundColor = valid ? Colors.highlight()
+                        : Colors.shiftRGB(mainColor, 0x60),
                 outlineColor = typing ? Colors.selected() :
-                        (highlighted ? Colors.highlight() : mainColor);
+                        (highlighted ? Colors.highlight() : mainColor),
+                sideAccentColor = Colors.shiftRGB(valid
+                        ? outlineColor : mainColor, 0x40),
+                bottomAccentColor = Colors.shiftRGB(valid
+                        ? outlineColor : mainColor, 0x20),
+                affixColor = Colors.shiftRGB(mainColor, 0x60),
+                highlightOverlay = Colors.highlightOverlay();
 
         // text and cursor
 
@@ -145,6 +152,9 @@ public final class Graphics {
                         .addText(postSel).build().draw();
 
         final GameImage box = new GameImage(width, TEXT_BUTTON_H);
+
+        // background
+        box.fill(backgroundColor);
 
         Coord2D textPos = new Coord2D(TEXT_BUTTON_RENDER_BUFFER_X,
                 TEXT_IN_BUTTON_OFFSET_Y);
@@ -186,8 +196,21 @@ public final class Graphics {
         // possible suffix
         box.draw(suffixImage, textPos.x, textPos.y);
 
+        // accents
+        box.drawLine(sideAccentColor, 1f, width - 2, 0,
+                width - 2, box.getHeight());
+        box.drawLine(bottomAccentColor, 1f, 0, box.getHeight() - 2,
+                width, box.getHeight() - 2);
+
+        // outline
         box.drawRectangle(outlineColor, 2f, 0, 0,
                 box.getWidth(), box.getHeight());
+
+        // remove corners
+        box.setRGB(0, 0, Colors.transparent().getRGB());
+        box.setRGB(width - 1, 0, Colors.transparent().getRGB());
+        box.setRGB(0, box.getHeight() - 1, Colors.transparent().getRGB());
+        box.setRGB(width - 1, box.getHeight() - 1, Colors.transparent().getRGB());
 
         return box.submit();
     }
