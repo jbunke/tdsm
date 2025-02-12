@@ -57,12 +57,9 @@ public final class Customization implements ProgramContext {
                 Layout.PREVIEW_RENDER_Y);
 
         Arrays.stream(customizationBoxes())
-                .filter(box -> box != SAMPLER)
                 .forEach(box -> Graphics.renderScreenBox(canvas, box));
 
         menu.render(canvas);
-
-        Graphics.renderScreenBox(canvas, SAMPLER);
     }
 
     @Override

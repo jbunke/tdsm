@@ -28,7 +28,7 @@ public final class Colors {
             DARK_SYSTEM = new Color(0x1e, 0x1b, 0x34),
             LIGHT_SYSTEM = new Color(0xe8, 0xe8, 0xe8),
             LIGHT_ACCENT = new Color(0x73, 0x88, 0xa3),
-            DARK_ACCENT = new Color(0x56, 0x4f, 0x84),
+            DARK_ACCENT = new Color(0x5c, 0x64, 0x89),
             BACKGROUND = new Color(0x88, 0x9f, 0xbc);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {

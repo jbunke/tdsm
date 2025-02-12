@@ -7,6 +7,7 @@ import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.util.Colors;
+import com.jordanbunke.tdsm.util.Layout;
 
 import java.awt.*;
 import java.util.function.Supplier;
@@ -48,9 +49,12 @@ public final class Veil extends MenuElement {
     public void render(final GameImage canvas) {
         content.render(canvas);
 
-        if (!passing)
-            canvas.fillRectangle(VEIL_COLOR,
-                    getX(), getY(), getWidth(), getHeight());
+        if (!passing) {
+            final int VO = Layout.VEIL_OFFSET;
+
+            canvas.fillRectangle(VEIL_COLOR, getX() + VO, getY() + VO,
+                    getWidth() - (2 * VO), getHeight() - (2 * VO));
+        }
     }
 
     @Override

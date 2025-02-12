@@ -71,32 +71,74 @@ public final class Graphics {
     }
 
     public static GameImage drawTextButton(final TextButton tb) {
-        // TODO - temp MVP implementation
-        // TODO - account for button type and state (stub, highlighted, dropdown)
         final ButtonType type = tb.getButtonType();
+        final boolean highlight = tb.isHighlighted();
 
-        final GameImage textImage = uiText(Colors.darkSystem())
+        final Color textColor, bgColor, accentColor;
+
+        switch (type) {
+            case STANDARD, DD_HEAD -> {
+                bgColor = highlight ? Colors.lightAccent() : Colors.darkAccent();
+                textColor = Colors.darkSystem();
+            }
+            case DD_OPTION -> {
+                bgColor = highlight ? Colors.lightSystem() : Colors.darkSystem();
+                textColor = highlight ? Colors.darkSystem() : Colors.lightSystem();
+            }
+            default -> {
+                bgColor = Colors.transparent();
+                textColor = Colors.darkAccent();
+            }
+        }
+
+        accentColor = textColor;
+
+        final GameImage textImage = uiText(textColor)
                 .addText(tb.getLabel()).build().draw();
         final GameImage button = new GameImage(tb.getWidth(), TEXT_BUTTON_H);
 
-        button.drawRectangle(Colors.darkSystem(), 2f, 0, 0,
-                button.getWidth(), button.getHeight());
+        final int w = button.getWidth(), h = button.getHeight();
+
+        // background
+        button.fill(bgColor);
 
         final int x = switch (tb.getAlignment()) {
             case LEFT -> TEXT_BUTTON_RENDER_BUFFER_X;
-            case CENTER -> (button.getWidth() - textImage.getWidth()) / 2;
-            case RIGHT -> button.getWidth() -
+            case CENTER -> (w - textImage.getWidth()) / 2;
+            case RIGHT -> w -
                     (TEXT_BUTTON_RENDER_BUFFER_X + textImage.getWidth());
         };
 
         button.draw(textImage, x, TEXT_IN_BUTTON_OFFSET_Y);
 
-        // dropdown list button
+        // button style
+        switch (type) {
+            case DD_OPTION -> {
+                clearRect(button, 0, 0, 1, h);
+                clearRect(button, w - 1, 0, 1, h);
+            }
+            case DD_HEAD, STANDARD -> {
+                final Color sideShadow = Colors.shiftRGB(accentColor, 0x40),
+                        bottomShadow = Colors.shiftRGB(accentColor, 0x20);
+
+                button.drawLine(bottomShadow, 1f, 0, h - 2, w, h - 2);
+                button.drawLine(sideShadow, 1f, w - 2, 0, w - 2, h);
+
+                button.drawRectangle(accentColor, 1f, 0, 0, w - 1, h - 1);
+                clearCorners(button);
+            }
+            case STUB -> {
+                button.drawRectangle(accentColor, 1f, 0, 0, w - 1, h - 1);
+                clearCorners(button);
+            }
+        }
+
+        // dropdown icon superimposition
         if (type == ButtonType.DD_HEAD) {
             final GameImage icon = readIcon(tb.isSelected()
                     ? ResourceCodes.COLLAPSE : ResourceCodes.EXPAND);
 
-            final int iconX = button.getWidth() -
+            final int iconX = w -
                     (icon.getWidth() + DD_ICON_LEFT_NUDGE),
                     iconY = (TEXT_BUTTON_H - icon.getHeight()) / 2;
             button.draw(icon, iconX, iconY);
@@ -111,8 +153,6 @@ public final class Graphics {
             final int cursorIndex, final int selectionIndex,
             final boolean valid, final boolean highlighted, final boolean typing
     ) {
-        // TODO - temp MVP implementation
-
         // pre-processing
         final int left = Math.min(cursorIndex, selectionIndex),
                 right = Math.max(cursorIndex, selectionIndex),
@@ -128,9 +168,9 @@ public final class Graphics {
                         : Colors.shiftRGB(mainColor, 0x60),
                 outlineColor = typing ? Colors.selected() :
                         (highlighted ? Colors.highlight() : mainColor),
-                sideAccentColor = Colors.shiftRGB(valid
+                sideShadow = Colors.shiftRGB(valid
                         ? outlineColor : mainColor, 0x40),
-                bottomAccentColor = Colors.shiftRGB(valid
+                bottomShadow = Colors.shiftRGB(valid
                         ? outlineColor : mainColor, 0x20),
                 affixColor = Colors.shiftRGB(mainColor, 0x60),
                 highlightOverlay = Colors.highlightOverlay();
@@ -196,21 +236,18 @@ public final class Graphics {
         // possible suffix
         box.draw(suffixImage, textPos.x, textPos.y);
 
-        // accents
-        box.drawLine(sideAccentColor, 1f, width - 2, 0,
-                width - 2, box.getHeight());
-        box.drawLine(bottomAccentColor, 1f, 0, box.getHeight() - 2,
+        // shadows
+        box.drawLine(bottomShadow, 1f, 0, box.getHeight() - 2,
                 width, box.getHeight() - 2);
+        box.drawLine(sideShadow, 1f, width - 2, 0,
+                width - 2, box.getHeight());
 
         // outline
         box.drawRectangle(outlineColor, 2f, 0, 0,
                 box.getWidth(), box.getHeight());
 
         // remove corners
-        box.setRGB(0, 0, Colors.transparent().getRGB());
-        box.setRGB(width - 1, 0, Colors.transparent().getRGB());
-        box.setRGB(0, box.getHeight() - 1, Colors.transparent().getRGB());
-        box.setRGB(width - 1, box.getHeight() - 1, Colors.transparent().getRGB());
+        clearCorners(box);
 
         return box.submit();
     }
@@ -429,6 +466,24 @@ public final class Graphics {
                 output.setRGB(x, y, f.apply(input.getColorAt(x, y)).getRGB());
 
         return output.submit();
+    }
+
+    public static void clearRect(
+            final GameImage img, final int xi, final int yi,
+            final int w, final int h
+    ) {
+        for (int x = xi; x < xi + w; x++)
+            for (int y = yi; y < yi + h; y++)
+                img.setRGB(x, y, Colors.transparent().getRGB());
+    }
+
+    public static void clearCorners(final GameImage img) {
+        final int w = img.getWidth(), h = img.getHeight();
+
+        img.setRGB(0, 0, Colors.transparent().getRGB());
+        img.setRGB(w - 1, 0, Colors.transparent().getRGB());
+        img.setRGB(0, h - 1, Colors.transparent().getRGB());
+        img.setRGB(w - 1, h - 1, Colors.transparent().getRGB());
     }
 
     public static Color greyscale(final Color in) {
