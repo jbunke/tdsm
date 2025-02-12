@@ -1,8 +1,8 @@
 package com.jordanbunke.tdsm.io.json;
 
 public final class JSONPair {
-    final String key;
-    final Object value;
+    private final String key;
+    private final Object value;
 
     public JSONPair(final String key, final Object value) {
         this.key = key;

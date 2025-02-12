@@ -3,6 +3,7 @@ package com.jordanbunke.tdsm.io.json;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO - strip "json" package into separate project and use as dependency
 public final class JSONBuilder {
     private final List<JSONPair> jsonPairs;
 

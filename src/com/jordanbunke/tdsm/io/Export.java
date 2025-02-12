@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.io.GameImageIO;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.util.EnumUtils;
+import com.jordanbunke.tdsm.util.MenuAssembly;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -83,7 +84,7 @@ public final class Export {
         if (exportJSON) exportJSON();
         if (exportStip) exportStip();
 
-        ProgramState.set(ProgramState.CUSTOMIZATION, null);
+        ProgramState.set(ProgramState.MENU, MenuAssembly.main());
     }
 
     private void exportJSON() {

@@ -14,6 +14,7 @@ import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.io.json.JSONArray;
 import com.jordanbunke.tdsm.io.json.JSONBuilder;
 import com.jordanbunke.tdsm.io.json.JSONObject;
 import com.jordanbunke.tdsm.io.json.JSONPair;
@@ -125,7 +126,43 @@ public abstract class Style {
                 new JSONPair("sprite_w", spriteW),
                 new JSONPair("sprite_h", spriteH))));
 
-        // TODO
+        final List<JSONObject> frames = new ArrayList<>();
+
+        final Directions.Dir[] dirs = directionOrder.stream()
+                .filter(directionInclusion::contains)
+                .toArray(Directions.Dir[]::new);
+        final Animation[] anims = animationOrder.stream()
+                .filter(animationInclusion::contains)
+                .toArray(Animation[]::new);
+
+        for (int d = 0; d < dirs.length; d++) {
+            final Directions.Dir dir = dirs[d];
+
+            for (int a = 0; a < anims.length; a++) {
+                final Animation anim = anims[a];
+
+                for (int f = 0; f < anim.frameCount(); f++) {
+                    final Coord2D coord = getSpriteCoord(
+                            dirs.length, anims, d, a, f);
+
+                    final String id = String.join(
+                            SpriteStates.STANDARD_SEPARATOR,
+                            directions.name(dir), anim.id, String.valueOf(f));
+                    final JSONObject frame = new JSONObject(
+                            new JSONPair("id", id),
+                            new JSONPair("x", coord.x * spriteW),
+                            new JSONPair("y", coord.y * spriteH),
+                            new JSONPair("coord_x", coord.x),
+                            new JSONPair("coord_y", coord.y),
+                            new JSONPair("w", spriteW),
+                            new JSONPair("h", spriteH));
+                    frames.add(frame);
+                }
+            }
+        }
+
+        jb.add(new JSONPair("frames",
+                new JSONArray<>(frames.toArray(JSONObject[]::new))));
 
         return jb.write();
     }
