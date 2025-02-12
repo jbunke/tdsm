@@ -34,12 +34,15 @@ public final class Sprite {
         Customization.get().rebuildMenu();
         Configuration.get().rebuildMenu();
         Sampler.get().close();
-        // TODO
     }
 
     private void setup() {
         previewDir = this.style.directions.order()[0];
         Playback.get().setAnimation(this.style.animations[0]);
+    }
+
+    public GameImage renderSpriteSheet() {
+        return style.renderSpriteSheet();
     }
 
     public GameImage renderSprite() {

@@ -1,1 +1,2 @@
-TODO
+Configure the arrangement of animation
+frames in the exported sprite sheet.

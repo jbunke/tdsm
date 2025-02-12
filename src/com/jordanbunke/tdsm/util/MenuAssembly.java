@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.GameImageIO;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
@@ -30,6 +32,7 @@ import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static com.jordanbunke.tdsm.util.Constants.MAX_SPRITE_EXPORT_H;
@@ -387,6 +390,10 @@ public final class MenuAssembly {
         final MenuBuilder mb = new MenuBuilder();
 
         // TODO
+
+        // TODO - remove - temp
+        final GameImage spriteSheet = Sprite.get().renderSpriteSheet();
+        GameImageIO.writeImage(Paths.get("").resolve("output").resolve("test.png"), spriteSheet);
 
         return mb.build();
     }

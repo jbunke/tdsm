@@ -22,7 +22,6 @@ import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
 
-// TODO
 public abstract class Style {
 
     static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
@@ -77,9 +76,96 @@ public abstract class Style {
     }
 
     public GameImage renderSpriteSheet() {
-        // TODO
+        final int spriteW = dims.width(), spriteH = dims.height(),
+                spritesX = getSpritesX(), spritesY = getSpritesY(),
+                w = spriteW * spritesX, h = spriteH * spritesY;
+        final GameImage spriteSheet = new GameImage(w, h);
 
-        return GameImage.dummy();
+        final Directions.Dir[] dirs = directionOrder.stream()
+                .filter(directionInclusion::contains)
+                .toArray(Directions.Dir[]::new);
+        final Animation[] anims = animationOrder.stream()
+                .filter(animationInclusion::contains)
+                .toArray(Animation[]::new);
+
+        for (int d = 0; d < dirs.length; d++) {
+            final Directions.Dir dir = dirs[d];
+
+            for (int a = 0; a < anims.length; a++) {
+                final Animation anim = anims[a];
+
+                for (int f = 0; f < anim.frameCount(); f++) {
+                    final GameImage sprite = renderSpriteForExport(dir, anim, f);
+                    final Coord2D coord = getSpriteCoord(dirs, anims, d, a, f);
+
+                    spriteSheet.draw(sprite,
+                            spriteW * coord.x, spriteH * coord.y);
+                }
+            }
+        }
+
+        return spriteSheet.submit();
+    }
+
+    private Coord2D getSpriteCoord(
+            final Directions.Dir[] dirs, final Animation[] anims,
+            final int d, final int a, final int f
+    ) {
+        // TODO
+        return new Coord2D();
+    }
+
+    private int getSpritesX() {
+        return getSpritesDim(Orientation.HORIZONTAL);
+    }
+
+    private int getSpritesY() {
+        return getSpritesDim(Orientation.VERTICAL);
+    }
+
+    private int getSpritesDim(final Orientation check) {
+        if (animationOrientation == check) {
+            if (multipleAnimsPerDim)
+                return singleDim ? animationInclusion.stream()
+                        .map(Animation::frameCount).reduce(0, Integer::sum)
+                        : framesPerDim;
+
+            return longestAnimFrameCount();
+        } else {
+            final int dirCount = directionInclusion.size();
+
+            if (multipleAnimsPerDim) {
+                if (singleDim)
+                    return dirCount;
+                else {
+                    final int animFrames = animationInclusion.stream()
+                            .map(Animation::frameCount).reduce(0, Integer::sum);
+
+                    if (wrapAnimsAcrossDims)
+                        return dirCount * (animFrames % framesPerDim);
+                    else {
+                        final Integer[] framesPerAnim = animationOrder.stream()
+                                .filter(animationInclusion::contains)
+                                .map(Animation::frameCount)
+                                .toArray(Integer[]::new);
+
+                        int dims = 1, framesInDim = 0;
+
+                        for (int animFrameCount : framesPerAnim) {
+                            if (framesInDim + animFrameCount > framesPerDim) {
+                                dims++;
+                                framesInDim = animFrameCount;
+                            } else {
+                                framesInDim += animFrameCount;
+                            }
+                        }
+
+                        return dirCount * dims;
+                    }
+                }
+            } else
+                return dirCount * animationInclusion.size();
+        }
     }
 
     private GameImage renderSpriteForExport(
@@ -160,7 +246,7 @@ public abstract class Style {
             if (anim.frameCount() < highestFrameCount)
                 for (int f = anim.frameCount(); f < highestFrameCount; f++)
                     states.removeMutuallyExclusiveContributors(
-                            anim.toString(), String.valueOf(f));
+                            anim.id, String.valueOf(f));
         }
 
         return states;
@@ -241,6 +327,9 @@ public abstract class Style {
             animationInclusion.add(animation);
         else
             animationInclusion.remove(animation);
+
+        if (included && animation.frameCount() > framesPerDim)
+            setFramesPerDim(animation.frameCount());
     }
 
     public void reorderAnimation(
@@ -320,7 +409,7 @@ public abstract class Style {
                 break;
             }
 
-        assert anim != null;
+        assert dir != null && anim != null;
         return renderSprite(dir, anim, 0);
     }
 
@@ -401,8 +490,4 @@ public abstract class Style {
     public boolean isWrapAnimsAcrossDims() {
         return wrapAnimsAcrossDims;
     }
-
-    // TODO - horizontal / vertical
-
-    // TODO - animations per dimension -- boundless?
 }
