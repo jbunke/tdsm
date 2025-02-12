@@ -46,9 +46,12 @@ public final class StaticLabel extends StaticMenuElement {
         return new StaticLabel(position, anchor, text.draw());
     }
 
+    public Coord2D follow() {
+        return getRenderPosition().displace(getWidth(), 0);
+    }
+
     public Coord2D followTB() {
-        return getRenderPosition().displace(
-                getWidth() + POST_LABEL_BUFFER_X, POST_LABEL_OFFSET_Y);
+        return follow().displace(POST_LABEL_BUFFER_X, POST_LABEL_OFFSET_Y);
     }
 
     /**

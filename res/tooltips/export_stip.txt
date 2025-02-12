@@ -1,0 +1,4 @@
+Stipple Effect is a pixel art editor.
+
+The .stip file has each of the sprite's
+customization options on its own layer.

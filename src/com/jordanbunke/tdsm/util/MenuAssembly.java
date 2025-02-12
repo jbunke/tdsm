@@ -329,7 +329,7 @@ public final class MenuAssembly {
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
-                "< Customize...", BOTTOM.at(0.0, 0.5).displace(4, 0),
+                "< Edit...", BOTTOM.at(0.0, 0.5).displace(4, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
         final MenuElement toExportButton = StaticTextButton.make(
@@ -350,7 +350,7 @@ public final class MenuAssembly {
 
         final int buttonW = atX(0.3);
         final MenuElement startButton = StaticTextButton.make(
-                "Start", ButtonType.STANDARD, Alignment.CENTER,
+                "Start editing", ButtonType.STANDARD, Alignment.CENTER,
                 buttonW, canvasAt(0.5, 0.65),
                 Anchor.CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CUSTOMIZATION, null)),
@@ -387,7 +387,7 @@ public final class MenuAssembly {
         final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W),
                 INC_Y = atY(1 / 9.0);
 
-        int y = atY(0.3);
+        int y = atY(0.2);
 
         final StaticLabel folderLabel = StaticLabel.make(
                 new Coord2D(LEFT, y), "Folder:");
@@ -418,12 +418,31 @@ public final class MenuAssembly {
                 fileNameTextbox.followIcon17(), Anchor.LEFT_TOP);
 
         y += INC_Y;
+        final StaticLabel overwriteLabel = StaticLabel.mini(
+                new Coord2D(LEFT, y),
+                "Exporting will overwrite at least one file!",
+                Colors.darkSystem(), Anchor.LEFT_TOP);
+        final GatewayMenuElement overwriteLogic = new GatewayMenuElement(
+                overwriteLabel, Export.get()::wouldOverwrite);
+
+        y += (int) (INC_Y * 0.8);
         final Checkbox jsonCheckbox = new Checkbox(
                 new Coord2D(LEFT, y), Anchor.LEFT_TOP,
                 Export.get()::isExportJSON, Export.get()::setExportJSON);
         final StaticLabel jsonLabel = StaticLabel.mini(
                 jsonCheckbox.followMiniLabel(), "Export JSON",
                 Colors.darkSystem(), Anchor.LEFT_TOP);
+
+        y += (int) (INC_Y * 0.5);
+        final Checkbox stipCheckbox = new Checkbox(
+                new Coord2D(LEFT, y), Anchor.LEFT_TOP,
+                Export.get()::isExportStip, Export.get()::setExportStip);
+        final StaticLabel stipLabel = StaticLabel.mini(
+                stipCheckbox.followMiniLabel(),
+                "Export Stipple Effect file (.stip)",
+                Colors.darkSystem(), Anchor.LEFT_TOP);
+        final Indicator stipInfo = Indicator.make(
+                ResourceCodes.EXPORT_STIP, stipLabel.follow(), Anchor.LEFT_TOP);
 
         final MenuElement backButton = StaticTextButton.make("< Configure...",
                 new Coord2D(LEFT, CANVAS_H - BUFFER),
@@ -435,8 +454,9 @@ public final class MenuAssembly {
                         Export.get()::export);
 
         mb.addAll(folderLabel, folderButton, folderPathLabel,
-                fileNameLabel, fileNameTextbox, fileNameInfo,
-                jsonCheckbox, jsonLabel, backButton, exportButton);
+                fileNameLabel, fileNameTextbox, fileNameInfo, overwriteLogic,
+                jsonCheckbox, jsonLabel, stipLabel, stipCheckbox, stipInfo,
+                backButton, exportButton);
 
         return mb.build();
     }

@@ -3,6 +3,8 @@ package com.jordanbunke.tdsm.data;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.GameImageIO;
+import com.jordanbunke.tdsm.flow.ProgramState;
+import com.jordanbunke.tdsm.util.EnumUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -14,7 +16,23 @@ public final class Export {
 
     private Path folder;
     private String fileName;
-    private boolean exportJSON;
+    private boolean exportJSON, exportStip;
+
+    private enum FileType {
+        PNG, JSON, STIP;
+
+        String extension() {
+            return "." + name().toLowerCase();
+        }
+
+        boolean exporting() {
+            return switch (this) {
+                case JSON -> get().exportJSON;
+                case STIP -> get().exportStip;
+                default -> true;
+            };
+        }
+    }
 
     static {
         INSTANCE = new Export();
@@ -24,6 +42,7 @@ public final class Export {
         folder = null;
         fileName = "";
         exportJSON = false;
+        exportStip = false;
     }
 
     public static Export get() {
@@ -34,20 +53,44 @@ public final class Export {
         return folder != null && validFileName(fileName);
     }
 
+    public boolean wouldOverwrite() {
+        if (!canExport())
+            return false;
+
+        return EnumUtils.stream(FileType.class)
+                .filter(FileType::exporting).map(this::getPath)
+                .map(p -> p.toFile().isFile())
+                .reduce(false, Boolean::logicalOr);
+    }
+
+    private Path getPath(final FileType type) {
+        if (!canExport())
+            return Path.of(fileName + type.extension());
+
+        return folder.resolve(fileName + type.extension());
+    }
+
     public void export() {
         if (!canExport())
             return;
 
         final GameImage spriteSheet = Sprite.get().renderSpriteSheet();
-        final Path spriteSheetPath = folder.resolve(fileName + ".png");
-
-        // TODO - send to an are you sure screen if file path already exists
+        final Path spriteSheetPath = getPath(FileType.PNG);
 
         GameImageIO.writeImage(spriteSheetPath, spriteSheet);
 
-        if (exportJSON) {
-            // TODO
-        }
+        if (exportJSON) exportJSON();
+        if (exportStip) exportStip();
+
+        ProgramState.set(ProgramState.CUSTOMIZATION, null);
+    }
+
+    private void exportJSON() {
+        // TODO
+    }
+
+    private void exportStip() {
+        // TODO
     }
 
     public boolean isExportJSON() {
@@ -56,6 +99,14 @@ public final class Export {
 
     public void setExportJSON(final boolean exportJSON) {
         this.exportJSON = exportJSON;
+    }
+
+    public boolean isExportStip() {
+        return exportStip;
+    }
+
+    public void setExportStip(final boolean exportStip) {
+        this.exportStip = exportStip;
     }
 
     public Path getFolder() {

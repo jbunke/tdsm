@@ -24,6 +24,7 @@ public final class ResourceCodes {
             LAYOUT = "layout",
             FRAMES_PER_DIM = "frames_per_dim",
             FILE_NAME = "file_name",
+            EXPORT_STIP = "export_stip",
             FIRST_SPRITE = "first_sprite",
             RANDOM_SPRITE = "random_sprite";
 }
