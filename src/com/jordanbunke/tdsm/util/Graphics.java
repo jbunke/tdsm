@@ -112,10 +112,6 @@ public final class Graphics {
             final boolean valid, final boolean highlighted, final boolean typing
     ) {
         // TODO - temp MVP implementation
-//        final TextButton tb = TextButton.of(prefix + text + suffix, width,
-//                        Alignment.LEFT, ButtonType.STANDARD)
-//                .sim(typing, highlighted);
-//        return drawTextButton(tb);
 
         // pre-processing
         final int left = Math.min(cursorIndex, selectionIndex),
@@ -285,7 +281,6 @@ public final class Graphics {
     // Draw additional
 
     public static GameImage drawTooltip(final String text) {
-        // TODO - temp MVP implementation
         final Color textColor = Colors.darkSystem();
         final String[] lines = text.split("\n");
         final GameImage[] lineImages = Arrays.stream(lines)
@@ -309,17 +304,36 @@ public final class Graphics {
             tooltip.draw(line, x, y);
         }
 
-        // TODO - foreground
-
         return tooltip.submit();
     }
 
-    public static void drawScreenBox(
-            final ScreenBox box, final GameImage canvas
+    public static void renderScreenBox(final GameImage canvas) {
+        renderScreenBox(canvas, 0, 0, CANVAS_W, CANVAS_H);
+    }
+
+    public static void renderScreenBox(
+            final GameImage canvas, final ScreenBox box
     ) {
-        // TODO - temp MVP implementation
-        canvas.drawRectangle(Colors.darkSystem(),
-                1f, box.x, box.y, box.width, box.height);
+        renderScreenBox(canvas, box.x, box.y, box.width, box.height);
+    }
+
+    public static void renderScreenBox(
+            final GameImage canvas,
+            final int x, final int y, final int w, final int h
+    ) {
+        final Color outer = Colors.darkSystem(), inner = Colors.lightAccent();
+
+        final GameImage box = new GameImage(w, h);
+
+        box.drawRectangle(outer, 2f, 1, 1, w - 2, h - 2);
+        box.drawRectangle(inner, 1f, 2, 2, w - 5, h - 5);
+
+        box.dot(outer, 2, 2);
+        box.dot(outer, 2, h - 3);
+        box.dot(outer, w - 3, 2);
+        box.dot(outer, w - 3, h - 3);
+
+        canvas.draw(box.submit(), x, y);
     }
 
     private static GameImage drawCheckerboard() {

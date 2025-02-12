@@ -27,6 +27,8 @@ public final class Colors {
             INVALID = new Color(0x80, 0, 0),
             DARK_SYSTEM = new Color(0x1e, 0x1b, 0x34),
             LIGHT_SYSTEM = new Color(0xe8, 0xe8, 0xe8),
+            LIGHT_ACCENT = new Color(0x73, 0x88, 0xa3),
+            DARK_ACCENT = new Color(0x56, 0x4f, 0x84),
             BACKGROUND = new Color(0x88, 0x9f, 0xbc); // new Color(0x6b, 0x8e, 0xbc);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {
@@ -40,6 +42,14 @@ public final class Colors {
 
     public static Color lightSystem() {
         return LIGHT_SYSTEM;
+    }
+
+    public static Color lightAccent() {
+        return LIGHT_ACCENT;
+    }
+
+    public static Color darkAccent() {
+        return DARK_ACCENT;
     }
 
     public static Color bg() {

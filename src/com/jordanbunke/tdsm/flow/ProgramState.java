@@ -10,6 +10,7 @@ import com.jordanbunke.tdsm.flow.screens.Configuration;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Cursor;
+import com.jordanbunke.tdsm.util.Graphics;
 import com.jordanbunke.tdsm.util.Tooltip;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -66,8 +67,8 @@ public enum ProgramState implements ProgramContext {
             case CUSTOMIZATION -> Customization.get().render(canvas);
             case CONFIGURATION -> Configuration.get().render(canvas);
             case MENU -> {
-                // TODO - global
                 menu.render(canvas);
+                Graphics.renderScreenBox(canvas);
             }
         }
 

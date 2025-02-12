@@ -52,7 +52,7 @@ public final class Configuration implements ProgramContext {
         canvas.draw(drawPreview(), PREVIEW.x, PREVIEW.y);
 
         Arrays.stream(configurationBoxes()).forEach(
-                box -> Graphics.drawScreenBox(box, canvas));
+                box -> Graphics.renderScreenBox(canvas, box));
 
         menu.render(canvas);
     }

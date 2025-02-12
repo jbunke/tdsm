@@ -45,9 +45,6 @@ public final class Customization implements ProgramContext {
     }
 
     public void render(final GameImage canvas) {
-        Arrays.stream(customizationBoxes()).forEach(
-                box -> Graphics.drawScreenBox(box, canvas));
-
         final GameImage blueprint = Graphics.BLUEPRINT;
         final int bHalfW = blueprint.getWidth() / 2;
         canvas.draw(blueprint, PREVIEW.atX(0.5) - bHalfW, BUFFER);
@@ -59,7 +56,13 @@ public final class Customization implements ProgramContext {
         canvas.draw(sprite, (PREVIEW.width - sprite.getWidth()) / 2,
                 Layout.PREVIEW_RENDER_Y);
 
+        Arrays.stream(customizationBoxes())
+                .filter(box -> box != SAMPLER)
+                .forEach(box -> Graphics.renderScreenBox(canvas, box));
+
         menu.render(canvas);
+
+        Graphics.renderScreenBox(canvas, SAMPLER);
     }
 
     @Override
