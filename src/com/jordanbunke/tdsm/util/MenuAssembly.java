@@ -351,7 +351,7 @@ public final class MenuAssembly {
 
         // TODO - logo
 
-        final int buttonW = screenWidth(0.3);
+        final int buttonW = atX(0.3);
         final MenuElement startButton = StaticTextButton.make(
                 "Start", ButtonType.STANDARD, Alignment.CENTER,
                 buttonW, canvasAt(0.5, 0.65),
@@ -386,17 +386,52 @@ public final class MenuAssembly {
     public static Menu export() {
         final MenuBuilder mb = new MenuBuilder();
 
-        // TODO
+        final double REL_W = 0.6;
+        final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W),
+                INC_Y = atY(1 / 9.0), SECTION_INC_Y = atY(0.15);
 
-        final MenuElement backButton = StaticTextButton.make(
-                "< Configure...", new Coord2D(BUFFER, CANVAS_H - BUFFER),
+        int y = atY(0.3);
+
+        final StaticLabel folderLabel = StaticLabel.make(
+                new Coord2D(LEFT, y), "Folder:");
+        final Coord2D fbPos = folderLabel.followTB();
+        final MenuElement folderButton = StaticTextButton.make("Choose",
+                ButtonType.STANDARD, Alignment.CENTER, RIGHT - fbPos.x, fbPos,
+                Anchor.LEFT_TOP, () -> true, () -> {} /* TODO */);
+
+        y += INC_Y;
+        final DynamicLabel folderPathLabel = DynamicLabel.init(
+                new Coord2D(LEFT, y), /* TODO */ () -> "For now", "For now")
+                .setMini().build();
+
+        y += SECTION_INC_Y;
+        final StaticLabel fileNameLabel = StaticLabel.make(
+                new Coord2D(LEFT, y), "File name:");
+        final Coord2D fntbPos = fileNameLabel.followTB();
+        final DynamicTextbox fileNameTextbox = DynamicTextbox.init(
+                fntbPos, /* TODO */ () -> "", s -> {})
+                .setWidth(RIGHT - fntbPos.x).build();
+
+        y += SECTION_INC_Y;
+        final Checkbox jsonCheckbox = new Checkbox(
+                new Coord2D(LEFT, y), Anchor.LEFT_TOP,
+                /* TODO */ () -> true, b -> {});
+        final StaticLabel jsonLabel = StaticLabel.mini(
+                jsonCheckbox.followMiniLabel(), "Export JSON",
+                Colors.darkSystem(), Anchor.LEFT_TOP);
+
+        final MenuElement backButton = StaticTextButton.make("< Configure...",
+                new Coord2D(LEFT, CANVAS_H - BUFFER),
                 Anchor.LEFT_BOTTOM, () -> true,
                 () -> ProgramState.set(ProgramState.CONFIGURATION, null)),
                 exportButton = StaticTextButton.make("Export",
-                        new Coord2D(CANVAS_W - BUFFER, CANVAS_H - BUFFER),
+                        new Coord2D(RIGHT, CANVAS_H - BUFFER),
                         Anchor.RIGHT_BOTTOM, () -> true /* TODO */,
                         () -> {} /* TODO */);
-        mb.addAll(backButton, exportButton);
+
+        mb.addAll(folderLabel, folderButton, folderPathLabel,
+                fileNameLabel, fileNameTextbox, jsonCheckbox, jsonLabel,
+                backButton, exportButton);
 
         return mb.build();
     }

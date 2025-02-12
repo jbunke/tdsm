@@ -147,8 +147,12 @@ public final class Layout {
         return new Coord2D((int) (percX * CANVAS_W), (int) (percY * CANVAS_H));
     }
 
-    public static int screenWidth(final double perc) {
+    public static int atX(final double perc) {
         return (int) (perc * CANVAS_W);
+    }
+
+    public static int atY(final double perc) {
+        return (int) (perc * CANVAS_H);
     }
 
     public static Coord2D textButtonBelow(final MenuElement ref) {
