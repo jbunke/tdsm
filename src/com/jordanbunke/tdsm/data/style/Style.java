@@ -135,6 +135,17 @@ public abstract class Style {
                 .filter(animationInclusion::contains)
                 .toArray(Animation[]::new);
 
+        jb.add(new JSONPair("data", new JSONObject(
+                new JSONPair("directions", new JSONArray<>(
+                        Arrays.stream(dirs).map(directions::name)
+                                .map(s -> "\"" + s + "\"")
+                                .toArray(String[]::new))),
+                new JSONPair("animations", new JSONArray<>(
+                        Arrays.stream(anims).map(a -> new JSONObject(
+                                new JSONPair("id", a.id),
+                                new JSONPair("frame_count", a.frameCount())
+                        )).toArray(JSONObject[]::new))))));
+
         for (int d = 0; d < dirs.length; d++) {
             final Directions.Dir dir = dirs[d];
 
@@ -145,11 +156,14 @@ public abstract class Style {
                     final Coord2D coord = getSpriteCoord(
                             dirs.length, anims, d, a, f);
 
-                    final String id = String.join(
-                            SpriteStates.STANDARD_SEPARATOR,
-                            directions.name(dir), anim.id, String.valueOf(f));
+                    final String dirID = directions.name(dir),
+                            id = String.join(SpriteStates.STANDARD_SEPARATOR,
+                                    dirID, anim.id, String.valueOf(f));
                     final JSONObject frame = new JSONObject(
                             new JSONPair("id", id),
+                            new JSONPair("direction", dirID),
+                            new JSONPair("animation", anim.id),
+                            new JSONPair("anim_frame", f),
                             new JSONPair("x", coord.x * spriteW),
                             new JSONPair("y", coord.y * spriteH),
                             new JSONPair("coord_x", coord.x),
