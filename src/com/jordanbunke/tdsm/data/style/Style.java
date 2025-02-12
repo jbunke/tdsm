@@ -96,7 +96,8 @@ public abstract class Style {
 
                 for (int f = 0; f < anim.frameCount(); f++) {
                     final GameImage sprite = renderSpriteForExport(dir, anim, f);
-                    final Coord2D coord = getSpriteCoord(dirs, anims, d, a, f);
+                    final Coord2D coord = getSpriteCoord(
+                            dirs.length, anims, d, a, f);
 
                     spriteSheet.draw(sprite,
                             spriteW * coord.x, spriteH * coord.y);
@@ -108,11 +109,18 @@ public abstract class Style {
     }
 
     private Coord2D getSpriteCoord(
-            final Directions.Dir[] dirs, final Animation[] anims,
+            final int dirCount, final Animation[] anims,
             final int d, final int a, final int f
     ) {
+        final int x, y;
+
         // TODO
-        return new Coord2D();
+
+        x = 0; y = 0;
+
+        // end TODO
+
+        return new Coord2D(x, y);
     }
 
     private int getSpritesX() {

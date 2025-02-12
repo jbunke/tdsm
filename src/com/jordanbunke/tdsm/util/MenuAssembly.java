@@ -395,6 +395,13 @@ public final class MenuAssembly {
         final GameImage spriteSheet = Sprite.get().renderSpriteSheet();
         GameImageIO.writeImage(Paths.get("").resolve("output").resolve("test.png"), spriteSheet);
 
+        // TODO - remove - temp
+        final MenuElement backButton = StaticTextButton.make(
+                "< Back", canvasAt(0.05, 0.05),
+                Anchor.LEFT_TOP, () -> true,
+                () -> ProgramState.set(ProgramState.CONFIGURATION, null));
+        mb.add(backButton);
+
         return mb.build();
     }
 }
