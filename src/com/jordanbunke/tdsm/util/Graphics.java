@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.PREVIEW;
+import static com.jordanbunke.tdsm.util.Colors.*;
 
 public final class Graphics {
     private static final Path ICONS_FOLDER = Path.of("icons"),
@@ -64,7 +65,7 @@ public final class Graphics {
 
     // UI Elements
     public static int naiveButtonWidth(final String label) {
-        final GameImage textImage = uiText(Colors.darkSystem())
+        final GameImage textImage = uiText(darkSystem())
                 .addText(label).build().draw();
 
         return textImage.getWidth() + TEXT_BUTTON_EXTRA_W;
@@ -78,16 +79,16 @@ public final class Graphics {
 
         switch (type) {
             case STANDARD, DD_HEAD -> {
-                bgColor = highlight ? Colors.lightAccent() : Colors.darkAccent();
-                textColor = Colors.darkSystem();
+                bgColor = highlight ? lightAccent() : darkAccent();
+                textColor = darkSystem();
             }
             case DD_OPTION -> {
-                bgColor = highlight ? Colors.lightSystem() : Colors.darkSystem();
-                textColor = highlight ? Colors.darkSystem() : Colors.lightSystem();
+                bgColor = highlight ? lightSystem() : darkSystem();
+                textColor = highlight ? darkSystem() : lightSystem();
             }
             default -> {
-                bgColor = Colors.transparent();
-                textColor = Colors.darkAccent();
+                bgColor = transparent();
+                textColor = darkAccent();
             }
         }
 
@@ -118,8 +119,8 @@ public final class Graphics {
                 clearRect(button, w - 1, 0, 1, h);
             }
             case DD_HEAD, STANDARD -> {
-                final Color sideShadow = Colors.shiftRGB(accentColor, 0x40),
-                        bottomShadow = Colors.shiftRGB(accentColor, 0x20);
+                final Color sideShadow = shiftRGB(accentColor, 0x40),
+                        bottomShadow = shiftRGB(accentColor, 0x20);
 
                 button.drawLine(bottomShadow, 1f, 0, h - 2, w, h - 2);
                 button.drawLine(sideShadow, 1f, w - 2, 0, w - 2, h);
@@ -163,17 +164,17 @@ public final class Graphics {
 
         // setup
         final Color
-                mainColor = valid ? Colors.darkSystem() : Colors.invalid(),
-                backgroundColor = valid ? Colors.highlight()
-                        : Colors.shiftRGB(mainColor, 0x60),
-                outlineColor = typing ? Colors.selected() :
-                        (highlighted ? Colors.highlight() : mainColor),
-                sideShadow = Colors.shiftRGB(valid
+                mainColor = valid ? darkSystem() : invalid(),
+                backgroundColor = valid ? highlight()
+                        : shiftRGB(mainColor, 0x60),
+                outlineColor = typing ? selected() :
+                        (highlighted ? highlight() : mainColor),
+                sideShadow = shiftRGB(valid
                         ? outlineColor : mainColor, 0x40),
-                bottomShadow = Colors.shiftRGB(valid
+                bottomShadow = shiftRGB(valid
                         ? outlineColor : mainColor, 0x20),
-                affixColor = Colors.shiftRGB(mainColor, 0x60),
-                highlightOverlay = Colors.highlightOverlay();
+                affixColor = shiftRGB(mainColor, 0x40),
+                highlightOverlay = highlightOverlay();
 
         // text and cursor
 
@@ -270,8 +271,8 @@ public final class Graphics {
 
         button.fill(color);
 
-        final Color outline = b.outcomes(Colors.selected(),
-                Colors.highlight(), Colors.darkSystem());
+        final Color outline = b.outcomes(selected(),
+                highlight(), darkSystem());
 
         button.drawRectangle(outline, 2f, 0, 0,
                 button.getWidth(), button.getHeight());
@@ -286,18 +287,26 @@ public final class Graphics {
         return drawSwatchButton(color, b);
     }
 
-    public static GameImage drawVertScrollSlider(
+    public static GameImage drawVertScrollBar(
             final int w, final int h, final int barH,
             final int barY, final Button b
     ) {
-        final GameImage slider = new GameImage(w, h);
+        final GameImage scrollSpace = new GameImage(w, h),
+                scrollBar = new GameImage(w, barH);
 
-        // TODO - temp MVP implementation
-        final Color fill = b.outcomes(
-                Colors.selected(), Colors.highlight(), Colors.darkSystem());
-        slider.fillRectangle(fill, 0, barY, w, barH);
+        final Color c = b.outcomes(
+                lightSystem(), lightAccent(), darkAccent()),
+                accent = b.outcomes(
+                        lightAccent(), darkAccent(), darkSystem());
 
-        return slider.submit();
+        scrollBar.fill(c);
+        scrollBar.drawLine(accent, 1f, 0, barH - 2, w, barH - 2);
+        scrollBar.drawRectangle(darkSystem(), 1f, 0, 0, w - 1, barH - 1);
+        clearCorners(scrollBar);
+
+        scrollSpace.draw(scrollBar, 0, barY);
+
+        return scrollSpace.submit();
     }
 
     public static GameImage drawColorPicker(
@@ -311,20 +320,20 @@ public final class Graphics {
 
         // hue spectrum
         for (int y = 0; y < h; y++) {
-            final Color at = Colors.fromHSV(picker.getHypothetical(0, y));
+            final Color at = fromHSV(picker.getHypothetical(0, y));
             asset.fillRectangle(at, 0, y, HUE_SLIDER_W, 1);
         }
 
         // SV matrix
         for (int x = HUE_SLIDER_W; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                final Color at = Colors.fromHSV(picker.getHypothetical(x, y));
+                final Color at = fromHSV(picker.getHypothetical(x, y));
                 asset.setRGB(x, y, at.getRGB());
             }
         }
 
         // outlines
-        final Color outline = Colors.darkSystem();
+        final Color outline = darkSystem();
         asset.drawRectangle(outline, 2f, 0, 0, w, h);
         asset.drawLine(outline, 1f, HUE_SLIDER_W, 0, HUE_SLIDER_W, h);
 
@@ -341,7 +350,7 @@ public final class Graphics {
     // Draw additional
 
     public static GameImage drawTooltip(final String text) {
-        final Color textColor = Colors.darkSystem();
+        final Color textColor = darkSystem();
         final String[] lines = text.split("\n");
         final GameImage[] lineImages = Arrays.stream(lines)
                 .map(l -> miniText(textColor).addText(l).build().draw())
@@ -355,7 +364,7 @@ public final class Graphics {
         final GameImage tooltip = new GameImage(w, h);
 
         // background
-        tooltip.fill(Colors.lightSystem());
+        tooltip.fill(lightSystem());
 
         for (int l = 0; l < ls; l++) {
             final GameImage line = lineImages[l];
@@ -381,7 +390,7 @@ public final class Graphics {
             final GameImage canvas,
             final int x, final int y, final int w, final int h
     ) {
-        final Color outer = Colors.darkSystem(), inner = Colors.lightAccent();
+        final Color outer = darkSystem(), inner = lightAccent();
 
         final GameImage box = new GameImage(w, h);
 
@@ -404,7 +413,7 @@ public final class Graphics {
         for (int x = 0; x < w / px; x++)
             for (int y = 0; y < h / px; y++)
                 checkerboard.fillRectangle(
-                        Colors.checkerboard((x + y) % 2 == 0),
+                        checkerboard((x + y) % 2 == 0),
                         x * px, y * px, px, px);
 
         return checkerboard.submit();
@@ -415,7 +424,7 @@ public final class Graphics {
         final GameImage line = new GameImage(horz ? l : 1, horz ? 1 : l);
 
         for (int px = 0; px < l; px++)
-            line.dot(Colors.line(px % 8 < 4), horz ? px : 0, horz ? 0 : px);
+            line.dot(line(px % 8 < 4), horz ? px : 0, horz ? 0 : px);
 
         return line.submit();
     }
@@ -432,7 +441,7 @@ public final class Graphics {
                 final Color c = icon.getColorAt(x, y);
 
                 if (c.getAlpha() == 0 && hasAdjacent(icon, x, y))
-                    highlight.dot(Colors.highlight(), x, y);
+                    highlight.dot(highlight(), x, y);
             }
         }
 
@@ -474,16 +483,16 @@ public final class Graphics {
     ) {
         for (int x = xi; x < xi + w; x++)
             for (int y = yi; y < yi + h; y++)
-                img.setRGB(x, y, Colors.transparent().getRGB());
+                img.setRGB(x, y, transparent().getRGB());
     }
 
     public static void clearCorners(final GameImage img) {
         final int w = img.getWidth(), h = img.getHeight();
 
-        img.setRGB(0, 0, Colors.transparent().getRGB());
-        img.setRGB(w - 1, 0, Colors.transparent().getRGB());
-        img.setRGB(0, h - 1, Colors.transparent().getRGB());
-        img.setRGB(w - 1, h - 1, Colors.transparent().getRGB());
+        img.setRGB(0, 0, transparent().getRGB());
+        img.setRGB(w - 1, 0, transparent().getRGB());
+        img.setRGB(0, h - 1, transparent().getRGB());
+        img.setRGB(w - 1, h - 1, transparent().getRGB());
     }
 
     public static Color greyscale(final Color in) {

@@ -59,11 +59,11 @@ public final class VertScrollSlider extends AbstractSlider {
         final int barH = sliderBallDim, rangeY = getHeight() - barH,
                 barY = (int) (getSliderFraction() * rangeY);
 
-        base = Graphics.drawVertScrollSlider(getWidth(), getHeight(),
+        base = Graphics.drawVertScrollBar(getWidth(), getHeight(),
                 barH, barY, Button.sim(false, false));
-        highlight = Graphics.drawVertScrollSlider(getWidth(), getHeight(),
+        highlight = Graphics.drawVertScrollBar(getWidth(), getHeight(),
                 barH, barY, Button.sim(false, true));
-        sliding = Graphics.drawVertScrollSlider(getWidth(), getHeight(),
+        sliding = Graphics.drawVertScrollBar(getWidth(), getHeight(),
                 barH, barY, Button.sim(true, false));
     }
 
