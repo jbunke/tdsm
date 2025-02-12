@@ -4,7 +4,7 @@ import com.jordanbunke.tdsm.data.Animation;
 
 import static com.jordanbunke.tdsm.data.Animation.PlaybackMode.*;
 
-public class Playback {
+public final class Playback {
     private Animation animation;
 
     private boolean playing, forwards;

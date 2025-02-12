@@ -76,7 +76,8 @@ public abstract class Style {
     }
 
     public GameImage renderSpriteSheet() {
-        final int spriteW = dims.width(), spriteH = dims.height(),
+        final Bounds2D spriteDims = getExportSpriteDims();
+        final int spriteW = spriteDims.width(), spriteH = spriteDims.height(),
                 spritesX = getSpritesX(), spritesY = getSpritesY(),
                 w = spriteW * spritesX, h = spriteH * spritesY;
         final GameImage spriteSheet = new GameImage(w, h);
@@ -112,15 +113,65 @@ public abstract class Style {
             final int dirCount, final Animation[] anims,
             final int d, final int a, final int f
     ) {
-        final int x, y;
+        final Coord2D coord = getSpriteCoordGeneric(dirCount, anims, d, a, f);
+        final int animDim = coord.x, dirDim = coord.y;
 
-        // TODO
+        return animationOrientation == Orientation.HORIZONTAL
+                ? coord
+                : new Coord2D(dirDim, animDim);
+    }
 
-        x = 0; y = 0;
+    private Coord2D getSpriteCoordGeneric(
+            final int dirCount, final Animation[] anims,
+            final int d, final int a, final int f
+    ) {
+        final int animDim, dirDim;
 
-        // end TODO
+        // pre-processing
+        int framesProcessed = 0;
 
-        return new Coord2D(x, y);
+        for (int i = 0; i < a; i++)
+            framesProcessed += anims[i].frameCount();
+
+        final int totalF = framesProcessed + f;
+
+        // coordinate logic
+        if (multipleAnimsPerDim) {
+            if (singleDim) {
+                animDim = totalF;
+                dirDim = d;
+            } else if (wrapAnimsAcrossDims) {
+                animDim = totalF % framesPerDim;
+                dirDim = (dirCount * (totalF / framesPerDim)) + d;
+            } else {
+                final int[] framesPerAnim = Arrays.stream(anims)
+                        .map(Animation::frameCount)
+                        .mapToInt(i -> i).toArray();
+
+                int dim = 0, framesInDim = 0;
+
+                for (int i = 0; i <= a; i++) {
+                    final int animFrameCount = framesPerAnim[i];
+
+                    if (framesInDim + animFrameCount > framesPerDim) {
+                        dim++;
+                        framesInDim = 0;
+                    }
+
+                    if (i < a) {
+                        framesInDim += animFrameCount;
+                    }
+                }
+
+                animDim = framesInDim + f;
+                dirDim = (dirCount * dim) + d;
+            }
+        } else {
+            animDim = f;
+            dirDim = (dirCount * a) + d;
+        }
+
+        return new Coord2D(animDim, dirDim);
     }
 
     private int getSpritesX() {
@@ -150,12 +201,13 @@ public abstract class Style {
                             .map(Animation::frameCount).reduce(0, Integer::sum);
 
                     if (wrapAnimsAcrossDims)
-                        return dirCount * (animFrames % framesPerDim);
+                        return dirCount * ((animFrames / framesPerDim) +
+                                (animFrames % framesPerDim > 0 ? 1 : 0));
                     else {
-                        final Integer[] framesPerAnim = animationOrder.stream()
+                        final int[] framesPerAnim = animationOrder.stream()
                                 .filter(animationInclusion::contains)
                                 .map(Animation::frameCount)
-                                .toArray(Integer[]::new);
+                                .mapToInt(i -> i).toArray();
 
                         int dims = 1, framesInDim = 0;
 

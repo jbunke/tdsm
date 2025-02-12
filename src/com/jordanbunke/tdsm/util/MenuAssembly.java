@@ -1,7 +1,5 @@
 package com.jordanbunke.tdsm.util;
 
-import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.io.GameImageIO;
 import com.jordanbunke.delta_time.menu.Menu;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
@@ -19,8 +17,8 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
-import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.Checkbox;
+import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
@@ -32,7 +30,6 @@ import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static com.jordanbunke.tdsm.util.Constants.MAX_SPRITE_EXPORT_H;
@@ -143,7 +140,7 @@ public final class MenuAssembly {
 
         // PREVIEW
         final Indicator firstSpriteInfo = Indicator.make(
-                ResourceCodes.FIRST_SPRITE, PREVIEW.pos(),
+                ResourceCodes.FIRST_SPRITE, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                 Anchor.LEFT_TOP);
         mb.add(firstSpriteInfo);
 
@@ -391,16 +388,15 @@ public final class MenuAssembly {
 
         // TODO
 
-        // TODO - remove - temp
-        final GameImage spriteSheet = Sprite.get().renderSpriteSheet();
-        GameImageIO.writeImage(Paths.get("").resolve("output").resolve("test.png"), spriteSheet);
-
-        // TODO - remove - temp
         final MenuElement backButton = StaticTextButton.make(
-                "< Back", canvasAt(0.05, 0.05),
-                Anchor.LEFT_TOP, () -> true,
-                () -> ProgramState.set(ProgramState.CONFIGURATION, null));
-        mb.add(backButton);
+                "< Configure...", new Coord2D(BUFFER, CANVAS_H - BUFFER),
+                Anchor.LEFT_BOTTOM, () -> true,
+                () -> ProgramState.set(ProgramState.CONFIGURATION, null)),
+                exportButton = StaticTextButton.make("Export",
+                        new Coord2D(CANVAS_W - BUFFER, CANVAS_H - BUFFER),
+                        Anchor.RIGHT_BOTTOM, () -> true /* TODO */,
+                        () -> {} /* TODO */);
+        mb.addAll(backButton, exportButton);
 
         return mb.build();
     }
