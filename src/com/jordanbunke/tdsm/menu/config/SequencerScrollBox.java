@@ -19,9 +19,4 @@ public final class SequencerScrollBox extends VertScrollBox {
     public int getScrollBarWidth() {
         return Layout.SEQUENCER_SCROLL_BAR_W;
     }
-
-    @Override
-    public Coord2D getOffset() {
-        return super.getOffset();
-    }
 }

@@ -36,4 +36,12 @@ public class VertScrollBox extends AbstractVerticalScrollBox {
     public int getScrollBarWidth() {
         return VERT_SCROLL_BAR_W;
     }
+
+    /**
+     * Included for access; superclass method is protected - {@link AbstractVerticalScrollBox#getOffset()}
+     * */
+    @Override
+    public Coord2D getOffset() {
+        return super.getOffset();
+    }
 }
