@@ -9,7 +9,6 @@ import java.util.List;
 public abstract class CustomizationLayer {
     public final String id;
     public final boolean rendered;
-    private boolean expanded;
 
     private final List<ColorSelection> influencingSelections;
 
@@ -20,8 +19,6 @@ public abstract class CustomizationLayer {
         this.rendered = rendered;
 
         influencingSelections = new ArrayList<>();
-
-        collapse();
     }
 
     public void addInfluencingSelection(
@@ -29,18 +26,6 @@ public abstract class CustomizationLayer {
     ) {
         influencingSelections.add(influencingSelection);
         influencingSelection.addDependent(this);
-    }
-
-    public void expand() {
-        expanded = true;
-    }
-
-    public void collapse() {
-        expanded = false;
-    }
-
-    public boolean isExpanded() {
-        return expanded;
     }
 
     public List<ColorSelection> getInfluencingSelections() {

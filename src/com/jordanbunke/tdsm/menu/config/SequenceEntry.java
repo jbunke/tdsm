@@ -49,7 +49,7 @@ public final class SequenceEntry<T> extends MenuElementContainer {
 
     @Override
     public MenuElement[] getMenuElements() {
-        return new MenuElement[] { checkbox, label, dragNode};
+        return new MenuElement[] { checkbox, label, dragNode };
     }
 
     @Override

@@ -89,7 +89,6 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     @Override
     public void randomize() {
-        // final int index = RNG.randomInRange(0, choices.length);
         final int index;
 
         if (noAssetChoice.valid) {

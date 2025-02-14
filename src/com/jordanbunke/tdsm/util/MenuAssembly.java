@@ -21,6 +21,7 @@ import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
 import com.jordanbunke.tdsm.menu.layer.ColorSelectionElement;
+import com.jordanbunke.tdsm.menu.layer.CustomizationElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
@@ -79,7 +80,7 @@ public final class MenuAssembly {
 
         // TODO - TOP BAR
         final StaticLabel styleLabel = StaticLabel.make(
-                labelPosFor(TOP.x, TOP.y), "Sprite style:");
+                labelPosFor(TOP.pos()), "Sprite style:");
 
         final Style[] styles = EnumUtils.stream(Styles.class)
                 .map(Styles::get).toArray(Style[]::new);
@@ -102,21 +103,23 @@ public final class MenuAssembly {
         mb.addAll(styleLabel, styleDropdown, randomSpriteButton);
 
         // TODO - LAYER
+        mb.add(CustomizationElement.make());
+
         // TODO - temp dummy elements
-        final ColorSelection ds1 = new ColorSelection("Test 1", true),
-                ds2 = new ColorSelection("Test 2 @ Middle", false,
-                        new Color(0x28, 0x28, 0x3c),
-                        new Color(0x80, 0, 0));
-        final ColorSelectionElement
-                cse1 = ColorSelectionElement.of(ds1, LAYERS.pos()),
-                cse2 = ColorSelectionElement.of(ds2, LAYERS.at(0.5, 0.0));
-
-        final StaticLabel test = StaticLabel.mini(
-                miniLabelPosFor(LAYERS.x, LAYERS.atY(0.5)),
-                "The quick brown fox jumped over the lazy dog.", Colors.darkSystem(),
-                Anchor.LEFT_TOP);
-
-        mb.addAll(cse1, cse2, test);
+//        final ColorSelection ds1 = new ColorSelection("Test 1", true),
+//                ds2 = new ColorSelection("Test 2 @ Middle", false,
+//                        new Color(0x28, 0x28, 0x3c),
+//                        new Color(0x80, 0, 0));
+//        final ColorSelectionElement
+//                cse1 = ColorSelectionElement.of(ds1, LAYERS.pos()),
+//                cse2 = ColorSelectionElement.of(ds2, LAYERS.at(0.5, 0.0));
+//
+//        final StaticLabel test = StaticLabel.mini(
+//                miniLabelPosFor(LAYERS.x, LAYERS.atY(0.5)),
+//                "The quick brown fox jumped over the lazy dog.", Colors.darkSystem(),
+//                Anchor.LEFT_TOP);
+//
+//        mb.addAll(cse1, cse2, test);
 
         // BOTTOM BAR
         final MenuElement toMainButton = StaticTextButton.make(
@@ -144,7 +147,7 @@ public final class MenuAssembly {
 
         // SEQUENCING
         final StaticLabel sequencingLabel = StaticLabel.make(
-                labelPosFor(SEQUENCING.x, SEQUENCING.y), "Sequencing");
+                labelPosFor(SEQUENCING.pos()), "Sequencing");
         final Indicator sequencingInfo = Indicator.make(ResourceCodes.INCLUSION,
                 sequencingLabel.followIcon17(), Anchor.LEFT_TOP);
 
@@ -183,7 +186,7 @@ public final class MenuAssembly {
 
         // LAYOUT
         final StaticLabel paddingLabel = StaticLabel.make(
-                labelPosFor(LAYOUT.x, LAYOUT.y), "Padding");
+                labelPosFor(LAYOUT.pos()), "Padding");
         final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
                 paddingLabel.followIcon17(), Anchor.LEFT_TOP);
         final MenuElement resetPaddingButton = IconButton.make(

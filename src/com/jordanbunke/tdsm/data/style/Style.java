@@ -35,7 +35,7 @@ public abstract class Style {
     public final Bounds2D dims;
     public final Directions directions;
     public final Animation[] animations;
-    final Layers layers;
+    public final Layers layers;
 
     private final SpriteStates<String> states;
     private SpriteMap<String> map;

@@ -116,7 +116,7 @@ public final class Layout {
             TOOLTIP_PADDING_W = 2,
             COL_SEL_DROPOFF = 13, MIN_VERT_SCROLL_BAR_H = 10,
             ICON_TEXTBOX_RELATIVE_DIFF_Y = 2,
-            STANDARD_TEXTBOX_W = 60,
+            STANDARD_TEXTBOX_W = 60, COLLAPSED_LAYER_H = 20,
             PADDING_TEXTBOX_W = STANDARD_TEXTBOX_W, STANDARD_FOLLOW_X = 48,
             CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
             STANDARD_ICON_DIM = 17, VEIL_OFFSET = 3,
@@ -126,6 +126,10 @@ public final class Layout {
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);
+    }
+
+    public static Coord2D labelPosFor(final Coord2D ref) {
+        return labelPosFor(ref.x, ref.y);
     }
 
     public static Coord2D miniLabelPosFor(final int x, final int y) {
