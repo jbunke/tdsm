@@ -30,6 +30,10 @@ public enum Cursor {
             Cursor.cursor = cursor;
     }
 
+    public static void force(final Cursor cursor) {
+        Cursor.cursor = cursor;
+    }
+
     public static void render(final GameImage canvas) {
         final Coord2D crp = Layout.cursorRenderPos(cursor.image, mousePos);
         canvas.draw(cursor.image, crp.x, crp.y);

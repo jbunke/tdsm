@@ -68,7 +68,9 @@ public final class HorzScrollSlider extends Slider {
     public void process(final InputEventLogger eventLogger) {
         super.process(eventLogger);
 
-        if (isSliding() || isHighlighted())
+        if (isSliding())
+            Cursor.force(Cursor.HORZ_SCROLL);
+        else if (isHighlighted())
             Cursor.ping(Cursor.HORZ_SCROLL);
     }
 }

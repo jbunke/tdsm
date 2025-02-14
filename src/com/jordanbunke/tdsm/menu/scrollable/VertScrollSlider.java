@@ -68,7 +68,9 @@ public final class VertScrollSlider extends Slider {
     public void process(final InputEventLogger eventLogger) {
         super.process(eventLogger);
 
-        if (isSliding() || isHighlighted())
+        if (isSliding())
+            Cursor.force(Cursor.VERT_SCROLL);
+        else if (isHighlighted())
             Cursor.ping(Cursor.VERT_SCROLL);
     }
 }

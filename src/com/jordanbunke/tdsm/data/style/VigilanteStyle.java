@@ -68,7 +68,7 @@ public final class VigilanteStyle extends Style {
                 new Color(0x7f, 0x49, 0x13),
                 new Color(0x3f, 0x19, 0x00),
                 new Color(0xbc, 0x87, 0x4b))),
-                randomSelection = new ColorSelectionLayer("random",
+                ex1 = new ColorSelectionLayer("Example 1",
                         new ColorSelection("Sel 1", true),
                         new ColorSelection("Sel 2", true),
                         new ColorSelection("Sel 3", true),
@@ -77,10 +77,14 @@ public final class VigilanteStyle extends Style {
                         new ColorSelection("Sel 6", true),
                         new ColorSelection("Sel 7", true),
                         new ColorSelection("Sel 8", true),
-                        new ColorSelection("Sel 9", true));
+                        new ColorSelection("Sel 9", true)),
+                ex2 = new ColorSelectionLayer("Example 2",
+                        new ColorSelection("Hair", true),
+                        new ColorSelection("Brows", true),
+                        new ColorSelection("Other", true));
 
         layers.add(
-                skinTone, randomSelection,
+                skinTone, ex1, ex2,
                 ACLBuilder.of("base", this,
                                 new AssetChoiceTemplate("black"),
                                 new AssetChoiceTemplate("mixed"),

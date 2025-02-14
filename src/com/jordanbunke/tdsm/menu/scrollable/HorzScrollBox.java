@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.menu.scrollable;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.AbstractHorizontalScrollBox;
+import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.AbstractSlider;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
@@ -64,5 +65,23 @@ public final class HorzScrollBox extends AbstractHorizontalScrollBox {
         final int childW = child.getWidth(), right = rp.x + getWidth();
 
         return childRP.x <= right && childRP.x + childW >= rp.x;
+    }
+
+    // TODO - test
+    @Override
+    public void setY(final int y) {
+        final int was = getY();
+
+        super.setY(y);
+
+        for (Scrollable element : getMenuElements())
+            element.resetY();
+
+        final AbstractSlider slider = getSlider();
+
+        if (slider != null) {
+            final int deltaY = getY() - was;
+            slider.incrementY(deltaY);
+        }
     }
 }
