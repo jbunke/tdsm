@@ -12,10 +12,10 @@ import com.jordanbunke.tdsm.util.Graphics;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public final class VertScrollSlider extends Slider {
+public final class HorzScrollSlider extends Slider {
     private GameImage base, highlight, sliding;
 
-    public VertScrollSlider(
+    public HorzScrollSlider(
             final Coord2D position, final Bounds2D dimensions,
             final int maxValue, final Supplier<Integer> getter,
             final Consumer<Integer> setter, final int sliderBallDim
@@ -42,26 +42,26 @@ public final class VertScrollSlider extends Slider {
 
     @Override
     protected int getCoordDimension(final Coord2D position) {
-        return position.y;
+        return position.x;
     }
 
     @Override
     protected int getSizeDimension() {
-        return getHeight();
+        return getWidth();
     }
 
     @Override
     protected void updateAssets() {
         // pre-processing
-        final int barH = sliderBallDim, rangeY = getHeight() - barH,
-                barY = (int) (getSliderFraction() * rangeY);
+        final int barW = sliderBallDim, rangeX = getWidth() - barW,
+                barX = (int) (getSliderFraction() * rangeX);
 
-        base = Graphics.drawVertScrollBar(getWidth(), getHeight(),
-                barH, barY, Button.sim(false, false));
-        highlight = Graphics.drawVertScrollBar(getWidth(), getHeight(),
-                barH, barY, Button.sim(false, true));
-        sliding = Graphics.drawVertScrollBar(getWidth(), getHeight(),
-                barH, barY, Button.sim(true, false));
+        base = Graphics.drawHorzScrollBar(getWidth(), getHeight(),
+                barW, barX, Button.sim(false, false));
+        highlight = Graphics.drawHorzScrollBar(getWidth(), getHeight(),
+                barW, barX, Button.sim(false, true));
+        sliding = Graphics.drawHorzScrollBar(getWidth(), getHeight(),
+                barW, barX, Button.sim(true, false));
     }
 
     @Override
@@ -69,6 +69,6 @@ public final class VertScrollSlider extends Slider {
         super.process(eventLogger);
 
         if (isSliding() || isHighlighted())
-            Cursor.ping(Cursor.VERT_SCROLL);
+            Cursor.ping(Cursor.HORZ_SCROLL);
     }
 }

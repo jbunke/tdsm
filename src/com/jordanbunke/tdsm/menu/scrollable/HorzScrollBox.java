@@ -1,43 +1,43 @@
 package com.jordanbunke.tdsm.menu.scrollable;
 
 import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.AbstractVerticalScrollBox;
+import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.AbstractHorizontalScrollBox;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
-public class VertScrollBox extends AbstractVerticalScrollBox {
-    public VertScrollBox(
+public final class HorzScrollBox extends AbstractHorizontalScrollBox {
+    public HorzScrollBox(
             final Coord2D position, final Bounds2D dimensions,
             final Scrollable[] menuElements,
-            final int realBottomY, final int initialOffsetY
+            final int realRightX, final int initialOffsetX
     ) {
         super(position, dimensions, menuElements, GameImage::new,
-                PX_PER_SCROLL, realBottomY, initialOffsetY);
+                PX_PER_SCROLL, realRightX, initialOffsetX);
     }
 
     @Override
-    protected VertScrollSlider makeSlider(final int maxOffsetY) {
+    protected HorzScrollSlider makeSlider(final int maxOffsetX) {
         final Coord2D position = new Coord2D(getX(), getY())
-                .displace(getWidth() - getScrollBarWidth(), 0);
-        final int h = getHeight(),
-                scrollBarH = Math.max(MIN_SCROLL_BAR_DIM,
-                        (int) (Math.pow(h, 2) / (double) (maxOffsetY + h)));
+                .displace(0, getHeight() - getScrollBarHeight());
+        final int w = getWidth(),
+                scrollBarW = Math.max(MIN_SCROLL_BAR_DIM,
+                        (int) (Math.pow(w, 2) / (double) (maxOffsetX + w)));
 
-        return new VertScrollSlider(position,
-                new Bounds2D(getScrollBarWidth(), h), maxOffsetY,
-                () -> -getOffset().y, o -> setOffsetY(-o), scrollBarH);
+        return new HorzScrollSlider(position,
+                new Bounds2D(w, getScrollBarHeight()), maxOffsetX,
+                () -> -getOffset().x, o -> setOffsetX(-o), scrollBarW);
     }
 
-    public int getScrollBarWidth() {
-        return VERT_SCROLL_BAR_W;
+    public int getScrollBarHeight() {
+        return HORZ_SCROLL_BAR_H;
     }
 
     /**
      * Included for access; superclass method is protected -
-     * {@link AbstractVerticalScrollBox#getOffset()}
+     * {@link AbstractHorizontalScrollBox#getOffset()}
      * */
     @Override
     public Coord2D getOffset() {
@@ -61,8 +61,8 @@ public class VertScrollBox extends AbstractVerticalScrollBox {
     protected boolean renderAndProcessChild(final Scrollable child) {
         final Coord2D rp = getRenderPosition(),
                 childRP = child.getRenderPosition();
-        final int childH = child.getHeight(), bottom = rp.y + getHeight();
+        final int childW = child.getWidth(), right = rp.x + getWidth();
 
-        return childRP.y <= bottom && childRP.y + childH >= rp.y;
+        return childRP.x <= right && childRP.x + childW >= rp.x;
     }
 }

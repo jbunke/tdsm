@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContainer;
+import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
@@ -15,17 +16,24 @@ import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.IconOptionsButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
+import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.ResourceCodes;
+
+import java.util.Arrays;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 
 public final class LayerElement extends MenuElementContainer {
+    private static final int HORZ_SCROLL_BOX_W;
+
     private static boolean shifting;
 
     static {
         shifting = false;
+
+        HORZ_SCROLL_BOX_W = (int) (LAYERS.width * 0.9);
     }
 
     private final CustomizationLayer layer;
@@ -100,14 +108,19 @@ public final class LayerElement extends MenuElementContainer {
         } else if (layer instanceof ColorSelectionLayer csl) {
             final ColorSelection[] selections = csl.getSelections();
 
-            // TODO - wrap in horizontal scroll box
-            for (int i = 0; i < selections.length; i++) {
-                final ColorSelectionElement cse =
-                        ColorSelectionElement.of(selections[i],
-                                INITIAL.displace(i * COL_SEL_LAYER_INC_X, 0),
-                                Anchor.LEFT_TOP, csl.isSingle());
-                mb.add(cse);
-            }
+            final MenuBuilder cses = new MenuBuilder();
+
+            for (int i = 0; i < selections.length; i++)
+                cses.add(ColorSelectionElement.of(selections[i],
+                        INITIAL.displace(i * COL_SEL_LAYER_INC_X, 0),
+                        Anchor.LEFT_TOP, csl.isSingle()));
+
+            final HorzScrollBox selectionBox = new HorzScrollBox(
+                    INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W, /* TODO */ 45),
+                    Arrays.stream(cses.build().getMenuElements())
+                            .map(Scrollable::new).toArray(Scrollable[]::new),
+                    INITIAL.x + (selections.length * COL_SEL_LAYER_INC_X), 0);
+            mb.add(selectionBox);
         }
     }
 

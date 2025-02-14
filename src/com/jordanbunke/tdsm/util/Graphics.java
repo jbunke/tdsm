@@ -309,6 +309,28 @@ public final class Graphics {
         return scrollSpace.submit();
     }
 
+    public static GameImage drawHorzScrollBar(
+            final int w, final int h, final int barW,
+            final int barX, final Button b
+    ) {
+        final GameImage scrollSpace = new GameImage(w, h),
+                scrollBar = new GameImage(barW, h);
+
+        final Color c = b.outcomes(
+                lightSystem(), lightAccent(), darkAccent()),
+                accent = b.outcomes(
+                        lightAccent(), darkAccent(), darkSystem());
+
+        scrollBar.fill(c);
+        scrollBar.drawLine(accent, 1f, barW - 2, 0, barW - 2, h);
+        scrollBar.drawRectangle(darkSystem(), 1f, 0, 0, barW - 1, h - 1);
+        clearCorners(scrollBar);
+
+        scrollSpace.draw(scrollBar, barX, 0);
+
+        return scrollSpace.submit();
+    }
+
     public static GameImage drawColorPicker(
             final ColorPicker picker
     ) {
