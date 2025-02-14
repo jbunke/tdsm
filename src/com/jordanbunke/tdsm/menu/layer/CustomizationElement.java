@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContainer;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
+import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
@@ -24,7 +25,8 @@ public final class CustomizationElement extends MenuElementContainer {
     private int offset, highest;
 
     private CustomizationElement() {
-        super(LAYERS.pos(), LAYERS.dims(), Anchor.LEFT_TOP, false);
+        super(LAYERS.at(0.0, 0.015), new Bounds2D((int) (LAYERS.width * 0.99),
+                (int) (LAYERS.height * 0.975)), Anchor.LEFT_TOP, false);
 
         layerElements = makeLayerElements();
         offset = 0;
@@ -64,8 +66,8 @@ public final class CustomizationElement extends MenuElementContainer {
         for (int l = 0; l < layers.get().size(); l++) {
             final CustomizationLayer layer = layers.get().get(l);
 
-            mb.add(new LayerElement(INITIAL.displace(0,
-                    COLLAPSED_LAYER_H * l), layer, l, 100 /* TODO */));
+            mb.add(LayerElement.make(INITIAL.displace(0,
+                    COLLAPSED_LAYER_H * l), layer, l));
         }
 
         return Arrays.stream(mb.build().getMenuElements())
@@ -82,8 +84,12 @@ public final class CustomizationElement extends MenuElementContainer {
                         .reduce(0, Math::max), offset);
 
         // TODO - hotfix?
-        if (scrollBox.getSlider() == null && highest < getY())
+        if (scrollBox.getSlider() == null && highest < getY()) {
             shiftFollowingElements(SHIFT_ALL_LAYERS, getY() - highest);
+
+            if (scrollBox.getSlider() != null)
+                scrollBox.setOffsetY(-offset);
+        }
     }
 
     @Override
@@ -93,7 +99,6 @@ public final class CustomizationElement extends MenuElementContainer {
 
     @Override
     public boolean hasNonTrivialBehaviour() {
-        // TODO - test
         return true;
     }
 

@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.menu.layer;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContainer;
@@ -8,6 +9,7 @@ import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.menu.IconOptionsButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -28,12 +30,12 @@ public final class LayerElement extends MenuElementContainer {
     private final IconOptionsButton collapser;
     private final MenuElement[] contents;
 
-    public LayerElement(
+    private LayerElement(
             final Coord2D position, final CustomizationLayer layer,
             final int index, final int expandedH
     ) {
-        super(position, new Bounds2D(LAYERS.width, COLLAPSED_LAYER_H),
-                Anchor.LEFT_TOP, false);
+        super(position, new Bounds2D((int) (LAYERS.width * 0.99),
+                COLLAPSED_LAYER_H), Anchor.LEFT_TOP, false);
 
         this.layer = layer;
         this.index = index;
@@ -42,7 +44,8 @@ public final class LayerElement extends MenuElementContainer {
         expanded = false;
 
         nameLabel = StaticLabel.make(labelPosFor(position), layer.name());
-        collapser = IconOptionsButton.init(nameLabel.followIcon17())
+        collapser = IconOptionsButton.init(nameLabel.followIcon17()
+                        .displace(BUFFER / 2, 0))
                 .setCodes(ResourceCodes.COLLAPSE, ResourceCodes.EXPAND)
                 .setIndexFunc(() -> expanded ? 0 : 1)
                 .setGlobal(() -> {
@@ -55,6 +58,14 @@ public final class LayerElement extends MenuElementContainer {
         contents = makeContents();
     }
 
+    public static LayerElement make(
+            final Coord2D position, final CustomizationLayer layer, final int index
+    ) {
+        // TODO
+
+        return new LayerElement(position, layer, index, 100 /* TODO */);
+    }
+
     private MenuElement[] makeContents() {
         final MenuBuilder mb = new MenuBuilder();
 
@@ -63,6 +74,17 @@ public final class LayerElement extends MenuElementContainer {
         // TODO
 
         return mb.build().getMenuElements();
+    }
+
+    @Override
+    public void render(final GameImage canvas) {
+        super.render(canvas);
+
+        if (index > 0) {
+            final int x1 = LAYERS.atX(0.04), x2 = LAYERS.atX(0.96),
+                    y = getY() + BUFFER / 2;
+            canvas.drawLine(Colors.lightAccent(), 1f, x1, y, x2, y);
+        }
     }
 
     private void expand() {
