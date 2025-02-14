@@ -71,7 +71,13 @@ public final class VigilanteStyle extends Style {
                 randomSelection = new ColorSelectionLayer("random",
                         new ColorSelection("Sel 1", true),
                         new ColorSelection("Sel 2", true),
-                        new ColorSelection("Sel 3", true));
+                        new ColorSelection("Sel 3", true),
+                        new ColorSelection("Sel 4", true),
+                        new ColorSelection("Sel 5", true),
+                        new ColorSelection("Sel 6", true),
+                        new ColorSelection("Sel 7", true),
+                        new ColorSelection("Sel 8", true),
+                        new ColorSelection("Sel 9", true));
 
         layers.add(
                 skinTone, randomSelection,

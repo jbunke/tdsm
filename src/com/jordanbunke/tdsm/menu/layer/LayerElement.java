@@ -14,6 +14,7 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.IconOptionsButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 
@@ -98,13 +99,13 @@ public final class LayerElement extends MenuElementContainer {
             // TODO
         } else if (layer instanceof ColorSelectionLayer csl) {
             final ColorSelection[] selections = csl.getSelections();
-            final int INC_X = 50;
 
             // TODO - wrap in horizontal scroll box
             for (int i = 0; i < selections.length; i++) {
-                final ColorSelectionElement cse = ColorSelectionElement.of(
-                        selections[i], INITIAL.displace(i * INC_X, 0),
-                        Anchor.LEFT_TOP, csl.isSingle());
+                final ColorSelectionElement cse =
+                        ColorSelectionElement.of(selections[i],
+                                INITIAL.displace(i * COL_SEL_LAYER_INC_X, 0),
+                                Anchor.LEFT_TOP, csl.isSingle());
                 mb.add(cse);
             }
         }
@@ -123,7 +124,10 @@ public final class LayerElement extends MenuElementContainer {
                         expand();
                 }).build();
         randomizeButton = IconButton.make(ResourceCodes.RANDOM, collapser.follow(),
-                Anchor.LEFT_TOP, () -> true, layer::randomize);
+                Anchor.LEFT_TOP, () -> true, () -> {
+                    layer.randomize();
+                    Sampler.get().jolt();
+                });
 
         makeContents();
     }

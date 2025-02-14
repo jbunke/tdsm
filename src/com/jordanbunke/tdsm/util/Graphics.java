@@ -406,8 +406,13 @@ public final class Graphics {
     }
 
     private static GameImage drawCheckerboard() {
-        final int w = PREVIEW.width, h = PREVIEW.height,
-                px = CHECKERBOARD_SQUARE;
+        return drawCheckerboard(PREVIEW.width, PREVIEW.height);
+    }
+
+    public static GameImage drawCheckerboard(
+            final int w, final int h
+    ) {
+        final int px = CHECKERBOARD_SQUARE;
         final GameImage checkerboard = new GameImage(w, h);
 
         for (int x = 0; x < w / px; x++)

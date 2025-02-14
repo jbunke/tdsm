@@ -333,6 +333,8 @@ public final class MenuAssembly {
     public static Menu main() {
         final MenuBuilder mb = new MenuBuilder();
 
+        mb.add(new BackgroundElement());
+
         // TODO - logo
 
         final int buttonW = atX(0.3);
