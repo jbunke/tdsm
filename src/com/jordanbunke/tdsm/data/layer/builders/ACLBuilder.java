@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.data.layer.builders;
 
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
@@ -18,6 +19,7 @@ public final class ACLBuilder {
 
     private String name;
     private Bounds2D dims;
+    private Coord2D previewCoord;
     private final List<AssetChoiceTemplate> choices;
     private ComposerBuilder composerBuilder;
     private NoAssetChoice noAssetChoice;
@@ -43,6 +45,7 @@ public final class ACLBuilder {
 
         composerBuilder = style::defaultBuildComposer;
         dims = style.dims;
+        previewCoord = new Coord2D();
         name = StringUtils.nameFromID(id);
         choices = new ArrayList<>();
         noAssetChoice = NoAssetChoice.invalid();
@@ -51,7 +54,7 @@ public final class ACLBuilder {
     public AssetChoiceLayer build() {
         return new AssetChoiceLayer(id, name, dims, style,
                 choices.toArray(AssetChoiceTemplate[]::new),
-                composerBuilder, noAssetChoice);
+                composerBuilder, noAssetChoice, previewCoord);
     }
 
     public ACLBuilder setName(final String name) {
@@ -61,6 +64,11 @@ public final class ACLBuilder {
 
     public ACLBuilder setDims(final Bounds2D dims) {
         this.dims = dims;
+        return this;
+    }
+
+    public ACLBuilder setPreviewCoord(final Coord2D previewCoord) {
+        this.previewCoord = previewCoord;
         return this;
     }
 

@@ -396,7 +396,7 @@ public abstract class Style {
                 new SpriteAssembler<>(dims.width(), dims.height());
 
         for (CustomizationLayer layer : layers.get())
-            if (layer.rendered)
+            if (layer.isRendered())
                 assembler.addLayer(layer.id, layer.getComposer());
 
         map = new SpriteMap<>(assembler, states);

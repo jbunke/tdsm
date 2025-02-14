@@ -66,6 +66,10 @@ public final class LayerElement extends MenuElementContainer {
         return new LayerElement(position, layer, index, 50 /* TODO */);
     }
 
+    public void refresh() {
+        // TODO
+    }
+
     private MenuElement[] makeContents() {
         final MenuBuilder mb = new MenuBuilder();
 

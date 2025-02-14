@@ -4,6 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.RNG;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
@@ -12,11 +13,12 @@ import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public final class AssetChoiceLayer extends CustomizationLayer {
-    private static final int NONE = -1;
+    public static final int NONE = -1;
 
-    private final Bounds2D dims;
+    public final Bounds2D dims;
     private final String name;
 
     private final AssetChoice[] choices;
@@ -25,6 +27,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     private final GameImage[] previews;
     private final ComposerBuilder composerBuilder;
     private final NoAssetChoice noAssetChoice;
+    private final Coord2D previewCoord;
     private SpriteSheet sheet;
 
     public AssetChoiceLayer(
@@ -32,9 +35,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             final Bounds2D dims, final Style style,
             final AssetChoiceTemplate[] choices,
             final ComposerBuilder composerBuilder,
-            final NoAssetChoice noAssetChoice
+            final NoAssetChoice noAssetChoice, final Coord2D previewCoord
     ) {
-        super(id, true);
+        super(id);
 
         this.name = name;
         this.dims = dims;
@@ -43,6 +46,8 @@ public final class AssetChoiceLayer extends CustomizationLayer {
                 .toArray(AssetChoice[]::new);
 
         this.previews = new GameImage[this.choices.length];
+        this.previewCoord = previewCoord;
+
         this.composerBuilder = composerBuilder;
         this.noAssetChoice = noAssetChoice;
 
@@ -53,7 +58,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     public void select(final int selection) {
         this.selection = selection;
+
         rebuildSpriteSheet();
+        refreshElement();
     }
 
     private void rebuildSpriteSheet() {
@@ -78,13 +85,20 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     }
 
     @Override
+    public boolean isRendered() {
+        return true;
+    }
+
+    @Override
     public void update() {
         for (int i = 0; i < choices.length; i++) {
             choices[i].redraw();
-            previews[i] = choices[i].retrieve().section(0, 0, dims.width(), dims.height());
+            previews[i] = choices[i].retrieve().section(previewCoord.x,
+                    previewCoord.y, dims.width(), dims.height());
         }
 
         rebuildSpriteSheet();
+        refreshElement();
     }
 
     @Override
@@ -112,5 +126,21 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     private boolean hasChoice() {
         return selection != NONE;
+    }
+
+    public String getChoiceID() {
+        if (!hasChoice())
+            return null;
+
+        return choices[selection].id;
+    }
+
+    public int[] getIndices() {
+        return IntStream.range(noAssetChoice.valid
+                ? NONE : 0, choices.length).toArray();
+    }
+
+    public GameImage getPreview(final int index) {
+        return previews[index];
     }
 }
