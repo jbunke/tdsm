@@ -35,6 +35,11 @@ public final class DecisionLayer extends CustomizationLayer {
     }
 
     @Override
+    public boolean isNonTrivial() {
+        return decision.isNonTrivial();
+    }
+
+    @Override
     public void update() {
         think();
         decision.update();

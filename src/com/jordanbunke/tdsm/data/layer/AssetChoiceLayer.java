@@ -93,6 +93,11 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     }
 
     @Override
+    public boolean isNonTrivial() {
+        return true;
+    }
+
+    @Override
     public void update() {
         for (int i = 0; i < choices.length; i++) {
             choices[i].redraw();

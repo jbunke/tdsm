@@ -14,6 +14,7 @@ public final class ResourceCodes {
             UNCHECKED = "unchecked",
             DRAG = "drag",
             RESET = "reset",
+            NONE = "none",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 

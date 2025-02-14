@@ -43,6 +43,11 @@ public final class ColorSelectionLayer extends CustomizationLayer {
     }
 
     @Override
+    public boolean isNonTrivial() {
+        return true;
+    }
+
+    @Override
     public void update() {}
 
     @Override

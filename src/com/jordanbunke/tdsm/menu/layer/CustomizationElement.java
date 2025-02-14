@@ -8,7 +8,6 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
-import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
 
 import java.util.Arrays;
@@ -61,10 +60,12 @@ public final class CustomizationElement extends MenuElementContainer {
         final MenuBuilder mb = new MenuBuilder();
 
         final Coord2D INITIAL = getPosition();
-        final Layers layers = Sprite.get().getStyle().layers;
+        final CustomizationLayer[] layers = Sprite.get().getStyle().layers
+                .get().stream().filter(CustomizationLayer::isNonTrivial)
+                .toArray(CustomizationLayer[]::new);
 
-        for (int l = 0; l < layers.get().size(); l++) {
-            final CustomizationLayer layer = layers.get().get(l);
+        for (int l = 0; l < layers.length; l++) {
+            final CustomizationLayer layer = layers[l];
 
             mb.add(LayerElement.make(INITIAL.displace(0,
                     COLLAPSED_LAYER_H * l), layer, l));

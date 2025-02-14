@@ -37,6 +37,8 @@ public abstract class CustomizationLayer {
 
     public abstract boolean isRendered();
 
+    public abstract boolean isNonTrivial();
+
     public abstract void update();
 
     public abstract void randomize();
