@@ -26,7 +26,7 @@ import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 
 public final class LayerElement extends MenuElementContainer {
-    private static final int HORZ_SCROLL_BOX_W;
+    private static final int HORZ_SCROLL_BOX_W, COL_SEL_SCROLL_BOX_H;
 
     private static boolean shifting;
 
@@ -34,6 +34,7 @@ public final class LayerElement extends MenuElementContainer {
         shifting = false;
 
         HORZ_SCROLL_BOX_W = (int) (LAYERS.width * 0.9);
+        COL_SEL_SCROLL_BOX_H = 45;
     }
 
     private final CustomizationLayer layer;
@@ -116,7 +117,7 @@ public final class LayerElement extends MenuElementContainer {
                         Anchor.LEFT_TOP, csl.isSingle()));
 
             final HorzScrollBox selectionBox = new HorzScrollBox(
-                    INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W, /* TODO */ 45),
+                    INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W, COL_SEL_SCROLL_BOX_H),
                     Arrays.stream(cses.build().getMenuElements())
                             .map(Scrollable::new).toArray(Scrollable[]::new),
                     INITIAL.x + (selections.length * COL_SEL_LAYER_INC_X), 0);

@@ -77,7 +77,12 @@ public final class ColorSelectionButton extends MenuButtonStub
     public void process(final InputEventLogger eventLogger) {
         super.process(eventLogger);
 
-        if (mouseIsWithinBounds(eventLogger.getAdjustedMousePosition()))
+        final boolean inBounds = mouseIsWithinBounds(
+                eventLogger.getAdjustedMousePosition());
+
+        setHighlighted(inBounds);
+
+        if (inBounds)
             Cursor.ping(Cursor.POINTER);
     }
 
