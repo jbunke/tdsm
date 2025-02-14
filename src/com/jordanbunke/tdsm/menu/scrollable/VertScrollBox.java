@@ -44,4 +44,26 @@ public class VertScrollBox extends AbstractVerticalScrollBox {
     public Coord2D getOffset() {
         return super.getOffset();
     }
+
+    @Override
+    public void render(final GameImage canvas) {
+        final int cw = canvas.getWidth(), ch = canvas.getHeight();
+        final GameImage capture = new GameImage(cw, ch);
+
+        super.render(capture);
+
+        final Coord2D pos = getPosition();
+        final GameImage box = capture.section(pos,
+                pos.displace(getWidth(), getHeight()));
+        canvas.draw(box.submit(), pos.x, pos.y);
+    }
+
+    @Override
+    protected boolean renderAndProcessChild(final Scrollable child) {
+        final Coord2D rp = getRenderPosition(),
+                childRP = child.getRenderPosition();
+        final int childH = child.getHeight(), bottom = rp.y + getHeight();
+
+        return childRP.y <= bottom && childRP.y + childH >= rp.y;
+    }
 }

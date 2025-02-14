@@ -83,13 +83,11 @@ public final class CustomizationElement extends MenuElementContainer {
                 Arrays.stream(layerElements).map(l -> l.getY() + l.getHeight())
                         .reduce(0, Math::max), offset);
 
-        // TODO - hotfix?
-        if (scrollBox.getSlider() == null && highest < getY()) {
-            shiftFollowingElements(SHIFT_ALL_LAYERS, getY() - highest);
+        updateOffset();
 
-            if (scrollBox.getSlider() != null)
-                scrollBox.setOffsetY(-offset);
-        }
+        // TODO - hotfix?
+        if (scrollBox.getSlider() == null && highest < getY())
+            shiftFollowingElements(SHIFT_ALL_LAYERS, getY() - highest);
     }
 
     @Override
@@ -106,6 +104,10 @@ public final class CustomizationElement extends MenuElementContainer {
     public void update(final double deltaTime) {
         super.update(deltaTime);
 
+        updateOffset();
+    }
+
+    private void updateOffset() {
         offset = -scrollBox.getOffset().y;
     }
 }

@@ -63,7 +63,7 @@ public final class LayerElement extends MenuElementContainer {
     ) {
         // TODO
 
-        return new LayerElement(position, layer, index, 100 /* TODO */);
+        return new LayerElement(position, layer, index, 50 /* TODO */);
     }
 
     private MenuElement[] makeContents() {
@@ -80,11 +80,9 @@ public final class LayerElement extends MenuElementContainer {
     public void render(final GameImage canvas) {
         super.render(canvas);
 
-        if (index > 0) {
-            final int x1 = LAYERS.atX(0.04), x2 = LAYERS.atX(0.96),
-                    y = getY() + BUFFER / 2;
-            canvas.drawLine(Colors.lightAccent(), 1f, x1, y, x2, y);
-        }
+        final int x1 = LAYERS.atX(0.04), x2 = LAYERS.atX(0.96),
+                y = getY() + getHeight() + BUFFER / 2;
+        canvas.drawLine(Colors.lightAccent(), 1f, x1, y, x2, y);
     }
 
     private void expand() {
