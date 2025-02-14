@@ -57,6 +57,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     }
 
     public void select(final int selection) {
+        if (selection == this.selection)
+            return;
+
         this.selection = selection;
 
         rebuildSpriteSheet();
@@ -124,15 +127,34 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         update();
     }
 
+    @Override
+    public int calculateExpandedHeight() {
+        // TODO - temp
+        final int BASE_H = 20, SEL_H = 20;
+
+        final AssetChoice choice = getChoice();
+        final boolean colorSelectors = choice != null &&
+                choice.getColorSelections().length > 0;
+
+        return BASE_H + dims.height() + (colorSelectors ? SEL_H : 0);
+    }
+
     private boolean hasChoice() {
         return selection != NONE;
     }
 
     public String getChoiceID() {
-        if (!hasChoice())
-            return null;
+        if (hasChoice())
+            return choices[selection].id;
 
-        return choices[selection].id;
+        return null;
+    }
+
+    public AssetChoice getChoice() {
+        if (hasChoice())
+            return choices[selection];
+
+        return null;
     }
 
     public int[] getIndices() {

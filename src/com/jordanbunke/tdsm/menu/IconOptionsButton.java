@@ -49,6 +49,10 @@ public final class IconOptionsButton extends SimpleToggleMenuButton {
         }
     }
 
+    public Coord2D follow() {
+        return getRenderPosition().displace(getWidth(), 0);
+    }
+
     public static class Builder {
         private final Coord2D position;
         private Anchor anchor;

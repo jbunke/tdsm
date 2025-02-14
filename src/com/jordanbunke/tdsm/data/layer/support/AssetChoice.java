@@ -105,6 +105,10 @@ public final class AssetChoice {
         return ResourceLoader.loadImageResource(filepath);
     }
 
+    public ColorSelection[] getColorSelections() {
+        return colorSelections;
+    }
+
     @Override
     public String toString() {
         return id;

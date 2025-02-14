@@ -51,6 +51,11 @@ public final class DecisionLayer extends CustomizationLayer {
         decision.randomize();
     }
 
+    @Override
+    public int calculateExpandedHeight() {
+        return decision.calculateExpandedHeight();
+    }
+
     public CustomizationLayer getDecision() {
         return decision;
     }

@@ -5,14 +5,15 @@ import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.util.StringUtils;
 
-// TODO
+import static com.jordanbunke.tdsm.util.Layout.*;
+
 public final class ColorSelectionLayer extends CustomizationLayer {
     private final String name;
     private final ColorSelection[] selections;
 
     public ColorSelectionLayer(
             final String id, final String name,
-            final ColorSelection[] selections
+            final ColorSelection... selections
     ) {
         super(id);
 
@@ -21,7 +22,7 @@ public final class ColorSelectionLayer extends CustomizationLayer {
     }
 
     public ColorSelectionLayer(
-            final String id, final ColorSelection[] selections
+            final String id, final ColorSelection... selections
     ) {
         this(id, StringUtils.nameFromID(id), selections);
     }
@@ -48,6 +49,15 @@ public final class ColorSelectionLayer extends CustomizationLayer {
     public void randomize() {
         for (ColorSelection selection : selections)
             selection.randomize();
+    }
+
+    @Override
+    public int calculateExpandedHeight() {
+        return COL_SEL_LAYER_BASE_H + (isSingle() ? 0 : COL_SEL_DROPOFF);
+    }
+
+    public boolean isSingle() {
+        return selections.length == 1;
     }
 
     public ColorSelection[] getSelections() {

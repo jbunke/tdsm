@@ -41,6 +41,8 @@ public abstract class CustomizationLayer {
 
     public abstract void randomize();
 
+    public abstract int calculateExpandedHeight();
+
     @Override
     public String toString() {
         return name();

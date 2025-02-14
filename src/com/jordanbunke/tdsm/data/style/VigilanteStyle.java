@@ -7,10 +7,14 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
+import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
+
+import java.awt.*;
 
 public final class VigilanteStyle extends Style {
     private static final VigilanteStyle INSTANCE;
@@ -59,7 +63,18 @@ public final class VigilanteStyle extends Style {
     }
 
     private void setUpLayers() {
+        final ColorSelectionLayer skinTone = new ColorSelectionLayer(
+                "skin-tone", new ColorSelection("", false,
+                new Color(0x7f, 0x49, 0x13),
+                new Color(0x3f, 0x19, 0x00),
+                new Color(0xbc, 0x87, 0x4b))),
+                randomSelection = new ColorSelectionLayer("random",
+                        new ColorSelection("Sel 1", true),
+                        new ColorSelection("Sel 2", true),
+                        new ColorSelection("Sel 3", true));
+
         layers.add(
+                skinTone, randomSelection,
                 ACLBuilder.of("base", this,
                                 new AssetChoiceTemplate("black"),
                                 new AssetChoiceTemplate("mixed"),

@@ -96,13 +96,12 @@ public final class Layout {
         }
     }
 
-    private static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
-            TOOLTIP_OFFSET_LEFT = -7, TOOLTIP_OFFSET_RIGHT = 5;
-
-    public static final int TEXT_IN_BUTTON_OFFSET_Y = -8,
+    public static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
+            TOOLTIP_OFFSET_LEFT = -7, TOOLTIP_OFFSET_RIGHT = 5,
+            TEXT_IN_BUTTON_OFFSET_Y = -8,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
             TEXT_BUTTON_RENDER_BUFFER_X = 4, DD_ICON_LEFT_NUDGE = 2,
-            PX_PER_SCROLL = 20, DROPDOWN_EXTRA_W = 32,
+            PX_PER_SCROLL = TEXT_BUTTON_H, DROPDOWN_EXTRA_W = 32,
             VERT_SCROLL_BAR_W = 12, DD_ELEMENT_ALLOWANCE = 3,
             POST_LABEL_BUFFER_X = 4, POST_LABEL_OFFSET_Y = 8,
             SWATCH_BUTTON_DIM = TEXT_BUTTON_H,
@@ -113,14 +112,15 @@ public final class Layout {
             TEXTBOX_SEG_INC = 1, HUE_SLIDER_W = SWATCH_BUTTON_DIM,
             TEXT_BUTTON_INC_Y = TEXT_BUTTON_H + 8,
             TOOLTIP_LINE_INC_Y = 8, TOOLTIP_INITIAL_OFFSET_Y = -4,
-            TOOLTIP_PADDING_W = 2,
+            TOOLTIP_PADDING_W = 2, LAYER_CONTENT_DROPOFF = 24,
             COL_SEL_DROPOFF = 13, MIN_VERT_SCROLL_BAR_H = 10,
             ICON_TEXTBOX_RELATIVE_DIFF_Y = 2,
             STANDARD_TEXTBOX_W = 60, COLLAPSED_LAYER_H = 20,
             PADDING_TEXTBOX_W = STANDARD_TEXTBOX_W, STANDARD_FOLLOW_X = 48,
             CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
             STANDARD_ICON_DIM = 17, VEIL_OFFSET = 3,
-            SEQUENCE_ENTRY_INC_Y = 17, SEQUENCER_SCROLL_BAR_W = 8;
+            SEQUENCE_ENTRY_INC_Y = 17, SEQUENCER_SCROLL_BAR_W = 8,
+            COL_SEL_LAYER_BASE_H = 43;
 
     public static double SEQUENCER_REL_H = 0.58;
 
