@@ -17,16 +17,18 @@ import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 
 public final class CustomizationElement extends MenuElementContainer {
     private static CustomizationElement INSTANCE;
+    private static final int SHIFT_ALL_LAYERS = -1;
 
     private final LayerElement[] layerElements;
     private VertScrollBox scrollBox;
-    private int offset;
+    private int offset, highest;
 
     private CustomizationElement() {
         super(LAYERS.pos(), LAYERS.dims(), Anchor.LEFT_TOP, false);
 
         layerElements = makeLayerElements();
         offset = 0;
+        highest = getY();
         refreshScrollBox();
     }
 
@@ -39,13 +41,16 @@ public final class CustomizationElement extends MenuElementContainer {
         return INSTANCE;
     }
 
-    void shiftFollowingElements(final int index, final int deltaY) {
+    void shiftFollowingElements(final int ref, final int deltaY) {
         LayerElement.setShifting(true);
 
-        for (int i = index + 1; i < layerElements.length; i++)
-            layerElements[index].incrementY(deltaY);
+        for (int i = ref + 1; i < layerElements.length; i++)
+            layerElements[i].incrementY(deltaY);
 
         LayerElement.setShifting(false);
+
+        highest = Arrays.stream(layerElements).map(LayerElement::getY)
+                .reduce(Integer.MAX_VALUE, Math::min);
 
         refreshScrollBox();
     }
@@ -75,6 +80,10 @@ public final class CustomizationElement extends MenuElementContainer {
                         .toArray(Scrollable[]::new),
                 Arrays.stream(layerElements).map(l -> l.getY() + l.getHeight())
                         .reduce(0, Math::max), offset);
+
+        // TODO - hotfix?
+        if (scrollBox.getSlider() == null && highest < getY())
+            shiftFollowingElements(SHIFT_ALL_LAYERS, getY() - highest);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
+import com.jordanbunke.tdsm.util.ParserUtils;
 import com.jordanbunke.tdsm.util.Tooltip;
 
 import java.util.Arrays;
@@ -124,8 +125,11 @@ public final class IconOptionsButton extends SimpleToggleMenuButton {
                     .mapToObj(i -> (Runnable) () -> {})
                     .toArray(Runnable[]::new);
             final String[] tooltips = this.tooltips != null
-                    ? this.tooltips : IntStream.range(0, options)
-                    .mapToObj(i -> Tooltip.NONE).toArray(String[]::new);
+                    ? this.tooltips : (codes != null
+                    ? Arrays.stream(codes).map(ParserUtils::readTooltip)
+                    .toArray(String[]::new)
+                    : IntStream.range(0, options)
+                    .mapToObj(i -> Tooltip.NONE).toArray(String[]::new));
 
             return new IconOptionsButton(position, dims, anchor,
                     bases, behaviours, tooltips, indexFunc, global);

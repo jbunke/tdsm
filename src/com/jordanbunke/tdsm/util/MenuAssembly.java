@@ -9,18 +9,18 @@ import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElemen
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.TDSM;
-import com.jordanbunke.tdsm.data.*;
-import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
+import com.jordanbunke.tdsm.data.Animation;
+import com.jordanbunke.tdsm.data.Edge;
+import com.jordanbunke.tdsm.data.Orientation;
+import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
-import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
-import com.jordanbunke.tdsm.menu.layer.ColorSelectionElement;
 import com.jordanbunke.tdsm.menu.layer.CustomizationElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
@@ -28,7 +28,6 @@ import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
-import java.awt.*;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -44,7 +43,7 @@ public final class MenuAssembly {
     public static Menu customization() {
         final MenuBuilder mb = new MenuBuilder();
 
-        // TODO - PREVIEW
+        // PREVIEW
         final StaticLabel animationLabel = StaticLabel.make(
                 labelPosFor(PREVIEW.x, PREVIEW.atY(0.75)), "Animation:");
 
@@ -78,7 +77,7 @@ public final class MenuAssembly {
 
         mb.addAll(veil);
 
-        // TODO - TOP BAR
+        // TOP BAR
         final StaticLabel styleLabel = StaticLabel.make(
                 labelPosFor(TOP.pos()), "Sprite style:");
 
@@ -102,24 +101,8 @@ public final class MenuAssembly {
 
         mb.addAll(styleLabel, styleDropdown, randomSpriteButton);
 
-        // TODO - LAYER
+        // LAYER
         mb.add(CustomizationElement.make());
-
-        // TODO - temp dummy elements
-//        final ColorSelection ds1 = new ColorSelection("Test 1", true),
-//                ds2 = new ColorSelection("Test 2 @ Middle", false,
-//                        new Color(0x28, 0x28, 0x3c),
-//                        new Color(0x80, 0, 0));
-//        final ColorSelectionElement
-//                cse1 = ColorSelectionElement.of(ds1, LAYERS.pos()),
-//                cse2 = ColorSelectionElement.of(ds2, LAYERS.at(0.5, 0.0));
-//
-//        final StaticLabel test = StaticLabel.mini(
-//                miniLabelPosFor(LAYERS.x, LAYERS.atY(0.5)),
-//                "The quick brown fox jumped over the lazy dog.", Colors.darkSystem(),
-//                Anchor.LEFT_TOP);
-//
-//        mb.addAll(cse1, cse2, test);
 
         // BOTTOM BAR
         final MenuElement toMainButton = StaticTextButton.make(
