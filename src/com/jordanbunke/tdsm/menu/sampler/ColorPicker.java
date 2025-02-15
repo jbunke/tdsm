@@ -21,7 +21,7 @@ import static com.jordanbunke.tdsm.util.Layout.HUE_SLIDER_W;
 public final class ColorPicker extends MenuElement implements ColorTransmitter {
     private Color color;
     private double hue, sat, val;
-    private boolean active, interacting;
+    private boolean active, interacting, onHueSlider;
 
     private GameImage asset;
 
@@ -61,17 +61,23 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
     }
 
     public double[] getHypothetical(
-            int localX, int localY
+            final int localX, final int localY
+    ) {
+        return getHypothetical(localX, localY, localX < HUE_SLIDER_W);
+    }
+
+    private double[] getHypothetical(
+            int localX, int localY, final boolean onHueSlider
     ) {
         final int w = getWidth(), h = getHeight();
         localX = MathPlus.bounded(0, localX, w);
         localY = MathPlus.bounded(0, localY, h);
 
-        if (localX < HUE_SLIDER_W) {
+        if (onHueSlider) {
             final double hypHue = localY / (double) h;
             return new double[] { hypHue, sat, val };
         } else {
-            final int x = localX - HUE_SLIDER_W,
+            final int x = Math.max(localX - HUE_SLIDER_W, 0),
                     matrixW = w - HUE_SLIDER_W;
             final double hypSat = x / (double) matrixW,
                     hypVal = 1.0 - (localY / (double) h);
@@ -79,8 +85,8 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
         }
     }
 
-    public Freeze getFreeze(final int localX) {
-        return localX < HUE_SLIDER_W ? Freeze.SV : Freeze.HUE;
+    private Freeze getFreeze() {
+        return onHueSlider ? Freeze.SV : Freeze.HUE;
     }
 
     private void updateActive() {
@@ -150,8 +156,12 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
                     if (e instanceof GameMouseEvent me &&
                             !me.matchesAction(GameMouseEvent.Action.UP)) {
                         switch (me.action) {
-                            case DOWN -> interacting = true;
+                            case DOWN -> {
+                                interacting = true;
+                                onHueSlider = localMP.x < HUE_SLIDER_W;
+                            }
                             case CLICK -> {
+                                onHueSlider = localMP.x < HUE_SLIDER_W;
                                 pickColor(localMP);
                                 interacting = false;
                             }
@@ -169,7 +179,7 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
 
             // cursor
             if (mouseInBounds)
-                Cursor.ping(interacting ? Cursor.NONE : Cursor.RETICLE);
+                Cursor.ping(interacting && !onHueSlider ? Cursor.NONE : Cursor.RETICLE);
         }
     }
 
@@ -208,11 +218,12 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
     }
 
     private void pickColor(final Coord2D localPos) {
-        final double[] hsv = getHypothetical(localPos.x, localPos.y);
+        final double[] hsv = getHypothetical(
+                localPos.x, localPos.y, onHueSlider);
 
         this.color = Colors.fromHSV(hsv);
 
-        updateHSV(hsv[0], hsv[1], hsv[2], getFreeze(localPos.x));
+        updateHSV(hsv[0], hsv[1], hsv[2], getFreeze());
         updateAsset();
         send();
     }
