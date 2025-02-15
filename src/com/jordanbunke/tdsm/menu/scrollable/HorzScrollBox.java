@@ -53,8 +53,8 @@ public final class HorzScrollBox extends AbstractHorizontalScrollBox {
         super.render(capture);
 
         final Coord2D pos = getPosition();
-        final GameImage box = capture.section(pos,
-                pos.displace(getWidth(), getHeight()));
+        final GameImage box = new GameImage(getWidth(), getHeight());
+        box.draw(capture, -pos.x, -pos.y);
         canvas.draw(box.submit(), pos.x, pos.y);
     }
 

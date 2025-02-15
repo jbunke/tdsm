@@ -72,6 +72,12 @@ public final class AssetChoiceButton extends MenuButton implements Button {
 
     @Override
     public void update(final double deltaTime) {
+        // check whether selected
+        if (index == layer.getChoiceIndex())
+            select();
+        else
+            deselect();
+
         if (isNone())
             return;
 
@@ -82,12 +88,6 @@ public final class AssetChoiceButton extends MenuButton implements Button {
             this.preview = preview;
             redraw();
         }
-
-        // check whether selected
-        if (index == layer.getChoiceIndex())
-            select();
-        else
-            deselect();
     }
 
     @Override

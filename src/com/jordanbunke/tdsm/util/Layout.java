@@ -121,7 +121,11 @@ public final class Layout {
             CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
             STANDARD_ICON_DIM = 17, VEIL_OFFSET = 3,
             SEQUENCE_ENTRY_INC_Y = 17, SEQUENCER_SCROLL_BAR_W = 8,
-            COL_SEL_LAYER_BASE_H = 43, COL_SEL_LAYER_INC_X = 50;
+            COL_SEL_LAYER_BASE_H = 43, COL_SEL_LAYER_INC_X = 50,
+            COL_SEL_SCROLL_BOX_H = 45,
+            ASSET_BUFFER_X = 10, ASSET_BUFFER_Y = 12,
+            INNER_ASSET_BUFFER_X = 20, INNER_ASSET_BUFFER_Y = 10,
+            ASSETS_BASE_H = ASSET_BUFFER_Y + INNER_ASSET_BUFFER_Y + 23;
 
     public static double SEQUENCER_REL_H = 0.58;
 

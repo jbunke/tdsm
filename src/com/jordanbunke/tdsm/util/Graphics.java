@@ -296,14 +296,21 @@ public final class Graphics {
             final GameImage preview, final Button b,
             final int w, final int h
     ) {
+        // TODO - temp MVP implementation
         final GameImage button = new GameImage(w, h);
 
-        // TODO
+        button.fill(Colors.shadow());
 
         final int px = (w - preview.getWidth()) / 2,
                 py = (h - preview.getHeight()) / 2;
 
         button.draw(preview, px, py);
+
+        final Color outline = b.outcomes(selected(),
+                highlight(), darkSystem());
+
+        button.drawRectangle(outline, 1f, 0, 0, w - 1, h - 1);
+        clearCorners(button);
 
         return button.submit();
     }

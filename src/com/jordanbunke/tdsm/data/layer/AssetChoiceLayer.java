@@ -16,6 +16,8 @@ import com.jordanbunke.tdsm.data.style.Style;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import static com.jordanbunke.tdsm.util.Layout.*;
+
 public final class AssetChoiceLayer extends CustomizationLayer {
     public static final int NONE = -1;
 
@@ -143,13 +145,13 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     @Override
     public int calculateExpandedHeight() {
         // TODO - temp
-        final int BASE_H = 30, SEL_H = 30;
+        final int SEL_H = 30;
 
-        final AssetChoice choice = getChoice();
-        final boolean colorSelectors = choice != null &&
-                choice.getColorSelections().length > 0;
+        final boolean hasSelectors = Arrays.stream(choices)
+                .map(c -> c.getColorSelections().length)
+                .reduce(0, Math::max) > 0;
 
-        return BASE_H + dims.height() + (colorSelectors ? SEL_H : 0);
+        return ASSETS_BASE_H + dims.height() + (hasSelectors ? SEL_H : 0);
     }
 
     private boolean hasChoice() {

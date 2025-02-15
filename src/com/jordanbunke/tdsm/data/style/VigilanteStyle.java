@@ -7,6 +7,7 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
+import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.Layers;
@@ -87,6 +88,13 @@ public final class VigilanteStyle extends Style {
                 skinTone, ex1, ex2,
                 ACLBuilder.of("base", this,
                                 new AssetChoiceTemplate("black"),
+                                new AssetChoiceTemplate("mixed"),
+                                new AssetChoiceTemplate("mixed",
+                                        new ColorSelection[] {
+                                                new ColorSelection("Nr. 1", false),
+                                                new ColorSelection("Nr. 2", true),
+                                        },
+                                        ColorReplacementFunc.trivial()),
                                 new AssetChoiceTemplate("mixed"),
                                 new AssetChoiceTemplate("white"))
                         .build(),

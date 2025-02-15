@@ -26,7 +26,7 @@ import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 
 public final class LayerElement extends MenuElementContainer {
-    private static final int HORZ_SCROLL_BOX_W, COL_SEL_SCROLL_BOX_H;
+    private static final int HORZ_SCROLL_BOX_W;
 
     private static boolean shifting;
 
@@ -34,7 +34,6 @@ public final class LayerElement extends MenuElementContainer {
         shifting = false;
 
         HORZ_SCROLL_BOX_W = (int) (LAYERS.width * 0.9);
-        COL_SEL_SCROLL_BOX_H = 45;
     }
 
     private final CustomizationLayer layer;
@@ -113,8 +112,8 @@ public final class LayerElement extends MenuElementContainer {
 
             // Dims pre-processing
             final Bounds2D bDims = new Bounds2D(
-                    acl.dims.width() + 20,
-                    acl.dims.height() + 10); // TODO - temp
+                    acl.dims.width() + INNER_ASSET_BUFFER_X,
+                    acl.dims.height() + INNER_ASSET_BUFFER_Y);
 
             for (int index : indices) {
                 final AssetChoiceButton acb = index == AssetChoiceLayer.NONE
@@ -122,15 +121,15 @@ public final class LayerElement extends MenuElementContainer {
                         : AssetChoiceButton.ofChoice(pos, bDims, acl, index);
                 acbs.add(acb);
 
-                pos = pos.displace(bDims.width() + 10 /* TODO */, 0);
+                pos = pos.displace(bDims.width() + ASSET_BUFFER_X, 0);
             }
 
             final HorzScrollBox choicesBox = new HorzScrollBox(
                     INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W,
-                    bDims.height() + 10 /* TODO - temp */),
+                    bDims.height() + ASSET_BUFFER_Y),
                     Arrays.stream(acbs.build().getMenuElements())
                             .map(Scrollable::new).toArray(Scrollable[]::new),
-                    pos.x, 0);
+                    pos.x - ASSET_BUFFER_X, 0);
             mb.add(choicesBox);
 
             // MAKE COLOR SELECTION BOXES FOR EACH CHOICE AND LINK VIA THINKING ELEMENT
