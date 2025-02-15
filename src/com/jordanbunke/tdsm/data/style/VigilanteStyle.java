@@ -2,20 +2,25 @@ package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
-import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
+import com.jordanbunke.tdsm.data.layer.AssetLayer;
 import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
-import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.builders.ALBuilder;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 import java.awt.*;
+import java.util.function.Function;
+
+import static com.jordanbunke.tdsm.util.Colors.*;
 
 public final class VigilanteStyle extends Style {
     private static final VigilanteStyle INSTANCE;
@@ -64,44 +69,23 @@ public final class VigilanteStyle extends Style {
     }
 
     private void setUpLayers() {
-        final ColorSelectionLayer skinTone = new ColorSelectionLayer(
-                "skin-tone", new ColorSelection("", false,
+        final ColorSelection skinTones = new ColorSelection(
+                "Skin", true,
                 new Color(0x7f, 0x49, 0x13),
                 new Color(0x3f, 0x19, 0x00),
-                new Color(0xbc, 0x87, 0x4b))),
-                ex1 = new ColorSelectionLayer("Example 1",
-                        new ColorSelection("Sel 1", true),
-                        new ColorSelection("Sel 2", true),
-                        new ColorSelection("Sel 3", true),
-                        new ColorSelection("Sel 4", true),
-                        new ColorSelection("Sel 5", true),
-                        new ColorSelection("Sel 6", true),
-                        new ColorSelection("Sel 7", true),
-                        new ColorSelection("Sel 8", true),
-                        new ColorSelection("Sel 9", true)),
-                ex2 = new ColorSelectionLayer("Example 2",
-                        new ColorSelection("Hair", true),
-                        new ColorSelection("Brows", true),
-                        new ColorSelection("Other", true));
+                new Color(0xbc, 0x87, 0x4b)),
+                hairColors = new ColorSelection(
+                        "Hair", true);
+        final ColorSelectionLayer skinToneL = new ColorSelectionLayer(
+                "skin-and-hair", skinTones, hairColors);
+        final AssetLayer baseL = ALBuilder.init("base", this)
+                .setColorReplacementFunc(VigilanteStyle::skinReplacement)
+                .build();
+        baseL.addInfluencingSelection(skinTones);
+        baseL.addInfluencingSelection(hairColors);
 
         layers.add(
-                skinTone, ex1, ex2,
-                ACLBuilder.of("base", this,
-                                new AssetChoiceTemplate("black"),
-                                new AssetChoiceTemplate("mixed"),
-                                new AssetChoiceTemplate("mixed",
-                                        new ColorSelection[] {
-                                                new ColorSelection("Nr. 1", false),
-                                                new ColorSelection("Nr. 2", true),
-                                                new ColorSelection("Nr. 3", true),
-                                                new ColorSelection("Nr. 4", true),
-                                                new ColorSelection("Nr. 5", true),
-                                                new ColorSelection("Nr. 6", true),
-                                        },
-                                        ColorReplacementFunc.trivial()),
-                                new AssetChoiceTemplate("mixed"),
-                                new AssetChoiceTemplate("white"))
-                        .build(),
+                skinToneL, baseL,
                 ACLBuilder.of("torso", this,
                                 new AssetChoiceTemplate("chestplate-1"))
                         .setNoAssetChoice(NoAssetChoice.equal()).build(),
@@ -111,6 +95,30 @@ public final class VigilanteStyle extends Style {
                         .setNoAssetChoice(NoAssetChoice.prob(0.1))
                         .build()
         );
+    }
+
+    private static Pair<Integer, Function<Color, Color>> skinReplacement(
+            final Color input
+    ) {
+        final int TARGET_H = 120, LENIENCY = 2, MIN_SAT = 10,
+                hue = hue(input), sat = sat(input), index;
+
+        if (input.equals(new Color(0x80, 0, 0xff)))
+            index = 1;
+        else if (Math.abs(TARGET_H - hue) <= LENIENCY && sat >= MIN_SAT)
+            index = 0;
+        else
+            index = -1;
+
+        return new Pair<>(index, c -> {
+            if (index == 1)
+                return c;
+
+            final double ch = rgbToHue(c), cv = rgbToValue(c),
+                    is = rgbToSat(input), iv = rgbToValue(input);
+
+            return fromHSV(ch, is, cv * iv);
+        });
     }
 
     @Override

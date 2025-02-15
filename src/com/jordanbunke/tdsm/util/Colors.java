@@ -1,8 +1,14 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
+import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public final class Colors {
     private static final Color BLACK = new Color(0, 0, 0),
@@ -94,6 +100,39 @@ public final class Colors {
 
     public static Color invalid() {
         return INVALID;
+    }
+
+    public static GameImage runColorReplacement(
+            final GameImage ref, final Color[] colors,
+            final ColorReplacementFunc colorReplacementFunc
+    ) {
+        final int w = ref.getWidth(), h = ref.getHeight();
+        final GameImage img = new GameImage(w, h);
+        final Map<Color, Color> replacements = new HashMap<>();
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                final Color c = ref.getColorAt(x, y);
+
+                if (replacements.containsKey(c))
+                    img.setRGB(x, y, replacements.get(c).getRGB());
+                else {
+                    final Pair<Integer, Function<Color, Color>> out =
+                            colorReplacementFunc.apply(c);
+                    final int index = out.a();
+
+                    if (index < 0 || index >= colors.length)
+                        img.setRGB(x, y, c.getRGB());
+                    else {
+                        final Color set = out.b().apply(colors[index]);
+                        replacements.put(c, set);
+                        img.setRGB(x, y, set.getRGB());
+                    }
+                }
+            }
+        }
+
+        return img.submit();
     }
 
     public static Color shiftRGB(final Color base, final int shift) {
@@ -201,10 +240,24 @@ public final class Colors {
         return getMaxOfRGB(rgbAsArray(c));
     }
 
-    private static int scaleUpChannel(final double n) {
-        return MathPlus.bounded(0,
-                (int) Math.round(n * Constants.RGB_SCALE),
-                Constants.RGB_SCALE);
+    private static int scaleUpRGBAHSV(final double n, final int scale) {
+        return MathPlus.bounded(0, (int) Math.round(n * scale), scale);
+    }
+
+    public static int hue(final Color c) {
+        return scaleUpRGBAHSV(rgbToHue(c), Constants.HUE_SCALE);
+    }
+
+    public static int sat(final Color c) {
+        return scaleUpChannel(rgbToSat(c));
+    }
+
+    public static int val(final Color c) {
+        return scaleUpChannel(rgbToValue(c));
+    }
+
+    public static int scaleUpChannel(final double n) {
+        return scaleUpRGBAHSV(n, Constants.RGB_SCALE);
     }
 
     private static double getRangeOfRGB(final double[] rgb) {

@@ -22,6 +22,7 @@ public abstract class CustomizationLayer {
     ) {
         influencingSelections.add(influencingSelection);
         influencingSelection.addDependent(this);
+        update();
     }
 
     public List<ColorSelection> getInfluencingSelections() {

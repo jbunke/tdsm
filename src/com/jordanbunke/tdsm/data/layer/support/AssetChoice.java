@@ -2,17 +2,17 @@ package com.jordanbunke.tdsm.data.layer.support;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
-import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.data.style.Style;
+import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Constants;
 
 import java.awt.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 public final class AssetChoice {
     public final String id, name;
@@ -70,33 +70,7 @@ public final class AssetChoice {
             return;
         }
 
-        final int w = asset.getWidth(), h = asset.getHeight();
-        final Map<Color, Color> replacements = new HashMap<>();
-        render = new GameImage(w, h);
-
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                final Color c = asset.getColorAt(x, y);
-
-                if (replacements.containsKey(c))
-                    render.setRGB(x, y, replacements.get(c).getRGB());
-                else {
-                    final Pair<Integer, Function<Color, Color>> out =
-                            colorReplacementFunc.apply(c);
-                    final int index = out.a();
-
-                    if (index < 0 || index >= colors.length)
-                        render.setRGB(x, y, c.getRGB());
-                    else {
-                        final Color set = out.b().apply(colors[index]);
-                        replacements.put(c, set);
-                        render.setRGB(x, y, set.getRGB());
-                    }
-                }
-            }
-        }
-
-        render.free();
+        render = Colors.runColorReplacement(asset, colors, colorReplacementFunc);
     }
 
     private GameImage fetchAsset() {

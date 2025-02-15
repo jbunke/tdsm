@@ -163,20 +163,6 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         return selection != NONE;
     }
 
-    public String getChoiceID() {
-        if (hasChoice())
-            return choices[selection].id;
-
-        return null;
-    }
-
-    public AssetChoice getChoice() {
-        if (hasChoice())
-            return choices[selection];
-
-        return null;
-    }
-
     public AssetChoice getChoiceAt(final int index) {
         return choices[index];
     }
