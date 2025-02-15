@@ -6,7 +6,6 @@ import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContai
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
-import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.util.Colors;
 
 import java.awt.*;
@@ -40,11 +39,6 @@ public final class Sampler extends MenuElementContainer {
     private MenuElement[] setUpMenuElements() {
         final MenuBuilder mb = new MenuBuilder();
 
-        // submit button
-        final MenuElement submitButton = StaticTextButton.make("Submit",
-                SAMPLER.at(1.0, 1.0).displace(-BUFFER, -BUFFER),
-                Anchor.RIGHT_BOTTOM, this::isActive, () -> submit(true));
-
         // textbox
         final int postSwatchesX = BUFFER + (2 * SWATCH_BUTTON_INC);
         final ColorTextbox colorTextbox = new ColorTextbox(
@@ -58,6 +52,13 @@ public final class Sampler extends MenuElementContainer {
                         (SWATCH_BUTTON_INC * 5) -
                                 (SWATCH_BUTTON_INC - SWATCH_BUTTON_DIM)),
                 Anchor.LEFT_TOP, color);
+
+        // submit button
+        final MenuElement submitButton = SubmitColorButton.make(
+                SAMPLER.at(1.0, 1.0).displace(-BUFFER, -BUFFER),
+                () -> isActive() &&
+                        !getSelection().getColor().equals(getColor()),
+                this::submit);
 
         mb.addAll(swatchManager, submitButton, colorTextbox, colorPicker);
 
@@ -83,7 +84,8 @@ public final class Sampler extends MenuElementContainer {
             if (e instanceof ColorTransmitter ct && !ct.equals(sender))
                 ct.receive(color);
 
-        submit(false);
+        if (sender != null && sender.submits())
+            submit();
     }
 
     public ColorSelection getSelection() {
@@ -97,12 +99,9 @@ public final class Sampler extends MenuElementContainer {
         setColor(selection.getColor(), null);
     }
 
-    public void submit(final boolean close) {
+    public void submit() {
         if (isActive())
             selection.setColor(color, true);
-
-        if (close)
-            close();
     }
 
     public void close() {

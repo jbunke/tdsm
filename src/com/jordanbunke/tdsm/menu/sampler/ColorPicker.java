@@ -210,6 +210,11 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
         return color;
     }
 
+    @Override
+    public boolean submits() {
+        return false;
+    }
+
     private void setColor(final Color color) {
         this.color = color;
 

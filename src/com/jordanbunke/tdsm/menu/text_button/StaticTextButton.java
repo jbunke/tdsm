@@ -14,14 +14,14 @@ import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.function.Supplier;
 
-public final class StaticTextButton extends MenuButton implements TextButton {
+public class StaticTextButton extends MenuButton implements TextButton {
     private final String label;
     private final Alignment alignment;
     private final ButtonType buttonType;
 
     private final GameImage base, highlight;
 
-    private StaticTextButton(
+    protected StaticTextButton(
             final String label, final ButtonType buttonType,
             final int width, final Alignment alignment,
             final Coord2D position, final Anchor anchor,

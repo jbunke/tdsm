@@ -10,4 +10,8 @@ public interface ColorTransmitter {
     }
 
     Color getColor();
+
+    default boolean submits() {
+        return true;
+    }
 }

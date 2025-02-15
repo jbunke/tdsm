@@ -8,7 +8,7 @@ import com.jordanbunke.tdsm.menu.Textbox;
 
 import java.awt.*;
 
-import static com.jordanbunke.tdsm.util.Layout.*;
+import static com.jordanbunke.tdsm.util.Layout.COLOR_TEXTBOX_W;
 
 public final class ColorTextbox extends Textbox implements ColorTransmitter {
     private static final String PFX = "#", SFX = "";
@@ -74,6 +74,11 @@ public final class ColorTextbox extends Textbox implements ColorTransmitter {
     @Override
     public Color getColor() {
         return color;
+    }
+
+    @Override
+    public boolean submits() {
+        return false;
     }
 
     // Color math helpers

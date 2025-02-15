@@ -70,7 +70,7 @@ public final class VigilanteStyle extends Style {
 
     private void setUpLayers() {
         final ColorSelection skinTones = new ColorSelection(
-                "Skin", true,
+                "Skin", false,
                 new Color(0x7f, 0x49, 0x13),
                 new Color(0x3f, 0x19, 0x00),
                 new Color(0xbc, 0x87, 0x4b)),
