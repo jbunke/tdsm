@@ -5,7 +5,6 @@ import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContainer;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
-import com.jordanbunke.delta_time.menu.menu_elements.invisible.PlaceholderMenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
@@ -134,9 +133,16 @@ public final class LayerElement extends MenuElementContainer {
                     pos.x - ASSET_BUFFER_X, 0);
             mb.add(choicesBox);
 
+            if (acl.maxSelectors() == 0)
+                return;
+
             // MAKE COLOR SELECTION BOXES FOR EACH CHOICE AND LINK VIA THINKING ELEMENT
             final Coord2D SEL_INITIAL = INITIAL.displace(0, choicesBox.getHeight());
-            final MenuElement PLACEHOLDER = new PlaceholderMenuElement();
+            final StaticLabel noColSels = StaticLabel.mini(
+                    new Coord2D(LAYERS.atX(0.5),
+                            SEL_INITIAL.y + COL_SEL_BUTTON_DIM / 2),
+                    "This choice has no color selections.",
+                    Colors.darkSystem(), Anchor.CENTRAL_TOP);
 
             final MenuElement[] forIndices = new MenuElement[indices.length];
 
@@ -144,13 +150,13 @@ public final class LayerElement extends MenuElementContainer {
                 final int index = indices[i];
 
                 if (index == AssetChoiceLayer.NONE)
-                    forIndices[i] = PLACEHOLDER;
+                    forIndices[i] = noColSels;
                 else {
                     final ColorSelection[] selections = acl
                             .getChoiceAt(index).getColorSelections();
 
                     if (selections.length == 0)
-                        forIndices[i] = PLACEHOLDER;
+                        forIndices[i] = noColSels;
                     else {
                         final MenuBuilder cses = new MenuBuilder();
 

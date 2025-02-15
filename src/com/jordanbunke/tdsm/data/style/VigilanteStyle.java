@@ -96,7 +96,7 @@ public final class VigilanteStyle extends Style {
                                                 new ColorSelection("Nr. 3", true),
                                                 new ColorSelection("Nr. 4", true),
                                                 new ColorSelection("Nr. 5", true),
-                                                new ColorSelection("Nr. 6", true),
+                                                // new ColorSelection("Nr. 6", true),
                                         },
                                         ColorReplacementFunc.trivial()),
                                 new AssetChoiceTemplate("mixed"),

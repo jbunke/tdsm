@@ -142,11 +142,15 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             Sprite.get().getStyle().update();
     }
 
-    @Override
-    public int calculateExpandedHeight() {
-        final int maxSelectors = Arrays.stream(choices)
+    public int maxSelectors() {
+        return Arrays.stream(choices)
                 .map(c -> c.getColorSelections().length)
                 .reduce(0, Math::max);
+    }
+
+    @Override
+    public int calculateExpandedHeight() {
+        final int maxSelectors = maxSelectors();
         final boolean hasSelectors = maxSelectors > 0;
 
         return ASSETS_BASE_H + dims.height() + (hasSelectors ?
