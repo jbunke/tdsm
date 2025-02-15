@@ -108,11 +108,13 @@ public final class MenuAssembly {
 
         // BOTTOM BAR
         final MenuElement toMainButton = StaticTextButton.make(
-                "< Main Menu", BOTTOM.at(0.0, 0.5).displace(4, 0),
+                "< Main Menu", BOTTOM.at(0.0, 0.5)
+                        .displace(BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.MENU, main()));
         final MenuElement toConfigButton = StaticTextButton.make(
-                "Configure... >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
+                "Configure... >", BOTTOM.at(1.0, 0.5)
+                        .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CONFIGURATION, null));
 
@@ -318,11 +320,13 @@ public final class MenuAssembly {
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
-                "< Edit...", BOTTOM.at(0.0, 0.5).displace(4, 0),
+                "< Edit...", BOTTOM.at(0.0, 0.5)
+                        .displace(BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
         final MenuElement toExportButton = StaticTextButton.make(
-                "Export... >", BOTTOM.at(1.0, 0.5).displace(-4, 0),
+                "Export... >", BOTTOM.at(1.0, 0.5)
+                        .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL,
                 () -> Sprite.get().getStyle().exportsASprite(),
                 () -> ProgramState.set(ProgramState.MENU, export()));
