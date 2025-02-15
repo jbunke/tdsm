@@ -42,7 +42,7 @@ public final class SubmitColorButton extends StaticTextButton {
     }
 
     private void updateActive() {
-        active = Sampler.get().isActive() &&
+        active = Sampler.get().hasUnsubmitted() &&
                 Sampler.get().getSelection().isAnyColor();
     }
 

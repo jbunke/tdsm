@@ -56,9 +56,7 @@ public final class Sampler extends MenuElementContainer {
         // submit button
         final MenuElement submitButton = SubmitColorButton.make(
                 SAMPLER.at(1.0, 1.0).displace(-BUFFER, -BUFFER),
-                () -> isActive() &&
-                        !getSelection().getColor().equals(getColor()),
-                this::submit);
+                this::isActive, this::submit);
 
         mb.addAll(swatchManager, submitButton, colorTextbox, colorPicker);
 
@@ -71,6 +69,10 @@ public final class Sampler extends MenuElementContainer {
 
     public boolean isActive() {
         return selection != null;
+    }
+
+    public boolean hasUnsubmitted() {
+        return isActive() && !getSelection().getColor().equals(getColor());
     }
 
     public Color getColor() {

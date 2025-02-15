@@ -39,8 +39,9 @@ public final class SwatchButton extends MenuButton implements Button {
     public static SwatchButton make(
             final Color color, final int index, final SwatchManager manager
     ) {
-        final int x = index % SWATCH_BUTTON_ROW,
-                y = index / SWATCH_BUTTON_ROW;
+        final int row = manager.getSelection().isAnyColor()
+                ? SWATCH_BUTTON_ROW : SWATCH_BUTTON_ROW_LONG,
+                x = index % row, y = index / row;
         final Coord2D pos = SAMPLER.at(BUFFER, BUFFER)
                 .displace(x * SWATCH_BUTTON_INC, y * SWATCH_BUTTON_INC);
 
