@@ -10,11 +10,6 @@ import com.jordanbunke.tdsm.menu.config.drag.DragLogic;
 import com.jordanbunke.tdsm.menu.config.drag.DragNode;
 import com.jordanbunke.tdsm.util.Colors;
 
-/* TODO - draggable behaviour and visual
-*   - Index is NECESSARY because draggable needs to have an idea of how
-*     many indices it has moved
-*   - Configuration menu will need to be rebuilt on drag release
-* */
 public final class SequenceEntry<T> extends MenuElementContainer {
     private final Checkbox checkbox;
     private final StaticLabel label;

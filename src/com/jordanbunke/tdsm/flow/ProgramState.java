@@ -41,10 +41,7 @@ public enum ProgramState implements ProgramContext {
         switch (state) {
             case CUSTOMIZATION -> Customization.get().process(eventLogger);
             case CONFIGURATION -> Configuration.get().process(eventLogger);
-            case MENU -> {
-                // TODO - global
-                menu.process(eventLogger);
-            }
+            case MENU -> menu.process(eventLogger);
         }
 
         Tooltip.get().check();
