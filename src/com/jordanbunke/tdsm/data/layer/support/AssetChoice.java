@@ -10,10 +10,8 @@ import com.jordanbunke.tdsm.util.Constants;
 
 import java.awt.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 public final class AssetChoice {
@@ -47,24 +45,27 @@ public final class AssetChoice {
 
     public void randomize() {
         for (ColorSelection colorSelection : colorSelections)
-            colorSelection.randomize();
+            colorSelection.randomize(false);
     }
 
     public GameImage retrieve() {
         return render;
     }
 
+    public ColorSelection[] allInfluencingColorSelections() {
+        final List<ColorSelection> selections =
+                new ArrayList<>(Arrays.stream(colorSelections).toList());
+
+        selections.addAll(layer.getInfluencingSelections());
+
+        return selections.toArray(ColorSelection[]::new);
+    }
+
     public void redraw() {
-        final List<Color> selections = new ArrayList<>();
+        final Color[] colors = Arrays.stream(allInfluencingColorSelections())
+                .map(ColorSelection::getColor).toArray(Color[]::new);
 
-        for (ColorSelection colorSelection : colorSelections)
-            selections.add(colorSelection.getColor());
-
-        selections.addAll(
-                layer.getInfluencingSelections().stream()
-                        .map(ColorSelection::getColor).toList());
-
-        if (selections.size() == 0) {
+        if (colors.length == 0) {
             render = new GameImage(asset);
             return;
         }
@@ -84,10 +85,10 @@ public final class AssetChoice {
                             colorReplacementFunc.apply(c);
                     final int index = out.a();
 
-                    if (index < 0 || index >= selections.size())
+                    if (index < 0 || index >= colors.length)
                         render.setRGB(x, y, c.getRGB());
                     else {
-                        final Color set = out.b().apply(selections.get(index));
+                        final Color set = out.b().apply(colors[index]);
                         replacements.put(c, set);
                         render.setRGB(x, y, set.getRGB());
                     }

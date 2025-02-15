@@ -105,6 +105,37 @@ public final class LayerElement extends MenuElementContainer {
         if (layer instanceof DecisionLayer dl) {
             addLayerContents(dl.getDecision(), mb);
         } else if (layer instanceof AssetChoiceLayer acl) {
+            // MAKE CHOICE BUTTONS
+            final int[] indices = acl.getIndices();
+            Coord2D pos = INITIAL;
+
+            final MenuBuilder acbs = new MenuBuilder();
+
+            // Dims pre-processing
+            final Bounds2D bDims = new Bounds2D(
+                    acl.dims.width() + 20,
+                    acl.dims.height() + 10); // TODO - temp
+
+            for (int index : indices) {
+                final AssetChoiceButton acb = index == AssetChoiceLayer.NONE
+                        ? AssetChoiceButton.none(pos, bDims, acl)
+                        : AssetChoiceButton.ofChoice(pos, bDims, acl, index);
+                acbs.add(acb);
+
+                pos = pos.displace(bDims.width() + 10 /* TODO */, 0);
+            }
+
+            final HorzScrollBox choicesBox = new HorzScrollBox(
+                    INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W,
+                    bDims.height() + 10 /* TODO - temp */),
+                    Arrays.stream(acbs.build().getMenuElements())
+                            .map(Scrollable::new).toArray(Scrollable[]::new),
+                    pos.x, 0);
+            mb.add(choicesBox);
+
+            // MAKE COLOR SELECTION BOXES FOR EACH CHOICE AND LINK VIA THINKING ELEMENT
+            final Coord2D SEL_INITIAL = INITIAL.displace(0, bDims.height() + 20 /* TODO - temp */);
+
             // TODO
         } else if (layer instanceof ColorSelectionLayer csl) {
             final ColorSelection[] selections = csl.getSelections();
@@ -139,7 +170,7 @@ public final class LayerElement extends MenuElementContainer {
                 }).build();
         randomizeButton = IconButton.make(ResourceCodes.RANDOM, collapser.follow(),
                 Anchor.LEFT_TOP, () -> true, () -> {
-                    layer.randomize();
+                    layer.randomize(true);
                     Sampler.get().jolt();
                 });
 

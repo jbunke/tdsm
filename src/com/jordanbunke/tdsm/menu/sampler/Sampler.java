@@ -99,7 +99,7 @@ public final class Sampler extends MenuElementContainer {
 
     public void submit(final boolean close) {
         if (isActive())
-            selection.setColor(color);
+            selection.setColor(color, true);
 
         if (close)
             close();

@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.data.layer.support;
 
 import com.jordanbunke.delta_time.utility.math.RNG;
+import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.util.Colors;
 
@@ -34,15 +35,21 @@ public final class ColorSelection {
         dependents.add(dependent);
     }
 
-    public void randomize() {
+    public void randomize(final boolean updateSprite) {
         final int index = RNG.randomInRange(0, swatches.length);
-        setColor(swatches[index]);
+        setColor(swatches[index], updateSprite);
     }
 
-    public void setColor(final Color color) {
+    public void setColor(final Color color, final boolean updateSprite) {
+        if (this.color.equals(color))
+            return;
+
         this.color = color;
 
         dependents.forEach(CustomizationLayer::update);
+
+        if (updateSprite)
+            Sprite.get().getStyle().update();
     }
 
     public Color getColor() {

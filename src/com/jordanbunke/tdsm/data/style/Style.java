@@ -385,7 +385,7 @@ public abstract class Style {
     }
 
     public void randomize() {
-        layers.get().forEach(CustomizationLayer::randomize);
+        layers.get().forEach(l -> l.randomize(false));
         update();
     }
 

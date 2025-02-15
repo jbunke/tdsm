@@ -51,9 +51,9 @@ public final class DecisionLayer extends CustomizationLayer {
     }
 
     @Override
-    public void randomize() {
+    public void randomize(final boolean updateSprite) {
         think();
-        decision.randomize();
+        decision.randomize(updateSprite);
     }
 
     @Override

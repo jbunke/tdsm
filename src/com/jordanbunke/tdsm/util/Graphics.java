@@ -292,6 +292,22 @@ public final class Graphics {
         return drawSwatchButton(color, b);
     }
 
+    public static GameImage drawAssetChoiceButton(
+            final GameImage preview, final Button b,
+            final int w, final int h
+    ) {
+        final GameImage button = new GameImage(w, h);
+
+        // TODO
+
+        final int px = (w - preview.getWidth()) / 2,
+                py = (h - preview.getHeight()) / 2;
+
+        button.draw(preview, px, py);
+
+        return button.submit();
+    }
+
     public static GameImage drawVertScrollBar(
             final int w, final int h, final int barH,
             final int barY, final Button b
@@ -339,7 +355,6 @@ public final class Graphics {
     public static GameImage drawColorPicker(
             final ColorPicker picker
     ) {
-        // TODO - temp MVP implementation
         // pre-processing
         final int w = picker.getWidth(), h = picker.getHeight();
 

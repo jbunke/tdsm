@@ -34,7 +34,7 @@ public final class AssetLayer extends CustomizationLayer {
     }
 
     @Override
-    public void randomize() {
+    public void randomize(final boolean updateSprite) {
 
     }
 

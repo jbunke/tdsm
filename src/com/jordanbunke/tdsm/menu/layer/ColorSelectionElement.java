@@ -48,7 +48,7 @@ public final class ColorSelectionElement extends MenuElementGrouping {
         final MenuElement randomizer = IconButton.make(
                 ResourceCodes.RANDOM, middleOfButton.displace(COL_SEL_BUTTON_DIM, 0),
                 () -> true, () -> {
-                    selection.randomize();
+                    selection.randomize(true);
                     Sampler.get().jolt();
                 });
 

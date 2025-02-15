@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
+import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.util.StringUtils;
 
@@ -51,9 +52,12 @@ public final class ColorSelectionLayer extends CustomizationLayer {
     public void update() {}
 
     @Override
-    public void randomize() {
+    public void randomize(final boolean updateSprite) {
         for (ColorSelection selection : selections)
-            selection.randomize();
+            selection.randomize(false);
+
+        if (updateSprite)
+            Sprite.get().getStyle().update();
     }
 
     @Override

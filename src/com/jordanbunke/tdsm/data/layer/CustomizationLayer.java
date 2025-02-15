@@ -41,7 +41,7 @@ public abstract class CustomizationLayer {
 
     public abstract void update();
 
-    public abstract void randomize();
+    public abstract void randomize(final boolean updateSprite);
 
     public abstract int calculateExpandedHeight();
 

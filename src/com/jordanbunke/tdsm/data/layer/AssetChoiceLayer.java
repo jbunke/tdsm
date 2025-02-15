@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.RNG;
+import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.func.ComposerBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
@@ -56,14 +57,19 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         update();
     }
 
-    public void select(final int selection) {
+    public void choose(final int selection) {
+        select(selection);
+        update();
+        Sprite.get().getStyle().update();
+    }
+
+    private void select(final int selection) {
         if (selection == this.selection)
             return;
 
         this.selection = selection;
 
         rebuildSpriteSheet();
-        refreshElement();
     }
 
     private void rebuildSpriteSheet() {
@@ -106,11 +112,10 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         }
 
         rebuildSpriteSheet();
-        refreshElement();
     }
 
     @Override
-    public void randomize() {
+    public void randomize(final boolean updateSprite) {
         final int index;
 
         if (noAssetChoice.valid) {
@@ -130,12 +135,15 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             choices[selection].randomize();
 
         update();
+
+        if (updateSprite)
+            Sprite.get().getStyle().update();
     }
 
     @Override
     public int calculateExpandedHeight() {
         // TODO - temp
-        final int BASE_H = 20, SEL_H = 20;
+        final int BASE_H = 30, SEL_H = 30;
 
         final AssetChoice choice = getChoice();
         final boolean colorSelectors = choice != null &&
@@ -160,6 +168,14 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             return choices[selection];
 
         return null;
+    }
+
+    public AssetChoice getChoiceAt(final int index) {
+        return choices[index];
+    }
+
+    public int getChoiceIndex() {
+        return selection;
     }
 
     public int[] getIndices() {
