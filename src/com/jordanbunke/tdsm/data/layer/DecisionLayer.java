@@ -1,13 +1,14 @@
 package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
+import com.jordanbunke.tdsm.menu.layer.LayerElement;
 
 import java.util.function.Supplier;
 
-// TODO
 public final class DecisionLayer extends CustomizationLayer {
     private final Supplier<CustomizationLayer> logic;
     private CustomizationLayer decision;
+    LayerElement element;
 
     public DecisionLayer(
             final String id, final Supplier<CustomizationLayer> logic
@@ -15,6 +16,7 @@ public final class DecisionLayer extends CustomizationLayer {
         super(id);
 
         this.logic = logic;
+        element = null;
 
         update();
     }
@@ -63,5 +65,14 @@ public final class DecisionLayer extends CustomizationLayer {
 
     public CustomizationLayer getDecision() {
         return decision;
+    }
+
+    public void setElement(final LayerElement element) {
+        this.element = element;
+    }
+
+    private void refreshElement() {
+        if (element != null)
+            element.refresh();
     }
 }

@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.menu.layer;
 
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContainer;
@@ -29,11 +30,7 @@ import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 public final class LayerElement extends MenuElementContainer {
     private static final int HORZ_SCROLL_BOX_W;
 
-    private static boolean shifting;
-
     static {
-        shifting = false;
-
         HORZ_SCROLL_BOX_W = (int) (LAYERS.width * 0.9);
     }
 
@@ -42,10 +39,11 @@ public final class LayerElement extends MenuElementContainer {
     private int expandedH;
     private boolean expanded;
 
-    private StaticLabel nameLabel;
-    private IconOptionsButton collapser;
-    private MenuElement randomizeButton;
-    private MenuElement[] contents;
+    private final StaticLabel nameLabel;
+    private final IconOptionsButton collapser;
+    private final MenuElement randomizeButton;
+    private final MenuElement[] header;
+    private MenuElement[] contents, all;
 
     private LayerElement(
             final Coord2D position, final CustomizationLayer layer,
@@ -60,8 +58,28 @@ public final class LayerElement extends MenuElementContainer {
         this.expandedH = expandedH;
         expanded = false;
 
-        makeElements();
-        layer.setElement(this);
+        if (layer instanceof DecisionLayer dl)
+            dl.setElement(this);
+
+        nameLabel = StaticLabel.make(labelPosFor(getPosition()), layer.name());
+        collapser = IconOptionsButton.init(nameLabel.followIcon17()
+                        .displace(BUFFER / 2, 0))
+                .setCodes(ResourceCodes.COLLAPSE, ResourceCodes.EXPAND)
+                .setIndexFunc(() -> expanded ? 0 : 1)
+                .setGlobal(() -> {
+                    if (expanded)
+                        collapse();
+                    else
+                        expand();
+                }).build();
+        randomizeButton = IconButton.make(ResourceCodes.RANDOM, collapser.follow(),
+                Anchor.LEFT_TOP, () -> true, () -> {
+                    layer.randomize(true);
+                    Sampler.get().jolt();
+                });
+
+        header = new MenuElement[] { nameLabel, collapser, randomizeButton };
+        makeContents();
     }
 
     public static LayerElement make(
@@ -72,10 +90,7 @@ public final class LayerElement extends MenuElementContainer {
     }
 
     public void refresh() {
-        if (layer instanceof DecisionLayer)
-            makeElements();
-        else
-            makeContents();
+        makeContents();
 
         final int ehWas = expandedH;
         expandedH = layer.calculateExpandedHeight();
@@ -87,24 +102,27 @@ public final class LayerElement extends MenuElementContainer {
     }
 
     private void makeContents() {
-        final MenuBuilder mb = new MenuBuilder();
+        final MenuBuilder cb = new MenuBuilder(), ab = new MenuBuilder();
 
-        mb.addAll(nameLabel, collapser, randomizeButton);
+        cb.addAll(nameLabel, collapser, randomizeButton);
+        ab.addAll(nameLabel, collapser, randomizeButton);
 
-        addLayerContents(layer, mb);
+        addLayerContents(layer, cb, ab);
 
-        contents = mb.build().getMenuElements();
+        contents = cb.build().getMenuElements();
+        all = ab.build().getMenuElements();
     }
 
     private void addLayerContents(
-            final CustomizationLayer layer, final MenuBuilder mb
+            final CustomizationLayer layer,
+            final MenuBuilder cb, final MenuBuilder ab
     ) {
         final Coord2D INITIAL = getPosition()
                 .displace(LABEL_OFFSET_X, LAYER_CONTENT_DROPOFF);
 
-        if (layer instanceof DecisionLayer dl) {
-            addLayerContents(dl.getDecision(), mb);
-        } else if (layer instanceof AssetChoiceLayer acl) {
+        if (layer instanceof DecisionLayer dl)
+            addLayerContents(dl.getDecision(), cb, ab);
+        else if (layer instanceof AssetChoiceLayer acl) {
             // MAKE CHOICE BUTTONS
             final int[] indices = acl.getIndices();
             Coord2D pos = INITIAL;
@@ -131,7 +149,8 @@ public final class LayerElement extends MenuElementContainer {
                     Arrays.stream(acbs.build().getMenuElements())
                             .map(Scrollable::new).toArray(Scrollable[]::new),
                     pos.x - ASSET_BUFFER_X, 0);
-            mb.add(choicesBox);
+            cb.add(choicesBox);
+            ab.add(choicesBox);
 
             if (acl.maxSelectors() == 0)
                 return;
@@ -143,6 +162,7 @@ public final class LayerElement extends MenuElementContainer {
                             SEL_INITIAL.y + COL_SEL_BUTTON_DIM / 2),
                     "This choice has no color selections.",
                     Colors.darkSystem(), Anchor.CENTRAL_TOP);
+            ab.add(noColSels);
 
             final MenuElement[] forIndices = new MenuElement[indices.length];
 
@@ -174,6 +194,7 @@ public final class LayerElement extends MenuElementContainer {
                                 SEL_INITIAL.x + (selections.length *
                                         COL_SEL_LAYER_INC_X) -
                                         COL_SEL_LAST_X_SUB, 0);
+                        ab.add(selectionBox);
                         forIndices[i] = selectionBox;
                     }
                 }
@@ -182,7 +203,7 @@ public final class LayerElement extends MenuElementContainer {
             final ThinkingMenuElement logic = new ThinkingMenuElement(
                     () -> forIndices[acl.getChoiceIndex() +
                             (acl.noAssetChoice.valid ? 1 : 0)]);
-            mb.add(logic);
+            cb.add(logic);
         } else if (layer instanceof ColorSelectionLayer csl) {
             final ColorSelection[] selections = csl.getSelections();
 
@@ -200,38 +221,34 @@ public final class LayerElement extends MenuElementContainer {
                             .map(Scrollable::new).toArray(Scrollable[]::new),
                     INITIAL.x + (selections.length * COL_SEL_LAYER_INC_X) -
                             COL_SEL_LAST_X_SUB, 0);
-            mb.add(selectionBox);
+            cb.add(selectionBox);
+            ab.add(selectionBox);
         }
     }
 
-    private void makeElements() {
-        nameLabel = StaticLabel.make(labelPosFor(getPosition()), layer.name());
-        collapser = IconOptionsButton.init(nameLabel.followIcon17()
-                        .displace(BUFFER / 2, 0))
-                .setCodes(ResourceCodes.COLLAPSE, ResourceCodes.EXPAND)
-                .setIndexFunc(() -> expanded ? 0 : 1)
-                .setGlobal(() -> {
-                    if (expanded)
-                        collapse();
-                    else
-                        expand();
-                }).build();
-        randomizeButton = IconButton.make(ResourceCodes.RANDOM, collapser.follow(),
-                Anchor.LEFT_TOP, () -> true, () -> {
-                    layer.randomize(true);
-                    Sampler.get().jolt();
-                });
-
-        makeContents();
+    @Override
+    public void update(final double deltaTime) {
+        for (MenuElement menuElement : getRelevantElements())
+            menuElement.update(deltaTime);
     }
 
     @Override
     public void render(final GameImage canvas) {
-        super.render(canvas);
+        final MenuElement[] renderOrder =
+                MenuElement.sortForRender(getRelevantElements());
+
+        for (MenuElement element : renderOrder)
+            element.render(canvas);
 
         final int x1 = LAYERS.atX(0.04), x2 = LAYERS.atX(0.96),
                 y = getY() + getHeight() + BUFFER / 2;
         canvas.drawLine(Colors.lightAccent(), 1f, x1, y, x2, y);
+    }
+
+    @Override
+    public void process(final InputEventLogger eventLogger) {
+        for (MenuElement menuElement : getRelevantElements())
+            menuElement.process(eventLogger);
     }
 
     private void expand() {
@@ -252,16 +269,19 @@ public final class LayerElement extends MenuElementContainer {
 
     @Override
     public MenuElement[] getMenuElements() {
-        return expanded || shifting ? contents
-                : new MenuElement[] { nameLabel, collapser, randomizeButton };
+        return getAllElements();
+    }
+
+    private MenuElement[] getAllElements() {
+        return all;
+    }
+
+    private MenuElement[] getRelevantElements() {
+        return expanded ? contents : header;
     }
 
     @Override
     public boolean hasNonTrivialBehaviour() {
         return true;
-    }
-
-    public static void setShifting(final boolean shifting) {
-        LayerElement.shifting = shifting;
     }
 }

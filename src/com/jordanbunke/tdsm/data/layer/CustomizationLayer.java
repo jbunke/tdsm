@@ -2,7 +2,6 @@ package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
-import com.jordanbunke.tdsm.menu.layer.LayerElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +10,11 @@ public abstract class CustomizationLayer {
     public final String id;
 
     private final List<ColorSelection> influencingSelections;
-    LayerElement element;
 
     CustomizationLayer(final String id) {
         this.id = id;
 
         influencingSelections = new ArrayList<>();
-        element = null;
     }
 
     public void addInfluencingSelection(
@@ -48,14 +45,5 @@ public abstract class CustomizationLayer {
     @Override
     public String toString() {
         return name();
-    }
-
-    public void setElement(final LayerElement element) {
-        this.element = element;
-    }
-
-    void refreshElement() {
-        if (element != null)
-            element.refresh();
     }
 }

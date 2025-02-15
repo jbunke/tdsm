@@ -43,12 +43,8 @@ public final class CustomizationElement extends MenuElementContainer {
     }
 
     void shiftFollowingElements(final int ref, final int deltaY) {
-        LayerElement.setShifting(true);
-
         for (int i = ref + 1; i < layerElements.length; i++)
             layerElements[i].incrementY(deltaY);
-
-        LayerElement.setShifting(false);
 
         highest = Arrays.stream(layerElements).map(LayerElement::getY)
                 .reduce(Integer.MAX_VALUE, Math::min);
@@ -86,9 +82,13 @@ public final class CustomizationElement extends MenuElementContainer {
 
         updateOffset();
 
-        // TODO - hotfix?
-        if (scrollBox.getSlider() == null && highest < getY())
+        // TODO - still broken
+        if (topIsUnreachable())
             shiftFollowingElements(SHIFT_ALL_LAYERS, getY() - highest);
+    }
+
+    private boolean topIsUnreachable() {
+        return scrollBox.getSlider() == null ? highest < getY() : highest < getY() - offset;
     }
 
     @Override
