@@ -62,9 +62,9 @@ public final class ColorSelectionLayer extends CustomizationLayer {
 
     @Override
     public int calculateExpandedHeight() {
-        return COL_SEL_LAYER_BASE_H + (isSingle() ? 0
-                : COL_SEL_DROPOFF + (selections.length > 5
-                ? HORZ_SCROLL_BAR_H + 4 : 0));
+        return COL_SEL_LAYER_BASE_H + (isSingle() ? 0 : COL_SEL_DROPOFF +
+                (selections.length > MAX_SELECTORS_WO_SCROLL
+                        ? HORZ_SCROLL_BAR_H + 4 : 0));
     }
 
     public boolean isSingle() {

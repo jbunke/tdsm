@@ -29,7 +29,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     private final GameImage[] previews;
     private final ComposerBuilder composerBuilder;
-    private final NoAssetChoice noAssetChoice;
+    public final NoAssetChoice noAssetChoice;
     private final Coord2D previewCoord;
     private SpriteSheet sheet;
 
@@ -144,14 +144,15 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     @Override
     public int calculateExpandedHeight() {
-        // TODO - temp
-        final int SEL_H = 30;
-
-        final boolean hasSelectors = Arrays.stream(choices)
+        final int maxSelectors = Arrays.stream(choices)
                 .map(c -> c.getColorSelections().length)
-                .reduce(0, Math::max) > 0;
+                .reduce(0, Math::max);
+        final boolean hasSelectors = maxSelectors > 0;
 
-        return ASSETS_BASE_H + dims.height() + (hasSelectors ? SEL_H : 0);
+        return ASSETS_BASE_H + dims.height() + (hasSelectors ?
+                POST_ASSETS_COL_SEL_BASE_H +
+                        (maxSelectors > MAX_SELECTORS_WO_SCROLL
+                                ? HORZ_SCROLL_BAR_H + 4 : 0) : 0);
     }
 
     private boolean hasChoice() {
