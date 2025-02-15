@@ -27,5 +27,6 @@ public final class ResourceCodes {
             FILE_NAME = "file_name",
             EXPORT_STIP = "export_stip",
             FIRST_SPRITE = "first_sprite",
+            CHANGE_STYLE = "change_style",
             RANDOM_SPRITE = "random_sprite";
 }

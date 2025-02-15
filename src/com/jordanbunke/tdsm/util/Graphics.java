@@ -265,17 +265,23 @@ public final class Graphics {
     public static GameImage drawSwatchButton(
             final Color color, final Button b
     ) {
-        // TODO - temp MVP implementation
         final GameImage button = new GameImage(
                 SWATCH_BUTTON_DIM, SWATCH_BUTTON_DIM);
+        final int w = button.getWidth(), h = button.getHeight();
 
         button.fill(color);
 
         final Color outline = b.outcomes(selected(),
                 highlight(), darkSystem());
 
-        button.drawRectangle(outline, 2f, 0, 0,
-                button.getWidth(), button.getHeight());
+        final Color sideShadow = shiftRGB(color, 0x40),
+                bottomShadow = shiftRGB(color, 0x20);
+
+        button.drawLine(bottomShadow, 1f, 0, h - 2, w, h - 2);
+        button.drawLine(sideShadow, 1f, w - 2, 0, w - 2, h);
+
+        button.drawRectangle(outline, 1f, 0, 0, w - 1, h - 1);
+        clearCorners(button);
 
         return button.submit();
     }
@@ -283,7 +289,6 @@ public final class Graphics {
     public static GameImage drawColSelButton(
             final Color color, final Button b
     ) {
-        // TODO - temp MVP implementation
         return drawSwatchButton(color, b);
     }
 
@@ -356,7 +361,7 @@ public final class Graphics {
 
         // outlines
         final Color outline = darkSystem();
-        asset.drawRectangle(outline, 2f, 0, 0, w, h);
+        asset.drawRectangle(outline, 1f, 0, 0, w - 1, h - 1);
         asset.drawLine(outline, 1f, HUE_SLIDER_W, 0, HUE_SLIDER_W, h);
 
         // selection indicators
@@ -365,6 +370,8 @@ public final class Graphics {
                 svp = centerOn(picker.localSVPos(), SV_MATRIX);
         asset.draw(HUE_SLIDER, hsp.x, hsp.y);
         asset.draw(SV_MATRIX, svp.x, svp.y);
+
+        clearCorners(asset);
 
         return asset.submit();
     }

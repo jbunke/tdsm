@@ -91,15 +91,17 @@ public final class MenuAssembly {
                         .map(s -> (Runnable) () -> Sprite.get().setStyle(s))
                         .toArray(Runnable[]::new),
                 () -> Arrays.stream(styles).toList()
-                        .indexOf(Sprite.get().getStyle())
-        );
+                        .indexOf(Sprite.get().getStyle()));
+        final Indicator styleInfo = Indicator.make(
+                ResourceCodes.CHANGE_STYLE, styleDropdown.followIcon17(),
+                Anchor.LEFT_TOP);
 
         final MenuElement randomSpriteButton = IconButton.make(
                 ResourceCodes.RANDOM, ResourceCodes.RANDOM_SPRITE,
                 TOP.at(0.95, 0.5), () -> true,
                 () -> Sprite.get().getStyle().randomize());
 
-        mb.addAll(styleLabel, styleDropdown, randomSpriteButton);
+        mb.addAll(styleLabel, styleDropdown, styleInfo, randomSpriteButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
