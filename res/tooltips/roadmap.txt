@@ -1,0 +1,15 @@
+This is a rough outline of planned features for future updates:
+
+- Sprite styles
+  - Inspired by Stardew Valley
+  - Original 2-directional Metroidvania style
+  - Original 4-directional  RPG style
+  - Original 6-directional RPG style
+  - Original 8-directional 32-bit RPG style
+
+- More animations
+  - Pokemon Trainer [Gen 4]: run, item interactions
+
+[Stretch Goal]
+- Define your own sprite style by uploading assets and
+  scripts with layer composition logic

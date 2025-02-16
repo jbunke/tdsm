@@ -50,8 +50,8 @@ public final class Graphics {
 
     // Text
     public static TextBuilder uiText(final Color color, final double textSize) {
-        return new TextBuilder(textSize, Text.Orientation.CENTER,
-                color, ProgramFont.getLarge());
+        return ProgramFont.LARGE.getBuilder(textSize,
+                Text.Orientation.CENTER, color);
     }
 
     public static TextBuilder uiText(final Color color) {
@@ -59,8 +59,7 @@ public final class Graphics {
     }
 
     public static TextBuilder miniText(final Color color) {
-        return new TextBuilder(1.0, 0.3, Text.Orientation.CENTER,
-                color, ProgramFont.getMini());
+        return ProgramFont.MINI.getBuilder(1.0, Text.Orientation.CENTER, color);
     }
 
     // UI Elements
