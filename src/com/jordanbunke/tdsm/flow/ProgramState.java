@@ -32,6 +32,13 @@ public enum ProgramState implements ProgramContext {
             ProgramState.menu = menu;
     }
 
+    public static void to(final Menu menu) {
+        if (state != MENU)
+            return;
+
+        ProgramState.menu = menu;
+    }
+
     @Override
     public void process(final InputEventLogger eventLogger) {
         final Coord2D mousePos = eventLogger.getAdjustedMousePosition();

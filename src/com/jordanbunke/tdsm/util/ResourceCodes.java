@@ -31,4 +31,7 @@ public final class ResourceCodes {
             FIRST_SPRITE = "first_sprite",
             CHANGE_STYLE = "change_style",
             RANDOM_SPRITE = "random_sprite";
+
+    // blurbs
+    public static final String ABOUT = "about";
 }

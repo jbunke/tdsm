@@ -6,8 +6,10 @@ import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementGrouping;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElement;
+import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Edge;
@@ -164,10 +166,10 @@ public final class MenuAssembly {
 
         final String NO_FRAMES = "Configuration produces no frames!";
         final DynamicLabel frameCountLabel = DynamicLabel.init(
-                SEQUENCING.at(0.5, 0.98),
-                () -> Sprite.get().getStyle().exportsASprite()
-                        ? (Sprite.get().getStyle().exportFrameCount() +
-                        " animation frames") : NO_FRAMES, NO_FRAMES)
+                        SEQUENCING.at(0.5, 0.98),
+                        () -> Sprite.get().getStyle().exportsASprite()
+                                ? (Sprite.get().getStyle().exportFrameCount() +
+                                " animation frames") : NO_FRAMES, NO_FRAMES)
                 .setAnchor(Anchor.CENTRAL_BOTTOM)
                 .setMini().build();
 
@@ -186,8 +188,8 @@ public final class MenuAssembly {
         final double EDGES_Y = 0.1, EDGES_Y_INC = 0.08;
         EnumUtils.stream(Edge.class).forEach(e -> {
             final Coord2D edgeLabelPos = LAYOUT.at(
-                    0.0 + (e.ordinal() / 2 == 0 ? 0.0 : 0.5),
-                    EDGES_Y + (e.ordinal() % 2 == 0 ? 0.0 : EDGES_Y_INC))
+                            0.0 + (e.ordinal() / 2 == 0 ? 0.0 : 0.5),
+                            EDGES_Y + (e.ordinal() % 2 == 0 ? 0.0 : EDGES_Y_INC))
                     .displace(BUFFER, 0);
             final StaticLabel edgeLabel = StaticLabel.make(edgeLabelPos,
                     StringUtils.nameFromID(e.name().toLowerCase()) + ":");
@@ -236,11 +238,11 @@ public final class MenuAssembly {
         layoutY += LAYOUT_INC_Y;
         final String DIR_PREFIX = "(Directions are oriented ";
         final DynamicLabel directionDimLabel = DynamicLabel.init(
-                miniLabelPosFor(LAYOUT.x, LAYOUT.atY(layoutY)),
-                () -> DIR_PREFIX + Sprite.get()
-                        .getStyle().getAnimationOrientation()
-                        .complementaryAdverb() + ")",
-                DIR_PREFIX + Orientation.VERTICAL.complementaryAdverb() + ")")
+                        miniLabelPosFor(LAYOUT.x, LAYOUT.atY(layoutY)),
+                        () -> DIR_PREFIX + Sprite.get()
+                                .getStyle().getAnimationOrientation()
+                                .complementaryAdverb() + ")",
+                        DIR_PREFIX + Orientation.VERTICAL.complementaryAdverb() + ")")
                 .setMini().build();
 
         layoutY += LAYOUT_INC_Y * 0.75;
@@ -251,10 +253,10 @@ public final class MenuAssembly {
                 Sprite.get().getStyle()::isMultipleAnimsPerDim,
                 Sprite.get().getStyle()::setMultipleAnimsPerDim);
         final DynamicLabel animsPerDimLabel = DynamicLabel.init(
-                animsPerDimCheckbox.followMiniLabel(),
-                () -> ANIMS_PER_DIM_PREFIX + Sprite.get().getStyle()
-                        .getAnimationOrientation().animationDim(),
-                ANIMS_PER_DIM_PREFIX + Orientation.VERTICAL.animationDim())
+                        animsPerDimCheckbox.followMiniLabel(),
+                        () -> ANIMS_PER_DIM_PREFIX + Sprite.get().getStyle()
+                                .getAnimationOrientation().animationDim(),
+                        ANIMS_PER_DIM_PREFIX + Orientation.VERTICAL.animationDim())
                 .setMini().build();
 
         layoutY += LAYOUT_INC_Y * 0.6;
@@ -265,10 +267,10 @@ public final class MenuAssembly {
                 Sprite.get().getStyle()::isSingleDim,
                 Sprite.get().getStyle()::setSingleDim);
         final DynamicLabel singleDimLabel = DynamicLabel.init(
-                singleDimCheckbox.followMiniLabel(),
-                () -> SINGLE_DIM_PREFIX + Sprite.get().getStyle()
-                        .getAnimationOrientation().animationDim(),
-                SINGLE_DIM_PREFIX + Orientation.VERTICAL.animationDim())
+                        singleDimCheckbox.followMiniLabel(),
+                        () -> SINGLE_DIM_PREFIX + Sprite.get().getStyle()
+                                .getAnimationOrientation().animationDim(),
+                        SINGLE_DIM_PREFIX + Orientation.VERTICAL.animationDim())
                 .setMini().build();
 
         layoutY += LAYOUT_INC_Y * 0.6;
@@ -281,10 +283,10 @@ public final class MenuAssembly {
                 FRAMES_PER_DIM_PREFIX +
                         Orientation.VERTICAL.animationDim() + ":").build();
         final DynamicTextbox framesPerDimTextbox = DynamicTextbox.init(
-                framesPerDimLabel.followTB(), () -> String.valueOf(
-                        Sprite.get().getStyle().getFramesPerDim()),
-                s -> Sprite.get().getStyle()
-                        .setFramesPerDim(Integer.parseInt(s)))
+                        framesPerDimLabel.followTB(), () -> String.valueOf(
+                                Sprite.get().getStyle().getFramesPerDim()),
+                        s -> Sprite.get().getStyle()
+                                .setFramesPerDim(Integer.parseInt(s)))
                 .setMaxLength(2).setTextValidator(Textbox::validFramesPerDim)
                 .build();
         final Indicator framesPerDimInfo = Indicator.make(
@@ -340,28 +342,13 @@ public final class MenuAssembly {
     public static Menu main() {
         final MenuBuilder mb = new MenuBuilder();
 
-        mb.add(new BackgroundElement());
+        openingMenu(mb,
+                new Pair<>("Start editing", () ->
+                        ProgramState.set(ProgramState.CUSTOMIZATION, null)),
+                new Pair<>("About", () -> ProgramState.to(about())),
+                new Pair<>("Quit", TDSM::quitProgram));
 
-        // TODO - logo
-
-        final int buttonW = atX(0.3);
-        final MenuElement startButton = StaticTextButton.make(
-                "Start editing", ButtonType.STANDARD, Alignment.CENTER,
-                buttonW, canvasAt(0.5, 0.65),
-                Anchor.CENTRAL, () -> true,
-                () -> ProgramState.set(ProgramState.CUSTOMIZATION, null)),
-                aboutButton = StaticTextButton.make(
-                        "About", ButtonType.STANDARD, Alignment.CENTER,
-                        buttonW, textButtonBelow(startButton),
-                        Anchor.CENTRAL, () -> true,
-                        () -> {} /* TODO */),
-                quitButton = StaticTextButton.make(
-                        "Quit", ButtonType.STANDARD, Alignment.CENTER,
-                        buttonW, textButtonBelow(aboutButton),
-                        Anchor.CENTRAL, () -> true,
-                        TDSM::quitProgram);
-
-        mb.addAll(startButton, aboutButton, quitButton);
+        // TODO - Logo
 
         // Version and credits
         final StaticLabel programLabel = StaticLabel.make(
@@ -374,6 +361,52 @@ public final class MenuAssembly {
         mb.add(programLabel);
 
         return mb.build();
+    }
+
+    public static Menu about() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        openingMenu(mb,
+                new Pair<>("< Main Menu", () -> ProgramState.to(main())),
+                new Pair<>("Roadmap", () -> {} /* TODO */),
+                new Pair<>("Developer's store >", () -> {} /* TODO */),
+                new Pair<>("Look at the code >", () -> {} /* TODO */));
+
+        final String[] blurb = ParserUtils
+                .readTooltip(ResourceCodes.ABOUT).split("\n");
+        final TextBuilder tb = Graphics.miniText(Colors.darkSystem());
+
+        for (int line = 0; line < blurb.length; line++) {
+            tb.addText(blurb[line]);
+
+            if (line + 1 < blurb.length)
+                tb.addLineBreak();
+        }
+
+        final StaticLabel about = StaticLabel.make(
+                canvasAt(0.5, 0.2), Anchor.CENTRAL_TOP, tb.build());
+        mb.add(about);
+
+        return mb.build();
+    }
+
+    @SafeVarargs
+    private static void openingMenu(
+            final MenuBuilder mb, final Pair<String, Runnable>... buttons
+    ) {
+        mb.add(new BackgroundElement());
+
+        Coord2D buttonPos = canvasAt(0.5, 37 / 60.0);
+        final int BUTTON_W = atX(0.3);
+
+        for (Pair<String, Runnable> button : buttons) {
+            final MenuElement b = StaticTextButton.make(
+                    button.a(), ButtonType.STANDARD, Alignment.CENTER,
+                    BUTTON_W, buttonPos, Anchor.CENTRAL_TOP, () -> true,
+                    button.b());
+            mb.add(b);
+            buttonPos = buttonPos.displace(0, TEXT_BUTTON_INC_Y);
+        }
     }
 
     public static Menu export() {
