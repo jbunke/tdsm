@@ -32,9 +32,34 @@ public final class PokemonStyle extends Style {
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
 
+    private static final Set<Color> SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE;
+    private static final Color BASE_SKIN, BASE_HAIR, BASE_IRIS, BASE_EYE_WHITE;
+
     private AssetChoiceLayer bodyLayer;
 
     static {
+        BASE_SKIN = new Color(0xb8f8b8);
+        SKIN = Set.of(BASE_SKIN,
+                new Color(0x98e898),
+                new Color(0x70d870));
+        SKIN_OUTLINES = Set.of(
+                new Color(0x557840),
+                new Color(0x364030));
+
+        BASE_HAIR = new Color(0xb0b0f8);
+        HAIR = Set.of(BASE_HAIR,
+                new Color(0x8080f0),
+                new Color(0x4848c8),
+                new Color(0x303070));
+
+        BASE_IRIS = new Color(0xff0000);
+        IRIS = Set.of(BASE_IRIS,
+                new Color(0x884848));
+
+        BASE_EYE_WHITE = new Color(0x00ffff);
+        EYE_WHITE = Set.of(BASE_EYE_WHITE,
+                new Color(0xa8d8d8));
+
         INSTANCE = new PokemonStyle();
     }
 
@@ -74,30 +99,61 @@ public final class PokemonStyle extends Style {
 
     private void setUpLayers() {
         final ColorSelection skinTones = new ColorSelection(
-                "Skin", true, new Color(0xf8, 0xd0, 0xb8));
+                "Skin", true,
+                new Color(0xf8d0b8),
+                new Color(0xc89060),
+                new Color(0xf8e0b8),
+                new Color(0x986860),
+                new Color(0x986840)),
+                hairColors = new ColorSelection("Hair Color", true),
+                irisColors = new ColorSelection("Iris", true, black()),
+                ewColors = new ColorSelection("Outer", true,
+                        new Color(0xe8e8f8));
+
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
 
         bodyLayer = ACLBuilder.of("body", this,
                         new AssetChoiceTemplate("average-body",
-                                this::skinReplacement),
+                                this::replace),
                         new AssetChoiceTemplate("small-body",
-                                this::skinReplacement)).build();
+                                this::replace)).build();
         bodyLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer headLayer = ACLBuilder.of(
                 "head", this,
-                new AssetChoiceTemplate("oval-head",
-                        this::skinReplacement),
-                new AssetChoiceTemplate("round-head",
-                        this::skinReplacement))
+                new AssetChoiceTemplate("oval-head", this::replace),
+                new AssetChoiceTemplate("round-head", this::replace))
                 .setComposer(this::composeHead)
                 .build();
         headLayer.addInfluencingSelection(skinTones);
 
+        final AssetChoiceLayer eyeLayer = ACLBuilder.of(
+                "eyes", this,
+                new AssetChoiceTemplate("determined", this::replace),
+                new AssetChoiceTemplate("hooded", this::replace),
+                new AssetChoiceTemplate("soft", this::replace),
+                new AssetChoiceTemplate("vacant", this::replace),
+                new AssetChoiceTemplate("narrow", this::replace),
+                new AssetChoiceTemplate("menacing", this::replace),
+                new AssetChoiceTemplate("feminine", this::replace),
+                new AssetChoiceTemplate("cranky", this::replace))
+                .setComposer(this::composeHead)
+                .build();
+        eyeLayer.addInfluencingSelection(skinTones);
+        eyeLayer.addInfluencingSelection(hairColors);
+        eyeLayer.addInfluencingSelection(irisColors);
+        eyeLayer.addInfluencingSelection(ewColors);
+
+        final ColorSelectionLayer eyeColorLayer = new ColorSelectionLayer(
+                "eye-color", irisColors, ewColors),
+                hairColorLayer = new ColorSelectionLayer(
+                        "hair-color", hairColors);
+
         // TODO - temp
         layers.add(
-                skinLayer, bodyLayer, headLayer
+                skinLayer, bodyLayer, headLayer, eyeLayer,
+                eyeColorLayer, hairColorLayer
         );
     }
 
@@ -106,24 +162,26 @@ public final class PokemonStyle extends Style {
         return "Pokemon Gen IV"; // TODO - with é
     }
 
-    private Pair<Integer, Function<Color, Color>> skinReplacement(
+    private Pair<Integer, Function<Color, Color>> replace(
             final Color input
     ) {
-        final Color baseSkin = new Color(0xb8f8b8);
-        final double bs = rgbToSat(baseSkin),
-                bv = rgbToValue(baseSkin);
-
-        final Set<Color> SKIN = Set.of(
-                baseSkin,
-                new Color(0x98e898),
-                new Color(0x70d870)),
-                SKIN_OUTLINES = Set.of(
-                        new Color(0x557840),
-                        new Color(0x364030));
-
         final boolean isSkin = SKIN.contains(input),
-                isOutline = SKIN_OUTLINES.contains(input);
-        final int index = isSkin || isOutline ? 0 : -1;
+                isOutline = SKIN_OUTLINES.contains(input),
+                isHair = HAIR.contains(input),
+                isIris = IRIS.contains(input),
+                isEW = EYE_WHITE.contains(input);
+        final int index;
+
+        if (isSkin || isOutline)
+            index = 0;
+        else if (isHair)
+            index = 1;
+        else if (isIris)
+            index = 2;
+        else if (isEW)
+            index = 3;
+        else
+            index = -1;
 
         return new Pair<>(index, c -> {
             final double ih = rgbToHue(input),
@@ -131,7 +189,57 @@ public final class PokemonStyle extends Style {
                     ch = rgbToHue(c), cs = rgbToSat(c),
                     cv = rgbToValue(c);
 
-            if (isSkin) {
+            if (isSkin || isOutline) {
+                final double bs = rgbToSat(BASE_SKIN),
+                        bv = rgbToValue(BASE_SKIN);
+
+                if (isSkin) {
+                    // Skin
+                    final double sRatio = (cs * is) / bs,
+                            vRatio = (cv * iv) / bv,
+                            s = MathPlus.bounded(0.0, sRatio, 1.0),
+                            v = MathPlus.bounded(0.0, vRatio, 1.0);
+
+                    return fromHSV(ch, s, v);
+                } else {
+                    // Skin outline
+                    final double hueDiff = rgbToHue(BASE_SKIN) - ih,
+                            hue = normalizeHue(ch - hueDiff);
+
+                    final double sRatio = (cs * is) / bs,
+                            vRatio = (cv * iv) / bv,
+                            s = MathPlus.bounded(0.0, sRatio, 1.0),
+                            v = MathPlus.bounded(0.0, vRatio, 1.0);
+
+                    return fromHSV(hue, s, v);
+                }
+            } else if (isHair) {
+                // Hair
+                final double bs = rgbToSat(BASE_HAIR),
+                        bv = rgbToValue(BASE_HAIR);
+
+                final double sRatio = (cs * is) / bs,
+                        vRatio = (cv * iv) / bv,
+                        s = MathPlus.bounded(0.0, sRatio, 1.0),
+                        v = MathPlus.bounded(0.0, vRatio, 1.0);
+
+                return fromHSV(ch, s, v);
+            } else if (isIris) {
+                // Iris
+                final double bs = rgbToSat(BASE_IRIS),
+                        bv = rgbToValue(BASE_IRIS);
+
+                final double sRatio = (cs * is) / bs,
+                        vRatio = (cv * iv) / bv,
+                        s = MathPlus.bounded(0.0, sRatio, 1.0),
+                        v = MathPlus.bounded(0.0, vRatio, 1.0);
+
+                return fromHSV(ch, s, v);
+            } else {
+                // Eye white
+                final double bs = rgbToSat(BASE_EYE_WHITE),
+                        bv = rgbToValue(BASE_EYE_WHITE);
+
                 final double sRatio = (cs * is) / bs,
                         vRatio = (cv * iv) / bv,
                         s = MathPlus.bounded(0.0, sRatio, 1.0),
@@ -139,16 +247,6 @@ public final class PokemonStyle extends Style {
 
                 return fromHSV(ch, s, v);
             }
-
-            final double hueDiff = rgbToHue(baseSkin) - ih,
-                    hue = normalizeHue(ch - hueDiff);
-
-            final double sRatio = (cs * is) / bs,
-                    vRatio = (cv * iv) / bv,
-                    s = MathPlus.bounded(0.0, sRatio, 1.0),
-                    v = MathPlus.bounded(0.0, vRatio, 1.0);
-
-            return fromHSV(hue, s, v);
         });
     }
 
