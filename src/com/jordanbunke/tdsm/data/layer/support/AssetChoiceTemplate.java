@@ -11,21 +11,22 @@ public final class AssetChoiceTemplate {
     public final ColorReplacementFunc colorReplacementFunc;
 
     public AssetChoiceTemplate(final String id) {
-        this(id, new ColorSelection[0], ColorReplacementFunc.trivial());
+        this(id, ColorReplacementFunc.trivial());
     }
 
     public AssetChoiceTemplate(
-            final String id, final ColorSelection[] colorSelections,
-            final ColorReplacementFunc colorReplacementFunc
+            final String id,
+            final ColorReplacementFunc colorReplacementFunc,
+            final ColorSelection... colorSelections
     ) {
         this(id, StringUtils.nameFromID(id),
-                colorSelections, colorReplacementFunc);
+                colorReplacementFunc, colorSelections);
     }
 
     public AssetChoiceTemplate(
             final String id, final String name,
-            final ColorSelection[] colorSelections,
-            final ColorReplacementFunc colorReplacementFunc
+            final ColorReplacementFunc colorReplacementFunc,
+            final ColorSelection... colorSelections
     ) {
         this.id = id;
         this.name = name;
