@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheetWith
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
@@ -109,7 +110,8 @@ public final class PokemonStyle extends Style {
             final Color input
     ) {
         final Color baseSkin = new Color(0xb8f8b8);
-        final double highestVal = rgbToValue(baseSkin);
+        final double bs = rgbToSat(baseSkin),
+                bv = rgbToValue(baseSkin);
 
         final Set<Color> SKIN = Set.of(
                 baseSkin,
@@ -130,17 +132,23 @@ public final class PokemonStyle extends Style {
                     cv = rgbToValue(c);
 
             if (isSkin) {
-                // TODO
+                final double sRatio = (cs * is) / bs,
+                        vRatio = (cv * iv) / bv,
+                        s = MathPlus.bounded(0.0, sRatio, 1.0),
+                        v = MathPlus.bounded(0.0, vRatio, 1.0);
 
-
-                return fromHSV(ch, is, iv);
+                return fromHSV(ch, s, v);
             }
 
-            // TODO - is outline
             final double hueDiff = rgbToHue(baseSkin) - ih,
                     hue = normalizeHue(ch - hueDiff);
 
-            return fromHSV(hue, is, iv);
+            final double sRatio = (cs * is) / bs,
+                    vRatio = (cv * iv) / bv,
+                    s = MathPlus.bounded(0.0, sRatio, 1.0),
+                    v = MathPlus.bounded(0.0, vRatio, 1.0);
+
+            return fromHSV(hue, s, v);
         });
     }
 
