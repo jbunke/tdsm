@@ -19,6 +19,7 @@ import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
+import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 import java.awt.*;
 import java.util.Set;
@@ -98,6 +99,10 @@ public final class PokemonStyle extends Style {
     }
 
     private void setUpLayers() {
+        final Color[] hairSwatches = new Color[] {
+                new Color(0x404040), // TODO
+        };
+
         final ColorSelection skinTones = new ColorSelection(
                 "Skin", true,
                 new Color(0xf8d0b8),
@@ -105,7 +110,8 @@ public final class PokemonStyle extends Style {
                 new Color(0xf8e0b8),
                 new Color(0x986860),
                 new Color(0x986840)),
-                hairColors = new ColorSelection("Hair Color", true),
+                hairColors = new ColorSelection("Hair", true, hairSwatches),
+                eyebrowColors = new ColorSelection("Brows", true, hairSwatches),
                 irisColors = new ColorSelection("Iris", true, black()),
                 ewColors = new ColorSelection("Outer", true,
                         new Color(0xe8e8f8));
@@ -141,19 +147,29 @@ public final class PokemonStyle extends Style {
                 .setComposer(this::composeHead)
                 .build();
         eyeLayer.addInfluencingSelection(skinTones);
-        eyeLayer.addInfluencingSelection(hairColors);
+        eyeLayer.addInfluencingSelection(eyebrowColors);
         eyeLayer.addInfluencingSelection(irisColors);
         eyeLayer.addInfluencingSelection(ewColors);
 
         final ColorSelectionLayer eyeColorLayer = new ColorSelectionLayer(
                 "eye-color", irisColors, ewColors),
                 hairColorLayer = new ColorSelectionLayer(
-                        "hair-color", hairColors);
+                        "hair-color", hairColors, eyebrowColors);
+
+        final AssetChoiceLayer hairLayer = ACLBuilder.of(
+                "hair", this,
+                        new AssetChoiceTemplate("dragon-master", this::replace),
+                        new AssetChoiceTemplate("chic", this::replace))
+                .setComposer(this::composeHead)
+                .setNoAssetChoice(NoAssetChoice.equal())
+                .build();
+        hairLayer.addInfluencingSelection(skinTones);
+        hairLayer.addInfluencingSelection(hairColors);
 
         // TODO - temp
         layers.add(
                 skinLayer, bodyLayer, headLayer, eyeLayer,
-                eyeColorLayer, hairColorLayer
+                eyeColorLayer, hairLayer, hairColorLayer
         );
     }
 
