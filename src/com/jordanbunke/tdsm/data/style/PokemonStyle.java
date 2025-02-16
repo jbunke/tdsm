@@ -195,7 +195,7 @@ public final class PokemonStyle extends Style {
 
     @Override
     public String name() {
-        return "Pokémon Gen IV";
+        return "Pokémon Trainer [Gen 4]";
     }
 
     private Pair<Integer, Function<Color, Color>> replace(

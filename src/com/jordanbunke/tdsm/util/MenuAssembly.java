@@ -59,14 +59,16 @@ public final class MenuAssembly {
                         .indexOf(Playback.get().getAnimation()));
 
         final double ARROW_HEIGHT = 0.4, DIVERGENCE = 0.3;
-        final MenuElement turnCWButton = IconButton.make(
+        final IconButton turnCWButton = IconButton.init(
                 ResourceCodes.TURN_CLOCKWISE,
                 PREVIEW.at(0.5 - DIVERGENCE, ARROW_HEIGHT),
-                () -> true, () -> Sprite.get().turn(true)),
-                turnCCWButton = IconButton.make(
+                () -> Sprite.get().turn(true))
+                .setAnchor(Anchor.CENTRAL).build(),
+                turnCCWButton = IconButton.init(
                         ResourceCodes.TURN_COUNTERCLOCKWISE,
                         PREVIEW.at(0.5 + DIVERGENCE, ARROW_HEIGHT),
-                        () -> true, () -> Sprite.get().turn(false));
+                        () -> Sprite.get().turn(false))
+                        .setAnchor(Anchor.CENTRAL).build();
 
         mb.addAll(animationLabel, animationDropdown,
                 turnCWButton, turnCCWButton);
@@ -96,10 +98,11 @@ public final class MenuAssembly {
                 ResourceCodes.CHANGE_STYLE, styleDropdown.followIcon17(),
                 Anchor.LEFT_TOP);
 
-        final MenuElement randomSpriteButton = IconButton.make(
-                ResourceCodes.RANDOM, ResourceCodes.RANDOM_SPRITE,
-                TOP.at(0.95, 0.5), () -> true,
-                () -> Sprite.get().getStyle().randomize());
+        final IconButton randomSpriteButton = IconButton.init(
+                ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
+                Sprite.get().getStyle()::randomize)
+                .setAnchor(Anchor.CENTRAL)
+                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo, randomSpriteButton);
 
@@ -151,13 +154,13 @@ public final class MenuAssembly {
         final AnimationSequencer animSequencer = new AnimationSequencer(
                 SEQUENCING.at(0.4, SEQUENCER_Y));
 
-        final MenuElement resetSequencingButton = IconButton.make(
+        final IconButton resetSequencingButton = IconButton.init(
                 ResourceCodes.RESET, sequencingInfo.following(),
-                Anchor.LEFT_TOP, () -> true, () -> {
+                () -> {
                     Sprite.get().getStyle().resetSequencing();
                     dirSequencer.refreshScrollBox();
                     animSequencer.refreshScrollBox();
-                });
+                }).build();
 
         final String NO_FRAMES = "Configuration produces no frames!";
         final DynamicLabel frameCountLabel = DynamicLabel.init(
@@ -176,10 +179,9 @@ public final class MenuAssembly {
                 labelPosFor(LAYOUT.pos()), "Padding");
         final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
                 paddingLabel.followIcon17(), Anchor.LEFT_TOP);
-        final MenuElement resetPaddingButton = IconButton.make(
+        final IconButton resetPaddingButton = IconButton.init(
                 ResourceCodes.RESET, paddingInfo.following(),
-                Anchor.LEFT_TOP, () -> true,
-                Sprite.get().getStyle()::resetPadding);
+                Sprite.get().getStyle()::resetPadding).build();
 
         final double EDGES_Y = 0.1, EDGES_Y_INC = 0.08;
         EnumUtils.stream(Edge.class).forEach(e -> {
@@ -211,10 +213,9 @@ public final class MenuAssembly {
                 labelPosFor(LAYOUT.x, LAYOUT.atY(0.4)), "Sprite sheet layout");
         final Indicator layoutInfo = Indicator.make(ResourceCodes.LAYOUT,
                 layoutLabel.followIcon17(), Anchor.LEFT_TOP);
-        final MenuElement resetLayoutButton = IconButton.make(
+        final IconButton resetLayoutButton = IconButton.init(
                 ResourceCodes.RESET, layoutInfo.following(),
-                Anchor.LEFT_TOP, () -> true,
-                Sprite.get().getStyle()::resetLayout);
+                Sprite.get().getStyle()::resetLayout).build();
 
         final double LAYOUT_INC_Y = 0.1;
         double layoutY = 0.5;

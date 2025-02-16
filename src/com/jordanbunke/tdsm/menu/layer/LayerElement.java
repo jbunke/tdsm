@@ -82,11 +82,11 @@ public final class LayerElement extends MenuElementContainer {
                     else
                         layer.lock();
                 }).build();
-        randomizeButton = IconButton.make(ResourceCodes.RANDOM, lockGate.follow(),
-                Anchor.LEFT_TOP, () -> true, () -> {
+        randomizeButton = IconButton.init(
+                ResourceCodes.RANDOM, lockGate.follow(), () -> {
                     layer.randomize(true);
                     Sampler.get().jolt();
-                });
+                }).build();
         rLogicContainer = new GatewayMenuElement(
                 randomizeButton, () -> !layer.isLocked());
 

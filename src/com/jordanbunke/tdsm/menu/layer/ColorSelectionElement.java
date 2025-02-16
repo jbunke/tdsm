@@ -45,12 +45,13 @@ public final class ColorSelectionElement extends MenuElementGrouping {
                 new ColorSelectionButton(position, anchor, selection);
         final Coord2D middleOfButton = button.getRenderPosition()
                 .displace(button.getWidth() / 2, button.getHeight() / 2);
-        final MenuElement randomizer = IconButton.make(
-                ResourceCodes.RANDOM, middleOfButton.displace(COL_SEL_BUTTON_DIM, 0),
-                () -> true, () -> {
+        final IconButton randomizer = IconButton.init(
+                ResourceCodes.RANDOM,
+                middleOfButton.displace(COL_SEL_BUTTON_DIM, 0),
+                () -> {
                     selection.randomize(true);
                     Sampler.get().jolt();
-                });
+                }).setAnchor(Anchor.CENTRAL).build();
 
         mb.addAll(button, randomizer);
 

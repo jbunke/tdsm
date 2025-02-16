@@ -25,47 +25,11 @@ public final class IconButton extends SimpleMenuButton {
         this.tooltip = tooltip;
     }
 
-    public static ThinkingMenuElement make(
+    public static Builder init(
             final String code, final Coord2D position,
-            final Supplier<Boolean> precondition, final Runnable behaviour
+            final Runnable behaviour
     ) {
-        return make(code, code, position, precondition, behaviour);
-    }
-
-    public static ThinkingMenuElement make(
-            final String code, final Coord2D position, final Anchor anchor,
-            final Supplier<Boolean> precondition, final Runnable behaviour
-    ) {
-        return make(code, code, position, anchor, precondition, behaviour);
-    }
-
-    public static ThinkingMenuElement make(
-            final String code, final String tooltipCode, final Coord2D position,
-            final Supplier<Boolean> precondition, final Runnable behaviour
-    ) {
-        return make(code, tooltipCode, position,
-                Anchor.CENTRAL, precondition, behaviour);
-    }
-
-    public static ThinkingMenuElement make(
-            final String code, final String tooltipCode,
-            final Coord2D position, final Anchor anchor,
-            final Supplier<Boolean> precondition, final Runnable behaviour
-    ) {
-        final GameImage iconImage = Graphics.readIcon(code),
-                greyedOut = Graphics.pixelWiseTransformation(
-                        iconImage, Graphics::greyscale);
-
-        final String tooltip = tooltipCode.equals(ResourceCodes.NO_TOOLTIP)
-                ? Tooltip.NONE : ParserUtils.readTooltip(tooltipCode);
-
-        final IconButton icon = new IconButton(
-                position, anchor, behaviour, iconImage, tooltip);
-        final StaticMenuElement stub =
-                new StaticMenuElement(position, anchor, greyedOut);
-
-        return new ThinkingMenuElement(
-                () -> precondition.get() ? icon : stub);
+        return new Builder(code, position, behaviour);
     }
 
     @Override
@@ -76,6 +40,60 @@ public final class IconButton extends SimpleMenuButton {
             final Coord2D mousePos = eventLogger.getAdjustedMousePosition();
             Tooltip.get().ping(tooltip, mousePos);
             Cursor.ping(Cursor.POINTER);
+        }
+    }
+
+    public static class Builder {
+        private final String code;
+        private final Coord2D position;
+        private final Runnable behaviour;
+
+        private String tooltipCode;
+        private Anchor anchor;
+
+        Builder(
+                final String code, final Coord2D position,
+                final Runnable behaviour
+        ) {
+            this.code = code;
+            this.position = position;
+            this.behaviour = behaviour;
+
+            tooltipCode = code;
+            anchor = Anchor.LEFT_TOP;
+        }
+
+        public Builder setAnchor(final Anchor anchor) {
+            this.anchor = anchor;
+            return this;
+        }
+
+        public Builder setTooltipCode(final String tooltipCode) {
+            this.tooltipCode = tooltipCode;
+            return this;
+        }
+
+        public IconButton build() {
+            final GameImage iconImage = Graphics.readIcon(code);
+
+            final String tooltip = tooltipCode.equals(ResourceCodes.NO_TOOLTIP)
+                    ? Tooltip.NONE : ParserUtils.readTooltip(tooltipCode);
+
+            return new IconButton(position, anchor, behaviour, iconImage, tooltip);
+        }
+
+        @SuppressWarnings("unused")
+        public ThinkingMenuElement buildForWhen(
+                final Supplier<Boolean> precondition
+        ) {
+            final GameImage greyedOut = Graphics.pixelWiseTransformation(
+                    Graphics.readIcon(code), Graphics::greyscale);
+
+            final StaticMenuElement stub =
+                    new StaticMenuElement(position, anchor, greyedOut);
+
+            return new ThinkingMenuElement(
+                    () -> precondition.get() ? build() : stub);
         }
     }
 }
