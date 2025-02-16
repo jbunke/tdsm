@@ -20,7 +20,10 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 
 import java.awt.*;
+import java.util.Set;
 import java.util.function.Function;
+
+import static com.jordanbunke.tdsm.util.Colors.*;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
@@ -28,12 +31,16 @@ public final class PokemonStyle extends Style {
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
 
+    private AssetChoiceLayer bodyLayer;
+
     static {
         INSTANCE = new PokemonStyle();
     }
 
     private PokemonStyle() {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
+
+        bodyLayer = null;
 
         setUpLayers();
         update();
@@ -59,6 +66,8 @@ public final class PokemonStyle extends Style {
                     };
                     return new Coord2D(x, y);
                 }, PlaybackMode.PONG),
+                Animation.make("idle", 1, new Coord2D(),
+                        false, PlaybackMode.LOOP),
         };
     }
 
@@ -68,13 +77,11 @@ public final class PokemonStyle extends Style {
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
 
-        final AssetChoiceLayer bodyLayer = ACLBuilder.of(
-                "body", this,
-                new AssetChoiceTemplate("small-body",
-                        this::skinReplacement),
-                new AssetChoiceTemplate("average-body",
-                        this::skinReplacement))
-                .build();
+        bodyLayer = ACLBuilder.of("body", this,
+                        new AssetChoiceTemplate("average-body",
+                                this::skinReplacement),
+                        new AssetChoiceTemplate("small-body",
+                                this::skinReplacement)).build();
         bodyLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer headLayer = ACLBuilder.of(
@@ -101,9 +108,40 @@ public final class PokemonStyle extends Style {
     private Pair<Integer, Function<Color, Color>> skinReplacement(
             final Color input
     ) {
-        // TODO
+        final Color baseSkin = new Color(0xb8f8b8);
+        final double highestVal = rgbToValue(baseSkin);
 
-        return new Pair<>(-1, c -> c);
+        final Set<Color> SKIN = Set.of(
+                baseSkin,
+                new Color(0x98e898),
+                new Color(0x70d870)),
+                SKIN_OUTLINES = Set.of(
+                        new Color(0x557840),
+                        new Color(0x364030));
+
+        final boolean isSkin = SKIN.contains(input),
+                isOutline = SKIN_OUTLINES.contains(input);
+        final int index = isSkin || isOutline ? 0 : -1;
+
+        return new Pair<>(index, c -> {
+            final double ih = rgbToHue(input),
+                    is = rgbToSat(input), iv = rgbToValue(input),
+                    ch = rgbToHue(c), cs = rgbToSat(c),
+                    cv = rgbToValue(c);
+
+            if (isSkin) {
+                // TODO
+
+
+                return fromHSV(ch, is, iv);
+            }
+
+            // TODO - is outline
+            final double hueDiff = rgbToHue(baseSkin) - ih,
+                    hue = normalizeHue(ch - hueDiff);
+
+            return fromHSV(hue, is, iv);
+        });
     }
 
     private SpriteConstituent<String> composeHead(final SpriteSheet sheet) {
@@ -112,8 +150,27 @@ public final class PokemonStyle extends Style {
                     SpriteStates.extractContributor(DIRECTION, id));
             return new Coord2D(indexOfDir(dir), 0);
         }, id -> {
-            // TODO
-            return new Coord2D();
+            final String animID =
+                    SpriteStates.extractContributor(ANIM, id);
+            final int frame = Integer.parseInt(
+                    SpriteStates.extractContributor(FRAME, id));
+
+            final int bodyComp = getBodyLayerChoice(), frameComp;
+
+            frameComp = switch (animID) {
+                case "walk" -> frame == 1 ? 1 : 0;
+                case "idle" -> 1;
+                default -> 0;
+            };
+
+            return new Coord2D(0, bodyComp + frameComp);
         });
+    }
+
+    private int getBodyLayerChoice() {
+        if (bodyLayer == null)
+            return 0;
+
+        return bodyLayer.getChoiceIndex();
     }
 }

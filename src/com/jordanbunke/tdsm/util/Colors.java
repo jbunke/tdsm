@@ -260,6 +260,13 @@ public final class Colors {
         return scaleUpRGBAHSV(n, Constants.RGB_SCALE);
     }
 
+    public static double normalizeHue(double hue) {
+        while (hue > 1.0) hue -= 1.0;
+        while (hue < 0.0) hue += 1.0;
+
+        return hue;
+    }
+
     private static double getRangeOfRGB(final double[] rgb) {
         return getMaxOfRGB(rgb) - getMinOfRGB(rgb);
     }
