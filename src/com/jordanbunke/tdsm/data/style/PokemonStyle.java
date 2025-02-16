@@ -99,22 +99,36 @@ public final class PokemonStyle extends Style {
     }
 
     private void setUpLayers() {
-        final Color[] hairSwatches = new Color[] {
-                new Color(0x404040), // TODO
-        };
-
-        final ColorSelection skinTones = new ColorSelection(
-                "Skin", true,
+        final Color[] skinSwatches = new Color[] {
                 new Color(0xf8d0b8),
+                new Color(0xa88050),
                 new Color(0xc89060),
                 new Color(0xf8e0b8),
                 new Color(0x986860),
-                new Color(0x986840)),
-                hairColors = new ColorSelection("Hair", true, hairSwatches),
-                eyebrowColors = new ColorSelection("Brows", true, hairSwatches),
-                irisColors = new ColorSelection("Iris", true, black()),
-                ewColors = new ColorSelection("Outer", true,
-                        new Color(0xe8e8f8));
+                new Color(0x986840)
+        };
+        final Color[] hairSwatches = new Color[] {
+                new Color(0x404040),
+                new Color(0x342820),
+                new Color(0x684828),
+                new Color(0x82662d),
+                new Color(0xb2864b),
+                new Color(0xc4b880),
+                new Color(0xdedbb8),
+                new Color(0x888480),
+                new Color(0xc4beb8)
+        };
+
+        final ColorSelection skinTones = new ColorSelection(
+                "Skin", true, skinSwatches),
+                hairColors = new ColorSelection(
+                        "Hair", true, hairSwatches),
+                eyebrowColors = new ColorSelection(
+                        "Brows", true, hairSwatches),
+                irisColors = new ColorSelection(
+                        "Iris", true, black()),
+                ewColors = new ColorSelection(
+                        "Outer", true, new Color(0xe8e8f8));
 
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
@@ -159,6 +173,11 @@ public final class PokemonStyle extends Style {
         final AssetChoiceLayer hairLayer = ACLBuilder.of(
                 "hair", this,
                         new AssetChoiceTemplate("dragon-master", this::replace),
+                        new AssetChoiceTemplate("nest", this::replace),
+                        new AssetChoiceTemplate("porcupine", this::replace),
+                        new AssetChoiceTemplate("mane", this::replace),
+                        new AssetChoiceTemplate("silver-fox", this::replace),
+                        new AssetChoiceTemplate("high-ponytail", this::replace),
                         new AssetChoiceTemplate("chic", this::replace))
                 .setComposer(this::composeHead)
                 .setNoAssetChoice(NoAssetChoice.equal())
@@ -175,7 +194,7 @@ public final class PokemonStyle extends Style {
 
     @Override
     public String name() {
-        return "Pokemon Gen IV"; // TODO - with é
+        return "Pokémon Gen IV";
     }
 
     private Pair<Integer, Function<Color, Color>> replace(
