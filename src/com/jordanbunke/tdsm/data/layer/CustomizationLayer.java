@@ -10,11 +10,13 @@ public abstract class CustomizationLayer {
     public final String id;
 
     private final List<ColorSelection> influencingSelections;
+    private boolean locked;
 
     CustomizationLayer(final String id) {
         this.id = id;
 
         influencingSelections = new ArrayList<>();
+        locked = false;
     }
 
     public void addInfluencingSelection(
@@ -27,6 +29,18 @@ public abstract class CustomizationLayer {
 
     public List<ColorSelection> getInfluencingSelections() {
         return influencingSelections;
+    }
+
+    public final boolean isLocked() {
+        return locked;
+    }
+
+    public final void lock() {
+        locked = true;
+    }
+
+    public final void unlock() {
+        locked = false;
     }
 
     public abstract SpriteConstituent<String> compose();

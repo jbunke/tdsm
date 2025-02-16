@@ -6,6 +6,7 @@ import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementContainer;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
+import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
@@ -40,8 +41,8 @@ public final class LayerElement extends MenuElementContainer {
     private boolean expanded;
 
     private final StaticLabel nameLabel;
-    private final IconOptionsButton collapser;
-    private final MenuElement randomizeButton;
+    private final IconOptionsButton collapser, lockGate;
+    private final MenuElement randomizeButton, rLogicContainer;
     private final MenuElement[] header;
     private MenuElement[] contents, all;
 
@@ -72,13 +73,26 @@ public final class LayerElement extends MenuElementContainer {
                     else
                         expand();
                 }).build();
-        randomizeButton = IconButton.make(ResourceCodes.RANDOM, collapser.follow(),
+        lockGate = IconOptionsButton.init(collapser.follow())
+                .setCodes(ResourceCodes.LOCKED, ResourceCodes.UNLOCKED)
+                .setIndexFunc(() -> layer.isLocked() ? 0 : 1)
+                .setGlobal(() -> {
+                    if (layer.isLocked())
+                        layer.unlock();
+                    else
+                        layer.lock();
+                }).build();
+        randomizeButton = IconButton.make(ResourceCodes.RANDOM, lockGate.follow(),
                 Anchor.LEFT_TOP, () -> true, () -> {
                     layer.randomize(true);
                     Sampler.get().jolt();
                 });
+        rLogicContainer = new GatewayMenuElement(
+                randomizeButton, () -> !layer.isLocked());
 
-        header = new MenuElement[] { nameLabel, collapser, randomizeButton };
+        header = new MenuElement[] {
+                nameLabel, collapser, lockGate, rLogicContainer
+        };
         makeContents();
     }
 
@@ -104,8 +118,8 @@ public final class LayerElement extends MenuElementContainer {
     private void makeContents() {
         final MenuBuilder cb = new MenuBuilder(), ab = new MenuBuilder();
 
-        cb.addAll(nameLabel, collapser, randomizeButton);
-        ab.addAll(nameLabel, collapser, randomizeButton);
+        cb.addAll(nameLabel, collapser, lockGate, rLogicContainer);
+        ab.addAll(nameLabel, collapser, lockGate, randomizeButton);
 
         addLayerContents(layer, cb, ab);
 

@@ -53,6 +53,9 @@ public final class ColorSelectionLayer extends CustomizationLayer {
 
     @Override
     public void randomize(final boolean updateSprite) {
+        if (isLocked())
+            return;
+
         for (ColorSelection selection : selections)
             selection.randomize(false);
 

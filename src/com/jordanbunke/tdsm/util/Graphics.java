@@ -492,8 +492,8 @@ public final class Graphics {
         final int w = icon.getWidth(), h = icon.getHeight();
         final GameImage highlight = new GameImage(icon);
 
-        for (int x = 1; x < w - 1; x++) {
-            for (int y = 1; y < h - 1; y++) {
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
                 final Color c = icon.getColorAt(x, y);
 
                 if (c.getAlpha() == 0 && hasAdjacent(icon, x, y))
@@ -516,6 +516,10 @@ public final class Graphics {
     private static boolean notTransparent(
             final GameImage image, final int x, final int y
     ) {
+        if (x < 0 || x >= image.getWidth() ||
+                y < 0 || y >= image.getHeight())
+            return false;
+
         return image.getColorAt(x, y).getAlpha() > 0;
     }
 

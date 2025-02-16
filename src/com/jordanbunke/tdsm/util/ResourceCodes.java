@@ -15,6 +15,8 @@ public final class ResourceCodes {
             DRAG = "drag",
             RESET = "reset",
             NONE = "none",
+            LOCKED = "locked",
+            UNLOCKED = "unlocked",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 

@@ -118,6 +118,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     @Override
     public void randomize(final boolean updateSprite) {
+        if (isLocked())
+            return;
+
         final int index;
 
         if (noAssetChoice.valid) {

@@ -105,7 +105,8 @@ public final class PokemonStyle extends Style {
                 new Color(0xc89060),
                 new Color(0xf8e0b8),
                 new Color(0x986860),
-                new Color(0x986840)
+                new Color(0x986840),
+                new Color(0x58402e),
         };
         final Color[] hairSwatches = new Color[] {
                 new Color(0x404040),
