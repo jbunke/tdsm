@@ -5,7 +5,7 @@ import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
-import com.jordanbunke.tdsm.data.func.ComposerBuilder;
+import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.StringUtils;
@@ -14,29 +14,29 @@ import java.awt.*;
 
 public final class AssetLayer extends CustomizationLayer {
     private final Bounds2D dims;
-    private final ComposerBuilder composerBuilder;
+    private final Composer composer;
     private final ColorReplacementFunc colorReplacementFunc;
     private final GameImage asset;
     private SpriteSheet sheet;
 
     public AssetLayer(
             final String id, final Bounds2D dims,
-            final GameImage asset, final ComposerBuilder composerBuilder,
+            final GameImage asset, final Composer composer,
             final ColorReplacementFunc colorReplacementFunc
     ) {
         super(id);
 
         this.dims = dims;
         this.asset = asset;
-        this.composerBuilder = composerBuilder;
+        this.composer = composer;
         this.colorReplacementFunc = colorReplacementFunc;
 
         update();
     }
 
     @Override
-    public SpriteConstituent<String> getComposer() {
-        return composerBuilder.build(sheet);
+    public SpriteConstituent<String> compose() {
+        return composer.build(sheet);
     }
 
     @Override

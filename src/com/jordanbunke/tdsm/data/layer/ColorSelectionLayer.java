@@ -29,7 +29,7 @@ public final class ColorSelectionLayer extends CustomizationLayer {
     }
 
     @Override
-    public SpriteConstituent<String> getComposer() {
+    public SpriteConstituent<String> compose() {
         return s -> GameImage.dummy();
     }
 

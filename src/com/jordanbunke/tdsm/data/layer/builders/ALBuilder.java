@@ -4,7 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
-import com.jordanbunke.tdsm.data.func.ComposerBuilder;
+import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.AssetLayer;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.Constants;
@@ -15,7 +15,7 @@ public class ALBuilder {
     private final String id;
 
     private Bounds2D dims;
-    private ComposerBuilder composerBuilder;
+    private Composer composer;
     private ColorReplacementFunc colorReplacementFunc;
     private GameImage asset;
 
@@ -31,7 +31,7 @@ public class ALBuilder {
         this.id = id;
 
         this.dims = style.dims;
-        this.composerBuilder = style::defaultBuildComposer;
+        this.composer = style::defaultBuildComposer;
         this.colorReplacementFunc = ColorReplacementFunc.trivial();
 
         asset = fetchAsset(id, style);
@@ -47,10 +47,10 @@ public class ALBuilder {
         return this;
     }
 
-    public ALBuilder setComposerBuilder(
-            final ComposerBuilder composerBuilder
+    public ALBuilder setComposer(
+            final Composer composer
     ) {
-        this.composerBuilder = composerBuilder;
+        this.composer = composer;
         return this;
     }
 
@@ -63,7 +63,7 @@ public class ALBuilder {
 
     public AssetLayer build() {
         return new AssetLayer(id, dims, asset,
-                composerBuilder, colorReplacementFunc);
+                composer, colorReplacementFunc);
     }
 
     private static GameImage fetchAsset(

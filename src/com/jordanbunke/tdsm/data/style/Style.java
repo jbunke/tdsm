@@ -13,6 +13,7 @@ import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
+import com.jordanbunke.tdsm.data.layer.DecisionLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.io.json.JSONArray;
 import com.jordanbunke.tdsm.io.json.JSONBuilder;
@@ -390,16 +391,24 @@ public abstract class Style {
     }
 
     public void update() {
-        // TODO - proper handling of masking layers
-
         final SpriteAssembler<String, String> assembler =
                 new SpriteAssembler<>(dims.width(), dims.height());
 
         for (CustomizationLayer layer : layers.get())
-            if (layer.isRendered())
-                assembler.addLayer(layer.id, layer.getComposer());
+            addLayerToAssembler(assembler, layer);
 
         map = new SpriteMap<>(assembler, states);
+    }
+
+    private void addLayerToAssembler(
+            final SpriteAssembler<String, String> assembler,
+            final CustomizationLayer layer
+    ) {
+        if (layer instanceof DecisionLayer dl)
+            addLayerToAssembler(assembler, dl.getDecision());
+        // TODO - mask layer
+        else if (layer.isRendered())
+            assembler.addLayer(layer.id, layer.compose());
     }
 
     public final InterpretedSpriteSheet<String> defaultBuildComposer(

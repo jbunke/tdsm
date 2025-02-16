@@ -7,7 +7,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.RNG;
 import com.jordanbunke.tdsm.data.Sprite;
-import com.jordanbunke.tdsm.data.func.ComposerBuilder;
+import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
@@ -28,7 +28,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     private int selection;
 
     private final GameImage[] previews;
-    private final ComposerBuilder composerBuilder;
+    private final Composer composer;
     public final NoAssetChoice noAssetChoice;
     private final Coord2D previewCoord;
     private SpriteSheet sheet;
@@ -37,7 +37,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             final String id, final String name,
             final Bounds2D dims, final Style style,
             final AssetChoiceTemplate[] choices,
-            final ComposerBuilder composerBuilder,
+            final Composer composer,
             final NoAssetChoice noAssetChoice, final Coord2D previewCoord
     ) {
         super(id);
@@ -51,7 +51,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         this.previews = new GameImage[this.choices.length];
         this.previewCoord = previewCoord;
 
-        this.composerBuilder = composerBuilder;
+        this.composer = composer;
         this.noAssetChoice = noAssetChoice;
 
         this.selection = noAssetChoice.valid ? NONE : 0;
@@ -83,9 +83,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     }
 
     @Override
-    public SpriteConstituent<String> getComposer() {
+    public SpriteConstituent<String> compose() {
         if (hasChoice())
-            return composerBuilder.build(sheet);
+            return composer.build(sheet);
 
         return s -> GameImage.dummy();
     }

@@ -22,8 +22,8 @@ public final class DecisionLayer extends CustomizationLayer {
     }
 
     @Override
-    public SpriteConstituent<String> getComposer() {
-        return decision.getComposer();
+    public SpriteConstituent<String> compose() {
+        return decision.compose();
     }
 
     @Override

@@ -4,6 +4,6 @@ import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 
 @FunctionalInterface
-public interface ComposerBuilder {
+public interface Composer {
     SpriteConstituent<String> build(final SpriteSheet sheet);
 }

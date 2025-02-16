@@ -29,7 +29,7 @@ public abstract class CustomizationLayer {
         return influencingSelections;
     }
 
-    public abstract SpriteConstituent<String> getComposer();
+    public abstract SpriteConstituent<String> compose();
 
     public abstract String name();
 
