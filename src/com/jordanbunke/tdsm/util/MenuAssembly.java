@@ -369,12 +369,24 @@ public final class MenuAssembly {
 
         openingMenu(mb,
                 new Pair<>("< Main Menu", () -> ProgramState.to(main())),
+                new Pair<>("Changelog", () -> ProgramState.to(changelog())),
                 new Pair<>("Roadmap", () -> ProgramState.to(roadmap())),
-                new Pair<>("Developer's store >", () -> {} /* TODO */),
-                new Pair<>("Look at the code >", () -> {} /* TODO */));
+                new Pair<>("Links", () -> ProgramState.to(links())));
 
         menuTitle(mb, "About");
         menuBlurb(mb, ResourceCodes.ABOUT, Text.Orientation.CENTER);
+
+        return mb.build();
+    }
+
+    public static Menu changelog() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        openingMenu(mb,
+                new Pair<>("< About", () -> ProgramState.to(about())));
+
+        menuTitle(mb, "Changelog");
+        menuBlurb(mb, ResourceCodes.CHANGELOG, Text.Orientation.LEFT);
 
         return mb.build();
     }
@@ -387,6 +399,21 @@ public final class MenuAssembly {
 
         menuTitle(mb, "Roadmap");
         menuBlurb(mb, ResourceCodes.ROADMAP, Text.Orientation.LEFT);
+
+        return mb.build();
+    }
+
+    public static Menu links() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        openingMenu(mb,
+                new Pair<>("< About", () -> ProgramState.to(about())),
+                new Pair<>("My store >", () -> {} /* TODO - Itch profile */),
+                new Pair<>("Stipple Effect >", () -> {} /* TODO - SE website */),
+                new Pair<>("Source code >", () -> {} /* TODO - jbunke/tdsm */));
+
+        menuTitle(mb, "Links");
+        menuBlurb(mb, ResourceCodes.LINKS, Text.Orientation.CENTER);
 
         return mb.build();
     }

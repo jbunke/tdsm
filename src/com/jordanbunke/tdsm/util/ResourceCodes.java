@@ -33,5 +33,6 @@ public final class ResourceCodes {
             RANDOM_SPRITE = "random_sprite";
 
     // blurbs
-    public static final String ABOUT = "about", ROADMAP = "roadmap";
+    public static final String ABOUT = "about",
+            CHANGELOG = "changelog", ROADMAP = "roadmap", LINKS = "links";
 }

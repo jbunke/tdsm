@@ -1,0 +1,10 @@
+Below are a series of links that may be of interest.
+
+"Stipple Effect" is my scriptable pixel art editor. If you
+want to get the most use out of TDSM and do post-processing
+on your exported sprite sheets like mapping them to palettes
+or enabling or disabling individual customization layers, I
+recommend you give Stipple Effect a try.
+
+Additionally, TDSM is source-available software. Help me to
+swash bugs or simply read through the code if you're curious!
