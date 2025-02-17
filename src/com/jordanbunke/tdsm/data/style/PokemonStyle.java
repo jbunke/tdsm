@@ -13,10 +13,7 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
-import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
-import com.jordanbunke.tdsm.data.layer.Layers;
-import com.jordanbunke.tdsm.data.layer.MathLayer;
+import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
@@ -39,6 +36,7 @@ public final class PokemonStyle extends Style {
 
     private AssetChoiceLayer bodyLayer;
     private final MathLayer eyeHeightLayer;
+    private final ChoiceLayer clothingTypeLayer;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -76,6 +74,8 @@ public final class PokemonStyle extends Style {
                     case 1 -> "High";
                     default -> "Average";
                 });
+        clothingTypeLayer = new ChoiceLayer("clothing-type",
+                "Top and bottom", "Outfit");
 
         setUpLayers();
         update();
@@ -198,7 +198,7 @@ public final class PokemonStyle extends Style {
         layers.add(
                 skinLayer, bodyLayer, headLayer,
                 eyeLayer, eyeHeightLayer, eyeColorLayer,
-                hairLayer, hairColorLayer
+                hairLayer, hairColorLayer, clothingTypeLayer
         );
     }
 

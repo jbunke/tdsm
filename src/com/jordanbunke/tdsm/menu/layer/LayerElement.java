@@ -12,16 +12,14 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
-import com.jordanbunke.tdsm.menu.DynamicLabel;
-import com.jordanbunke.tdsm.menu.IconButton;
-import com.jordanbunke.tdsm.menu.IconOptionsButton;
-import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
@@ -57,8 +55,8 @@ public final class LayerElement extends MenuElementContainer {
         this.expandedH = expandedH;
         expanded = false;
 
-        if (layer instanceof DecisionLayer dl)
-            dl.setElement(this);
+        if (layer instanceof ManualRefreshLayer mrl)
+            mrl.setElement(this);
 
         nameLabel = StaticLabel.make(labelPosFor(getPosition()), layer.name());
         collapser = IconOptionsButton.init(nameLabel.followIcon17()
@@ -157,7 +155,16 @@ public final class LayerElement extends MenuElementContainer {
             cb.addAll(decLogic, incLogic, formattedValue);
             ab.addAll(decrement, increment, formattedValue);
         } else if (layer instanceof ChoiceLayer cl) {
-            // TODO
+            final int numChoices = cl.getNumChoices();
+            final Dropdown choices = Dropdown.create(
+                    INITIAL, IntStream.range(0, numChoices)
+                            .mapToObj(cl::getChoiceAt).toArray(String[]::new),
+                    IntStream.range(0, numChoices).mapToObj(i ->
+                            (Runnable) () -> cl.choose(i))
+                            .toArray(Runnable[]::new), cl::getSelection);
+
+            cb.add(choices);
+            ab.add(choices);
         } else if (layer instanceof AssetChoiceLayer acl) {
             // MAKE CHOICE BUTTONS
             final int[] indices = acl.getIndices();
@@ -270,15 +277,15 @@ public final class LayerElement extends MenuElementContainer {
 
     @Override
     public void render(final GameImage canvas) {
+        final int x1 = LAYERS.atX(0.04), x2 = LAYERS.atX(0.96),
+                y = getY() + getHeight() + BUFFER / 2;
+        canvas.drawLine(Colors.lightAccent(), 1f, x1, y, x2, y);
+
         final MenuElement[] renderOrder =
                 MenuElement.sortForRender(getRelevantElements());
 
         for (MenuElement element : renderOrder)
             element.render(canvas);
-
-        final int x1 = LAYERS.atX(0.04), x2 = LAYERS.atX(0.96),
-                y = getY() + getHeight() + BUFFER / 2;
-        canvas.drawLine(Colors.lightAccent(), 1f, x1, y, x2, y);
     }
 
     @Override

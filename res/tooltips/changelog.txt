@@ -1,4 +1,3 @@
-Header Format: [VERSION]  -  [YYYY]-[MM]-[DD]
+Header Format: [VERSION]  -  [YYYY]-[MM]-[DD]  -  [UPDATE TYPE]
 
-v1.0.0  -  2025-02-18
-  Initial release
+v1.0.0  -  2025-02-18  -  Initial release

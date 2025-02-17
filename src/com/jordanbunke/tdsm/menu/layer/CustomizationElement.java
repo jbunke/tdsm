@@ -12,6 +12,7 @@ import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
 
 import java.util.Arrays;
 
+import static com.jordanbunke.tdsm.util.Layout.BUFFER;
 import static com.jordanbunke.tdsm.util.Layout.COLLAPSED_LAYER_H;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 
@@ -78,7 +79,7 @@ public final class CustomizationElement extends MenuElementContainer {
                 Arrays.stream(layerElements).map(Scrollable::new)
                         .toArray(Scrollable[]::new),
                 Arrays.stream(layerElements).map(l -> l.getY() + l.getHeight())
-                        .reduce(0, Math::max), offset);
+                        .reduce(0, Math::max) + BUFFER, offset);
 
         updateOffset();
 
