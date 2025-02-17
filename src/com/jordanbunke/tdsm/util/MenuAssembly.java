@@ -21,6 +21,7 @@ import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
 import com.jordanbunke.tdsm.menu.*;
+import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
@@ -31,6 +32,8 @@ import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
+import java.awt.*;
+import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -408,14 +411,23 @@ public final class MenuAssembly {
 
         openingMenu(mb,
                 new Pair<>("< About", () -> ProgramState.to(about())),
-                new Pair<>("My store >", () -> {} /* TODO - Itch profile */),
-                new Pair<>("Stipple Effect >", () -> {} /* TODO - SE website */),
-                new Pair<>("Source code >", () -> {} /* TODO - jbunke/tdsm */));
+                new Pair<>("My store >",
+                        () -> visitSite("https://flinkerflitzer.itch.io")),
+                new Pair<>("Stipple Effect >",
+                        () -> visitSite("https://stipple-effect.github.io")),
+                new Pair<>("Source code >",
+                        () -> visitSite("https://github.com/jbunke/tdsm")));
 
         menuTitle(mb, "Links");
         menuBlurb(mb, ResourceCodes.LINKS, Text.Orientation.CENTER);
 
         return mb.build();
+    }
+
+    private static void visitSite(final String link) {
+        try {
+            Desktop.getDesktop().browse(new URI(link));
+        } catch (Exception ignored) {}
     }
 
     private static void menuTitle(

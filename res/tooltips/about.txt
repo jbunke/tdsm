@@ -1,5 +1,5 @@
-"Top Down Sprite Maker" is a pixel art character creation
-tool developed by Jordan Bunke (Flinker Flitzer).
+"Top Down Sprite Maker" (TDSM) is a pixel art character
+creation tool developed by Jordan Bunke (Flinker Flitzer).
 
 Its modular design gives you, the user, full control over
 how you want to customize your characters and configure
