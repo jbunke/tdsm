@@ -16,6 +16,7 @@ import com.jordanbunke.tdsm.data.Directions.NumDirs;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.data.layer.MathLayer;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
@@ -37,6 +38,7 @@ public final class PokemonStyle extends Style {
     private static final Color BASE_SKIN, BASE_HAIR, BASE_IRIS, BASE_EYE_WHITE;
 
     private AssetChoiceLayer bodyLayer;
+    private final MathLayer eyeHeightLayer;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -68,6 +70,12 @@ public final class PokemonStyle extends Style {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
 
         bodyLayer = null;
+        eyeHeightLayer = new MathLayer("eye-height", -1, 1, 0,
+                i -> switch (i) {
+                    case -1 -> "Low";
+                    case 1 -> "High";
+                    default -> "Average";
+                });
 
         setUpLayers();
         update();
@@ -159,7 +167,7 @@ public final class PokemonStyle extends Style {
                 new AssetChoiceTemplate("menacing", this::replace),
                 new AssetChoiceTemplate("feminine", this::replace),
                 new AssetChoiceTemplate("cranky", this::replace))
-                .setComposer(this::composeHead)
+                .setComposer(this::composeEyes)
                 .build();
         eyeLayer.addInfluencingSelection(skinTones);
         eyeLayer.addInfluencingSelection(eyebrowColors);
@@ -188,8 +196,9 @@ public final class PokemonStyle extends Style {
 
         // TODO - temp
         layers.add(
-                skinLayer, bodyLayer, headLayer, eyeLayer,
-                eyeColorLayer, hairLayer, hairColorLayer
+                skinLayer, bodyLayer, headLayer,
+                eyeLayer, eyeHeightLayer, eyeColorLayer,
+                hairLayer, hairColorLayer
         );
     }
 
@@ -286,27 +295,46 @@ public final class PokemonStyle extends Style {
         });
     }
 
-    private SpriteConstituent<String> composeHead(final SpriteSheet sheet) {
-        return new InterpretedSpriteSheetWithOffset<>(sheet, id -> {
-            final Directions.Dir dir = Directions.get(
-                    SpriteStates.extractContributor(DIRECTION, id));
-            return new Coord2D(indexOfDir(dir), 0);
-        }, id -> {
-            final String animID =
-                    SpriteStates.extractContributor(ANIM, id);
-            final int frame = Integer.parseInt(
-                    SpriteStates.extractContributor(FRAME, id));
+    private SpriteConstituent<String> composeEyes(
+            final SpriteSheet sheet
+    ) {
+        return composeHead(sheet, -eyeHeightLayer.getValue());
+    }
 
-            final int bodyComp = getBodyLayerChoice(), frameComp;
+    private SpriteConstituent<String> composeHead(
+            final SpriteSheet sheet
+    ) {
+        return composeHead(sheet, 0);
+    }
 
-            frameComp = switch (animID) {
-                case "walk" -> frame == 1 ? 1 : 0;
-                case "idle" -> 1;
-                default -> 0;
-            };
+    private SpriteConstituent<String> composeHead(
+            final SpriteSheet sheet, final int augY
+    ) {
+        return new InterpretedSpriteSheetWithOffset<>(
+                sheet, this::forDir, id -> headOffset(id, augY));
+    }
 
-            return new Coord2D(0, bodyComp + frameComp);
-        });
+    private Coord2D headOffset(final String spriteID, final int augY) {
+        final String animID =
+                SpriteStates.extractContributor(ANIM, spriteID);
+        final int frame = Integer.parseInt(
+                SpriteStates.extractContributor(FRAME, spriteID));
+
+        final int bodyComp = getBodyLayerChoice(), frameComp;
+
+        frameComp = switch (animID) {
+            case "walk" -> frame == 1 ? 1 : 0;
+            case "idle" -> 1;
+            default -> 0;
+        };
+
+        return new Coord2D(0, bodyComp + frameComp + augY);
+    }
+
+    private Coord2D forDir(final String spriteID) {
+        final Directions.Dir dir = Directions.get(
+                SpriteStates.extractContributor(DIRECTION, spriteID));
+        return new Coord2D(indexOfDir(dir), 0);
     }
 
     private int getBodyLayerChoice() {

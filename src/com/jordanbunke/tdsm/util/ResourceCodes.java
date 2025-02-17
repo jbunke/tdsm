@@ -25,6 +25,8 @@ public final class ResourceCodes {
             INCLUSION = "inclusion",
             PADDING = "padding",
             LAYOUT = "layout",
+            INCREMENT = "increment",
+            DECREMENT = "decrement",
             FRAMES_PER_DIM = "frames_per_dim",
             FILE_NAME = "file_name",
             EXPORT_STIP = "export_stip",

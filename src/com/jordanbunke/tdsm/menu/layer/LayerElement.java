@@ -10,11 +10,9 @@ import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElemen
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
-import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
-import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
-import com.jordanbunke.tdsm.data.layer.DecisionLayer;
+import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
+import com.jordanbunke.tdsm.menu.DynamicLabel;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.IconOptionsButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
@@ -136,7 +134,31 @@ public final class LayerElement extends MenuElementContainer {
 
         if (layer instanceof DecisionLayer dl)
             addLayerContents(dl.getDecision(), cb, ab);
-        else if (layer instanceof AssetChoiceLayer acl) {
+        else if (layer instanceof MathLayer ml) {
+            Coord2D pos = INITIAL.displace(0, MATH_LAYER_OFFSET_Y);
+
+            final IconButton decrement = IconButton.init(
+                    ResourceCodes.EXPAND, pos, ml::decrement)
+                    .setTooltipCode(ResourceCodes.DECREMENT).build(),
+                    increment = IconButton.init(
+                            ResourceCodes.COLLAPSE,
+                            follow(decrement), ml::increment)
+                            .setTooltipCode(ResourceCodes.INCREMENT).build();
+            final GatewayMenuElement decLogic =
+                    new GatewayMenuElement(decrement, () -> !ml.isMin()),
+                    incLogic = new GatewayMenuElement(increment,
+                            () -> !ml.isMax());
+
+            final DynamicLabel formattedValue = DynamicLabel.init(
+                    follow(increment).displace(POST_LABEL_BUFFER_X, 0),
+                            ml::getFormattedValue, "X".repeat(30))
+                    .setMini().build();
+
+            cb.addAll(decLogic, incLogic, formattedValue);
+            ab.addAll(decrement, increment, formattedValue);
+        } else if (layer instanceof ChoiceLayer cl) {
+            // TODO
+        } else if (layer instanceof AssetChoiceLayer acl) {
             // MAKE CHOICE BUTTONS
             final int[] indices = acl.getIndices();
             Coord2D pos = INITIAL;

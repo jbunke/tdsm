@@ -121,7 +121,8 @@ public final class Layout {
             CHECKERBOARD_SQUARE = 10, CHECKBOX_DIM = 17,
             STANDARD_ICON_DIM = 17, VEIL_OFFSET = 3,
             SEQUENCE_ENTRY_INC_Y = 17, SEQUENCER_SCROLL_BAR_W = 8,
-            COL_SEL_LAYER_BASE_H = 43, COL_SEL_LAYER_INC_X = 50,
+            BASE_EXPANDED_H = 43, COL_SEL_LAYER_BASE_H = BASE_EXPANDED_H,
+            MATH_LAYER_OFFSET_Y = 4, COL_SEL_LAYER_INC_X = 50,
             COL_SEL_SCROLL_BOX_H = 45, COL_SEL_LAST_X_SUB = 10,
             ASSET_BUFFER_X = 10, ASSET_BUFFER_Y = 12,
             INNER_ASSET_BUFFER_X = 20, INNER_ASSET_BUFFER_Y = 10,
@@ -166,10 +167,6 @@ public final class Layout {
         return (int) (perc * CANVAS_H);
     }
 
-    public static Coord2D textButtonBelow(final MenuElement ref) {
-        return ref.getPosition().displace(0, TEXT_BUTTON_INC_Y);
-    }
-
     public static Coord2D tooltipRenderPos(
             final GameImage tooltip, final Coord2D mousePos
     ) {
@@ -188,5 +185,9 @@ public final class Layout {
     ) {
         final int w = cursor.getWidth(), h = cursor.getHeight();
         return mousePos.displace(new Coord2D(w / 2, h / 2).scale(-1));
+    }
+
+    public static Coord2D follow(final MenuElement ref) {
+        return ref.getRenderPosition().displace(ref.getWidth(), 0);
     }
 }
