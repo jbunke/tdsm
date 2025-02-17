@@ -3,6 +3,7 @@ package com.jordanbunke.tdsm.io;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.GameImageIO;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.util.EnumUtils;
@@ -10,6 +11,7 @@ import com.jordanbunke.tdsm.util.MenuAssembly;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -95,7 +97,12 @@ public final class Export {
     }
 
     private void exportStip() {
+        final Path stipPath = getPath(FileType.STIP);
+        final List<Pair<String, GameImage>> stipRep = Sprite.get()
+                .getStyle().renderStipExport();
+
         // TODO
+        System.out.println(stipPath.toString());
     }
 
     public boolean isExportJSON() {

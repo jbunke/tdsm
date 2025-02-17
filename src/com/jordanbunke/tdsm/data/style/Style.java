@@ -13,10 +13,7 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
-import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
-import com.jordanbunke.tdsm.data.layer.DecisionLayer;
-import com.jordanbunke.tdsm.data.layer.Layers;
-import com.jordanbunke.tdsm.data.layer.MaskLayer;
+import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.io.json.JSONArray;
 import com.jordanbunke.tdsm.io.json.JSONBuilder;
 import com.jordanbunke.tdsm.io.json.JSONObject;
@@ -303,9 +300,34 @@ public abstract class Style {
         }
     }
 
-    public Pair<String, GameImage>[] renderLayeredSpriteSheetForStipExport() {
-        // TODO - < layer-name, layer-image >
-        return null;
+    public List<Pair<String, GameImage>> renderStipExport() {
+        final CustomizationLayer[] renderLayers = layers.get().stream()
+                .filter(CustomizationLayer::isRendered)
+                .toArray(CustomizationLayer[]::new);
+        final List<Pair<String, GameImage>> stipRep = new ArrayList<>();
+
+        for (CustomizationLayer layer : renderLayers) {
+            // Skip empty layers
+            if (layer instanceof AssetChoiceLayer acl && !acl.hasChoice())
+                continue;
+
+            Arrays.stream(renderLayers).map(l -> l.id)
+                    .forEach(map.assembler::disableLayer);
+
+            map.assembler.enableLayer(layer.id);
+            map.redraw();
+
+            final Pair<String, GameImage> layerRep = new Pair<>(
+                    layer.id, renderSpriteSheet());
+            stipRep.add(layerRep);
+        }
+
+        // Reset layer settings
+        Arrays.stream(renderLayers).map(l -> l.id)
+                .forEach(map.assembler::enableLayer);
+        map.redraw();
+
+        return stipRep;
     }
 
     private GameImage renderSpriteForExport(
