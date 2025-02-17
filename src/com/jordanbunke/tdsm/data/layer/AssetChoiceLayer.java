@@ -22,13 +22,13 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     public static final int NONE = -1;
 
     public final Bounds2D dims;
+    public final Composer composer;
     private final String name;
 
     private final AssetChoice[] choices;
     private int selection;
 
     private final GameImage[] previews;
-    private final Composer composer;
     public final NoAssetChoice noAssetChoice;
     private final Coord2D previewCoord;
     private SpriteSheet sheet;
@@ -87,7 +87,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         if (hasChoice())
             return composer.build(sheet);
 
-        return s -> GameImage.dummy();
+        return s -> new GameImage(dims.width(), dims.height());
     }
 
     @Override
@@ -162,8 +162,12 @@ public final class AssetChoiceLayer extends CustomizationLayer {
                                 ? HORZ_SCROLL_BAR_H + 4 : 0) : 0);
     }
 
-    private boolean hasChoice() {
+    public boolean hasChoice() {
         return selection != NONE;
+    }
+
+    public AssetChoice getChoice() {
+        return choices[selection];
     }
 
     public AssetChoice getChoiceAt(final int index) {

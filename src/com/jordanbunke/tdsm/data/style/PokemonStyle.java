@@ -15,6 +15,7 @@ import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
@@ -34,8 +35,8 @@ public final class PokemonStyle extends Style {
     private static final Set<Color> SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE;
     private static final Color BASE_SKIN, BASE_HAIR, BASE_IRIS, BASE_EYE_WHITE;
 
-    private AssetChoiceLayer bodyLayer;
-    private final MathLayer eyeHeightLayer;
+    private AssetChoiceLayer bodyLayer, hatLayer;
+    private final MathLayer eyeLevelLayer;
     private final ChoiceLayer clothingTypeLayer;
 
     static {
@@ -68,7 +69,8 @@ public final class PokemonStyle extends Style {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
 
         bodyLayer = null;
-        eyeHeightLayer = new MathLayer("eye-height", -1, 1, 0,
+        hatLayer = null;
+        eyeLevelLayer = new MathLayer("eye-level", -1, 1, 0,
                 i -> switch (i) {
                     case -1 -> "Low";
                     case 1 -> "High";
@@ -194,11 +196,21 @@ public final class PokemonStyle extends Style {
         hairLayer.addInfluencingSelection(skinTones);
         hairLayer.addInfluencingSelection(hairColors);
 
-        // TODO - temp
+        // TODO - with temp example asset
+        hatLayer = ACLBuilder.of("hat", this,
+                        new AssetChoiceTemplate("example"))
+                .setName("Headwear").setComposer(this::composeHead)
+                .setNoAssetChoice(NoAssetChoice.prob(0.75)).build();
+
+        final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
+                .trySetNaiveLogic(this, hatLayer).build();
+
+        // TODO - still assembling
         layers.add(
                 skinLayer, bodyLayer, headLayer,
-                eyeLayer, eyeHeightLayer, eyeColorLayer,
-                hairLayer, hairColorLayer, clothingTypeLayer
+                eyeLayer, eyeLevelLayer, eyeColorLayer,
+                hairLayer, hairColorLayer,
+                clothingTypeLayer, hatLayer, hatMaskLayer
         );
     }
 
@@ -298,7 +310,7 @@ public final class PokemonStyle extends Style {
     private SpriteConstituent<String> composeEyes(
             final SpriteSheet sheet
     ) {
-        return composeHead(sheet, -eyeHeightLayer.getValue());
+        return composeHead(sheet, -eyeLevelLayer.getValue());
     }
 
     private SpriteConstituent<String> composeHead(

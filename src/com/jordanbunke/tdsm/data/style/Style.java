@@ -8,6 +8,7 @@ import com.jordanbunke.delta_time.sprite.SpriteStates;
 import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
@@ -15,6 +16,7 @@ import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.DecisionLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.data.layer.MaskLayer;
 import com.jordanbunke.tdsm.io.json.JSONArray;
 import com.jordanbunke.tdsm.io.json.JSONBuilder;
 import com.jordanbunke.tdsm.io.json.JSONObject;
@@ -301,6 +303,11 @@ public abstract class Style {
         }
     }
 
+    public Pair<String, GameImage>[] renderLayeredSpriteSheetForStipExport() {
+        // TODO - < layer-name, layer-image >
+        return null;
+    }
+
     private GameImage renderSpriteForExport(
             final Directions.Dir dir, final Animation anim, final int frame
     ) {
@@ -406,7 +413,8 @@ public abstract class Style {
     ) {
         if (layer instanceof DecisionLayer dl)
             addLayerToAssembler(assembler, dl.getDecision());
-        // TODO - mask layer
+        else if (layer instanceof MaskLayer ml)
+            assembler.addMask(ml.id, ml.compose(), ml.getTarget().id);
         else if (layer.isRendered())
             assembler.addLayer(layer.id, layer.compose());
     }
