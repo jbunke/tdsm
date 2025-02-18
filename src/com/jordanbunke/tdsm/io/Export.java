@@ -3,7 +3,11 @@ package com.jordanbunke.tdsm.io;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.GameImageIO;
+import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.stip_parser.ParserSerializer;
+import com.jordanbunke.stip_parser.rep.IRLayer;
+import com.jordanbunke.stip_parser.rep.IRState;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.util.EnumUtils;
@@ -101,8 +105,20 @@ public final class Export {
         final List<Pair<String, GameImage>> stipRep = Sprite.get()
                 .getStyle().renderStipExport();
 
-        // TODO
-        System.out.println(stipPath.toString());
+        ParserSerializer.save(
+                buildStippleEffectRepresentation(stipRep), stipPath);
+    }
+
+    private IRState buildStippleEffectRepresentation(
+            final List<Pair<String, GameImage>> stipRep
+    ) {
+        final Bounds2D dims = Sprite.get().getStyle().getSpriteSheetDims();
+
+        final IRLayer[] layers = stipRep.stream()
+                .map(p -> IRLayer.of(p.b()).setName(p.a()).build())
+                .toArray(IRLayer[]::new);
+
+        return IRState.of(dims.width(), dims.height(), 1, layers).build();
     }
 
     public boolean isExportJSON() {

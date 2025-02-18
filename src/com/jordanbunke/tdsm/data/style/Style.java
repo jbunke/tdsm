@@ -113,6 +113,15 @@ public abstract class Style {
         return spriteSheet.submit();
     }
 
+    public Bounds2D getSpriteSheetDims() {
+        final Bounds2D spriteDims = getExportSpriteDims();
+        final int spriteW = spriteDims.width(), spriteH = spriteDims.height(),
+                spritesX = getSpritesX(), spritesY = getSpritesY(),
+                w = spriteW * spritesX, h = spriteH * spritesY;
+
+        return new Bounds2D(w, h);
+    }
+
     public String buildJSON() {
         final JSONBuilder jb = new JSONBuilder();
 
