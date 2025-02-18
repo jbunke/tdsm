@@ -66,25 +66,25 @@ public final class PokemonStyle extends Style {
         EYE_WHITE = Set.of(BASE_EYE_WHITE,
                 new Color(0xa8d8d8));
 
-        BASE_CLOTH_1 = new Color(0xf8b0b0);
-        BASE_CLOTH_2 = new Color(0xf8d4b0);
-        BASE_CLOTH_3 = new Color(0xf8f8b0);
-        BASE_CLOTH_4 = new Color(0xd4f8b0);
+        BASE_CLOTH_1 = new Color(0xf08080);
+        BASE_CLOTH_2 = new Color(0xf0b880);
+        BASE_CLOTH_3 = new Color(0xf0f080);
+        BASE_CLOTH_4 = new Color(0xb8f080);
 
         CLOTH_1 = Set.of(BASE_CLOTH_1,
-                new Color(0xf08080),
+                new Color(0xf8b0b0),
                 new Color(0xc84848),
                 new Color(0x703030));
         CLOTH_2 = Set.of(BASE_CLOTH_2,
-                new Color(0xf0b880),
+                new Color(0xf8d4b0),
                 new Color(0xc88848),
                 new Color(0x705030));
         CLOTH_3 = Set.of(BASE_CLOTH_3,
-                new Color(0xf0f080),
+                new Color(0xf8f8b0),
                 new Color(0xc8c848),
                 new Color(0x707030));
         CLOTH_4 = Set.of(BASE_CLOTH_4,
-                new Color(0xb8f080),
+                new Color(0xd4f8b0),
                 new Color(0x88c848),
                 new Color(0x507030));
 
@@ -164,9 +164,18 @@ public final class PokemonStyle extends Style {
                 new Color(0x70a0c0)
         };
         final Color[] clothesSwatches = new Color[] {
-                new Color(0xe8e8e8),
-                new Color(0x404040),
-                // TODO
+                new Color(0xcbcbce),
+                new Color(0x383838),
+                new Color(0xe06040),
+                new Color(0x4060e0),
+                new Color(0xa040e0),
+                new Color(0x309ea4),
+                new Color(0xc0709c),
+                new Color(0x70c070),
+                new Color(0xf8b020),
+                new Color(0x784040),
+                new Color(0x609038),
+                new Color(0x989090)
         };
 
         final ColorSelection skinTones = new ColorSelection(
@@ -230,6 +239,10 @@ public final class PokemonStyle extends Style {
                         new AssetChoiceTemplate("nest", this::replace),
                         new AssetChoiceTemplate("porcupine", this::replace),
                         new AssetChoiceTemplate("mane", this::replace),
+                        new AssetChoiceTemplate("receding", this::replace),
+                        new AssetChoiceTemplate("heli-pad", this::replace),
+                        new AssetChoiceTemplate("cowlick", this::replace),
+                        new AssetChoiceTemplate("magnate", this::replace),
                         new AssetChoiceTemplate("silver-fox", this::replace),
                         new AssetChoiceTemplate("high-ponytail", this::replace),
                         new AssetChoiceTemplate("chic", this::replace))
@@ -242,6 +255,10 @@ public final class PokemonStyle extends Style {
         // TODO - add more
         hatLayer = ACLBuilder.of("hat", this,
                         new AssetChoiceTemplate("fitted-front",
+                                this::clothesReplace, hat1, hat2),
+                        new AssetChoiceTemplate("fitted-back",
+                                this::clothesReplace, hat1, hat2),
+                        new AssetChoiceTemplate("fedora",
                                 this::clothesReplace, hat1, hat2))
                 .setName("Headwear").setComposer(this::composeHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75)).build();
