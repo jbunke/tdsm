@@ -35,6 +35,9 @@ public final class AssetChoiceTemplate {
     }
 
     public AssetChoice realize(final Style style, final AssetChoiceLayer layer) {
+        for (ColorSelection selection : colorSelections)
+            selection.addDependent(layer);
+
         return new AssetChoice(id, name, style, layer,
                 colorSelections, colorReplacementFunc);
     }

@@ -32,8 +32,12 @@ public final class PokemonStyle extends Style {
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
 
-    private static final Set<Color> SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE;
-    private static final Color BASE_SKIN, BASE_HAIR, BASE_IRIS, BASE_EYE_WHITE;
+    private static final Set<Color>
+            SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE,
+            CLOTH_1, CLOTH_2, CLOTH_3, CLOTH_4;
+    private static final Color
+            BASE_SKIN, BASE_HAIR, BASE_IRIS, BASE_EYE_WHITE,
+            BASE_CLOTH_1, BASE_CLOTH_2, BASE_CLOTH_3, BASE_CLOTH_4;
 
     private AssetChoiceLayer bodyLayer, hatLayer;
     private final MathLayer eyeLevelLayer;
@@ -61,6 +65,28 @@ public final class PokemonStyle extends Style {
         BASE_EYE_WHITE = new Color(0x00ffff);
         EYE_WHITE = Set.of(BASE_EYE_WHITE,
                 new Color(0xa8d8d8));
+
+        BASE_CLOTH_1 = new Color(0xf8b0b0);
+        BASE_CLOTH_2 = new Color(0xf8d4b0);
+        BASE_CLOTH_3 = new Color(0xf8f8b0);
+        BASE_CLOTH_4 = new Color(0xd4f8b0);
+
+        CLOTH_1 = Set.of(BASE_CLOTH_1,
+                new Color(0xf08080),
+                new Color(0xc84848),
+                new Color(0x703030));
+        CLOTH_2 = Set.of(BASE_CLOTH_2,
+                new Color(0xf0b880),
+                new Color(0xc88848),
+                new Color(0x705030));
+        CLOTH_3 = Set.of(BASE_CLOTH_3,
+                new Color(0xf0f080),
+                new Color(0xc8c848),
+                new Color(0x707030));
+        CLOTH_4 = Set.of(BASE_CLOTH_4,
+                new Color(0xb8f080),
+                new Color(0x88c848),
+                new Color(0x507030));
 
         INSTANCE = new PokemonStyle();
     }
@@ -93,7 +119,7 @@ public final class PokemonStyle extends Style {
     }
 
     private static Animation[] setUpAnimations() {
-        return new Animation[] {
+        return new Animation[]{
                 Animation.make("walk", 3, i -> {
                     final int x = 0;
                     final int y = switch (i) {
@@ -129,6 +155,19 @@ public final class PokemonStyle extends Style {
                 new Color(0x888480),
                 new Color(0xc4beb8)
         };
+        final Color[] irisSwatches = new Color[] {
+                black(),
+                new Color(0x402016),
+                new Color(0x7c6424),
+                new Color(0x506c32),
+                new Color(0x70207c),
+                new Color(0x70a0c0)
+        };
+        final Color[] clothesSwatches = new Color[] {
+                new Color(0xe8e8e8),
+                new Color(0x404040),
+                // TODO
+        };
 
         final ColorSelection skinTones = new ColorSelection(
                 "Skin", true, skinSwatches),
@@ -137,38 +176,42 @@ public final class PokemonStyle extends Style {
                 eyebrowColors = new ColorSelection(
                         "Brows", true, hairSwatches),
                 irisColors = new ColorSelection(
-                        "Iris", true, black()),
+                        "Iris", true, irisSwatches),
                 ewColors = new ColorSelection(
-                        "Outer", true, new Color(0xe8e8f8));
+                        "Outer", true, new Color(0xe8e8f8)),
+                hat1 = new ColorSelection("Main", true, clothesSwatches),
+                hat2 = new ColorSelection("Accent", true, clothesSwatches),
+                hat3 = new ColorSelection("3rd", true, clothesSwatches),
+                hat4 = new ColorSelection("4th", true, clothesSwatches);
 
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
 
         bodyLayer = ACLBuilder.of("body", this,
-                        new AssetChoiceTemplate("average-body",
-                                this::replace),
-                        new AssetChoiceTemplate("small-body",
-                                this::replace)).build();
+                new AssetChoiceTemplate("average-body",
+                        this::replace),
+                new AssetChoiceTemplate("small-body",
+                        this::replace)).build();
         bodyLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer headLayer = ACLBuilder.of(
-                "head", this,
-                new AssetChoiceTemplate("oval-head", this::replace),
-                new AssetChoiceTemplate("round-head", this::replace))
+                        "head", this,
+                        new AssetChoiceTemplate("oval-head", this::replace),
+                        new AssetChoiceTemplate("round-head", this::replace))
                 .setComposer(this::composeHead)
                 .build();
         headLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer eyeLayer = ACLBuilder.of(
-                "eyes", this,
-                new AssetChoiceTemplate("determined", this::replace),
-                new AssetChoiceTemplate("hooded", this::replace),
-                new AssetChoiceTemplate("soft", this::replace),
-                new AssetChoiceTemplate("vacant", this::replace),
-                new AssetChoiceTemplate("narrow", this::replace),
-                new AssetChoiceTemplate("menacing", this::replace),
-                new AssetChoiceTemplate("feminine", this::replace),
-                new AssetChoiceTemplate("cranky", this::replace))
+                        "eyes", this,
+                        new AssetChoiceTemplate("determined", this::replace),
+                        new AssetChoiceTemplate("hooded", this::replace),
+                        new AssetChoiceTemplate("soft", this::replace),
+                        new AssetChoiceTemplate("vacant", this::replace),
+                        new AssetChoiceTemplate("narrow", this::replace),
+                        new AssetChoiceTemplate("menacing", this::replace),
+                        new AssetChoiceTemplate("feminine", this::replace),
+                        new AssetChoiceTemplate("cranky", this::replace))
                 .setComposer(this::composeEyes)
                 .build();
         eyeLayer.addInfluencingSelection(skinTones);
@@ -182,7 +225,7 @@ public final class PokemonStyle extends Style {
                         "hair-color", hairColors, eyebrowColors);
 
         final AssetChoiceLayer hairLayer = ACLBuilder.of(
-                "hair", this,
+                        "hair", this,
                         new AssetChoiceTemplate("dragon-master", this::replace),
                         new AssetChoiceTemplate("nest", this::replace),
                         new AssetChoiceTemplate("porcupine", this::replace),
@@ -196,9 +239,10 @@ public final class PokemonStyle extends Style {
         hairLayer.addInfluencingSelection(skinTones);
         hairLayer.addInfluencingSelection(hairColors);
 
-        // TODO - with temp example asset
+        // TODO - add more
         hatLayer = ACLBuilder.of("hat", this,
-                        new AssetChoiceTemplate("example"))
+                        new AssetChoiceTemplate("fitted-front",
+                                this::clothesReplace, hat1, hat2))
                 .setName("Headwear").setComposer(this::composeHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75)).build();
 
@@ -217,6 +261,41 @@ public final class PokemonStyle extends Style {
     @Override
     public String name() {
         return "Pokémon Trainer [Gen 4]";
+    }
+
+    private Pair<Integer, Function<Color, Color>> clothesReplace(
+            final Color input
+    ) {
+        final Color base;
+        final int index;
+
+        if (CLOTH_1.contains(input)) {
+            index = 0;
+            base = BASE_CLOTH_1;
+        } else if (CLOTH_2.contains(input)) {
+            index = 1;
+            base = BASE_CLOTH_1;
+        } else if (CLOTH_3.contains(input)) {
+            index = 2;
+            base = BASE_CLOTH_1;
+        } else if (CLOTH_4.contains(input)) {
+            index = 3;
+            base = BASE_CLOTH_1;
+        } else {
+            index = -1;
+            base = black();
+        }
+
+        return new Pair<>(index, c -> {
+            final double is = rgbToSat(input), iv = rgbToValue(input),
+                    ch = rgbToHue(c), cs = rgbToSat(c), cv = rgbToValue(c),
+                    bs = rgbToSat(base), bv = rgbToValue(base),
+                    sRatio = (cs * is) / bs, vRatio = (cv * iv) / bv,
+                    s = MathPlus.bounded(0.0, sRatio, 1.0),
+                    v = MathPlus.bounded(0.0, vRatio, 1.0);
+
+            return fromHSV(ch, s, v);
+        });
     }
 
     private Pair<Integer, Function<Color, Color>> replace(
