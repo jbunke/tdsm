@@ -117,156 +117,196 @@ public final class LayerElement extends MenuElementContainer {
         cb.addAll(nameLabel, collapser, lockGate, rLogicContainer);
         ab.addAll(nameLabel, collapser, lockGate, randomizeButton);
 
-        addLayerContents(layer, cb, ab);
+        final Coord2D initial = getPosition()
+                .displace(LABEL_OFFSET_X, LAYER_CONTENT_DROPOFF);
+        addLayerContents(layer, initial, cb, ab);
 
         contents = cb.build().getMenuElements();
         all = ab.build().getMenuElements();
     }
 
-    private void addLayerContents(
-            final CustomizationLayer layer,
+    private void addMathLayerContents(
+            final MathLayer ml, final Coord2D initial,
             final MenuBuilder cb, final MenuBuilder ab
     ) {
-        final Coord2D INITIAL = getPosition()
-                .displace(LABEL_OFFSET_X, LAYER_CONTENT_DROPOFF);
+        Coord2D pos = initial.displace(0, MATH_LAYER_OFFSET_Y);
 
-        if (layer instanceof DecisionLayer dl)
-            addLayerContents(dl.getDecision(), cb, ab);
-        else if (layer instanceof MathLayer ml) {
-            Coord2D pos = INITIAL.displace(0, MATH_LAYER_OFFSET_Y);
+        final IconButton decrement = IconButton.init(
+                        ResourceCodes.EXPAND, pos, ml::decrement)
+                .setTooltipCode(ResourceCodes.DECREMENT).build(),
+                increment = IconButton.init(
+                                ResourceCodes.COLLAPSE,
+                                follow(decrement), ml::increment)
+                        .setTooltipCode(ResourceCodes.INCREMENT).build();
+        final GatewayMenuElement decLogic =
+                new GatewayMenuElement(decrement, () -> !ml.isMin()),
+                incLogic = new GatewayMenuElement(increment,
+                        () -> !ml.isMax());
 
-            final IconButton decrement = IconButton.init(
-                    ResourceCodes.EXPAND, pos, ml::decrement)
-                    .setTooltipCode(ResourceCodes.DECREMENT).build(),
-                    increment = IconButton.init(
-                            ResourceCodes.COLLAPSE,
-                            follow(decrement), ml::increment)
-                            .setTooltipCode(ResourceCodes.INCREMENT).build();
-            final GatewayMenuElement decLogic =
-                    new GatewayMenuElement(decrement, () -> !ml.isMin()),
-                    incLogic = new GatewayMenuElement(increment,
-                            () -> !ml.isMax());
+        final DynamicLabel formattedValue = DynamicLabel.init(
+                        follow(increment).displace(POST_LABEL_BUFFER_X, 0),
+                        ml::getFormattedValue, "X".repeat(30))
+                .setMini().build();
 
-            final DynamicLabel formattedValue = DynamicLabel.init(
-                    follow(increment).displace(POST_LABEL_BUFFER_X, 0),
-                            ml::getFormattedValue, "X".repeat(30))
-                    .setMini().build();
+        cb.addAll(decLogic, incLogic, formattedValue);
+        ab.addAll(decrement, increment, formattedValue);
+    }
 
-            cb.addAll(decLogic, incLogic, formattedValue);
-            ab.addAll(decrement, increment, formattedValue);
-        } else if (layer instanceof ChoiceLayer cl) {
-            final int numChoices = cl.getNumChoices();
-            final Dropdown choices = Dropdown.create(
-                    INITIAL, IntStream.range(0, numChoices)
-                            .mapToObj(cl::getChoiceAt).toArray(String[]::new),
-                    IntStream.range(0, numChoices).mapToObj(i ->
-                            (Runnable) () -> cl.choose(i))
-                            .toArray(Runnable[]::new), cl::getSelection);
+    private void addChoiceLayerContents(
+            final ChoiceLayer cl, final Coord2D initial,
+            final MenuBuilder cb, final MenuBuilder ab
+    ) {
+        final int numChoices = cl.getNumChoices();
+        final Dropdown choices = Dropdown.create(
+                initial, IntStream.range(0, numChoices)
+                        .mapToObj(cl::getChoiceAt).toArray(String[]::new),
+                IntStream.range(0, numChoices).mapToObj(i ->
+                                (Runnable) () -> cl.choose(i))
+                        .toArray(Runnable[]::new), cl::getSelection);
 
-            cb.add(choices);
-            ab.add(choices);
-        } else if (layer instanceof AssetChoiceLayer acl) {
-            // MAKE CHOICE BUTTONS
-            final int[] indices = acl.getIndices();
-            Coord2D pos = INITIAL;
+        cb.add(choices);
+        ab.add(choices);
+    }
 
-            final MenuBuilder acbs = new MenuBuilder();
+    private void addColorSelectionLayerContents(
+            final ColorSelectionLayer csl, final Coord2D initial,
+            final MenuBuilder cb, final MenuBuilder ab
+    ) {
+        final ColorSelection[] selections = csl.getSelections();
 
-            // Dims pre-processing
-            final Bounds2D bDims = new Bounds2D(
-                    acl.dims.width() + INNER_ASSET_BUFFER_X,
-                    acl.dims.height() + INNER_ASSET_BUFFER_Y);
+        final MenuBuilder cses = new MenuBuilder();
 
-            for (int index : indices) {
-                final AssetChoiceButton acb = index == AssetChoiceLayer.NONE
-                        ? AssetChoiceButton.none(pos, bDims, acl)
-                        : AssetChoiceButton.ofChoice(pos, bDims, acl, index);
-                acbs.add(acb);
+        for (int i = 0; i < selections.length; i++)
+            cses.add(ColorSelectionElement.of(selections[i],
+                    initial.displace(i * COL_SEL_LAYER_INC_X, 0),
+                    Anchor.LEFT_TOP, csl.isSingle()));
 
-                pos = pos.displace(bDims.width() + ASSET_BUFFER_X, 0);
-            }
+        final HorzScrollBox selectionBox = new HorzScrollBox(
+                initial, new Bounds2D(HORZ_SCROLL_BOX_W,
+                COL_SEL_SCROLL_BOX_H),
+                Arrays.stream(cses.build().getMenuElements())
+                        .map(Scrollable::new).toArray(Scrollable[]::new),
+                initial.x + (selections.length * COL_SEL_LAYER_INC_X) -
+                        COL_SEL_LAST_X_SUB, 0);
+        cb.add(selectionBox);
+        ab.add(selectionBox);
+    }
 
-            final HorzScrollBox choicesBox = new HorzScrollBox(
-                    INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W,
-                    bDims.height() + ASSET_BUFFER_Y),
-                    Arrays.stream(acbs.build().getMenuElements())
-                            .map(Scrollable::new).toArray(Scrollable[]::new),
-                    pos.x - ASSET_BUFFER_X, 0);
-            cb.add(choicesBox);
-            ab.add(choicesBox);
+    private void addAssetChoiceLayerContents(
+            final AssetChoiceLayer acl, final Coord2D initial,
+            final MenuBuilder cb, final MenuBuilder ab
+    ) {
+        // MAKE CHOICE BUTTONS
+        final int[] indices = acl.getIndices();
+        Coord2D pos = initial;
 
-            if (acl.maxSelectors() == 0)
-                return;
+        final MenuBuilder acbs = new MenuBuilder();
 
-            // MAKE COLOR SELECTION BOXES FOR EACH CHOICE AND LINK VIA THINKING ELEMENT
-            final Coord2D SEL_INITIAL = INITIAL.displace(0, choicesBox.getHeight());
-            final StaticLabel noColSels = StaticLabel.mini(
-                    new Coord2D(LAYERS.atX(0.5),
-                            SEL_INITIAL.y + COL_SEL_BUTTON_DIM / 2),
-                    "This choice has no color selections.",
-                    Colors.darkSystem(), Anchor.CENTRAL_TOP);
-            ab.add(noColSels);
+        // Dims pre-processing
+        final Bounds2D bDims = new Bounds2D(
+                acl.dims.width() + INNER_ASSET_BUFFER_X,
+                acl.dims.height() + INNER_ASSET_BUFFER_Y);
 
-            final MenuElement[] forIndices = new MenuElement[indices.length];
+        for (int index : indices) {
+            final AssetChoiceButton acb = index == AssetChoiceLayer.NONE
+                    ? AssetChoiceButton.none(pos, bDims, acl)
+                    : AssetChoiceButton.ofChoice(pos, bDims, acl, index);
+            acbs.add(acb);
 
-            for (int i = 0; i < forIndices.length; i++) {
-                final int index = indices[i];
+            pos = pos.displace(bDims.width() + ASSET_BUFFER_X, 0);
+        }
 
-                if (index == AssetChoiceLayer.NONE)
+        final HorzScrollBox choicesBox = new HorzScrollBox(
+                initial, new Bounds2D(HORZ_SCROLL_BOX_W,
+                bDims.height() + ASSET_BUFFER_Y),
+                Arrays.stream(acbs.build().getMenuElements())
+                        .map(Scrollable::new).toArray(Scrollable[]::new),
+                pos.x - ASSET_BUFFER_X, 0);
+        cb.add(choicesBox);
+        ab.add(choicesBox);
+
+        if (acl.maxSelectors() == 0)
+            return;
+
+        // MAKE COLOR SELECTION BOXES FOR EACH CHOICE AND LINK VIA THINKING ELEMENT
+        final Coord2D SEL_INITIAL = initial.displace(0, choicesBox.getHeight());
+        final StaticLabel noColSels = StaticLabel.mini(
+                new Coord2D(LAYERS.atX(0.5),
+                        SEL_INITIAL.y + COL_SEL_BUTTON_DIM / 2),
+                "This choice has no color selections.",
+                Colors.darkSystem(), Anchor.CENTRAL_TOP);
+        ab.add(noColSels);
+
+        final MenuElement[] forIndices = new MenuElement[indices.length];
+
+        for (int i = 0; i < forIndices.length; i++) {
+            final int index = indices[i];
+
+            if (index == AssetChoiceLayer.NONE)
+                forIndices[i] = noColSels;
+            else {
+                final ColorSelection[] selections = acl
+                        .getChoiceAt(index).getColorSelections();
+
+                if (selections.length == 0)
                     forIndices[i] = noColSels;
                 else {
-                    final ColorSelection[] selections = acl
-                            .getChoiceAt(index).getColorSelections();
+                    final MenuBuilder cses = new MenuBuilder();
 
-                    if (selections.length == 0)
-                        forIndices[i] = noColSels;
-                    else {
-                        final MenuBuilder cses = new MenuBuilder();
+                    for (int j = 0; j < selections.length; j++)
+                        cses.add(ColorSelectionElement.of(selections[j],
+                                SEL_INITIAL.displace(j * COL_SEL_LAYER_INC_X, 0),
+                                Anchor.LEFT_TOP, false));
 
-                        for (int j = 0; j < selections.length; j++)
-                            cses.add(ColorSelectionElement.of(selections[j],
-                                    SEL_INITIAL.displace(j * COL_SEL_LAYER_INC_X, 0),
-                                    Anchor.LEFT_TOP, false));
-
-                        final HorzScrollBox selectionBox = new HorzScrollBox(
-                                SEL_INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W,
-                                COL_SEL_SCROLL_BOX_H),
-                                Arrays.stream(cses.build().getMenuElements())
-                                        .map(Scrollable::new)
-                                        .toArray(Scrollable[]::new),
-                                SEL_INITIAL.x + (selections.length *
-                                        COL_SEL_LAYER_INC_X) -
-                                        COL_SEL_LAST_X_SUB, 0);
-                        ab.add(selectionBox);
-                        forIndices[i] = selectionBox;
-                    }
+                    final HorzScrollBox selectionBox = new HorzScrollBox(
+                            SEL_INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W,
+                            COL_SEL_SCROLL_BOX_H),
+                            Arrays.stream(cses.build().getMenuElements())
+                                    .map(Scrollable::new)
+                                    .toArray(Scrollable[]::new),
+                            SEL_INITIAL.x + (selections.length *
+                                    COL_SEL_LAYER_INC_X) -
+                                    COL_SEL_LAST_X_SUB, 0);
+                    ab.add(selectionBox);
+                    forIndices[i] = selectionBox;
                 }
             }
-
-            final ThinkingMenuElement logic = new ThinkingMenuElement(
-                    () -> forIndices[acl.getChoiceIndex() +
-                            (acl.noAssetChoice.valid ? 1 : 0)]);
-            cb.add(logic);
-        } else if (layer instanceof ColorSelectionLayer csl) {
-            final ColorSelection[] selections = csl.getSelections();
-
-            final MenuBuilder cses = new MenuBuilder();
-
-            for (int i = 0; i < selections.length; i++)
-                cses.add(ColorSelectionElement.of(selections[i],
-                        INITIAL.displace(i * COL_SEL_LAYER_INC_X, 0),
-                        Anchor.LEFT_TOP, csl.isSingle()));
-
-            final HorzScrollBox selectionBox = new HorzScrollBox(
-                    INITIAL, new Bounds2D(HORZ_SCROLL_BOX_W,
-                    COL_SEL_SCROLL_BOX_H),
-                    Arrays.stream(cses.build().getMenuElements())
-                            .map(Scrollable::new).toArray(Scrollable[]::new),
-                    INITIAL.x + (selections.length * COL_SEL_LAYER_INC_X) -
-                            COL_SEL_LAST_X_SUB, 0);
-            cb.add(selectionBox);
-            ab.add(selectionBox);
         }
+
+        final ThinkingMenuElement logic = new ThinkingMenuElement(
+                () -> forIndices[acl.getChoiceIndex() +
+                        (acl.noAssetChoice.valid ? 1 : 0)]);
+        cb.add(logic);
+    }
+
+    private void addLayerContents(
+            final CustomizationLayer layer, final Coord2D initial,
+            final MenuBuilder cb, final MenuBuilder ab
+    ) {
+        if (layer instanceof DecisionLayer dl)
+            addLayerContents(dl.getDecision(), initial, cb, ab);
+        else if (layer instanceof GroupLayer gl) {
+            Coord2D pos = initial;
+            final CustomizationLayer[] layers = gl.all()
+                    .filter(CustomizationLayer::isNonTrivial)
+                    .toArray(CustomizationLayer[]::new);
+
+            for (CustomizationLayer child : layers) {
+                addLayerContents(child, pos, cb, ab);
+
+                // TODO - inc should have negative offset
+                final int inc = child.calculateExpandedHeight();
+                pos = pos.displace(0, inc);
+            }
+        }
+        else if (layer instanceof MathLayer ml)
+            addMathLayerContents(ml, initial, cb, ab);
+        else if (layer instanceof ChoiceLayer cl)
+            addChoiceLayerContents(cl, initial, cb, ab);
+        else if (layer instanceof AssetChoiceLayer acl)
+            addAssetChoiceLayerContents(acl, initial, cb, ab);
+        else if (layer instanceof ColorSelectionLayer csl)
+            addColorSelectionLayerContents(csl, initial, cb, ab);
     }
 
     @Override

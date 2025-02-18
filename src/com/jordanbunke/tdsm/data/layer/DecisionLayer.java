@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.data.layer;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 
 import java.util.function.Supplier;
@@ -20,7 +21,7 @@ public final class DecisionLayer extends ManualRefreshLayer {
 
     @Override
     public SpriteConstituent<String> compose() {
-        return decision.compose();
+        return s -> GameImage.dummy();
     }
 
     @Override

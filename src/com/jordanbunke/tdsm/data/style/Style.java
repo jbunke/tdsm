@@ -309,30 +309,45 @@ public abstract class Style {
         }
     }
 
+    private void addLayerIfRendered(
+            final List<CustomizationLayer> renderLayers,
+            final CustomizationLayer candidate
+    ) {
+        if (candidate instanceof DecisionLayer dl)
+            addLayerIfRendered(renderLayers, dl.getDecision());
+        else if (candidate instanceof GroupLayer gl)
+            gl.all().forEach(l -> addLayerIfRendered(renderLayers, candidate));
+        else if (candidate.isRendered())
+            renderLayers.add(candidate);
+    }
+
     public List<Pair<String, GameImage>> renderStipExport() {
-        final CustomizationLayer[] renderLayers = layers.get().stream()
-                .filter(CustomizationLayer::isRendered)
-                .toArray(CustomizationLayer[]::new);
+        final List<CustomizationLayer> renderLayers = new ArrayList<>();
         final List<Pair<String, GameImage>> stipRep = new ArrayList<>();
+
+        // Set up render layers
+        for (CustomizationLayer layer : layers.get())
+            addLayerIfRendered(renderLayers, layer);
+
 
         for (CustomizationLayer layer : renderLayers) {
             // Skip empty layers
             if (layer instanceof AssetChoiceLayer acl && !acl.hasChoice())
                 continue;
 
-            Arrays.stream(renderLayers).map(l -> l.id)
+            renderLayers.stream().map(l -> l.id)
                     .forEach(map.assembler::disableLayer);
 
             map.assembler.enableLayer(layer.id);
             map.redraw();
 
             final Pair<String, GameImage> layerRep = new Pair<>(
-                    layer.id, renderSpriteSheet());
+                    layer.name(), renderSpriteSheet());
             stipRep.add(layerRep);
         }
 
         // Reset layer settings
-        Arrays.stream(renderLayers).map(l -> l.id)
+        renderLayers.stream().map(l -> l.id)
                 .forEach(map.assembler::enableLayer);
         map.redraw();
 
@@ -446,6 +461,8 @@ public abstract class Style {
             addLayerToAssembler(assembler, dl.getDecision());
         else if (layer instanceof MaskLayer ml)
             assembler.addMask(ml.id, ml.compose(), ml.getTarget().id);
+        else if (layer instanceof GroupLayer gl)
+            gl.all().forEach(l -> addLayerToAssembler(assembler, l));
         else if (layer.isRendered())
             assembler.addLayer(layer.id, layer.compose());
     }

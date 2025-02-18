@@ -246,7 +246,7 @@ public final class PokemonStyle extends Style {
                         new AssetChoiceTemplate("silver-fox", this::replace),
                         new AssetChoiceTemplate("high-ponytail", this::replace),
                         new AssetChoiceTemplate("chic", this::replace))
-                .setComposer(this::composeHead)
+                .setComposer(this::composeHead).setName("Hairstyle")
                 .setNoAssetChoice(NoAssetChoice.equal())
                 .build();
         hairLayer.addInfluencingSelection(skinTones);
