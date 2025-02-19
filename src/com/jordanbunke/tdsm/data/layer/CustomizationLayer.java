@@ -10,13 +10,24 @@ public abstract class CustomizationLayer {
     public final String id;
 
     private final List<ColorSelection> influencingSelections;
+    private final List<CustomizationLayer> dependents;
     private boolean locked;
 
     CustomizationLayer(final String id) {
         this.id = id;
 
         influencingSelections = new ArrayList<>();
+        dependents = new ArrayList<>();
         locked = false;
+    }
+
+    public void addDependent(final CustomizationLayer dependent) {
+        dependents.add(dependent);
+    }
+
+    public void updateDependents() {
+        for (CustomizationLayer dependent : dependents)
+            dependent.update();
     }
 
     public void addInfluencingSelection(

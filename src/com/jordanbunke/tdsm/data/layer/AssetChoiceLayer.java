@@ -62,6 +62,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     public void choose(final int selection) {
         select(selection);
         update();
+        updateDependents();
         Sprite.get().getStyle().update();
     }
 
@@ -140,6 +141,8 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             choices[selection].randomize();
 
         update();
+
+        updateDependents();
 
         if (updateSprite)
             Sprite.get().getStyle().update();

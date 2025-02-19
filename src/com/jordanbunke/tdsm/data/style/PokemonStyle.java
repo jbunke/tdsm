@@ -301,6 +301,7 @@ public final class PokemonStyle extends Style {
                     };
         });
         clothingTypeLayer.addDependent(clothingLogic);
+        bodyLayer.addDependent(clothingLogic);
 
         final AssetChoiceLayer hairLayer = ACLBuilder.of(
                         "hair", this,

@@ -51,8 +51,9 @@ public final class GroupLayer extends CustomizationLayer {
 
     @Override
     public void update() {
-        // TODO
         all().forEach(CustomizationLayer::update);
+
+        updateDependents();
     }
 
     @Override
@@ -61,6 +62,8 @@ public final class GroupLayer extends CustomizationLayer {
             return;
 
         all().forEach(l -> l.randomize(false));
+
+        updateDependents();
 
         if (updateSprite)
             Sprite.get().getStyle().update();
@@ -75,9 +78,5 @@ public final class GroupLayer extends CustomizationLayer {
 
     public Stream<CustomizationLayer> all() {
         return Arrays.stream(members);
-    }
-
-    public CustomizationLayer[] getMembers() {
-        return members;
     }
 }
