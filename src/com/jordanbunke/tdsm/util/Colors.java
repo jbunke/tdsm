@@ -31,10 +31,10 @@ public final class Colors {
             CB_1 = new Color(0xa0, 0xa0, 0xa0),
             CB_2 = new Color(0xc0, 0xc0, 0xc0),
             INVALID = new Color(0x80, 0, 0),
-            DARK_SYSTEM = new Color(0x1e, 0x1b, 0x34),
-            LIGHT_SYSTEM = new Color(0xe8, 0xe8, 0xe8),
-            LIGHT_ACCENT = new Color(0x73, 0x88, 0xa3),
-            DARK_ACCENT = new Color(0x5c, 0x64, 0x89),
+            DARK_SYSTEM = new Color(0x291f66),
+            LIGHT_SYSTEM = new Color(0xe8e8e8),
+            LIGHT_ACCENT = new Color(0xb7cbe6),
+            DARK_ACCENT = new Color(0x6b8ebc),
             BACKGROUND = new Color(0x88, 0x9f, 0xbc);
 
     public static final Color[] DEFAULT_SWATCHES = new Color[] {
