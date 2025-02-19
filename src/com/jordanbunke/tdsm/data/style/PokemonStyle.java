@@ -245,34 +245,50 @@ public final class PokemonStyle extends Style {
                         "hair-color", hairColors, eyebrowColors);
 
         final AssetChoiceLayer smOutfitLayer = ACLBuilder.of(
-                "outfit", this /* TODO - add here */)
+                "sm-outfit", this,
+                        new AssetChoiceTemplate("gi",
+                                this::clothesReplace, top1, top2),
+                        new AssetChoiceTemplate("farmer-1",
+                                this::clothesReplace, top1, top2, top3))
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final AssetChoiceLayer smTopsLayer = ACLBuilder.of(
-                "top", this /* TODO - add here */)
+                "sm-top", this,
+                        new AssetChoiceTemplate("vest",
+                                this::clothesReplace, top1, top2))
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final AssetChoiceLayer smBottomsLayer = ACLBuilder.of(
-                "bottom", this /* TODO - add here */)
+                "sm-bottom", this,
+                        new AssetChoiceTemplate("slacks",
+                                this::clothesReplace, bot1))
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final GroupLayer smTopBottomLayer = new GroupLayer(
                 "outfit", "Outfit", smTopsLayer, smBottomsLayer);
 
         final AssetChoiceLayer avOutfitLayer = ACLBuilder.of(
-                        "outfit", this /* TODO - add here */)
+                        "av-outfit", this,
+                        new AssetChoiceTemplate("gi",
+                                this::clothesReplace, top1, top2),
+                        new AssetChoiceTemplate("farmer-1",
+                                this::clothesReplace, top1, top2, top3))
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final AssetChoiceLayer avTopsLayer = ACLBuilder.of(
-                        "top", this /* TODO - add here */)
+                        "av-top", this,
+                        new AssetChoiceTemplate("vest",
+                                this::clothesReplace, top1, top2))
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final AssetChoiceLayer avBottomsLayer = ACLBuilder.of(
-                        "bottom", this /* TODO - add here */)
+                        "av-bottom", this,
+                        new AssetChoiceTemplate("slacks",
+                                this::clothesReplace, bot1))
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final GroupLayer avTopBottomLayer = new GroupLayer(
-                "outfit", "Outfit", smTopsLayer, smBottomsLayer);
+                "outfit", "Outfit", avTopsLayer, avBottomsLayer);
 
         final DecisionLayer clothingLogic = new DecisionLayer(
                 "outfit", () -> {
