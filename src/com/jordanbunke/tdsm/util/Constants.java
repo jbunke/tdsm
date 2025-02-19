@@ -9,7 +9,8 @@ public final class Constants {
 
     public static final Path PROGRAM_FILE = Path.of("program"),
             ASSET_ROOT_FOLDER = Path.of("sprite_assets"),
-            TOOLTIPS_FOLDER = Path.of("tooltips");
+            TOOLTIPS_FOLDER = Path.of("tooltips"),
+            LOGO_FOLDER = Path.of("logo");
 
     public static final double TICK_HZ = 60d, FPS = 60d;
 
@@ -19,5 +20,5 @@ public final class Constants {
             MIN_SPRITE_EXPORT_W = 1, MIN_SPRITE_EXPORT_H = 1,
             MAX_SPRITE_EXPORT_W = 128, MAX_SPRITE_EXPORT_H = 128,
             DEF_FRAMES_PER_DIM = 8, DEF_TEXTBOX_CHAR_MAX = 12,
-            FILE_NAME_MAX_LENGTH = 40;
+            FILE_NAME_MAX_LENGTH = 40, LOGO_FRAMES = 16, LOGO_TICKS = 6;
 }

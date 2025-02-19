@@ -290,6 +290,10 @@ public final class PokemonStyle extends Style {
         final GroupLayer avTopBottomLayer = new GroupLayer(
                 "outfit", "Outfit", avTopsLayer, avBottomsLayer);
 
+        AssetChoiceLayer.parallelMatchers(smOutfitLayer, avOutfitLayer);
+        AssetChoiceLayer.parallelMatchers(smBottomsLayer, avBottomsLayer);
+        AssetChoiceLayer.parallelMatchers(smTopsLayer, avTopsLayer);
+
         final DecisionLayer clothingLogic = new DecisionLayer(
                 "outfit", () -> {
                     final boolean combined = clothingTypeLayer

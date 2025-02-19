@@ -352,7 +352,9 @@ public final class MenuAssembly {
                 new Pair<>("About", () -> ProgramState.to(about())),
                 new Pair<>("Quit", TDSM::quitProgram));
 
-        // TODO - Logo
+        // Logo
+        final Logo logo = Logo.make(canvasAt(0.5, 0.1), Anchor.CENTRAL_TOP);
+        mb.add(logo);
 
         // Version and credits
         final StaticLabel programLabel = StaticLabel.make(

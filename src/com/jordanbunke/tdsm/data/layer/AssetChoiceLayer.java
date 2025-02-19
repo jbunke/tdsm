@@ -13,7 +13,9 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -32,6 +34,8 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     public final NoAssetChoice noAssetChoice;
     private final Coord2D previewCoord;
     private SpriteSheet sheet;
+
+    private final List<AssetChoiceLayer> matchers;
 
     public AssetChoiceLayer(
             final String id, final String name,
@@ -54,16 +58,66 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         this.composer = composer;
         this.noAssetChoice = noAssetChoice;
 
-        this.selection = noAssetChoice.valid ? NONE : 0;
+        selection = noAssetChoice.valid ? NONE : 0;
+
+        matchers = new ArrayList<>();
 
         update();
     }
 
+    public static void parallelMatchers(
+            final AssetChoiceLayer a, final AssetChoiceLayer b
+    ) {
+        a.addMatcher(b);
+        b.addMatcher(a);
+    }
+
+    public void addMatcher(final AssetChoiceLayer matcher) {
+        matchers.add(matcher);
+    }
+
+    public void attemptToMatchChoice(final AssetChoiceLayer ref) {
+        if (!ref.hasChoice()) {
+            if (hasChoice() && noAssetChoice.valid)
+                match(NONE);
+
+            return;
+        }
+
+        final AssetChoice toMatch = ref.getChoice();
+
+        if (hasChoice() && getChoice().id.equals(toMatch.id))
+            return;
+
+        for (int i = 0; i < choices.length; i++)
+            if (toMatch.id.equals(choices[i].id)) {
+                match(i);
+                return;
+            }
+    }
+
+    private void updateMatchers() {
+        for (AssetChoiceLayer matcher : matchers)
+            matcher.attemptToMatchChoice(this);
+    }
+
+    private void match(final int selection) {
+        choose(selection, false);
+    }
+
     public void choose(final int selection) {
+        choose(selection, true);
+    }
+
+    private void choose(final int selection, final boolean updateSprite) {
         select(selection);
         update();
+
+        updateMatchers();
         updateDependents();
-        Sprite.get().getStyle().update();
+
+        if (updateSprite)
+            Sprite.get().getStyle().update();
     }
 
     private void select(final int selection) {
@@ -142,6 +196,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
         update();
 
+        updateMatchers();
         updateDependents();
 
         if (updateSprite)
