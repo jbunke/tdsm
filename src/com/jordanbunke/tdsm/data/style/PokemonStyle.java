@@ -185,6 +185,7 @@ public final class PokemonStyle extends Style {
     }
 
     private void setUpLayers() {
+        @SuppressWarnings("unused")
         final ColorSelection skinTones = new ColorSelection(
                 "Skin", true, SKIN_SWATCHES),
                 hairColors = new ColorSelection(
@@ -231,6 +232,7 @@ public final class PokemonStyle extends Style {
                         new AssetChoiceTemplate("narrow", this::replace),
                         new AssetChoiceTemplate("menacing", this::replace),
                         new AssetChoiceTemplate("feminine", this::replace),
+                        new AssetChoiceTemplate("tired", this::replace),
                         new AssetChoiceTemplate("cranky", this::replace))
                 .setComposer(this::composeEyes)
                 .build();
@@ -294,11 +296,13 @@ public final class PokemonStyle extends Style {
         AssetChoiceLayer.parallelMatchers(smBottomsLayer, avBottomsLayer);
         AssetChoiceLayer.parallelMatchers(smTopsLayer, avTopsLayer);
 
+        @SuppressWarnings("all")
         final DecisionLayer clothingLogic = new DecisionLayer(
                 "outfit", () -> {
                     final boolean combined = clothingTypeLayer
                             .getChoice().equals(COMBINED_OUTFIT);
 
+                    // TODO - if more body shapes are added
                     return switch (getBodyLayerChoice()) {
                         case 0 -> combined ? avOutfitLayer : avTopBottomLayer;
                         default -> combined ? smOutfitLayer : smTopBottomLayer;
@@ -311,6 +315,17 @@ public final class PokemonStyle extends Style {
                         "hair", this,
                         new AssetChoiceTemplate("dragon-master", this::replace),
                         new AssetChoiceTemplate("nest", this::replace),
+                        new AssetChoiceTemplate("afro", this::replace),
+                        new AssetChoiceTemplate("bangs", this::replace),
+                        new AssetChoiceTemplate("closer", this::replace),
+                        new AssetChoiceTemplate("disheveled", this::replace),
+                        new AssetChoiceTemplate("framed", this::replace),
+                        new AssetChoiceTemplate("pageant-queen", this::replace),
+                        new AssetChoiceTemplate("pippi",
+                                c -> replaceWithNSelections(c, 1), hairAcc),
+                        new AssetChoiceTemplate("pixie", this::replace),
+                        new AssetChoiceTemplate("prodigy", this::replace),
+                        new AssetChoiceTemplate("raven", this::replace),
                         new AssetChoiceTemplate("professional", this::replace),
                         new AssetChoiceTemplate("crew-cut", this::replace),
                         new AssetChoiceTemplate("dainty",
