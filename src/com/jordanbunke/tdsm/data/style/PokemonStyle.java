@@ -21,6 +21,7 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 import java.awt.*;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -32,12 +33,18 @@ public final class PokemonStyle extends Style {
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
 
+    private final String COMBINED_OUTFIT = "Outfit";
+
     private static final Set<Color>
             SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE,
             CLOTH_1, CLOTH_2, CLOTH_3, CLOTH_4;
     private static final Color
             BASE_SKIN, BASE_HAIR, BASE_IRIS, BASE_EYE_WHITE,
             BASE_CLOTH_1, BASE_CLOTH_2, BASE_CLOTH_3, BASE_CLOTH_4;
+
+    private static final Color[]
+            SKIN_SWATCHES, HAIR_SWATCHES,
+            IRIS_SWATCHES, CLOTHES_SWATCHES;
 
     private AssetChoiceLayer bodyLayer, hatLayer;
     private final MathLayer eyeLevelLayer;
@@ -88,6 +95,49 @@ public final class PokemonStyle extends Style {
                 new Color(0x88c848),
                 new Color(0x507030));
 
+        SKIN_SWATCHES = new Color[] {
+                new Color(0xf8d0b8),
+                new Color(0xa88050),
+                new Color(0xc89060),
+                new Color(0xf8e0b8),
+                new Color(0x986860),
+                new Color(0x986840),
+                new Color(0x58402e),
+        };
+        HAIR_SWATCHES = new Color[] {
+                new Color(0x404040),
+                new Color(0x342820),
+                new Color(0x684828),
+                new Color(0x82662d),
+                new Color(0xb2864b),
+                new Color(0xc4b880),
+                new Color(0xdedbb8),
+                new Color(0x888480),
+                new Color(0xc4beb8)
+        };
+        IRIS_SWATCHES = new Color[] {
+                black(),
+                new Color(0x402016),
+                new Color(0x7c6424),
+                new Color(0x506c32),
+                new Color(0x70207c),
+                new Color(0x70a0c0)
+        };
+        CLOTHES_SWATCHES = new Color[] {
+                new Color(0xcbcbce),
+                new Color(0x383838),
+                new Color(0xe06040),
+                new Color(0x4060e0),
+                new Color(0xa040e0),
+                new Color(0x309ea4),
+                new Color(0xc0709c),
+                new Color(0x70c070),
+                new Color(0xf8b020),
+                new Color(0x784040),
+                new Color(0x609038),
+                new Color(0x989090)
+        };
+
         INSTANCE = new PokemonStyle();
     }
 
@@ -103,7 +153,7 @@ public final class PokemonStyle extends Style {
                     default -> "Average";
                 });
         clothingTypeLayer = new ChoiceLayer("clothing-type",
-                "Top and bottom", "Outfit");
+                "Top and bottom", COMBINED_OUTFIT);
 
         setUpLayers();
         update();
@@ -135,63 +185,24 @@ public final class PokemonStyle extends Style {
     }
 
     private void setUpLayers() {
-        final Color[] skinSwatches = new Color[] {
-                new Color(0xf8d0b8),
-                new Color(0xa88050),
-                new Color(0xc89060),
-                new Color(0xf8e0b8),
-                new Color(0x986860),
-                new Color(0x986840),
-                new Color(0x58402e),
-        };
-        final Color[] hairSwatches = new Color[] {
-                new Color(0x404040),
-                new Color(0x342820),
-                new Color(0x684828),
-                new Color(0x82662d),
-                new Color(0xb2864b),
-                new Color(0xc4b880),
-                new Color(0xdedbb8),
-                new Color(0x888480),
-                new Color(0xc4beb8)
-        };
-        final Color[] irisSwatches = new Color[] {
-                black(),
-                new Color(0x402016),
-                new Color(0x7c6424),
-                new Color(0x506c32),
-                new Color(0x70207c),
-                new Color(0x70a0c0)
-        };
-        final Color[] clothesSwatches = new Color[] {
-                new Color(0xcbcbce),
-                new Color(0x383838),
-                new Color(0xe06040),
-                new Color(0x4060e0),
-                new Color(0xa040e0),
-                new Color(0x309ea4),
-                new Color(0xc0709c),
-                new Color(0x70c070),
-                new Color(0xf8b020),
-                new Color(0x784040),
-                new Color(0x609038),
-                new Color(0x989090)
-        };
-
         final ColorSelection skinTones = new ColorSelection(
-                "Skin", true, skinSwatches),
+                "Skin", true, SKIN_SWATCHES),
                 hairColors = new ColorSelection(
-                        "Hair", true, hairSwatches),
+                        "Hair", true, HAIR_SWATCHES),
                 eyebrowColors = new ColorSelection(
-                        "Brows", true, hairSwatches),
+                        "Brows", true, HAIR_SWATCHES),
                 irisColors = new ColorSelection(
-                        "Iris", true, irisSwatches),
+                        "Iris", true, IRIS_SWATCHES),
                 ewColors = new ColorSelection(
                         "Outer", true, new Color(0xe8e8f8)),
-                hat1 = new ColorSelection("Main", true, clothesSwatches),
-                hat2 = new ColorSelection("Accent", true, clothesSwatches),
-                hat3 = new ColorSelection("3rd", true, clothesSwatches),
-                hat4 = new ColorSelection("4th", true, clothesSwatches);
+                hairAcc = new ColorSelection(
+                        "Accessory", true, CLOTHES_SWATCHES),
+                hat1 = clothesSwatch(0), hat2 = clothesSwatch(1),
+                hat3 = clothesSwatch(2), hat4 = clothesSwatch(3),
+                top1 = clothesSwatch(0), top2 = clothesSwatch(1),
+                top3 = clothesSwatch(2), top4 = clothesSwatch(3),
+                bot1 = clothesSwatch(0), bot2 = clothesSwatch(1),
+                bot3 = clothesSwatch(2), bot4 = clothesSwatch(3);
 
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
@@ -233,20 +244,66 @@ public final class PokemonStyle extends Style {
                 hairColorLayer = new ColorSelectionLayer(
                         "hair-color", hairColors, eyebrowColors);
 
+        final AssetChoiceLayer smOutfitLayer = ACLBuilder.of(
+                "outfit", this /* TODO - add here */)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0))
+                .build();
+        final AssetChoiceLayer smTopsLayer = ACLBuilder.of(
+                "top", this /* TODO - add here */)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0))
+                .build();
+        final AssetChoiceLayer smBottomsLayer = ACLBuilder.of(
+                "bottom", this /* TODO - add here */)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0))
+                .build();
+        final GroupLayer smTopBottomLayer = new GroupLayer(
+                "outfit", "Outfit", smTopsLayer, smBottomsLayer);
+
+        final AssetChoiceLayer avOutfitLayer = ACLBuilder.of(
+                        "outfit", this /* TODO - add here */)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0))
+                .build();
+        final AssetChoiceLayer avTopsLayer = ACLBuilder.of(
+                        "top", this /* TODO - add here */)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0))
+                .build();
+        final AssetChoiceLayer avBottomsLayer = ACLBuilder.of(
+                        "bottom", this /* TODO - add here */)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0))
+                .build();
+        final GroupLayer avTopBottomLayer = new GroupLayer(
+                "outfit", "Outfit", smTopsLayer, smBottomsLayer);
+
+        final DecisionLayer clothingLogic = new DecisionLayer(
+                "outfit", () -> {
+                    final boolean combined = clothingTypeLayer
+                            .getChoice().equals(COMBINED_OUTFIT);
+
+                    return switch (getBodyLayerChoice()) {
+                        case 0 -> combined ? avOutfitLayer : avTopBottomLayer;
+                        default -> combined ? smOutfitLayer : smTopBottomLayer;
+                    };
+        });
+        clothingTypeLayer.addDependent(clothingLogic);
+
         final AssetChoiceLayer hairLayer = ACLBuilder.of(
                         "hair", this,
                         new AssetChoiceTemplate("dragon-master", this::replace),
                         new AssetChoiceTemplate("nest", this::replace),
                         new AssetChoiceTemplate("professional", this::replace),
                         new AssetChoiceTemplate("crew-cut", this::replace),
-                        new AssetChoiceTemplate("dainty", this::replace /* TODO */),
+                        new AssetChoiceTemplate("dainty",
+                                c -> replaceWithNSelections(c, 1), hairAcc),
                         new AssetChoiceTemplate("flared-curtains", this::replace),
                         new AssetChoiceTemplate("geezer", this::replace),
                         new AssetChoiceTemplate("mop", this::replace),
-                        new AssetChoiceTemplate("outta-my-face", this::replace /* TODO */),
-                        new AssetChoiceTemplate("pigtails", this::replace /* TODO */),
+                        new AssetChoiceTemplate("outta-my-face",
+                                c -> replaceWithNSelections(c, 1), hairAcc),
+                        new AssetChoiceTemplate("pigtails",
+                                c -> replaceWithNSelections(c, 1), hairAcc),
                         new AssetChoiceTemplate("rocker", this::replace),
-                        new AssetChoiceTemplate("serene", this::replace /* TODO */),
+                        new AssetChoiceTemplate("serene",
+                                c -> replaceWithNSelections(c, 1), hairAcc),
                         new AssetChoiceTemplate("porcupine", this::replace),
                         new AssetChoiceTemplate("mane", this::replace),
                         new AssetChoiceTemplate("receding", this::replace),
@@ -280,14 +337,28 @@ public final class PokemonStyle extends Style {
         layers.add(
                 skinLayer, bodyLayer, headLayer,
                 eyeLayer, eyeLevelLayer, eyeColorLayer,
+                clothingTypeLayer, clothingLogic,
                 hairLayer, hairColorLayer,
-                clothingTypeLayer, hatLayer, hatMaskLayer
+                hatLayer, hatMaskLayer
         );
     }
 
     @Override
     public String name() {
         return "Pokémon Trainer [Gen 4]";
+    }
+
+    private ColorSelection clothesSwatch(
+            final int index
+    ) {
+        final String name = switch (index) {
+            case 0 -> "Main";
+            case 1 -> "Accent";
+            case 2 -> "3rd";
+            default -> (index + 1) + "th";
+        };
+
+        return new ColorSelection(name, true, CLOTHES_SWATCHES);
     }
 
     private Pair<Integer, Function<Color, Color>> clothesReplace(
@@ -301,13 +372,13 @@ public final class PokemonStyle extends Style {
             base = BASE_CLOTH_1;
         } else if (CLOTH_2.contains(input)) {
             index = 1;
-            base = BASE_CLOTH_1;
+            base = BASE_CLOTH_2;
         } else if (CLOTH_3.contains(input)) {
             index = 2;
-            base = BASE_CLOTH_1;
+            base = BASE_CLOTH_3;
         } else if (CLOTH_4.contains(input)) {
             index = 3;
-            base = BASE_CLOTH_1;
+            base = BASE_CLOTH_4;
         } else {
             index = -1;
             base = black();
@@ -328,88 +399,70 @@ public final class PokemonStyle extends Style {
     private Pair<Integer, Function<Color, Color>> replace(
             final Color input
     ) {
+        return replaceWithNSelections(input, 0);
+    }
+
+    private Pair<Integer, Function<Color, Color>> replaceWithNSelections(
+            final Color input, final int n
+    ) {
+
+        int index = -1;
+        Color b = black();
+
+        final List<Set<Color>> REPLS = List.of(
+                CLOTH_1, CLOTH_2, CLOTH_3, CLOTH_4);
+        final Color[] BASES = new Color[] {
+                BASE_CLOTH_1, BASE_CLOTH_2, BASE_CLOTH_3, BASE_CLOTH_4
+        };
+
         final boolean isSkin = SKIN.contains(input),
                 isOutline = SKIN_OUTLINES.contains(input),
                 isHair = HAIR.contains(input),
                 isIris = IRIS.contains(input),
                 isEW = EYE_WHITE.contains(input);
-        final int index;
 
-        if (isSkin || isOutline)
-            index = 0;
-        else if (isHair)
-            index = 1;
-        else if (isIris)
-            index = 2;
-        else if (isEW)
-            index = 3;
-        else
-            index = -1;
+        for (int i = 0; i < n; i++)
+            if (REPLS.get(i).contains(input)) {
+                index = i;
+                b = BASES[i];
+                break;
+            }
+
+        if (isSkin || isOutline) {
+            index = n;
+            b = BASE_SKIN;
+        } else if (isHair) {
+            index = n + 1;
+            b = BASE_HAIR;
+        } else if (isIris) {
+            index = n + 2;
+            b = BASE_IRIS;
+        } else if (isEW) {
+            index = n + 3;
+            b = BASE_EYE_WHITE;
+        }
+
+        final Color base = b;
 
         return new Pair<>(index, c -> {
             final double ih = rgbToHue(input),
                     is = rgbToSat(input), iv = rgbToValue(input),
                     ch = rgbToHue(c), cs = rgbToSat(c),
-                    cv = rgbToValue(c);
+                    cv = rgbToValue(c),
+                    bs = rgbToSat(base), bv = rgbToValue(base),
+                    sRatio = (cs * is) / bs, vRatio = (cv * iv) / bv,
+                    s = MathPlus.bounded(0.0, sRatio, 1.0),
+                    v = MathPlus.bounded(0.0, vRatio, 1.0);
 
-            if (isSkin || isOutline) {
-                final double bs = rgbToSat(BASE_SKIN),
-                        bv = rgbToValue(BASE_SKIN);
+            if (isOutline) {
+                // Skin outline
+                final double hueDiff = rgbToHue(base) - ih,
+                        hue = normalizeHue(ch - hueDiff);
 
-                if (isSkin) {
-                    // Skin
-                    final double sRatio = (cs * is) / bs,
-                            vRatio = (cv * iv) / bv,
-                            s = MathPlus.bounded(0.0, sRatio, 1.0),
-                            v = MathPlus.bounded(0.0, vRatio, 1.0);
-
-                    return fromHSV(ch, s, v);
-                } else {
-                    // Skin outline
-                    final double hueDiff = rgbToHue(BASE_SKIN) - ih,
-                            hue = normalizeHue(ch - hueDiff);
-
-                    final double sRatio = (cs * is) / bs,
-                            vRatio = (cv * iv) / bv,
-                            s = MathPlus.bounded(0.0, sRatio, 1.0),
-                            v = MathPlus.bounded(0.0, vRatio, 1.0);
-
-                    return fromHSV(hue, s, v);
-                }
-            } else if (isHair) {
-                // Hair
-                final double bs = rgbToSat(BASE_HAIR),
-                        bv = rgbToValue(BASE_HAIR);
-
-                final double sRatio = (cs * is) / bs,
-                        vRatio = (cv * iv) / bv,
-                        s = MathPlus.bounded(0.0, sRatio, 1.0),
-                        v = MathPlus.bounded(0.0, vRatio, 1.0);
-
-                return fromHSV(ch, s, v);
-            } else if (isIris) {
-                // Iris
-                final double bs = rgbToSat(BASE_IRIS),
-                        bv = rgbToValue(BASE_IRIS);
-
-                final double sRatio = (cs * is) / bs,
-                        vRatio = (cv * iv) / bv,
-                        s = MathPlus.bounded(0.0, sRatio, 1.0),
-                        v = MathPlus.bounded(0.0, vRatio, 1.0);
-
-                return fromHSV(ch, s, v);
-            } else {
-                // Eye white
-                final double bs = rgbToSat(BASE_EYE_WHITE),
-                        bv = rgbToValue(BASE_EYE_WHITE);
-
-                final double sRatio = (cs * is) / bs,
-                        vRatio = (cv * iv) / bv,
-                        s = MathPlus.bounded(0.0, sRatio, 1.0),
-                        v = MathPlus.bounded(0.0, vRatio, 1.0);
-
-                return fromHSV(ch, s, v);
+                return fromHSV(hue, s, v);
             }
+
+            return fromHSV(ch, s, v);
         });
     }
 

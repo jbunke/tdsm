@@ -52,6 +52,9 @@ public final class DecisionLayer extends ManualRefreshLayer {
 
     @Override
     public void randomize(final boolean updateSprite) {
+        if (isLocked())
+            return;
+
         think();
         decision.randomize(updateSprite);
     }

@@ -6,5 +6,5 @@ processing on your exported sprite sheets like mapping
 them to palettes or enabling or disabling individual
 customization layers, consider trying Stipple Effect.
 
-TDSM is source-available software. Help me swash bugs
+TDSM is source-available software. Help squash bugs
 or simply read through the code if you're interested!

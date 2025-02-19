@@ -7,9 +7,14 @@ import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.util.Layout;
 import com.jordanbunke.tdsm.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ChoiceLayer extends ManualRefreshLayer {
     private final String name;
     private final String[] choices;
+
+    private final List<DecisionLayer> dependents;
 
     private int selection;
 
@@ -21,6 +26,8 @@ public final class ChoiceLayer extends ManualRefreshLayer {
 
         this.name = name;
         this.choices = choices;
+
+        dependents = new ArrayList<>();
 
         selection = initialSelection;
     }
@@ -35,6 +42,10 @@ public final class ChoiceLayer extends ManualRefreshLayer {
 
         this.selection = selection;
         refreshElement();
+
+        for (DecisionLayer dependent : dependents)
+            dependent.update();
+
         Sprite.get().getStyle().update();
     }
 
@@ -52,6 +63,10 @@ public final class ChoiceLayer extends ManualRefreshLayer {
 
     public String getChoiceAt(final int index) {
         return choices[index];
+    }
+
+    public void addDependent(final DecisionLayer dependent) {
+        dependents.add(dependent);
     }
 
     @Override

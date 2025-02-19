@@ -69,7 +69,8 @@ public final class GroupLayer extends CustomizationLayer {
     @Override
     public int calculateExpandedHeight() {
         // TODO
-        return 200;
+        return all().map(CustomizationLayer::calculateExpandedHeight)
+                .reduce(0, Integer::sum);
     }
 
     public Stream<CustomizationLayer> all() {
