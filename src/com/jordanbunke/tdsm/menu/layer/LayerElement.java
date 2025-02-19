@@ -58,7 +58,8 @@ public final class LayerElement extends MenuElementContainer {
         if (layer instanceof ManualRefreshLayer mrl)
             mrl.setElement(this);
 
-        nameLabel = StaticLabel.make(labelPosFor(getPosition()), layer.name());
+        nameLabel = StaticLabel.init(labelPosFor(getPosition()),
+                layer.name()).build();
         collapser = IconOptionsButton.init(nameLabel.followIcon17()
                         .displace(BUFFER / 2, 0))
                 .setCodes(ResourceCodes.COLLAPSE, ResourceCodes.EXPAND)
@@ -230,11 +231,11 @@ public final class LayerElement extends MenuElementContainer {
 
         // MAKE COLOR SELECTION BOXES FOR EACH CHOICE AND LINK VIA THINKING ELEMENT
         final Coord2D SEL_INITIAL = initial.displace(0, choicesBox.getHeight());
-        final StaticLabel noColSels = StaticLabel.mini(
+        final StaticLabel noColSels = StaticLabel.init(
                 new Coord2D(LAYERS.atX(0.5),
                         SEL_INITIAL.y + COL_SEL_BUTTON_DIM / 2),
-                "This choice has no color selections.",
-                Colors.darkSystem(), Anchor.CENTRAL_TOP);
+                "This choice has no color selections.")
+                .setAnchor(Anchor.CENTRAL_TOP).setMini().build();
         ab.add(noColSels);
 
         final MenuElement[] forIndices = new MenuElement[indices.length];

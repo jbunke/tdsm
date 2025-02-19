@@ -5,45 +5,78 @@ import com.jordanbunke.delta_time.menu.menu_elements.visual.StaticMenuElement;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.util.Colors;
-import com.jordanbunke.tdsm.util.Graphics;
+import com.jordanbunke.tdsm.util.ProgramFont;
 
 import java.awt.*;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
-public final class StaticLabel extends StaticMenuElement {
-    private StaticLabel(
+public class StaticLabel extends StaticMenuElement {
+    public StaticLabel(
             final Coord2D position, final Anchor anchor, final GameImage image
     ) {
         super(position, anchor, image);
     }
 
-    public static StaticLabel make(
+    public static Builder init(
             final Coord2D position, final String text
     ) {
-        return make(position, text, Colors.darkSystem(), 1.0);
+        return new Builder(position, text);
     }
 
-    public static StaticLabel make(
-            final Coord2D position, final String text,
-            final Color color, final double textSize
-    ) {
-        return new StaticLabel(position, Anchor.LEFT_TOP,
-                Graphics.uiText(color, textSize).addText(text).build().draw());
-    }
+    public static class Builder {
+        private final Coord2D position;
+        private final String text;
 
-    public static StaticLabel mini(
-            final Coord2D position, final String text,
-            final Color color, final Anchor anchor
-    ) {
-        return new StaticLabel(position, anchor,
-                Graphics.miniText(color).addText(text).build().draw());
-    }
+        private Anchor anchor;
+        private Color color;
+        private double textSize;
+        private ProgramFont font;
+        private Text.Orientation orientation;
 
-    public static StaticLabel make(
-            final Coord2D position, final Anchor anchor, final Text text
-    ) {
-        return new StaticLabel(position, anchor, text.draw());
+        Builder(
+                final Coord2D position, final String text
+        ) {
+            this.position = position;
+            this.text = text;
+
+            anchor = Anchor.LEFT_TOP;
+            color = Colors.darkSystem();
+            textSize = 1.0;
+            font = ProgramFont.LARGE;
+            orientation = Text.Orientation.CENTER;
+        }
+
+        public StaticLabel build() {
+            return new StaticLabel(position, anchor,
+                    font.getBuilder(textSize, orientation, color)
+                            .addText(text).build().draw());
+        }
+
+        public Builder setAnchor(final Anchor anchor) {
+            this.anchor = anchor;
+            return this;
+        }
+
+        public Builder setColor(final Color color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder setMini() {
+            this.font = ProgramFont.MINI;
+            return this;
+        }
+
+        public Builder setOrientation(final Text.Orientation orientation) {
+            this.orientation = orientation;
+            return this;
+        }
+
+        public Builder setTextSize(final double textSize) {
+            this.textSize = textSize;
+            return this;
+        }
     }
 
     public Coord2D follow() {

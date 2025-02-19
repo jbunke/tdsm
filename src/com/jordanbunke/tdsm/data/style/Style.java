@@ -316,7 +316,7 @@ public abstract class Style {
         if (candidate instanceof DecisionLayer dl)
             addLayerIfRendered(renderLayers, dl.getDecision());
         else if (candidate instanceof GroupLayer gl)
-            gl.all().forEach(l -> addLayerIfRendered(renderLayers, candidate));
+            gl.all().forEach(l -> addLayerIfRendered(renderLayers, l));
         else if (candidate.isRendered())
             renderLayers.add(candidate);
     }

@@ -50,8 +50,8 @@ public final class MenuAssembly {
         final MenuBuilder mb = new MenuBuilder();
 
         // PREVIEW
-        final StaticLabel animationLabel = StaticLabel.make(
-                labelPosFor(PREVIEW.x, PREVIEW.atY(0.75)), "Animation:");
+        final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
+                PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
 
         final Animation[] anims = Sprite.get().getStyle().animations;
         final Dropdown animationDropdown = Dropdown.create(
@@ -86,8 +86,8 @@ public final class MenuAssembly {
         mb.addAll(veil);
 
         // TOP BAR
-        final StaticLabel styleLabel = StaticLabel.make(
-                labelPosFor(TOP.pos()), "Sprite style:");
+        final StaticLabel styleLabel = StaticLabel.init(
+                labelPosFor(TOP.pos()), "Sprite style:").build();
 
         final Style[] styles = EnumUtils.stream(Styles.class)
                 .map(Styles::get).toArray(Style[]::new);
@@ -142,18 +142,18 @@ public final class MenuAssembly {
         mb.add(firstSpriteInfo);
 
         // SEQUENCING
-        final StaticLabel sequencingLabel = StaticLabel.make(
-                labelPosFor(SEQUENCING.pos()), "Sequencing");
+        final StaticLabel sequencingLabel = StaticLabel.init(
+                labelPosFor(SEQUENCING.pos()), "Sequencing").build();
         final Indicator sequencingInfo = Indicator.make(ResourceCodes.INCLUSION,
                 sequencingLabel.followIcon17(), Anchor.LEFT_TOP);
 
         final double TYPE_Y = 0.17, SEQUENCER_Y = 0.29;
-        final StaticLabel dirLabel = StaticLabel.mini(
-                SEQUENCING.at(0.22, TYPE_Y), "Directions",
-                Colors.darkSystem(), Anchor.CENTRAL_TOP),
-                animLabel = StaticLabel.mini(
-                        SEQUENCING.at(0.675, TYPE_Y), "Animations",
-                        Colors.darkSystem(), Anchor.CENTRAL_TOP);
+        final StaticLabel dirLabel = StaticLabel.init(
+                SEQUENCING.at(0.22, TYPE_Y), "Directions")
+                .setAnchor(Anchor.CENTRAL_TOP).setMini().build(),
+                animLabel = StaticLabel.init(
+                        SEQUENCING.at(0.675, TYPE_Y), "Animations")
+                        .setAnchor(Anchor.CENTRAL_TOP).setMini().build();
 
         final DirectionSequencer dirSequencer = new DirectionSequencer(
                 new Coord2D(SEQUENCING.x + BUFFER, SEQUENCING.atY(SEQUENCER_Y)));
@@ -181,8 +181,8 @@ public final class MenuAssembly {
                 dirLabel, animLabel, dirSequencer, animSequencer, frameCountLabel);
 
         // LAYOUT
-        final StaticLabel paddingLabel = StaticLabel.make(
-                labelPosFor(LAYOUT.pos()), "Padding");
+        final StaticLabel paddingLabel = StaticLabel.init(
+                labelPosFor(LAYOUT.pos()), "Padding").build();
         final Indicator paddingInfo = Indicator.make(ResourceCodes.PADDING,
                 paddingLabel.followIcon17(), Anchor.LEFT_TOP);
         final IconButton resetPaddingButton = IconButton.init(
@@ -195,8 +195,9 @@ public final class MenuAssembly {
                             0.0 + (e.ordinal() / 2 == 0 ? 0.0 : 0.5),
                             EDGES_Y + (e.ordinal() % 2 == 0 ? 0.0 : EDGES_Y_INC))
                     .displace(BUFFER, 0);
-            final StaticLabel edgeLabel = StaticLabel.make(edgeLabelPos,
-                    StringUtils.nameFromID(e.name().toLowerCase()) + ":");
+            final StaticLabel edgeLabel = StaticLabel.init(edgeLabelPos,
+                    StringUtils.nameFromID(e.name().toLowerCase()) + ":")
+                    .build();
             final PaddingTextbox edgeTextbox =
                     new PaddingTextbox(edgeLabel.followTBStandard(), e);
             mb.addAll(edgeLabel, edgeTextbox);
@@ -215,8 +216,9 @@ public final class MenuAssembly {
         mb.addAll(paddingLabel, paddingInfo,
                 resetPaddingButton, spriteSizeLabel);
 
-        final StaticLabel layoutLabel = StaticLabel.make(
-                labelPosFor(LAYOUT.x, LAYOUT.atY(0.4)), "Sprite sheet layout");
+        final StaticLabel layoutLabel = StaticLabel.init(
+                labelPosFor(LAYOUT.x, LAYOUT.atY(0.4)),
+                "Sprite sheet layout").build();
         final Indicator layoutInfo = Indicator.make(ResourceCodes.LAYOUT,
                 layoutLabel.followIcon17(), Anchor.LEFT_TOP);
         final IconButton resetLayoutButton = IconButton.init(
@@ -225,9 +227,9 @@ public final class MenuAssembly {
 
         final double LAYOUT_INC_Y = 0.1;
         double layoutY = 0.5;
-        final StaticLabel orientationLabel = StaticLabel.make(
+        final StaticLabel orientationLabel = StaticLabel.init(
                 new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
-                "Animation orientation:");
+                "Animation orientation:").build();
         final Dropdown orientationDropdown = Dropdown.create(
                 orientationLabel.followTB(),
                 EnumUtils.stream(Orientation.class)
@@ -356,13 +358,17 @@ public final class MenuAssembly {
         final Logo logo = Logo.make(canvasAt(0.5, 0.1), Anchor.CENTRAL_TOP);
         mb.add(logo);
 
+        final Blinker blinker = Blinker.make(
+                canvasAt(0.5, 0.5), Anchor.CENTRAL);
+        mb.add(blinker);
+
         // Version and credits
-        final StaticLabel programLabel = StaticLabel.make(
+        final StaticLabel programLabel = new StaticLabel(
                 canvasAt(0.5, 0.98),
                 Anchor.CENTRAL_BOTTOM,
                 Graphics.miniText(Colors.darkSystem())
                         .addText(TDSM.getVersion()).addLineBreak()
-                        .addText("(c) 2025 Jordan Bunke").build());
+                        .addText("(c) 2025 Jordan Bunke").build().draw());
 
         mb.add(programLabel);
 
@@ -435,10 +441,8 @@ public final class MenuAssembly {
     private static void menuTitle(
             final MenuBuilder mb, final String title
     ) {
-        mb.add(StaticLabel.make(
-                canvasAt(0.5, 0.0), Anchor.CENTRAL_TOP,
-                ProgramFont.LARGE.getBuilder(2.0, Text.Orientation.CENTER,
-                        Colors.darkSystem()).addText(title).build()));
+        mb.add(StaticLabel.init(canvasAt(0.5, 0.0), title)
+                .setAnchor(Anchor.CENTRAL_TOP).setTextSize(2.0).build());
     }
 
     private static void menuBlurb(
@@ -455,8 +459,8 @@ public final class MenuAssembly {
                 tb.addLineBreak();
         }
 
-        final StaticLabel about = StaticLabel.make(
-                canvasAt(0.5, 0.2), Anchor.CENTRAL_TOP, tb.build());
+        final StaticLabel about = new StaticLabel(
+                canvasAt(0.5, 0.2), Anchor.CENTRAL_TOP, tb.build().draw());
         mb.add(about);
     }
 
@@ -493,8 +497,8 @@ public final class MenuAssembly {
 
         int y = atY(0.2);
 
-        final StaticLabel folderLabel = StaticLabel.make(
-                new Coord2D(LEFT, y), "Folder:");
+        final StaticLabel folderLabel = StaticLabel.init(
+                new Coord2D(LEFT, y), "Folder:").build();
         final MenuElement folderButton = StaticTextButton.make("Choose",
                 ButtonType.STANDARD, Alignment.CENTER, folderLabel.followTB(),
                 Anchor.LEFT_TOP, () -> true, Export.get()::chooseFolder);
@@ -509,8 +513,8 @@ public final class MenuAssembly {
                 .setMini().build();
 
         y += INC_Y;
-        final StaticLabel fileNameLabel = StaticLabel.make(
-                new Coord2D(LEFT, y), "File name:");
+        final StaticLabel fileNameLabel = StaticLabel.init(
+                new Coord2D(LEFT, y), "File name:").build();
         final Coord2D fntbPos = fileNameLabel.followTB();
         final DynamicTextbox fileNameTextbox = DynamicTextbox.init(
                 fntbPos, Export.get()::getFileName, Export.get()::setFileName)
@@ -522,10 +526,10 @@ public final class MenuAssembly {
                 fileNameTextbox.followIcon17(), Anchor.LEFT_TOP);
 
         y += INC_Y;
-        final StaticLabel overwriteLabel = StaticLabel.mini(
+        final StaticLabel overwriteLabel = StaticLabel.init(
                 new Coord2D(LEFT, y),
-                "Exporting will overwrite at least one file!",
-                Colors.darkSystem(), Anchor.LEFT_TOP);
+                "Exporting will overwrite at least one file!")
+                .setMini().build();
         final GatewayMenuElement overwriteLogic = new GatewayMenuElement(
                 overwriteLabel, Export.get()::wouldOverwrite);
 
@@ -533,18 +537,17 @@ public final class MenuAssembly {
         final Checkbox jsonCheckbox = new Checkbox(
                 new Coord2D(LEFT, y), Anchor.LEFT_TOP,
                 Export.get()::isExportJSON, Export.get()::setExportJSON);
-        final StaticLabel jsonLabel = StaticLabel.mini(
-                jsonCheckbox.followMiniLabel(), "Export JSON",
-                Colors.darkSystem(), Anchor.LEFT_TOP);
+        final StaticLabel jsonLabel = StaticLabel.init(
+                jsonCheckbox.followMiniLabel(), "Export JSON")
+                .setMini().build();
 
         y += (int) (INC_Y * 0.5);
         final Checkbox stipCheckbox = new Checkbox(
                 new Coord2D(LEFT, y), Anchor.LEFT_TOP,
                 Export.get()::isExportStip, Export.get()::setExportStip);
-        final StaticLabel stipLabel = StaticLabel.mini(
+        final StaticLabel stipLabel = StaticLabel.init(
                 stipCheckbox.followMiniLabel(),
-                "Export Stipple Effect file (.stip)",
-                Colors.darkSystem(), Anchor.LEFT_TOP);
+                "Export Stipple Effect file (.stip)").setMini().build();
         final Indicator stipInfo = Indicator.make(
                 ResourceCodes.EXPORT_STIP, stipLabel.follow(), Anchor.LEFT_TOP);
 

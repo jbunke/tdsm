@@ -47,7 +47,7 @@ public final class PokemonStyle extends Style {
             IRIS_SWATCHES, CLOTHES_SWATCHES;
 
     private AssetChoiceLayer bodyLayer, hatLayer;
-    private final MathLayer eyeLevelLayer;
+    private final MathLayer eyeHeightLayer;
     private final ChoiceLayer clothingTypeLayer;
 
     static {
@@ -146,13 +146,13 @@ public final class PokemonStyle extends Style {
 
         bodyLayer = null;
         hatLayer = null;
-        eyeLevelLayer = new MathLayer("eye-level", -1, 1, 0,
+        eyeHeightLayer = new MathLayer("eye-height", -1, 1, 0,
                 i -> switch (i) {
                     case -1 -> "Low";
                     case 1 -> "High";
                     default -> "Average";
                 });
-        clothingTypeLayer = new ChoiceLayer("clothing-type",
+        clothingTypeLayer = new ChoiceLayer("outfit-type",
                 "Top and bottom", COMBINED_OUTFIT);
 
         setUpLayers();
@@ -211,14 +211,14 @@ public final class PokemonStyle extends Style {
                 new AssetChoiceTemplate("average-body",
                         this::replace),
                 new AssetChoiceTemplate("small-body",
-                        this::replace)).build();
+                        this::replace)).setName("Body Type").build();
         bodyLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer headLayer = ACLBuilder.of(
                         "head", this,
                         new AssetChoiceTemplate("oval-head", this::replace),
                         new AssetChoiceTemplate("round-head", this::replace))
-                .setComposer(this::composeHead)
+                .setComposer(this::composeHead).setName("Head Shape")
                 .build();
         headLayer.addInfluencingSelection(skinTones);
 
@@ -265,7 +265,7 @@ public final class PokemonStyle extends Style {
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final GroupLayer smTopBottomLayer = new GroupLayer(
-                "outfit", "Outfit", smTopsLayer, smBottomsLayer);
+                "outfit", "Outfit", smBottomsLayer, smTopsLayer);
 
         final AssetChoiceLayer avOutfitLayer = ACLBuilder.of(
                         "av-outfit", this,
@@ -288,7 +288,7 @@ public final class PokemonStyle extends Style {
                 .setNoAssetChoice(NoAssetChoice.prob(0.0))
                 .build();
         final GroupLayer avTopBottomLayer = new GroupLayer(
-                "outfit", "Outfit", avTopsLayer, avBottomsLayer);
+                "outfit", "Outfit", avBottomsLayer, avTopsLayer);
 
         AssetChoiceLayer.parallelMatchers(smOutfitLayer, avOutfitLayer);
         AssetChoiceLayer.parallelMatchers(smBottomsLayer, avBottomsLayer);
@@ -357,7 +357,7 @@ public final class PokemonStyle extends Style {
         // TODO - still assembling
         layers.add(
                 skinLayer, bodyLayer, headLayer,
-                eyeLayer, eyeLevelLayer, eyeColorLayer,
+                eyeLayer, eyeHeightLayer, eyeColorLayer,
                 clothingTypeLayer, clothingLogic,
                 hairLayer, hairColorLayer,
                 hatLayer, hatMaskLayer
@@ -490,7 +490,7 @@ public final class PokemonStyle extends Style {
     private SpriteConstituent<String> composeEyes(
             final SpriteSheet sheet
     ) {
-        return composeHead(sheet, -eyeLevelLayer.getValue());
+        return composeHead(sheet, -eyeHeightLayer.getValue());
     }
 
     private SpriteConstituent<String> composeHead(

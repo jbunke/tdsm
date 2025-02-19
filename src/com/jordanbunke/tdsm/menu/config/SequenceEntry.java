@@ -8,7 +8,6 @@ import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.menu.config.drag.DragLogic;
 import com.jordanbunke.tdsm.menu.config.drag.DragNode;
-import com.jordanbunke.tdsm.util.Colors;
 
 public final class SequenceEntry<T> extends MenuElementContainer {
     private final Checkbox checkbox;
@@ -30,9 +29,8 @@ public final class SequenceEntry<T> extends MenuElementContainer {
         checkbox = new Checkbox(position, Anchor.LEFT_TOP,
                 () -> sequencer.inclusionCheck.apply(data),
                 b -> sequencer.inclusionUpdate.accept(data, b));
-        label = StaticLabel.mini(checkbox.followMiniLabel(),
-                sequencer.nameFunc.apply(data), Colors.darkSystem(),
-                Anchor.LEFT_TOP);
+        label = StaticLabel.init(checkbox.followMiniLabel(),
+                sequencer.nameFunc.apply(data)).setMini().build();
 
         this.sequencer = sequencer;
         this.data = data;

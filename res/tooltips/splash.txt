@@ -1,0 +1,33 @@
+Officially official! More coming soon!
+
+Buy "Stipple Effect"!
+
+You can rearrange the order in which directions and
+animations are sequenced in exported sprite sheets
+
+You can constrain sprite randomization by locking
+customization layers that you don't want to modify
+
+Animations are efficient with their frames. A walk
+cycle may be four frames long, but only represented
+as three frames in a pong loop because two frames
+in the cycle are the same.
+
+Please respect the terms of the license.
+Credit is appreciated but not required.
+
+Pixel art software should be pixel art itself!
+
+HGSS supremacy!
+
+Help develop TDSM by identifying bugs... or even by
+making art! Visit "jbunke/tdsm" on GitHub for more.
+
+@flinkerflitzer on most social media
+
+Locking some layers will produce better-looking
+randomized sprites more consistently. For example,
+consider locking the "Eye Height" layer at a value
+of "Average".
+
+=D

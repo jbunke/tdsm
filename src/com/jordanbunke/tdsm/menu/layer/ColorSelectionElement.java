@@ -8,7 +8,6 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
-import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -34,8 +33,9 @@ public final class ColorSelectionElement extends MenuElementGrouping {
         final MenuBuilder mb = new MenuBuilder();
 
         if (!rootOfLayer) {
-            final StaticLabel nameLabel =
-                    StaticLabel.mini(position, selection.name, Colors.darkSystem(), anchor);
+            final StaticLabel nameLabel = StaticLabel
+                    .init(position, selection.name).setMini()
+                    .setAnchor(anchor).build();
             position = position.displace(0, COL_SEL_DROPOFF);
 
             mb.add(nameLabel);
