@@ -112,6 +112,7 @@ public final class PokemonStyle extends Style {
         HAIR_SWATCHES = new Color[] {
                 new Color(0x404040),
                 new Color(0x342820),
+                new Color(0x4b382c),
                 new Color(0x684828),
                 new Color(0x82662d),
                 new Color(0xb2864b),
@@ -259,16 +260,16 @@ public final class PokemonStyle extends Style {
                 smBottomsLayer = buildBottom(BodyType.SMALL),
                 smShoesLayer = buildShoes(BodyType.SMALL);
         final GroupLayer smArticlesLayer = new GroupLayer(
-                "outfit", "Outfit", smShoesLayer,
-                smBottomsLayer, smTopsLayer);
+                "outfit", "Outfit", smBottomsLayer,
+                smShoesLayer, smTopsLayer);
 
         final AssetChoiceLayer avOutfitLayer = buildOutfit(BodyType.AVERAGE),
                 avTopsLayer = buildTop(BodyType.AVERAGE),
                 avBottomsLayer = buildBottom(BodyType.AVERAGE),
                 avShoesLayer = buildShoes(BodyType.AVERAGE);
         final GroupLayer avArticlesLayer = new GroupLayer(
-                "outfit", "Outfit", avShoesLayer,
-                avBottomsLayer, avTopsLayer);
+                "outfit", "Outfit", avBottomsLayer,
+                avShoesLayer, avTopsLayer);
 
         AssetChoiceLayer.parallelMatchers(smOutfitLayer, avOutfitLayer);
         AssetChoiceLayer.parallelMatchers(smBottomsLayer, avBottomsLayer);
@@ -297,6 +298,7 @@ public final class PokemonStyle extends Style {
                         new AssetChoiceTemplate("afro", this::replace),
                         new AssetChoiceTemplate("bangs", this::replace),
                         new AssetChoiceTemplate("closer", this::replace),
+                        new AssetChoiceTemplate("waves", this::replace),
                         new AssetChoiceTemplate("disheveled", this::replace),
                         new AssetChoiceTemplate("framed", this::replace),
                         new AssetChoiceTemplate("pageant-queen", this::replace),
@@ -341,7 +343,9 @@ public final class PokemonStyle extends Style {
                         new AssetChoiceTemplate("fitted-back",
                                 this::clothesReplace, hatCS[0], hatCS[1]),
                         new AssetChoiceTemplate("fedora",
-                                this::clothesReplace, hatCS[0], hatCS[1]))
+                                this::clothesReplace, hatCS[0], hatCS[1]),
+                        new AssetChoiceTemplate("durag",
+                                this::clothesReplace, hatCS[0]))
                 .setName("Headwear").setComposer(this::composeHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75)).build();
 
@@ -428,19 +432,19 @@ public final class PokemonStyle extends Style {
     private Pair<Integer, Function<Color, Color>> clothesReplace(
             final Color input
     ) {
-        final Color base;
+        final Color rgbInput = rgbOnly(input), base;
         final int index;
 
-        if (CLOTH_1.contains(input)) {
+        if (CLOTH_1.contains(rgbInput)) {
             index = 0;
             base = BASE_CLOTH_1;
-        } else if (CLOTH_2.contains(input)) {
+        } else if (CLOTH_2.contains(rgbInput)) {
             index = 1;
             base = BASE_CLOTH_2;
-        } else if (CLOTH_3.contains(input)) {
+        } else if (CLOTH_3.contains(rgbInput)) {
             index = 2;
             base = BASE_CLOTH_3;
-        } else if (CLOTH_4.contains(input)) {
+        } else if (CLOTH_4.contains(rgbInput)) {
             index = 3;
             base = BASE_CLOTH_4;
         } else {
@@ -456,7 +460,7 @@ public final class PokemonStyle extends Style {
                     s = MathPlus.bounded(0.0, sRatio, 1.0),
                     v = MathPlus.bounded(0.0, vRatio, 1.0);
 
-            return fromHSV(ch, s, v);
+            return fromHSV(ch, s, v, input.getAlpha());
         });
     }
 
@@ -469,6 +473,7 @@ public final class PokemonStyle extends Style {
     private Pair<Integer, Function<Color, Color>> replaceWithNSelections(
             final Color input, final int n
     ) {
+        final Color rgbInput = rgbOnly(input);
 
         int index = -1;
         Color b = black();
@@ -479,14 +484,14 @@ public final class PokemonStyle extends Style {
                 BASE_CLOTH_1, BASE_CLOTH_2, BASE_CLOTH_3, BASE_CLOTH_4
         };
 
-        final boolean isSkin = SKIN.contains(input),
-                isOutline = SKIN_OUTLINES.contains(input),
-                isHair = HAIR.contains(input),
-                isIris = IRIS.contains(input),
-                isEW = EYE_WHITE.contains(input);
+        final boolean isSkin = SKIN.contains(rgbInput),
+                isOutline = SKIN_OUTLINES.contains(rgbInput),
+                isHair = HAIR.contains(rgbInput),
+                isIris = IRIS.contains(rgbInput),
+                isEW = EYE_WHITE.contains(rgbInput);
 
         for (int i = 0; i < n; i++)
-            if (REPLS.get(i).contains(input)) {
+            if (REPLS.get(i).contains(rgbInput)) {
                 index = i;
                 b = BASES[i];
                 break;
@@ -526,7 +531,7 @@ public final class PokemonStyle extends Style {
                 return fromHSV(hue, s, v);
             }
 
-            return fromHSV(ch, s, v);
+            return fromHSV(ch, s, v, input.getAlpha());
         });
     }
 

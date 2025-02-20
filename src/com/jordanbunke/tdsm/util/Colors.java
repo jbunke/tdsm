@@ -121,9 +121,10 @@ public final class Colors {
                             colorReplacementFunc.apply(c);
                     final int index = out.a();
 
-                    if (index < 0 || index >= colors.length)
+                    if (index < 0 || index >= colors.length) {
+                        replacements.put(c, c);
                         img.setRGB(x, y, c.getRGB());
-                    else {
+                    } else {
                         final Color set = out.b().apply(colors[index]);
                         replacements.put(c, set);
                         img.setRGB(x, y, set.getRGB());
@@ -158,8 +159,20 @@ public final class Colors {
         return fromHSV(hsv[0], hsv[1], hsv[2]);
     }
 
+    public static Color rgbOnly(final Color c) {
+        return new Color(c.getRed(), c.getGreen(), c.getBlue());
+    }
+
     public static Color fromHSV(
-            final double hue, final double sat, final double val
+            final double hue, final double sat,
+            final double val
+    ) {
+        return fromHSV(hue, sat, val, Constants.RGB_SCALE);
+    }
+
+    public static Color fromHSV(
+            final double hue, final double sat,
+            final double val, final int alpha
     ) {
         final double SIX = 6d, c = sat * val,
                 x = c * (1d - Math.abs(((SIX * hue) % 2) - 1)),
@@ -192,7 +205,7 @@ public final class Colors {
         }
 
         return new Color(scaleUpChannel(r + m),
-                scaleUpChannel(g + m), scaleUpChannel(b + m));
+                scaleUpChannel(g + m), scaleUpChannel(b + m), alpha);
     }
 
     public static double rgbToHue(final Color c) {
