@@ -15,7 +15,10 @@
   * **Sequencing & Inclusion:** Determine the *order of directions and animations in the exported sprite sheet*, as well as which directions and animations to *include* [**[ screenshot ]**](TODO)
   * **Layout:** Determine the axis along which directions and animations are exported in the sprite sheet, as well as how distinct animations follow one another [**[ screenshot ]**](TODO)
 * **Export formats:** In addition to the standard PNG sprite sheet, *TDSM* optionally exports the sprite sheet's metadata in a JSON file, and the sprite sheet as a [*Stipple Effect*]() project with the contents of each customization layer on its own layer in the file [**[ screenshot ]**](TODO)
-* **MULTIPLE SPRITE TEMPLATES:** *TDSM* is not designed specifically for one sprite template. While it only features the *Pokémon Trainer \[Gen 4\]* sprite template at launch, it will soon be updated to feature more styles of sprites with entirely distinct animations and base assets.
+
+**Note:**
+
+*TDSM* is not designed specifically for one sprite template. While it only features the *Pokémon Trainer \[Gen 4\]* sprite template at launch, it will soon be updated to feature more styles of sprites with entirely distinct animations and base assets.
 
 ## Contributing
 

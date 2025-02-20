@@ -24,6 +24,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Colors.*;
 
@@ -33,7 +34,7 @@ public final class PokemonStyle extends Style {
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
 
-    private final String COMBINED_OUTFIT = "Outfit";
+    private final String COMBINED_OUTFIT = "Combined outfit";
 
     private static final Set<Color>
             SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE,
@@ -49,6 +50,10 @@ public final class PokemonStyle extends Style {
     private AssetChoiceLayer bodyLayer, hatLayer;
     private final MathLayer eyeHeightLayer;
     private final ChoiceLayer clothingTypeLayer;
+
+    final ColorSelection skinTones, hairColors, eyebrowColors,
+            irisColors, ewColors, hairAcc;
+    final ColorSelection[] hatCS, topCS, botCS, shoeCS;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -141,8 +146,30 @@ public final class PokemonStyle extends Style {
         INSTANCE = new PokemonStyle();
     }
 
+    private enum BodyType {
+        AVERAGE, SMALL;
+
+        final String prefix;
+
+        BodyType() {
+            prefix = name().substring(0, 2).toLowerCase();
+        }
+    }
+
     private PokemonStyle() {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
+
+        skinTones = new ColorSelection("Skin", true, SKIN_SWATCHES);
+        hairColors = new ColorSelection("Hair", true, HAIR_SWATCHES);
+        eyebrowColors = new ColorSelection("Brows", true, HAIR_SWATCHES);
+        irisColors = new ColorSelection("Iris", true, IRIS_SWATCHES);
+        ewColors = new ColorSelection("Outer", true, new Color(0xe8e8f8));
+        hairAcc = new ColorSelection("Accessory", true, CLOTHES_SWATCHES);
+
+        hatCS = IntStream.range(0, 4).mapToObj(this::clothesSwatch).toArray(ColorSelection[]::new);
+        topCS = IntStream.range(0, 4).mapToObj(this::clothesSwatch).toArray(ColorSelection[]::new);
+        botCS = IntStream.range(0, 4).mapToObj(this::clothesSwatch).toArray(ColorSelection[]::new);
+        shoeCS = IntStream.range(0, 2).mapToObj(this::clothesSwatch).toArray(ColorSelection[]::new);
 
         bodyLayer = null;
         hatLayer = null;
@@ -153,7 +180,7 @@ public final class PokemonStyle extends Style {
                     default -> "Average";
                 });
         clothingTypeLayer = new ChoiceLayer("outfit-type",
-                "Top and bottom", COMBINED_OUTFIT);
+                "Separate articles", COMBINED_OUTFIT);
 
         setUpLayers();
         update();
@@ -185,26 +212,6 @@ public final class PokemonStyle extends Style {
     }
 
     private void setUpLayers() {
-        @SuppressWarnings("unused")
-        final ColorSelection skinTones = new ColorSelection(
-                "Skin", true, SKIN_SWATCHES),
-                hairColors = new ColorSelection(
-                        "Hair", true, HAIR_SWATCHES),
-                eyebrowColors = new ColorSelection(
-                        "Brows", true, HAIR_SWATCHES),
-                irisColors = new ColorSelection(
-                        "Iris", true, IRIS_SWATCHES),
-                ewColors = new ColorSelection(
-                        "Outer", true, new Color(0xe8e8f8)),
-                hairAcc = new ColorSelection(
-                        "Accessory", true, CLOTHES_SWATCHES),
-                hat1 = clothesSwatch(0), hat2 = clothesSwatch(1),
-                hat3 = clothesSwatch(2), hat4 = clothesSwatch(3),
-                top1 = clothesSwatch(0), top2 = clothesSwatch(1),
-                top3 = clothesSwatch(2), top4 = clothesSwatch(3),
-                bot1 = clothesSwatch(0), bot2 = clothesSwatch(1),
-                bot3 = clothesSwatch(2), bot4 = clothesSwatch(3);
-
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
 
@@ -233,6 +240,7 @@ public final class PokemonStyle extends Style {
                         new AssetChoiceTemplate("menacing", this::replace),
                         new AssetChoiceTemplate("feminine", this::replace),
                         new AssetChoiceTemplate("tired", this::replace),
+                        new AssetChoiceTemplate("lashes", this::replace),
                         new AssetChoiceTemplate("cranky", this::replace))
                 .setComposer(this::composeEyes)
                 .build();
@@ -246,55 +254,26 @@ public final class PokemonStyle extends Style {
                 hairColorLayer = new ColorSelectionLayer(
                         "hair-color", hairColors, eyebrowColors);
 
-        final AssetChoiceLayer smOutfitLayer = ACLBuilder.of(
-                "sm-outfit", this,
-                        new AssetChoiceTemplate("gi",
-                                this::clothesReplace, top1, top2),
-                        new AssetChoiceTemplate("farmer-1",
-                                this::clothesReplace, top1, top2, top3))
-                .setNoAssetChoice(NoAssetChoice.prob(0.0))
-                .build();
-        final AssetChoiceLayer smTopsLayer = ACLBuilder.of(
-                "sm-top", this,
-                        new AssetChoiceTemplate("vest",
-                                this::clothesReplace, top1, top2))
-                .setNoAssetChoice(NoAssetChoice.prob(0.0))
-                .build();
-        final AssetChoiceLayer smBottomsLayer = ACLBuilder.of(
-                "sm-bottom", this,
-                        new AssetChoiceTemplate("slacks",
-                                this::clothesReplace, bot1))
-                .setNoAssetChoice(NoAssetChoice.prob(0.0))
-                .build();
-        final GroupLayer smTopBottomLayer = new GroupLayer(
-                "outfit", "Outfit", smBottomsLayer, smTopsLayer);
+        final AssetChoiceLayer smOutfitLayer = buildOutfit(BodyType.SMALL),
+                smTopsLayer = buildTop(BodyType.SMALL),
+                smBottomsLayer = buildBottom(BodyType.SMALL),
+                smShoesLayer = buildShoes(BodyType.SMALL);
+        final GroupLayer smArticlesLayer = new GroupLayer(
+                "outfit", "Outfit", smShoesLayer,
+                smBottomsLayer, smTopsLayer);
 
-        final AssetChoiceLayer avOutfitLayer = ACLBuilder.of(
-                        "av-outfit", this,
-                        new AssetChoiceTemplate("gi",
-                                this::clothesReplace, top1, top2),
-                        new AssetChoiceTemplate("farmer-1",
-                                this::clothesReplace, top1, top2, top3))
-                .setNoAssetChoice(NoAssetChoice.prob(0.0))
-                .build();
-        final AssetChoiceLayer avTopsLayer = ACLBuilder.of(
-                        "av-top", this,
-                        new AssetChoiceTemplate("vest",
-                                this::clothesReplace, top1, top2))
-                .setNoAssetChoice(NoAssetChoice.prob(0.0))
-                .build();
-        final AssetChoiceLayer avBottomsLayer = ACLBuilder.of(
-                        "av-bottom", this,
-                        new AssetChoiceTemplate("slacks",
-                                this::clothesReplace, bot1))
-                .setNoAssetChoice(NoAssetChoice.prob(0.0))
-                .build();
-        final GroupLayer avTopBottomLayer = new GroupLayer(
-                "outfit", "Outfit", avBottomsLayer, avTopsLayer);
+        final AssetChoiceLayer avOutfitLayer = buildOutfit(BodyType.AVERAGE),
+                avTopsLayer = buildTop(BodyType.AVERAGE),
+                avBottomsLayer = buildBottom(BodyType.AVERAGE),
+                avShoesLayer = buildShoes(BodyType.AVERAGE);
+        final GroupLayer avArticlesLayer = new GroupLayer(
+                "outfit", "Outfit", avShoesLayer,
+                avBottomsLayer, avTopsLayer);
 
         AssetChoiceLayer.parallelMatchers(smOutfitLayer, avOutfitLayer);
         AssetChoiceLayer.parallelMatchers(smBottomsLayer, avBottomsLayer);
         AssetChoiceLayer.parallelMatchers(smTopsLayer, avTopsLayer);
+        AssetChoiceLayer.parallelMatchers(smShoesLayer, avShoesLayer);
 
         @SuppressWarnings("all")
         final DecisionLayer clothingLogic = new DecisionLayer(
@@ -304,8 +283,8 @@ public final class PokemonStyle extends Style {
 
                     // TODO - if more body shapes are added
                     return switch (getBodyLayerChoice()) {
-                        case 0 -> combined ? avOutfitLayer : avTopBottomLayer;
-                        default -> combined ? smOutfitLayer : smTopBottomLayer;
+                        case 0 -> combined ? avOutfitLayer : avArticlesLayer;
+                        default -> combined ? smOutfitLayer : smArticlesLayer;
                     };
         });
         clothingTypeLayer.addDependent(clothingLogic);
@@ -358,11 +337,11 @@ public final class PokemonStyle extends Style {
         // TODO - add more
         hatLayer = ACLBuilder.of("hat", this,
                         new AssetChoiceTemplate("fitted-front",
-                                this::clothesReplace, hat1, hat2),
+                                this::clothesReplace, hatCS[0], hatCS[1]),
                         new AssetChoiceTemplate("fitted-back",
-                                this::clothesReplace, hat1, hat2),
+                                this::clothesReplace, hatCS[0], hatCS[1]),
                         new AssetChoiceTemplate("fedora",
-                                this::clothesReplace, hat1, hat2))
+                                this::clothesReplace, hatCS[0], hatCS[1]))
                 .setName("Headwear").setComposer(this::composeHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75)).build();
 
@@ -382,6 +361,55 @@ public final class PokemonStyle extends Style {
     @Override
     public String name() {
         return "Pokémon Trainer [Gen 4]";
+    }
+
+    public AssetChoiceLayer buildOutfit(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix + "-outfit",
+                new AssetChoiceTemplate("gi",
+                        this::clothesReplace, topCS[0], topCS[1]),
+                new AssetChoiceTemplate("farmer-1",
+                        this::clothesReplace, topCS[0], topCS[1], topCS[2]))
+                .setName("Outfit").build();
+    }
+
+    public AssetChoiceLayer buildTop(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix + "-top",
+                new AssetChoiceTemplate("vest",
+                        this::clothesReplace, topCS[0], topCS[1]),
+                new AssetChoiceTemplate("blouse",
+                        this::clothesReplace, topCS[0], topCS[1]))
+                .setName("Torso").build();
+    }
+
+    public AssetChoiceLayer buildBottom(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix + "-bottom",
+                new AssetChoiceTemplate("slacks",
+                        this::clothesReplace, botCS[0]),
+                new AssetChoiceTemplate("shorts",
+                        this::clothesReplace, botCS[0]))
+                .setName("Legs").build();
+    }
+
+    public AssetChoiceLayer buildShoes(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix + "-shoes",
+                new AssetChoiceTemplate("simple",
+                        this::clothesReplace, shoeCS[0]))
+                .setName("Shoes").build();
+    }
+
+    private ACLBuilder buildClothes(
+            final String id, final AssetChoiceTemplate... choices
+    ) {
+        return ACLBuilder.of(id, this, choices)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0));
     }
 
     private ColorSelection clothesSwatch(
