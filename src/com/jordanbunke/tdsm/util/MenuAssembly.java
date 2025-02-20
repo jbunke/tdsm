@@ -375,11 +375,19 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    public static Menu about() {
+    private static void addBackButton(final MenuBuilder mb, final Menu destination) {
+        final IconButton back = IconButton.init(ResourceCodes.BACK,
+                new Coord2D(BUFFER / 2, BUFFER / 2),
+                () -> ProgramState.to(destination)).build();
+        mb.add(back);
+    }
+
+    private static Menu about() {
         final MenuBuilder mb = new MenuBuilder();
 
+        addBackButton(mb, main());
+
         openingMenu(mb,
-                new Pair<>("< Main Menu", () -> ProgramState.to(main())),
                 new Pair<>("Changelog", () -> ProgramState.to(changelog())),
                 new Pair<>("Roadmap", () -> ProgramState.to(roadmap())),
                 new Pair<>("Links", () -> ProgramState.to(links())));
@@ -390,11 +398,11 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    public static Menu changelog() {
+    private static Menu changelog() {
         final MenuBuilder mb = new MenuBuilder();
 
-        openingMenu(mb,
-                new Pair<>("< About", () -> ProgramState.to(about())));
+        mb.add(new BackgroundElement());
+        addBackButton(mb, about());
 
         menuTitle(mb, "Changelog");
         menuBlurb(mb, ResourceCodes.CHANGELOG, Text.Orientation.LEFT);
@@ -402,11 +410,11 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    public static Menu roadmap() {
+    private static Menu roadmap() {
         final MenuBuilder mb = new MenuBuilder();
 
-        openingMenu(mb,
-                new Pair<>("< About", () -> ProgramState.to(about())));
+        mb.add(new BackgroundElement());
+        addBackButton(mb, about());
 
         menuTitle(mb, "Roadmap");
         menuBlurb(mb, ResourceCodes.ROADMAP, Text.Orientation.LEFT);
@@ -414,16 +422,17 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    public static Menu links() {
+    private static Menu links() {
         final MenuBuilder mb = new MenuBuilder();
 
+        addBackButton(mb, about());
+
         openingMenu(mb,
-                new Pair<>("< About", () -> ProgramState.to(about())),
-                new Pair<>("My store >",
+                new Pair<>("My store",
                         () -> visitSite("https://flinkerflitzer.itch.io")),
-                new Pair<>("Stipple Effect >",
+                new Pair<>("Stipple Effect",
                         () -> visitSite("https://stipple-effect.github.io")),
-                new Pair<>("Source code >",
+                new Pair<>("Source code",
                         () -> visitSite("https://github.com/jbunke/tdsm")));
 
         menuTitle(mb, "Links");
