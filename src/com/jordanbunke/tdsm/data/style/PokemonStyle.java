@@ -367,6 +367,11 @@ public final class PokemonStyle extends Style {
         return "Pokémon Trainer [Gen 4]";
     }
 
+    @Override
+    public boolean shipping() {
+        return true;
+    }
+
     public AssetChoiceLayer buildOutfit(
             final BodyType bt
     ) {

@@ -92,7 +92,12 @@ public final class MenuAssembly {
                 labelPosFor(TOP.pos()), "Sprite style:").build();
 
         final Style[] styles = EnumUtils.stream(Styles.class)
-                .map(Styles::get).toArray(Style[]::new);
+                .map(Styles::get).filter(s -> {
+                    if (Settings.isShowWIP())
+                        return true;
+
+                    return s.shipping();
+                }).toArray(Style[]::new);
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),
                 Arrays.stream(styles).map(Style::name)

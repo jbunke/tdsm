@@ -515,6 +515,7 @@ public abstract class Style {
     }
 
     public abstract String name();
+    public abstract boolean shipping();
 
     // SEQUENCING
     public void updateAnimationInclusion(

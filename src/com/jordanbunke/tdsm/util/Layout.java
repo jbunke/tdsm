@@ -12,10 +12,15 @@ public final class Layout {
             SPRITE_PREVIEW_SCALE_UP = 2, PREVIEW_RENDER_Y = 20;
 
     static {
-        final int TASKBAR_ALLOCATION_H = 100,
-                screenH = Toolkit.getDefaultToolkit().getScreenSize().height;
+        if (Settings.isCapture()) {
+            SCALE_UP = 2;
+        } else {
+            final int TASKBAR_ALLOCATION_H = 100,
+                    screenH = Toolkit.getDefaultToolkit()
+                            .getScreenSize().height;
 
-        SCALE_UP = (screenH - TASKBAR_ALLOCATION_H) / CANVAS_H;
+            SCALE_UP = (screenH - TASKBAR_ALLOCATION_H) / CANVAS_H;
+        }
     }
 
     public static int width() {

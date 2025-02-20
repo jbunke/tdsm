@@ -125,4 +125,9 @@ public final class VigilanteStyle extends Style {
     public String name() {
         return "Vigilante";
     }
+
+    @Override
+    public boolean shipping() {
+        return false;
+    }
 }
