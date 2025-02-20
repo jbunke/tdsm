@@ -30,6 +30,8 @@ public final class Sprite {
         return INSTANCE;
     }
 
+    public static void tap() {}
+
     private static void rebuildMenus() {
         Customization.get().rebuildMenu();
         Configuration.get().rebuildMenu();

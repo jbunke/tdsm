@@ -20,8 +20,8 @@ import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
-import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.Checkbox;
+import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
@@ -345,12 +345,32 @@ public final class MenuAssembly {
         return mb.build();
     }
 
+    private static void loadCustomization() {
+        ProgramState.to(loading());
+
+        final Thread backgroundThread = new Thread(() -> {
+            Sprite.tap();
+            ProgramState.set(ProgramState.CUSTOMIZATION, null);
+        }, "Loader");
+        backgroundThread.start();
+    }
+
+    private static Menu loading() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        // TODO
+
+        return mb.build();
+    }
+
     public static Menu main() {
         final MenuBuilder mb = new MenuBuilder();
 
         openingMenu(mb,
-                new Pair<>("Start editing", () ->
-                        ProgramState.set(ProgramState.CUSTOMIZATION, null)),
+                new Pair<>("Start editing",
+                        MenuAssembly::loadCustomization),
                 new Pair<>("About", () -> ProgramState.to(about())),
                 new Pair<>("Quit", TDSM::quitProgram));
 
