@@ -22,6 +22,8 @@ import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
 import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.*;
+import com.jordanbunke.tdsm.menu.anim.LoadingAnimation;
+import com.jordanbunke.tdsm.menu.anim.Logo;
 import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
@@ -360,7 +362,9 @@ public final class MenuAssembly {
 
         mb.add(new BackgroundElement());
 
-        // TODO
+        final LoadingAnimation loadingAnim = LoadingAnimation.make(
+                canvasAt(0.5, 0.5), Anchor.CENTRAL);
+        mb.add(loadingAnim);
 
         return mb.build();
     }
