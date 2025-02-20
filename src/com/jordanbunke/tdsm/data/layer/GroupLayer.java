@@ -3,17 +3,17 @@ package com.jordanbunke.tdsm.data.layer;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.util.Layout;
 import com.jordanbunke.tdsm.util.StringUtils;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-// TODO
-//  Maybe this should extend ManualRefreshLayer
 public final class GroupLayer extends CustomizationLayer {
     private final String name;
     private final CustomizationLayer[] members;
 
+    @SuppressWarnings("unused")
     public GroupLayer(final String id) {
         this(id, StringUtils.nameFromID(id));
     }
@@ -71,9 +71,10 @@ public final class GroupLayer extends CustomizationLayer {
 
     @Override
     public int calculateExpandedHeight() {
-        // TODO
-        return all().map(CustomizationLayer::calculateExpandedHeight)
-                .reduce(0, Integer::sum);
+        return all().map(l -> {
+            final int eh = l.calculateExpandedHeight();
+            return eh == 0 ? eh : eh + Layout.SUBHEADING_INC_Y;
+        }).reduce(0, Integer::sum);
     }
 
     public Stream<CustomizationLayer> all() {

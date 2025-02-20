@@ -127,7 +127,8 @@ public final class Layout {
             ASSET_BUFFER_X = 10, ASSET_BUFFER_Y = 12,
             INNER_ASSET_BUFFER_X = 20, INNER_ASSET_BUFFER_Y = 10,
             ASSETS_BASE_H = ASSET_BUFFER_Y + INNER_ASSET_BUFFER_Y + 23,
-            MAX_SELECTORS_WO_SCROLL = 5, POST_ASSETS_COL_SEL_BASE_H = 33;
+            MAX_SELECTORS_WO_SCROLL = 5, POST_ASSETS_COL_SEL_BASE_H = 33,
+            SUBHEADING_INC_Y = 13;
 
     public static double SEQUENCER_REL_H = 0.58;
 

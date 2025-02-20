@@ -293,6 +293,12 @@ public final class LayerElement extends MenuElementContainer {
                     .toArray(CustomizationLayer[]::new);
 
             for (CustomizationLayer child : layers) {
+                final StaticLabel subheading = StaticLabel
+                        .init(pos, child.name()).setMini().build();
+                cb.add(subheading);
+                ab.add(subheading);
+                pos = pos.displace(0, SUBHEADING_INC_Y);
+
                 addLayerContents(child, pos, cb, ab);
 
                 // TODO - inc should have negative offset

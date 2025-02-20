@@ -18,7 +18,6 @@ import static com.jordanbunke.tdsm.util.Layout.ScreenBox.LAYERS;
 
 public final class CustomizationElement extends MenuElementContainer {
     private static CustomizationElement INSTANCE;
-    private static final int SHIFT_ALL_LAYERS = -1;
 
     private final LayerElement[] layerElements;
     private VertScrollBox scrollBox;
@@ -49,6 +48,13 @@ public final class CustomizationElement extends MenuElementContainer {
 
         highest = Arrays.stream(layerElements).map(LayerElement::getY)
                 .reduce(Integer.MAX_VALUE, Math::min);
+
+        if (highest != getY()) {
+            final int resetDeltaY = getY() - highest;
+
+            for (LayerElement layerElement : layerElements)
+                layerElement.incrementY(resetDeltaY);
+        }
 
         refreshScrollBox();
     }
@@ -82,14 +88,6 @@ public final class CustomizationElement extends MenuElementContainer {
                         .reduce(0, Math::max) + BUFFER, offset);
 
         updateOffset();
-
-        // TODO - still broken
-        if (topIsUnreachable())
-            shiftFollowingElements(SHIFT_ALL_LAYERS, getY() - highest);
-    }
-
-    private boolean topIsUnreachable() {
-        return scrollBox.getSlider() == null ? highest < getY() : highest < getY() - offset;
     }
 
     @Override

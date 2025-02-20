@@ -7,7 +7,7 @@ import com.jordanbunke.tdsm.util.Graphics;
 import static com.jordanbunke.tdsm.util.Layout.*;
 
 public class BackgroundElement extends StaticMenuElement {
-    private static final int DIV = 2;
+    private static final int DIV = 5;
     private int tick;
 
     public BackgroundElement() {
