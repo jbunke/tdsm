@@ -295,7 +295,6 @@ public final class Graphics {
             final GameImage preview, final Button b,
             final int w, final int h
     ) {
-        // TODO - temp MVP implementation
         final GameImage button = new GameImage(w, h);
 
         button.fill(Colors.shadow());
