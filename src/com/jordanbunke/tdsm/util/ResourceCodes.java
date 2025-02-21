@@ -37,5 +37,6 @@ public final class ResourceCodes {
 
     // blurbs
     public static final String SPLASH = "splash", ABOUT = "about",
-            CHANGELOG = "changelog", ROADMAP = "roadmap", LINKS = "links";
+            CHANGELOG = "changelog", ROADMAP = "roadmap",
+            LICENSE = "LICENSE", SUMMARY = "license_summary", LINKS = "links";
 }

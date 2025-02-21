@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.utility.math.MathPlus;
+
 public class Settings {
     private enum BoolSettings {
         CAPTURE(false), SHOW_WIP(false);
@@ -12,6 +14,26 @@ public class Settings {
 
         public void set(final boolean value) {
             enabled = value;
+        }
+    }
+
+    private enum IntSettings {
+        SCALE(2, 1, 3);
+
+        private int value;
+        private final int min, max;
+
+        IntSettings(
+                final int defaultValue, final int min, final int max
+        ) {
+            value = defaultValue;
+
+            this.min = min;
+            this.max = max;
+        }
+
+        public void set(final int value) {
+            this.value = MathPlus.bounded(min, value, max);
         }
     }
 
@@ -29,5 +51,13 @@ public class Settings {
 
     public static void setShowWIP(final boolean value) {
         BoolSettings.SHOW_WIP.set(value);
+    }
+
+    public static int getScale() {
+        return IntSettings.SCALE.value;
+    }
+
+    public static void setScale(final int scale) {
+        IntSettings.SCALE.set(scale);
     }
 }

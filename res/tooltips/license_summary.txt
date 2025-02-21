@@ -1,0 +1,8 @@
+You may:
+
+- Use TDSM for personal or commercial projects
+- Clone the TDSM source code and privately modify it to suit your needs
+
+You may not:
+
+- Distribute or sell copies of TDSM (whether modified or not)

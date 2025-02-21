@@ -5,6 +5,7 @@ import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementGrouping;
+import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElement;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
@@ -29,6 +30,7 @@ import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
 import com.jordanbunke.tdsm.menu.layer.CustomizationElement;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
+import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
@@ -377,7 +379,7 @@ public final class MenuAssembly {
     public static Menu main() {
         final MenuBuilder mb = new MenuBuilder();
 
-        openingMenu(mb,
+        addMenuButtons(mb,
                 new Pair<>("Start editing",
                         MenuAssembly::loadCustomization),
                 new Pair<>("About", () -> ProgramState.to(about())),
@@ -412,62 +414,45 @@ public final class MenuAssembly {
     }
 
     private static Menu about() {
-        final MenuBuilder mb = new MenuBuilder();
-
-        addBackButton(mb, main());
-
-        openingMenu(mb,
+        return openingMenu("About", ResourceCodes.ABOUT,
+                Text.Orientation.CENTER, main(),
                 new Pair<>("Changelog", () -> ProgramState.to(changelog())),
                 new Pair<>("Roadmap", () -> ProgramState.to(roadmap())),
+                new Pair<>("License", () -> ProgramState.to(license())),
                 new Pair<>("Links", () -> ProgramState.to(links())));
-
-        menuTitle(mb, "About");
-        menuBlurb(mb, ResourceCodes.ABOUT, Text.Orientation.CENTER);
-
-        return mb.build();
     }
 
     private static Menu changelog() {
-        final MenuBuilder mb = new MenuBuilder();
-
-        mb.add(new BackgroundElement());
-        addBackButton(mb, about());
-
-        menuTitle(mb, "Changelog");
-        menuBlurb(mb, ResourceCodes.CHANGELOG, Text.Orientation.LEFT);
-
-        return mb.build();
+        return openingMenu("Changelog", ResourceCodes.CHANGELOG,
+                Text.Orientation.LEFT, about());
     }
 
     private static Menu roadmap() {
-        final MenuBuilder mb = new MenuBuilder();
+        return openingMenu("Roadmap", ResourceCodes.ROADMAP,
+                Text.Orientation.LEFT, about());
+    }
 
-        mb.add(new BackgroundElement());
-        addBackButton(mb, about());
+    private static Menu license() {
+        return openingMenu("License", ResourceCodes.LICENSE,
+                Text.Orientation.LEFT, about(),
+                new Pair<>("Summarize",
+                        () -> ProgramState.to(licenseSummarized())));
+    }
 
-        menuTitle(mb, "Roadmap");
-        menuBlurb(mb, ResourceCodes.ROADMAP, Text.Orientation.LEFT);
-
-        return mb.build();
+    private static Menu licenseSummarized() {
+        return openingMenu("Summary of License", ResourceCodes.SUMMARY,
+                Text.Orientation.LEFT, license());
     }
 
     private static Menu links() {
-        final MenuBuilder mb = new MenuBuilder();
-
-        addBackButton(mb, about());
-
-        openingMenu(mb,
+        return openingMenu("Links", ResourceCodes.LINKS,
+                Text.Orientation.CENTER, about(),
                 new Pair<>("My store",
                         () -> visitSite("https://flinkerflitzer.itch.io")),
                 new Pair<>("Stipple Effect",
                         () -> visitSite("https://stipple-effect.github.io")),
                 new Pair<>("Source code",
                         () -> visitSite("https://github.com/jbunke/tdsm")));
-
-        menuTitle(mb, "Links");
-        menuBlurb(mb, ResourceCodes.LINKS, Text.Orientation.CENTER);
-
-        return mb.build();
     }
 
     private static void visitSite(final String link) {
@@ -485,7 +470,7 @@ public final class MenuAssembly {
 
     private static void menuBlurb(
             final MenuBuilder mb, final String blurbCode,
-            final Text.Orientation orientation
+            final Text.Orientation orientation, final int height
     ) {
         final String[] blurb = ParserUtils.readTooltip(blurbCode).split("\n");
         final TextBuilder tb = ProgramFont.MINI.getBuilder(orientation);
@@ -499,11 +484,42 @@ public final class MenuAssembly {
 
         final StaticLabel about = new StaticLabel(
                 canvasAt(0.5, 0.2), Anchor.CENTRAL_TOP, tb.build().draw());
-        mb.add(about);
+        final VertScrollBox box = new VertScrollBox(
+                new Coord2D(SCREEN_BOX_EDGE, atY(0.2)),
+                new Bounds2D(CANVAS_W - (SCREEN_BOX_EDGE * 2), height),
+                new Scrollable[] { new Scrollable(about) },
+                about.getY() + about.getHeight(), 0);
+        mb.add(box);
     }
 
     @SafeVarargs
-    private static void openingMenu(
+    private static Menu openingMenu(
+            final String title, final String blurbCode,
+            final Text.Orientation orientation, final Menu back,
+            final Pair<String, Runnable>... buttons
+    ) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        final int height = atY(switch (buttons.length) {
+            case 3, 4 -> 0.4;
+            default -> 0.4 + (0.1 * (3 - buttons.length));
+        });
+
+        mb.add(new BackgroundElement());
+
+        if (back != null)
+            addBackButton(mb, back);
+
+        addMenuButtons(mb, buttons);
+        menuBlurb(mb, blurbCode, orientation, height);
+
+        menuTitle(mb, title);
+
+        return mb.build();
+    }
+
+    @SafeVarargs
+    private static void addMenuButtons(
             final MenuBuilder mb, final Pair<String, Runnable>... buttons
     ) {
         mb.add(new BackgroundElement());

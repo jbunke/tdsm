@@ -301,7 +301,6 @@ public final class LayerElement extends MenuElementContainer {
 
                 addLayerContents(child, pos, cb, ab);
 
-                // TODO - inc should have negative offset
                 final int inc = child.calculateExpandedHeight();
                 pos = pos.displace(0, inc);
             }
