@@ -16,18 +16,10 @@ in the cycle are the same.
 Please respect the terms of the license.
 Credit is appreciated but not required.
 
-Pixel art software should be pixel art itself!
-
-HGSS supremacy!
-
 Help develop TDSM by identifying bugs... or even by
 making art! Visit "jbunke/tdsm" on GitHub for more.
-
-@flinkerflitzer on most social media
 
 Locking some layers will produce better-looking
 randomized sprites more consistently. For example,
 consider locking the "Eye Height" layer at a value
 of "Average".
-
-=D

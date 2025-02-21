@@ -21,6 +21,7 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -231,20 +232,7 @@ public final class PokemonStyle extends Style {
                 .build();
         headLayer.addInfluencingSelection(skinTones);
 
-        final AssetChoiceLayer eyeLayer = ACLBuilder.of(
-                        "eyes", this,
-                        new AssetChoiceTemplate("determined", this::replace),
-                        new AssetChoiceTemplate("hooded", this::replace),
-                        new AssetChoiceTemplate("soft", this::replace),
-                        new AssetChoiceTemplate("vacant", this::replace),
-                        new AssetChoiceTemplate("narrow", this::replace),
-                        new AssetChoiceTemplate("menacing", this::replace),
-                        new AssetChoiceTemplate("feminine", this::replace),
-                        new AssetChoiceTemplate("tired", this::replace),
-                        new AssetChoiceTemplate("lashes", this::replace),
-                        new AssetChoiceTemplate("cranky", this::replace))
-                .setComposer(this::composeEyes)
-                .build();
+        final AssetChoiceLayer eyeLayer = buildEyes();
         eyeLayer.addInfluencingSelection(skinTones);
         eyeLayer.addInfluencingSelection(eyebrowColors);
         eyeLayer.addInfluencingSelection(irisColors);
@@ -355,7 +343,7 @@ public final class PokemonStyle extends Style {
         // TODO - still assembling
         layers.add(
                 skinLayer, bodyLayer, headLayer,
-                eyeLayer, eyeHeightLayer, eyeColorLayer,
+                eyeLayer, eyeColorLayer, eyeHeightLayer,
                 clothingTypeLayer, clothingLogic,
                 hairLayer, hairColorLayer,
                 hatLayer, hatMaskLayer
@@ -370,6 +358,18 @@ public final class PokemonStyle extends Style {
     @Override
     public boolean shipping() {
         return true;
+    }
+
+    public AssetChoiceLayer buildEyes() {
+        final String[] ids = new String[] {
+                "determined", "hooded", "soft", "vacant", "narrow",
+                "menacing", "feminine", "tired", "lashes", "cranky"
+        };
+
+        return ACLBuilder.of("eyes", this, Arrays.stream(ids)
+                .map(id -> new AssetChoiceTemplate(id, this::replace))
+                .toArray(AssetChoiceTemplate[]::new))
+                .setComposer(this::composeEyes).build();
     }
 
     public AssetChoiceLayer buildOutfit(
