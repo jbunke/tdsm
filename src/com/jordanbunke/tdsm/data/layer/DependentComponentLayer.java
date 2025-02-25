@@ -4,10 +4,10 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
+import com.jordanbunke.tdsm.util.StringUtils;
 
 import java.util.stream.IntStream;
 
-// TODO - influencing selections?
 public class DependentComponentLayer extends AbstractACLayer {
     public final int relativeIndex;
 
@@ -50,7 +50,7 @@ public class DependentComponentLayer extends AbstractACLayer {
 
     @Override
     public String name() {
-        return id;
+        return StringUtils.nameFromID(id);
     }
 
     @Override
