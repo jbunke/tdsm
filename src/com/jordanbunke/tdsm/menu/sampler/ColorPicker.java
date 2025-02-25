@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.menu.sampler;
 
+import com.jordanbunke.color_proc.ColorProc;
 import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.events.GameEvent;
 import com.jordanbunke.delta_time.events.GameMouseEvent;
@@ -9,7 +10,6 @@ import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
-import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Cursor;
 import com.jordanbunke.tdsm.util.Graphics;
 
@@ -100,9 +100,9 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
     }
 
     private boolean updateHSV() {
-        final double hue = Colors.rgbToHue(color),
-                sat = Colors.rgbToSat(color),
-                val = Colors.rgbToValue(color);
+        final double hue = ColorProc.rgbToHue(color),
+                sat = ColorProc.rgbToSat(color),
+                val = ColorProc.rgbToValue(color);
 
         return updateHSV(hue, sat, val, Freeze.NONE);
     }
@@ -226,7 +226,7 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
         final double[] hsv = getHypothetical(
                 localPos.x, localPos.y, onHueSlider);
 
-        this.color = Colors.fromHSV(hsv);
+        this.color = ColorProc.fromHSV(hsv);
 
         updateHSV(hsv[0], hsv[1], hsv[2], getFreeze());
         updateAsset();

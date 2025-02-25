@@ -16,7 +16,6 @@ public final class Constants {
     public static final double TICK_HZ = 60d, FPS = 60d;
 
     public static final int
-            RGB_SCALE = 0xff, HUE_SCALE = 360,
             FRAME_TICKS = 12, TOOLTIP_TICKS = 24,
             MIN_SPRITE_EXPORT_W = 1, MIN_SPRITE_EXPORT_H = 1,
             MAX_SPRITE_EXPORT_W = 128, MAX_SPRITE_EXPORT_H = 128,

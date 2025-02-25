@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import static com.jordanbunke.color_proc.ColorProc.fromHSV;
 import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.PREVIEW;
 import static com.jordanbunke.tdsm.util.Colors.*;

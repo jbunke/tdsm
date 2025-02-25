@@ -28,6 +28,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Colors.*;
+import static com.jordanbunke.color_proc.ColorProc.*;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;

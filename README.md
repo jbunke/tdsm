@@ -50,3 +50,4 @@ You can help me develop *TDSM* on both the programming and artistic fronts!
 
 * **[_Delta Time_](https://github.com/jbunke/delta-time):** Handles GUI, execution loop, underlying menu logic, and sprite assembly
 * **[_STIP Parser_](https://github.com/stipple-effect/stip-parser):** Writes the layer-wise separated sprite sheet to a *Stipple Effect* project file (`.stip`)
+* **[_Color Processing_](https://github.com/jbunke/color-processing):** Color processing utilities like converting RGB to HSV

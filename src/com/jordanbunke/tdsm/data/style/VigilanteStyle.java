@@ -20,7 +20,7 @@ import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import java.awt.*;
 import java.util.function.Function;
 
-import static com.jordanbunke.tdsm.util.Colors.*;
+import static com.jordanbunke.color_proc.ColorProc.*;
 
 public final class VigilanteStyle extends Style {
     private static final VigilanteStyle INSTANCE;
