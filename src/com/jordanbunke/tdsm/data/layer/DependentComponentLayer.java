@@ -1,41 +1,28 @@
 package com.jordanbunke.tdsm.data.layer;
 
-import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.sprite.SpriteSheet;
-import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
-import com.jordanbunke.delta_time.utility.math.Bounds2D;
-import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
+import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.stream.IntStream;
 
 // TODO - influencing selections?
-public class DependentComponentLayer extends CustomizationLayer {
+public class DependentComponentLayer extends AbstractACLayer {
     public final int relativeIndex;
-
-    public final Bounds2D dims;
-    public final Composer composer;
 
     private final AssetChoiceLayer ref;
 
     private final AssetChoice[] choices;
-    private int selection;
-
-    private SpriteSheet sheet;
 
     public DependentComponentLayer(
             final String id, final Style style,
             final AssetChoiceLayer ref, final int relativeIndex
     ) {
-        super(id);
+        super(id, ref.dims, ref.composer);
 
         this.relativeIndex = relativeIndex;
         this.ref = ref;
-
-        dims = ref.dims;
-        composer = ref.composer;
 
         final String[] choiceIDs = ref.getAssetChoiceIDs();
         final int choiceCount = choiceIDs.length;
@@ -46,9 +33,11 @@ public class DependentComponentLayer extends CustomizationLayer {
                 .map(act -> act.realize(style, this))
                 .toArray(AssetChoice[]::new);
 
-        selection = AssetChoiceLayer.NONE;
+        addInfluencingSelections(ref.getInfluencingSelections()
+                .toArray(ColorSelection[]::new));
 
         update();
+        ref.addSeparatedComponent(this);
     }
 
     public boolean isLower() {
@@ -59,38 +48,9 @@ public class DependentComponentLayer extends CustomizationLayer {
         return relativeIndex > 0;
     }
 
-    // TODO - to super
-    private void rebuildSpriteSheet() {
-        if (hasChoice())
-            sheet = new SpriteSheet(choices[selection].retrieve(),
-                    dims.width(), dims.height());
-        else
-            sheet = null;
-    }
-
-    // TODO - to super
-    @Override
-    public SpriteConstituent<String> compose() {
-        if (hasChoice())
-            return composer.build(sheet);
-
-        return s -> new GameImage(dims.width(), dims.height());
-    }
-
-    // TODO - to super
-    public boolean hasChoice() {
-        return selection != AssetChoiceLayer.NONE;
-    }
-
     @Override
     public String name() {
         return id;
-    }
-
-    // TODO - to super
-    @Override
-    public boolean isRendered() {
-        return true;
     }
 
     @Override
@@ -100,7 +60,7 @@ public class DependentComponentLayer extends CustomizationLayer {
 
     @Override
     public void update() {
-        selection = ref.getChoiceIndex();
+        selection = ref.selection;
 
         for (AssetChoice choice : choices)
             choice.redraw();
@@ -116,8 +76,13 @@ public class DependentComponentLayer extends CustomizationLayer {
         return 0;
     }
 
-    // TODO - to super
+    @Override
     AssetChoice getChoiceAt(final int index) {
         return choices[index];
+    }
+
+    @Override
+    public AssetChoice getChoice() {
+        return choices[selection];
     }
 }
