@@ -15,6 +15,7 @@ import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -32,10 +33,11 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     private final GameImage[] previews;
     public final NoAssetChoice noAssetChoice;
-    private final Coord2D previewCoord;
+    public final Coord2D previewCoord;
     private SpriteSheet sheet;
 
     private final List<AssetChoiceLayer> matchers;
+    private final List<DependentComponentLayer> separatedComponents;
 
     public AssetChoiceLayer(
             final String id, final String name,
@@ -61,6 +63,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         selection = noAssetChoice.valid ? NONE : 0;
 
         matchers = new ArrayList<>();
+        separatedComponents = new ArrayList<>();
 
         update();
     }
@@ -101,6 +104,17 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             matcher.attemptToMatchChoice(this);
     }
 
+    public void addSeparatedComponent(
+            final DependentComponentLayer separatedComponent
+    ) {
+        separatedComponents.add(separatedComponent);
+    }
+
+    private void updateSeparatedComponents() {
+        for (DependentComponentLayer separatedComponent : separatedComponents)
+            separatedComponent.update();
+    }
+
     private void match(final int selection) {
         choose(selection, false);
     }
@@ -111,6 +125,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     private void choose(final int selection, final boolean updateSprite) {
         select(selection);
+        updateSeparatedComponents();
         update();
 
         updateMatchers();
@@ -126,7 +141,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
         this.selection = selection;
 
-        rebuildSpriteSheet();
+        // rebuildSpriteSheet();
     }
 
     private void rebuildSpriteSheet() {
@@ -164,11 +179,39 @@ public final class AssetChoiceLayer extends CustomizationLayer {
     public void update() {
         for (int i = 0; i < choices.length; i++) {
             choices[i].redraw();
-            previews[i] = choices[i].retrieve().section(previewCoord.x,
-                    previewCoord.y, dims.width(), dims.height());
+            previews[i] = drawPreview(i);
         }
 
         rebuildSpriteSheet();
+    }
+
+    private GameImage drawPreview(final int index) {
+        final GameImage preview = new GameImage(dims.width(), dims.height());
+
+        // Lower
+        final DependentComponentLayer[] lower = separatedComponents.stream()
+                .filter(DependentComponentLayer::isLower)
+                .sorted(Comparator.comparingInt(dcl -> dcl.relativeIndex))
+                .toArray(DependentComponentLayer[]::new);
+
+        for (DependentComponentLayer dcl : lower)
+            preview.draw(dcl.getChoiceAt(index).retrieve(),
+                    -previewCoord.x, -previewCoord.y);
+
+        // This layer
+        preview.draw(choices[index].retrieve(), -previewCoord.x, -previewCoord.y);
+
+        // Higher
+        final DependentComponentLayer[] higher = separatedComponents.stream()
+                .filter(DependentComponentLayer::isHigher)
+                .sorted(Comparator.comparingInt(dcl -> dcl.relativeIndex))
+                .toArray(DependentComponentLayer[]::new);
+
+        for (DependentComponentLayer dcl : higher)
+            preview.draw(dcl.getChoiceAt(index).retrieve(),
+                    -previewCoord.x, -previewCoord.y);
+
+        return preview.submit();
     }
 
     @Override
@@ -194,6 +237,7 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         if (hasChoice())
             choices[selection].randomize();
 
+        updateSeparatedComponents();
         update();
 
         updateMatchers();
@@ -243,5 +287,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     public GameImage getPreview(final int index) {
         return previews[index];
+    }
+
+    public String[] getAssetChoiceIDs() {
+        return Arrays.stream(choices).map(ac -> ac.id).toArray(String[]::new);
     }
 }
