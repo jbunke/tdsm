@@ -4,7 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
+import com.jordanbunke.tdsm.data.layer.AbstractACLayer;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.MaskLayer;
 import com.jordanbunke.tdsm.data.style.Style;
@@ -43,7 +43,7 @@ public final class MLBuilder {
     }
 
     public MLBuilder trySetNaiveLogic(
-            final Style style, final AssetChoiceLayer projector
+            final Style style, final AbstractACLayer projector
     ) {
         logic = s -> {
             final GameImage ifFail = new GameImage(

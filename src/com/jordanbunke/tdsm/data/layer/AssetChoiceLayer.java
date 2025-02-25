@@ -1,8 +1,6 @@
 package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.sprite.SpriteSheet;
-import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.RNG;
@@ -15,27 +13,23 @@ import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
-public final class AssetChoiceLayer extends CustomizationLayer {
-    public static final int NONE = -1;
-
-    public final Bounds2D dims;
-    public final Composer composer;
+public final class AssetChoiceLayer extends AbstractACLayer {
     private final String name;
 
     private final AssetChoice[] choices;
-    private int selection;
 
     private final GameImage[] previews;
     public final NoAssetChoice noAssetChoice;
-    private final Coord2D previewCoord;
-    private SpriteSheet sheet;
+    public final Coord2D previewCoord;
 
     private final List<AssetChoiceLayer> matchers;
+    private final List<DependentComponentLayer> separatedComponents;
 
     public AssetChoiceLayer(
             final String id, final String name,
@@ -44,10 +38,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             final Composer composer,
             final NoAssetChoice noAssetChoice, final Coord2D previewCoord
     ) {
-        super(id);
+        super(id, dims, composer);
 
         this.name = name;
-        this.dims = dims;
         this.choices = Arrays.stream(choices)
                 .map(a -> a.realize(style, this))
                 .toArray(AssetChoice[]::new);
@@ -55,12 +48,12 @@ public final class AssetChoiceLayer extends CustomizationLayer {
         this.previews = new GameImage[this.choices.length];
         this.previewCoord = previewCoord;
 
-        this.composer = composer;
         this.noAssetChoice = noAssetChoice;
 
         selection = noAssetChoice.valid ? NONE : 0;
 
         matchers = new ArrayList<>();
+        separatedComponents = new ArrayList<>();
 
         update();
     }
@@ -101,6 +94,19 @@ public final class AssetChoiceLayer extends CustomizationLayer {
             matcher.attemptToMatchChoice(this);
     }
 
+    void addSeparatedComponent(
+            final DependentComponentLayer separatedComponent
+    ) {
+        separatedComponents.add(separatedComponent);
+
+        drawPreviews();
+    }
+
+    private void updateSeparatedComponents() {
+        for (DependentComponentLayer separatedComponent : separatedComponents)
+            separatedComponent.update();
+    }
+
     private void match(final int selection) {
         choose(selection, false);
     }
@@ -126,33 +132,12 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
         this.selection = selection;
 
-        rebuildSpriteSheet();
-    }
-
-    private void rebuildSpriteSheet() {
-        if (hasChoice())
-            sheet = new SpriteSheet(choices[selection].retrieve(),
-                    dims.width(), dims.height());
-        else
-            sheet = null;
-    }
-
-    @Override
-    public SpriteConstituent<String> compose() {
-        if (hasChoice())
-            return composer.build(sheet);
-
-        return s -> new GameImage(dims.width(), dims.height());
+        // rebuildSpriteSheet();
     }
 
     @Override
     public String name() {
         return name;
-    }
-
-    @Override
-    public boolean isRendered() {
-        return true;
     }
 
     @Override
@@ -162,13 +147,48 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     @Override
     public void update() {
+        updateSeparatedComponents();
+
         for (int i = 0; i < choices.length; i++) {
             choices[i].redraw();
-            previews[i] = choices[i].retrieve().section(previewCoord.x,
-                    previewCoord.y, dims.width(), dims.height());
+            previews[i] = drawPreview(i);
         }
 
         rebuildSpriteSheet();
+    }
+
+    private void drawPreviews() {
+        for (int i = 0; i < choices.length; i++)
+            previews[i] = drawPreview(i);
+    }
+
+    private GameImage drawPreview(final int index) {
+        final GameImage preview = new GameImage(dims.width(), dims.height());
+
+        // Lower
+        final DependentComponentLayer[] lower = separatedComponents.stream()
+                .filter(DependentComponentLayer::isLower)
+                .sorted(Comparator.comparingInt(dcl -> dcl.relativeIndex))
+                .toArray(DependentComponentLayer[]::new);
+
+        for (DependentComponentLayer dcl : lower)
+            preview.draw(dcl.getChoiceAt(index).retrieve(),
+                    -previewCoord.x, -previewCoord.y);
+
+        // This layer
+        preview.draw(choices[index].retrieve(), -previewCoord.x, -previewCoord.y);
+
+        // Higher
+        final DependentComponentLayer[] higher = separatedComponents.stream()
+                .filter(DependentComponentLayer::isHigher)
+                .sorted(Comparator.comparingInt(dcl -> dcl.relativeIndex))
+                .toArray(DependentComponentLayer[]::new);
+
+        for (DependentComponentLayer dcl : higher)
+            preview.draw(dcl.getChoiceAt(index).retrieve(),
+                    -previewCoord.x, -previewCoord.y);
+
+        return preview.submit();
     }
 
     @Override
@@ -220,14 +240,12 @@ public final class AssetChoiceLayer extends CustomizationLayer {
                                 ? HORZ_SCROLL_BAR_H + 4 : 0) : 0);
     }
 
-    public boolean hasChoice() {
-        return selection != NONE;
-    }
-
+    @Override
     public AssetChoice getChoice() {
         return choices[selection];
     }
 
+    @Override
     public AssetChoice getChoiceAt(final int index) {
         return choices[index];
     }
@@ -243,5 +261,9 @@ public final class AssetChoiceLayer extends CustomizationLayer {
 
     public GameImage getPreview(final int index) {
         return previews[index];
+    }
+
+    public String[] getAssetChoiceIDs() {
+        return Arrays.stream(choices).map(ac -> ac.id).toArray(String[]::new);
     }
 }

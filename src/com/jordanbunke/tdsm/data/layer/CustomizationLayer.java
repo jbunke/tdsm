@@ -30,12 +30,28 @@ public abstract class CustomizationLayer {
             dependent.update();
     }
 
+    public void addInfluencingSelections(
+            final ColorSelection... selections
+    ) {
+        for (ColorSelection influencingSelection : selections)
+            addInfluencingSelection(influencingSelection, false);
+
+        update();
+    }
+
     public void addInfluencingSelection(
             final ColorSelection influencingSelection
     ) {
+        addInfluencingSelection(influencingSelection, true);
+    }
+
+    private void addInfluencingSelection(
+            final ColorSelection influencingSelection, final boolean update
+    ) {
         influencingSelections.add(influencingSelection);
         influencingSelection.addDependent(this);
-        update();
+
+        if (update) update();
     }
 
     public List<ColorSelection> getInfluencingSelections() {

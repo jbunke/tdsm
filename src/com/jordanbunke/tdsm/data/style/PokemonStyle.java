@@ -321,8 +321,12 @@ public final class PokemonStyle extends Style {
                 .setComposer(this::composeHead).setName("Hairstyle")
                 .setNoAssetChoice(NoAssetChoice.equal())
                 .build();
-        hairLayer.addInfluencingSelection(skinTones);
-        hairLayer.addInfluencingSelection(hairColors);
+        hairLayer.addInfluencingSelections(skinTones, hairColors);
+
+        final DependentComponentLayer hairBack = new DependentComponentLayer(
+                "hair-back", this, hairLayer, -1),
+                hairFront = new DependentComponentLayer(
+                        "hair-front", this, hairLayer, 1);
 
         // TODO - add more
         hatLayer = ACLBuilder.of("hat", this,
@@ -342,11 +346,11 @@ public final class PokemonStyle extends Style {
 
         // TODO - still assembling
         layers.add(
-                skinLayer, bodyLayer, headLayer,
+                skinLayer, hairBack, bodyLayer, headLayer,
                 eyeLayer, eyeColorLayer, eyeHeightLayer,
                 clothingTypeLayer, clothingLogic,
                 hairLayer, hairColorLayer,
-                hatLayer, hatMaskLayer
+                hatLayer, hatMaskLayer, hairFront
         );
     }
 
