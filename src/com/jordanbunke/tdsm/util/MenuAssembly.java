@@ -54,6 +54,14 @@ public final class MenuAssembly {
         final MenuBuilder mb = new MenuBuilder();
 
         // PREVIEW
+        if (Sprite.get().getStyle().hasSettings()) {
+            IconButton settings = IconButton.init(
+                    ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
+                    () -> ProgramState.set(ProgramState.MENU, styleSettings())
+            ).setTooltipCode(ResourceCodes.STYLE_SETTINGS).build();
+            mb.add(settings);
+        }
+
         final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
                 PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
 
@@ -542,8 +550,33 @@ public final class MenuAssembly {
         }
     }
 
+    public static Menu styleSettings() {
+        final MenuBuilder mb = new MenuBuilder();
+        final Style style = Sprite.get().getStyle();
+
+        menuTitle(mb, "Style Settings");
+
+        style.buildSettingsMenu(mb);
+
+        final double REL_W = 0.6;
+        final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W);
+
+        final MenuElement close = StaticTextButton.make("Close",
+                new Coord2D(RIGHT, CANVAS_H - BUFFER),
+                Anchor.RIGHT_BOTTOM, () -> true,
+                () -> {
+            style.update();
+            ProgramState.set(ProgramState.CUSTOMIZATION, null);
+        });
+        mb.add(close);
+
+        return mb.build();
+    }
+
     public static Menu export() {
         final MenuBuilder mb = new MenuBuilder();
+
+        menuTitle(mb, "Export");
 
         final double REL_W = 0.6;
         final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W),

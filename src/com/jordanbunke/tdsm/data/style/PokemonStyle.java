@@ -1,6 +1,8 @@
 package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.color_proc.ColorAlgo;
+import com.jordanbunke.delta_time.menu.MenuBuilder;
+import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
@@ -23,8 +25,12 @@ import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
+import com.jordanbunke.tdsm.menu.Checkbox;
+import com.jordanbunke.tdsm.menu.Indicator;
+import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.ParserUtils;
+import com.jordanbunke.tdsm.util.ResourceCodes;
 
 import java.awt.*;
 import java.nio.file.Path;
@@ -36,6 +42,8 @@ import java.util.stream.IntStream;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
 import static com.jordanbunke.tdsm.util.Colors.black;
+import static com.jordanbunke.tdsm.util.Layout.atX;
+import static com.jordanbunke.tdsm.util.Layout.atY;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
@@ -175,7 +183,7 @@ public final class PokemonStyle extends Style {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
 
         // Initialize settings
-        quantize = true; // TODO - init to false
+        quantize = false;
 
         quantizeToPalette = buildPaletteQuantizer();
 
@@ -380,6 +388,31 @@ public final class PokemonStyle extends Style {
     @Override
     public boolean shipping() {
         return true;
+    }
+
+    @Override
+    public boolean hasSettings() {
+        return true;
+    }
+
+    @Override
+    public void buildSettingsMenu(final MenuBuilder mb) {
+        final double REL_W = 0.6;
+        final int LEFT = atX((1.0 - REL_W) / 2.0);
+
+        int y = atY(0.25);
+
+        final Checkbox quantizeCheckbox = new Checkbox(new Coord2D(LEFT, y),
+                Anchor.LEFT_TOP, () -> quantize, b -> quantize = b);
+        final StaticLabel quantizeLabel = StaticLabel.init(
+                quantizeCheckbox.followMiniLabel(),
+                        "Quantize to Pokemon Gen IV sprite palette")
+                .setMini().build();
+        final Indicator quantizeInfo = Indicator.make(
+                ResourceCodes.QUANTIZE_PKMN_G4,
+                quantizeLabel.follow(), Anchor.LEFT_TOP);
+
+        mb.addAll(quantizeCheckbox, quantizeLabel, quantizeInfo);
     }
 
     @Override

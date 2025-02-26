@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.data.style;
 
+import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
@@ -103,7 +104,7 @@ public final class VigilanteStyle extends Style {
         final int TARGET_H = 120, LENIENCY = 2, MIN_SAT = 10,
                 hue = hue(input), sat = sat(input), index;
 
-        if (input.equals(new Color(0x80, 0, 0xff)))
+        if (input.equals(new Color(0x8000ff)))
             index = 1;
         else if (Math.abs(TARGET_H - hue) <= LENIENCY && sat >= MIN_SAT)
             index = 0;
@@ -130,4 +131,12 @@ public final class VigilanteStyle extends Style {
     public boolean shipping() {
         return false;
     }
+
+    @Override
+    public boolean hasSettings() {
+        return false;
+    }
+
+    @Override
+    public void buildSettingsMenu(final MenuBuilder mb) {}
 }

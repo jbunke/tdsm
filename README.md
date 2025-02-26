@@ -46,6 +46,23 @@ You can help me develop *TDSM* on both the programming and artistic fronts!
 
 *TDSM* is distributed under an [end-user license agreement](./LICENSE) (EULA).
 
+### Dos and Don'ts
+
+**You may...**
+
+* Use *TDSM* for personal or commercial projects
+* Clone the *TDSM* source code and privately modify it to suit your needs
+
+**You may not...**
+
+* Distribute or sell copies of *TDSM* (whether modified or not)
+* Use *TDSM* for NFT or crypto-related projects
+* Use *TDSM* to train generative AI models
+
+> **Note:**
+> 
+> Some sprite styles featured in TDSM are based on established IPs. The use of sprites in such styles in commercial projects (fan games, etc.) may infringe upon the copyright of the associated copyright holder.
+
 ## Dependencies
 
 * **[_Delta Time_](https://github.com/jbunke/delta-time):** Handles GUI, execution loop, underlying menu logic, and sprite assembly

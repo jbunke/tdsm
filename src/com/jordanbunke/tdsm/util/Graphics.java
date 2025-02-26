@@ -88,7 +88,7 @@ public final class Graphics {
             }
             default -> {
                 bgColor = transparent();
-                textColor = darkAccent();
+                textColor = lightAccent();
             }
         }
 

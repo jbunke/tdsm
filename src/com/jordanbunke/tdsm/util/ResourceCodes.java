@@ -18,6 +18,7 @@ public final class ResourceCodes {
             LOCKED = "locked",
             UNLOCKED = "unlocked",
             BACK = "back",
+            SETTINGS = "settings",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
@@ -32,6 +33,8 @@ public final class ResourceCodes {
             FILE_NAME = "file_name",
             EXPORT_STIP = "export_stip",
             FIRST_SPRITE = "first_sprite",
+            STYLE_SETTINGS = "style_settings",
+            QUANTIZE_PKMN_G4 = "quantize_pkmn_g4",
             CHANGE_STYLE = "change_style",
             RANDOM_SPRITE = "random_sprite";
 

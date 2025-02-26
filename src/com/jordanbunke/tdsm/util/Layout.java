@@ -103,7 +103,7 @@ public final class Layout {
 
     public static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
             TOOLTIP_OFFSET_LEFT = -7, TOOLTIP_OFFSET_RIGHT = 5,
-            TEXT_IN_BUTTON_OFFSET_Y = -8,
+            TEXT_IN_BUTTON_OFFSET_Y = -9,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
             TEXT_BUTTON_RENDER_BUFFER_X = 4, DD_ICON_LEFT_NUDGE = 2,
             PX_PER_SCROLL = TEXT_BUTTON_H, DROPDOWN_EXTRA_W = 32,

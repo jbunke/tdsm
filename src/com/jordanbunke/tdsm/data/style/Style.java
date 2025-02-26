@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteMap;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
@@ -520,6 +521,8 @@ public abstract class Style {
 
     public abstract String name();
     public abstract boolean shipping();
+    public abstract boolean hasSettings();
+    public abstract void buildSettingsMenu(final MenuBuilder mb);
 
     // SEQUENCING
     public void updateAnimationInclusion(
