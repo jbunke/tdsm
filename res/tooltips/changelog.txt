@@ -1,11 +1,22 @@
 Header Format: [VERSION]  -  [YYYY]-[MM]-[DD]  -  [UPDATE TYPE]
 
+-----------------------------------------------------------
+
 v1.1.0 - 2025-03-?? - Content update
 
-TODO
+TODO:
+- Warn if >15 colors setting
+- Color reduction step between configure and export
+    (or between customize and configure)
+
+General:
++ Style-specific settings
++ Individual sprite styles determine the final sprite assembly step
 
 Sprite styles:
 - Pokemon Trainer [Gen 4]:
   - Hair is now separated onto three layers
+
+-----------------------------------------------------------
 
 v1.0.0  -  2025-02-21  -  Initial release

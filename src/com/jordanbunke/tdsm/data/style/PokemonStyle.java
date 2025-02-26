@@ -75,7 +75,7 @@ public final class PokemonStyle extends Style {
     final ColorSelection[] hatCS, topCS, botCS, shoeCS;
 
     // SETTINGS
-    private boolean quantize;
+    private boolean quantize, warnROMColLimit;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -184,6 +184,7 @@ public final class PokemonStyle extends Style {
 
         // Initialize settings
         quantize = false;
+        warnROMColLimit = false;
 
         quantizeToPalette = buildPaletteQuantizer();
 
@@ -398,7 +399,7 @@ public final class PokemonStyle extends Style {
     @Override
     public void buildSettingsMenu(final MenuBuilder mb) {
         final double REL_W = 0.6;
-        final int LEFT = atX((1.0 - REL_W) / 2.0);
+        final int LEFT = atX((1.0 - REL_W) / 2.0), INC_Y = atY(1 / 9.0);
 
         int y = atY(0.25);
 
@@ -412,7 +413,19 @@ public final class PokemonStyle extends Style {
                 ResourceCodes.QUANTIZE_PKMN_G4,
                 quantizeLabel.follow(), Anchor.LEFT_TOP);
 
-        mb.addAll(quantizeCheckbox, quantizeLabel, quantizeInfo);
+        y += (int) (INC_Y * 0.5);
+        final Checkbox romColLimitCheckbox = new Checkbox(new Coord2D(LEFT, y),
+                Anchor.LEFT_TOP, () -> warnROMColLimit, b -> warnROMColLimit = b);
+        final StaticLabel romColLimitLabel = StaticLabel.init(
+                        romColLimitCheckbox.followMiniLabel(),
+                        "Warn if sprite contains more than 15 colors")
+                .setMini().build();
+        final Indicator romColLimitInfo = Indicator.make(
+                ResourceCodes.WARN_ROM_15_COLS,
+                romColLimitLabel.follow(), Anchor.LEFT_TOP);
+
+        mb.addAll(quantizeCheckbox, quantizeLabel, quantizeInfo,
+                romColLimitCheckbox, romColLimitLabel, romColLimitInfo);
     }
 
     @Override
