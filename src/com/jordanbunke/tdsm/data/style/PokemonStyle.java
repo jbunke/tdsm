@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.data.style;
 
+import com.jordanbunke.color_proc.ColorAlgo;
+import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
 import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheetWithOffset;
@@ -8,6 +10,8 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.stip_parser.ParserSerializer;
+import com.jordanbunke.stip_parser.rep.IRPalette;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
@@ -19,16 +23,19 @@ import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
+import com.jordanbunke.tdsm.util.Constants;
+import com.jordanbunke.tdsm.util.ParserUtils;
 
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import static com.jordanbunke.tdsm.util.Colors.*;
 import static com.jordanbunke.color_proc.ColorProc.*;
+import static com.jordanbunke.tdsm.util.Colors.black;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
@@ -49,6 +56,8 @@ public final class PokemonStyle extends Style {
             SKIN_SWATCHES, HAIR_SWATCHES,
             IRIS_SWATCHES, CLOTHES_SWATCHES;
 
+    private final Function<Color, Color> quantizeToPalette;
+
     private AssetChoiceLayer bodyLayer, hatLayer;
     private final MathLayer eyeHeightLayer;
     private final ChoiceLayer clothingTypeLayer;
@@ -56,6 +65,9 @@ public final class PokemonStyle extends Style {
     final ColorSelection skinTones, hairColors, eyebrowColors,
             irisColors, ewColors, hairAcc;
     final ColorSelection[] hatCS, topCS, botCS, shoeCS;
+
+    // SETTINGS
+    private boolean quantize;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -161,6 +173,11 @@ public final class PokemonStyle extends Style {
 
     private PokemonStyle() {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
+
+        // Initialize settings
+        quantize = true; // TODO - init to false
+
+        quantizeToPalette = buildPaletteQuantizer();
 
         skinTones = new ColorSelection("Skin", true, SKIN_SWATCHES);
         hairColors = new ColorSelection("Hair", true, HAIR_SWATCHES);
@@ -365,7 +382,26 @@ public final class PokemonStyle extends Style {
         return true;
     }
 
-    public AssetChoiceLayer buildEyes() {
+    @Override
+    void considerations(final SpriteAssembler<String, String> assembler) {
+        if (quantize) {
+            final String quantizeID = "quantize-to-palette";
+
+            final List<String> layerIDs = assembler.getEnabledLayerIDs();
+
+            for (String layerID : layerIDs)
+                assembler.addFilter(quantizeID, quantizeToPalette, layerID);
+        }
+    }
+
+    private Function<Color, Color> buildPaletteQuantizer() {
+        final String content = ParserUtils.read(Constants.ASSET_ROOT_FOLDER
+                .resolve(Path.of(id, "palettes", "palette.stippal")));
+        final IRPalette rep = ParserSerializer.loadPalette(content);
+        return ColorAlgo.quantizeToPalette(rep.colors());
+    }
+
+    private AssetChoiceLayer buildEyes() {
         final String[] ids = new String[] {
                 "determined", "hooded", "soft", "vacant", "narrow",
                 "menacing", "feminine", "tired", "lashes", "cranky"
@@ -377,7 +413,7 @@ public final class PokemonStyle extends Style {
                 .setComposer(this::composeEyes).build();
     }
 
-    public AssetChoiceLayer buildOutfit(
+    private AssetChoiceLayer buildOutfit(
             final BodyType bt
     ) {
         return buildClothes(bt.prefix + "-outfit",
@@ -388,7 +424,7 @@ public final class PokemonStyle extends Style {
                 .setName("Outfit").build();
     }
 
-    public AssetChoiceLayer buildTop(
+    private AssetChoiceLayer buildTop(
             final BodyType bt
     ) {
         return buildClothes(bt.prefix + "-top",
@@ -399,7 +435,7 @@ public final class PokemonStyle extends Style {
                 .setName("Torso").build();
     }
 
-    public AssetChoiceLayer buildBottom(
+    private AssetChoiceLayer buildBottom(
             final BodyType bt
     ) {
         return buildClothes(bt.prefix + "-bottom",
@@ -410,7 +446,7 @@ public final class PokemonStyle extends Style {
                 .setName("Legs").build();
     }
 
-    public AssetChoiceLayer buildShoes(
+    private AssetChoiceLayer buildShoes(
             final BodyType bt
     ) {
         return buildClothes(bt.prefix + "-shoes",

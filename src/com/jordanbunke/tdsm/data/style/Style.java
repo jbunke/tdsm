@@ -450,8 +450,12 @@ public abstract class Style {
         for (CustomizationLayer layer : layers.get())
             addLayerToAssembler(assembler, layer);
 
+        considerations(assembler);
+
         map = new SpriteMap<>(assembler, states);
     }
+
+    void considerations(final SpriteAssembler<String, String> assembler) {}
 
     private void addLayerToAssembler(
             final SpriteAssembler<String, String> assembler,
