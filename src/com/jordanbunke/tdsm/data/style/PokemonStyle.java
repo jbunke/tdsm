@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.color_proc.ColorAlgo;
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
@@ -26,17 +27,18 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.menu.Checkbox;
+import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.menu.Indicator;
 import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.util.Constants;
+import com.jordanbunke.tdsm.util.MenuAssembly;
 import com.jordanbunke.tdsm.util.ParserUtils;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 
 import java.awt.*;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -426,6 +428,73 @@ public final class PokemonStyle extends Style {
 
         mb.addAll(quantizeCheckbox, quantizeLabel, quantizeInfo,
                 romColLimitCheckbox, romColLimitLabel, romColLimitInfo);
+    }
+
+    @Override
+    public boolean hasPreExportStep() {
+        if (!warnROMColLimit)
+            return false;
+
+        return spriteSheetColors().size() > Constants.GBA_SPRITE_COL_LIMIT;
+    }
+
+    private Map<Color, Integer> spriteSheetColors() {
+        final GameImage spriteSheet = renderSpriteSheet();
+        final int w = spriteSheet.getWidth(), h = spriteSheet.getHeight();
+        final Map<Color, Integer> cs = new HashMap<>();
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                final Color c = spriteSheet.getColorAt(x, y);
+
+                if (c.getAlpha() == 0) continue;
+
+                if (cs.containsKey(c))
+                    cs.put(c, cs.get(c) + 1);
+                else
+                    cs.put(c, 1);
+            }
+        }
+
+        return cs;
+    }
+
+    @Override
+    public void buildPreExportMenu(final MenuBuilder mb) {
+        final Map<Color, Integer> cs = spriteSheetColors();
+
+        MenuAssembly.preExportExplanation(mb, """
+                The sprite sheet has $cols non-transparent colors,
+                which is more that the $max-color maximum permitted
+                for Game Boy Advance sprites."""
+                .replace("$cols", String.valueOf(cs.size()))
+                .replace("$max", String.valueOf(Constants.GBA_SPRITE_COL_LIMIT)),
+                0.05, 0.15);
+
+        final double REL_W = 0.6;
+        final int LEFT = atX((1.0 - REL_W) / 2.0), INC_Y = atY(1 / 9.0);
+
+        int y = atY(0.15);
+
+        final StaticLabel replacementLabel = StaticLabel.init(
+                new Coord2D(LEFT, y), "Replacement").build();
+        final Indicator replacementInfo = Indicator.make(
+                ResourceCodes.REPLACEMENT, replacementLabel.followIcon17(),
+                Anchor.LEFT_TOP);
+        final IconButton replacementReset = IconButton.init(
+                ResourceCodes.RESET, replacementInfo.following(),
+                () -> {} /* TODO */).build();
+
+        mb.addAll(replacementLabel, replacementInfo, replacementReset);
+
+        // TODO
+    }
+
+    @Override
+    public GameImage preExportTransform(final GameImage input) {
+        // TODO - use a Map<Color, Color> replacement field
+
+        return input;
     }
 
     @Override

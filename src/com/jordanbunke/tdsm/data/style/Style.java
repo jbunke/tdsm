@@ -456,8 +456,6 @@ public abstract class Style {
         map = new SpriteMap<>(assembler, states);
     }
 
-    void considerations(final SpriteAssembler<String, String> assembler) {}
-
     private void addLayerToAssembler(
             final SpriteAssembler<String, String> assembler,
             final CustomizationLayer layer
@@ -519,10 +517,21 @@ public abstract class Style {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
+    void considerations(final SpriteAssembler<String, String> assembler) {}
+
+    public boolean hasPreExportStep() {
+        return false;
+    }
+
+    public GameImage preExportTransform(final GameImage input) {
+        return input;
+    }
+
     public abstract String name();
     public abstract boolean shipping();
     public abstract boolean hasSettings();
     public abstract void buildSettingsMenu(final MenuBuilder mb);
+    public abstract void buildPreExportMenu(final MenuBuilder mb);
 
     // SEQUENCING
     public void updateAnimationInclusion(
