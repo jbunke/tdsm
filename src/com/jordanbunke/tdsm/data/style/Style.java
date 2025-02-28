@@ -527,6 +527,8 @@ public abstract class Style {
         return input;
     }
 
+    public void resetPreExport() {}
+
     public abstract String name();
     public abstract boolean shipping();
     public abstract boolean hasSettings();

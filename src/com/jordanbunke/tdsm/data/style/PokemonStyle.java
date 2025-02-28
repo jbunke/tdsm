@@ -67,6 +67,7 @@ public final class PokemonStyle extends Style {
             IRIS_SWATCHES, CLOTHES_SWATCHES;
 
     private final Function<Color, Color> quantizeToPalette;
+    private final Map<Color, Color> replacementMap;
 
     private AssetChoiceLayer bodyLayer, hatLayer;
     private final MathLayer eyeHeightLayer;
@@ -189,6 +190,7 @@ public final class PokemonStyle extends Style {
         warnROMColLimit = false;
 
         quantizeToPalette = buildPaletteQuantizer();
+        replacementMap = new HashMap<>();
 
         skinTones = new ColorSelection("Skin", true, SKIN_SWATCHES);
         hairColors = new ColorSelection("Hair", true, HAIR_SWATCHES);
@@ -461,12 +463,16 @@ public final class PokemonStyle extends Style {
 
     @Override
     public void buildPreExportMenu(final MenuBuilder mb) {
+        resetPreExport();
         final Map<Color, Integer> cs = spriteSheetColors();
+        final Color[] sequence = cs.keySet().stream()
+                .sorted(Comparator.comparingInt(cs::get))
+                .toArray(Color[]::new);
 
         MenuAssembly.preExportExplanation(mb, """
-                The sprite sheet has $cols non-transparent colors,
-                which is more that the $max-color maximum permitted
-                for Game Boy Advance sprites."""
+                Warning: The sprite sheet has $cols non-transparent
+                colors, which is more that the $max-color maximum
+                permitted for Game Boy Advance sprites."""
                 .replace("$cols", String.valueOf(cs.size()))
                 .replace("$max", String.valueOf(Constants.GBA_SPRITE_COL_LIMIT)),
                 0.05, 0.15);
@@ -483,7 +489,7 @@ public final class PokemonStyle extends Style {
                 Anchor.LEFT_TOP);
         final IconButton replacementReset = IconButton.init(
                 ResourceCodes.RESET, replacementInfo.following(),
-                () -> {} /* TODO */).build();
+                this::resetPreExport).build();
 
         mb.addAll(replacementLabel, replacementInfo, replacementReset);
 
@@ -492,9 +498,16 @@ public final class PokemonStyle extends Style {
 
     @Override
     public GameImage preExportTransform(final GameImage input) {
-        // TODO - use a Map<Color, Color> replacement field
+        if (replacementMap.isEmpty())
+            return input;
 
-        return input;
+        return ColorAlgo.run(c -> replacementMap.getOrDefault(c, c), input);
+    }
+
+    @Override
+    public void resetPreExport() {
+        replacementMap.clear();
+        // TODO - selected color to null
     }
 
     @Override

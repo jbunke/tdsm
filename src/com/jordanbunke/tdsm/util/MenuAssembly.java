@@ -346,8 +346,14 @@ public final class MenuAssembly {
                 "Export... >", BOTTOM.at(1.0, 0.5)
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, style::exportsASprite,
-                () -> ProgramState.set(ProgramState.MENU,
-                        style.hasPreExportStep() ? preExport() : export()));
+                () -> {
+                    if (style.hasPreExportStep())
+                        ProgramState.set(ProgramState.MENU, preExport());
+                    else {
+                        style.resetPreExport();
+                        ProgramState.set(ProgramState.MENU, export());
+                    }
+                });
 
         mb.addAll(toCustomButton, toExportButton);
 
