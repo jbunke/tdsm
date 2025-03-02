@@ -214,7 +214,7 @@ public final class LayerElement extends MenuElementContainer {
                     : AssetChoiceButton.ofChoice(pos, bDims, acl, index);
             acbs.add(acb);
 
-            pos = pos.displace(bDims.width() + ASSET_BUFFER_X, 0);
+            pos = pos.displaceX(bDims.width() + ASSET_BUFFER_X);
         }
 
         final HorzScrollBox choicesBox = new HorzScrollBox(

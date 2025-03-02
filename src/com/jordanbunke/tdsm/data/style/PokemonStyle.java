@@ -4,6 +4,7 @@ import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
+import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
@@ -26,10 +27,10 @@ import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
+import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.Checkbox;
-import com.jordanbunke.tdsm.menu.IconButton;
-import com.jordanbunke.tdsm.menu.Indicator;
-import com.jordanbunke.tdsm.menu.StaticLabel;
+import com.jordanbunke.tdsm.menu.pre_export.ColorReplacementButton;
+import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.MenuAssembly;
 import com.jordanbunke.tdsm.util.ParserUtils;
@@ -44,8 +45,7 @@ import java.util.stream.IntStream;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
 import static com.jordanbunke.tdsm.util.Colors.black;
-import static com.jordanbunke.tdsm.util.Layout.atX;
-import static com.jordanbunke.tdsm.util.Layout.atY;
+import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class PokemonStyle extends Style {
     private static final PokemonStyle INSTANCE;
@@ -68,6 +68,7 @@ public final class PokemonStyle extends Style {
 
     private final Function<Color, Color> quantizeToPalette;
     private final Map<Color, Color> replacementMap;
+    private Color selectedToReplace;
 
     private AssetChoiceLayer bodyLayer, hatLayer;
     private final MathLayer eyeHeightLayer;
@@ -191,6 +192,7 @@ public final class PokemonStyle extends Style {
 
         quantizeToPalette = buildPaletteQuantizer();
         replacementMap = new HashMap<>();
+        selectedToReplace = null;
 
         skinTones = new ColorSelection("Skin", true, SKIN_SWATCHES);
         hairColors = new ColorSelection("Hair", true, HAIR_SWATCHES);
@@ -493,7 +495,51 @@ public final class PokemonStyle extends Style {
 
         mb.addAll(replacementLabel, replacementInfo, replacementReset);
 
+        y += INC_Y;
+
+        final String CC_PREFIX = "Color count: ";
+        final DynamicLabel colorCount = DynamicLabel.init(
+                new Coord2D(LEFT, y), () -> {
+                    final Set<Color> used = new HashSet<>();
+
+                    for (Color c : sequence)
+                        used.add(replacementMap.getOrDefault(c, c));
+
+                    return CC_PREFIX + used.size();
+                }, CC_PREFIX + "XXX"
+        ).setMini().build();
+        mb.add(colorCount);
+
+        y += (int) (INC_Y * 0.5);
+
+        Coord2D replPos = new Coord2D(LEFT, y);
+        final MenuBuilder crbs = new MenuBuilder();
+
+        for (Color entry : sequence) {
+            final ColorReplacementButton crb = new ColorReplacementButton(
+                    replPos, entry, colorTooltip(entry, cs.get(entry)),
+                    c -> replacementMap.getOrDefault(c, null),
+                    () -> selectedToReplace, c -> selectedToReplace = c);
+            crbs.add(crb);
+
+            replPos = replPos.displaceX(crb.getWidth() + ASSET_BUFFER_X);
+        }
+
+        final HorzScrollBox choicesBox = new HorzScrollBox(
+                new Coord2D(LEFT, y), new Bounds2D(atX(REL_W),
+                COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
+                Arrays.stream(crbs.build().getMenuElements())
+                        .map(Scrollable::new).toArray(Scrollable[]::new),
+                replPos.x - ASSET_BUFFER_X, 0);
+
+        mb.add(choicesBox);
+
         // TODO
+    }
+
+    private String colorTooltip(final Color c, final int indicence) {
+        return "#" + ParserSerializer.serializeColor(c, true) +
+                "\n" + indicence + " occurrences";
     }
 
     @Override
@@ -507,7 +553,7 @@ public final class PokemonStyle extends Style {
     @Override
     public void resetPreExport() {
         replacementMap.clear();
-        // TODO - selected color to null
+        selectedToReplace = null;
     }
 
     @Override
