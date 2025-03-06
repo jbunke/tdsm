@@ -30,6 +30,7 @@ import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.pre_export.ColorReplacementButton;
+import com.jordanbunke.tdsm.menu.pre_export.ReplacementOptions;
 import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.MenuAssembly;
@@ -531,8 +532,17 @@ public final class PokemonStyle extends Style {
                 Arrays.stream(crbs.build().getMenuElements())
                         .map(Scrollable::new).toArray(Scrollable[]::new),
                 replPos.x - ASSET_BUFFER_X, 0);
-
         mb.add(choicesBox);
+
+        y += (int) (INC_Y * 1.5);
+
+        // TODO - dynamic label
+
+        final ReplacementOptions ro = new ReplacementOptions(
+                new Coord2D(LEFT, y), new Bounds2D(atX(REL_W),
+                COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
+                replacementMap, cs.keySet(), () -> selectedToReplace);
+        mb.add(ro);
 
         // TODO
     }

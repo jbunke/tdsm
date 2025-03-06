@@ -37,6 +37,7 @@ public final class ResourceCodes {
             QUANTIZE_PKMN_G4 = "quantize_pkmn_g4",
             WARN_ROM_15_COLS = "warn_rom_15_cols",
             REPLACEMENT = "replacement",
+            NO_REPL = "no_repl",
             CHANGE_STYLE = "change_style",
             RANDOM_SPRITE = "random_sprite";
 
