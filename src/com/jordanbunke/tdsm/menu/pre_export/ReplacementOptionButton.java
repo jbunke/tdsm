@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.menu.pre_export;
 
+import com.jordanbunke.color_proc.ColorFormat;
 import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
@@ -60,7 +61,11 @@ public final class ReplacementOptionButton extends MenuButtonStub
             final Coord2D position, final Color selectedColor,
             final Color color, final Map<Color, Color> map
     ) {
-        final String tooltip = "#" + ParserSerializer.serializeColor(color, true);
+        final String tooltip = "#" + ParserSerializer
+                .serializeColor(color, true) + "\n" +
+                ColorFormat.percentageSimilarity(
+                        selectedColor, color, false, 2) + " similar";
+
 
         return new ReplacementOptionButton(
                 position, selectedColor, color, map, tooltip,

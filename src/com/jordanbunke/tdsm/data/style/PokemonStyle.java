@@ -534,9 +534,23 @@ public final class PokemonStyle extends Style {
                 replPos.x - ASSET_BUFFER_X, 0);
         mb.add(choicesBox);
 
-        y += (int) (INC_Y * 1.5);
+        y += INC_Y;
 
-        // TODO - dynamic label
+        final String REPL_PREFIX = "Replace ", REPL_SUFFIX = " with:";
+        final DynamicLabel replaceWithLabel = DynamicLabel.init(
+                new Coord2D(LEFT, y), () -> {
+                    if (selectedToReplace == null)
+                        return "";
+
+                    final String hexCode = "#" + ParserSerializer
+                            .serializeColor(selectedToReplace, true);
+
+                    return REPL_PREFIX + hexCode + REPL_SUFFIX;
+                }, REPL_PREFIX + "#" + "X".repeat(7) + REPL_SUFFIX
+        ).setMini().build();
+        mb.add(replaceWithLabel);
+
+        y += (int) (INC_Y * 0.5);
 
         final ReplacementOptions ro = new ReplacementOptions(
                 new Coord2D(LEFT, y), new Bounds2D(atX(REL_W),

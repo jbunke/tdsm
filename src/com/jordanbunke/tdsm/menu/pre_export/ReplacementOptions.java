@@ -51,7 +51,7 @@ public final class ReplacementOptions extends MenuElementContainer {
         options.remove(selectedColor);
 
         return options.stream().sorted(
-                Comparator.comparingDouble(c -> ColorAlgo.diff(c, selectedColor))
+                Comparator.comparingDouble(c -> ColorAlgo.diffRGB(c, selectedColor))
                 ).toArray(Color[]::new);
     }
 
