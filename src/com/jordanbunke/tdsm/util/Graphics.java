@@ -292,6 +292,24 @@ public final class Graphics {
         return drawSwatchButton(color, b);
     }
 
+    public static GameImage drawColReplButton(
+            final Color color, final Color replacement, final Button b
+    ) {
+        final int OFFSET_X = COL_REPL_OFF_DIM;
+        final GameImage button = new GameImage(
+                OFFSET_X + COL_SEL_BUTTON_DIM, COL_SEL_BUTTON_DIM);
+
+        if (replacement != null) {
+            final GameImage repl = drawColSelButton(replacement,
+                    Button.sim(false, b.isHighlighted()));
+            button.draw(repl, OFFSET_X, 0);
+        }
+
+        button.draw(drawColSelButton(color, b));
+
+        return button.submit();
+    }
+
     public static GameImage drawAssetChoiceButton(
             final GameImage preview, final Button b,
             final int w, final int h

@@ -87,12 +87,8 @@ public abstract class Style {
                 w = spriteW * spritesX, h = spriteH * spritesY;
         final GameImage spriteSheet = new GameImage(w, h);
 
-        final Directions.Dir[] dirs = directionOrder.stream()
-                .filter(directionInclusion::contains)
-                .toArray(Directions.Dir[]::new);
-        final Animation[] anims = animationOrder.stream()
-                .filter(animationInclusion::contains)
-                .toArray(Animation[]::new);
+        final Directions.Dir[] dirs = exportDirections();
+        final Animation[] anims = exportAnimations();
 
         for (int d = 0; d < dirs.length; d++) {
             final Directions.Dir dir = dirs[d];
@@ -123,6 +119,18 @@ public abstract class Style {
         return new Bounds2D(w, h);
     }
 
+    public Directions.Dir[] exportDirections() {
+        return directionOrder.stream()
+                .filter(directionInclusion::contains)
+                .toArray(Directions.Dir[]::new);
+    }
+
+    public Animation[] exportAnimations() {
+        return animationOrder.stream()
+                .filter(animationInclusion::contains)
+                .toArray(Animation[]::new);
+    }
+
     public String buildJSON() {
         final JSONBuilder jb = new JSONBuilder();
 
@@ -138,12 +146,8 @@ public abstract class Style {
 
         final List<JSONObject> frames = new ArrayList<>();
 
-        final Directions.Dir[] dirs = directionOrder.stream()
-                .filter(directionInclusion::contains)
-                .toArray(Directions.Dir[]::new);
-        final Animation[] anims = animationOrder.stream()
-                .filter(animationInclusion::contains)
-                .toArray(Animation[]::new);
+        final Directions.Dir[] dirs = exportDirections();
+        final Animation[] anims = exportAnimations();
 
         jb.add(new JSONPair("data", new JSONObject(
                 new JSONPair("directions", new JSONArray<>(
@@ -456,8 +460,6 @@ public abstract class Style {
         map = new SpriteMap<>(assembler, states);
     }
 
-    void considerations(final SpriteAssembler<String, String> assembler) {}
-
     private void addLayerToAssembler(
             final SpriteAssembler<String, String> assembler,
             final CustomizationLayer layer
@@ -519,10 +521,23 @@ public abstract class Style {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
+    void considerations(final SpriteAssembler<String, String> assembler) {}
+
+    public boolean hasPreExportStep() {
+        return false;
+    }
+
+    public GameImage preExportTransform(final GameImage input) {
+        return input;
+    }
+
+    public void resetPreExport() {}
+
     public abstract String name();
     public abstract boolean shipping();
     public abstract boolean hasSettings();
     public abstract void buildSettingsMenu(final MenuBuilder mb);
+    public abstract void buildPreExportMenu(final MenuBuilder mb);
 
     // SEQUENCING
     public void updateAnimationInclusion(

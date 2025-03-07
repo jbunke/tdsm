@@ -102,8 +102,8 @@ public final class Export {
 
     private void exportStip() {
         final Path stipPath = getPath(FileType.STIP);
-        final List<Pair<String, GameImage>> stipRep = Sprite.get()
-                .getStyle().renderStipExport();
+        final List<Pair<String, GameImage>> stipRep =
+                Sprite.get().renderStipExport();
 
         ParserSerializer.save(
                 buildStippleEffectRepresentation(stipRep), stipPath);

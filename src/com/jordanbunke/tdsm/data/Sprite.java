@@ -1,12 +1,15 @@
 package com.jordanbunke.tdsm.data;
 
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.screens.Configuration;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.visual_misc.Playback;
+
+import java.util.List;
 
 public final class Sprite {
     private static Sprite INSTANCE;
@@ -44,7 +47,25 @@ public final class Sprite {
     }
 
     public GameImage renderSpriteSheet() {
-        return style.renderSpriteSheet();
+        final GameImage spriteSheet = style.renderSpriteSheet();
+
+        return style.hasPreExportStep()
+                ? style.preExportTransform(spriteSheet) : spriteSheet;
+    }
+
+    public List<Pair<String, GameImage>> renderStipExport() {
+        final List<Pair<String, GameImage>> stipRep = style.renderStipExport();
+
+        if (style.hasPreExportStep()) {
+            for (int i = 0; i < stipRep.size(); i++) {
+                final Pair<String, GameImage> layer = stipRep.get(i);
+
+                stipRep.set(i, new Pair<>(layer.a(),
+                        style.preExportTransform(layer.b())));
+            }
+        }
+
+        return stipRep;
     }
 
     public GameImage renderSprite() {

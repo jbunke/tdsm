@@ -21,5 +21,6 @@ public final class Constants {
             MAX_SPRITE_EXPORT_W = 128, MAX_SPRITE_EXPORT_H = 128,
             DEF_FRAMES_PER_DIM = 8, DEF_TEXTBOX_CHAR_MAX = 12,
             FILE_NAME_MAX_LENGTH = 40, LOGO_FRAMES = 16,
-            LOADING_FRAMES = 16, ANIM_TICKS = 6;
+            LOADING_FRAMES = 16, ANIM_TICKS = 6,
+            GBA_SPRITE_COL_LIMIT = 15;
 }

@@ -139,4 +139,7 @@ public final class VigilanteStyle extends Style {
 
     @Override
     public void buildSettingsMenu(final MenuBuilder mb) {}
+
+    @Override
+    public void buildPreExportMenu(final MenuBuilder mb) {}
 }
