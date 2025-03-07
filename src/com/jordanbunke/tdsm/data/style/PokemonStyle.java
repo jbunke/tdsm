@@ -31,6 +31,7 @@ import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.Checkbox;
 import com.jordanbunke.tdsm.menu.pre_export.ColorReplacementButton;
 import com.jordanbunke.tdsm.menu.pre_export.ReplacementOptions;
+import com.jordanbunke.tdsm.menu.pre_export.ReplacementPreview;
 import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.MenuAssembly;
@@ -498,7 +499,8 @@ public final class PokemonStyle extends Style {
 
         y += INC_Y;
 
-        final String CC_PREFIX = "Color count: ";
+        final String CC_PREFIX = "Updated color count: ",
+                CC_SUFFIX = " (valid for GBA)";
         final DynamicLabel colorCount = DynamicLabel.init(
                 new Coord2D(LEFT, y), () -> {
                     final Set<Color> used = new HashSet<>();
@@ -506,8 +508,12 @@ public final class PokemonStyle extends Style {
                     for (Color c : sequence)
                         used.add(replacementMap.getOrDefault(c, c));
 
-                    return CC_PREFIX + used.size();
-                }, CC_PREFIX + "XXX"
+                    final int size = used.size();
+
+                    return CC_PREFIX + size +
+                            (size <= Constants.GBA_SPRITE_COL_LIMIT
+                                    ? CC_SUFFIX : "");
+                }, CC_PREFIX + "XXX" + CC_SUFFIX
         ).setMini().build();
         mb.add(colorCount);
 
@@ -557,6 +563,12 @@ public final class PokemonStyle extends Style {
                 COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
                 replacementMap, cs.keySet(), () -> selectedToReplace);
         mb.add(ro);
+
+        y += INC_Y;
+
+        final ReplacementPreview rp = new ReplacementPreview(
+                new Coord2D(atX(0.5), y), Anchor.CENTRAL_TOP, this);
+        mb.add(rp);
 
         // TODO
     }
