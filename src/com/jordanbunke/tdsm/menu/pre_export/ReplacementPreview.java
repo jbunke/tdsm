@@ -7,6 +7,7 @@ import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
+import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.menu.Dropdown;
@@ -14,6 +15,8 @@ import com.jordanbunke.tdsm.menu.IconButton;
 import com.jordanbunke.tdsm.util.Graphics;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 import com.jordanbunke.tdsm.visual_misc.Playback;
+
+import java.util.Arrays;
 
 public final class ReplacementPreview extends MenuElement {
     private static final Bounds2D DIMS = new Bounds2D(
@@ -33,7 +36,10 @@ public final class ReplacementPreview extends MenuElement {
         this.style = style;
 
         dir = style.exportDirections()[0];
-        Playback.get().setAnimation(style.exportAnimations()[0]);
+
+        final Animation[] anims = style.exportAnimations();
+
+        Playback.get().setAnimation(anims[0]);
 
         final Coord2D middle = getRenderPosition()
                 .displace(getWidth() / 2, getHeight() / 2);
@@ -45,7 +51,15 @@ public final class ReplacementPreview extends MenuElement {
                 middle.displaceX(divergence), () -> turn(true))
                 .setAnchor(Anchor.CENTRAL).build();
 
-        animDropdown = null;
+        animDropdown = Dropdown.create(
+                middle.displaceX(divergence * 2), Anchor.LEFT_CENTRAL,
+                Arrays.stream(anims)
+                        .map(Animation::name).toArray(String[]::new),
+                Arrays.stream(anims)
+                        .map(a -> (Runnable) () -> Playback.get().setAnimation(a))
+                        .toArray(Runnable[]::new),
+                () -> Arrays.stream(anims).toList()
+                        .indexOf(Playback.get().getAnimation()));
     }
 
     private void turn(final boolean ccw) {
@@ -69,6 +83,7 @@ public final class ReplacementPreview extends MenuElement {
     public void process(final InputEventLogger eventLogger) {
         cwButton.process(eventLogger);
         ccwButton.process(eventLogger);
+        animDropdown.process(eventLogger);
     }
 
     @Override
@@ -77,6 +92,7 @@ public final class ReplacementPreview extends MenuElement {
 
         cwButton.update(deltaTime);
         ccwButton.update(deltaTime);
+        animDropdown.update(deltaTime);
     }
 
     @Override
@@ -85,6 +101,7 @@ public final class ReplacementPreview extends MenuElement {
 
         cwButton.render(canvas);
         ccwButton.render(canvas);
+        animDropdown.render(canvas);
     }
 
     private GameImage drawPreview() {

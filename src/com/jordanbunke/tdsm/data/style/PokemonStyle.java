@@ -484,7 +484,11 @@ public final class PokemonStyle extends Style {
         final double REL_W = 0.6;
         final int LEFT = atX((1.0 - REL_W) / 2.0), INC_Y = atY(1 / 9.0);
 
-        int y = atY(0.15);
+        final ReplacementPreview rp = new ReplacementPreview(
+                new Coord2D(atX(0.35), atY(0.15)), Anchor.CENTRAL_TOP, this);
+        mb.add(rp);
+
+        int y = atY(0.43);
 
         final StaticLabel replacementLabel = StaticLabel.init(
                 new Coord2D(LEFT, y), "Replacement").build();
@@ -563,14 +567,6 @@ public final class PokemonStyle extends Style {
                 COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
                 replacementMap, cs.keySet(), () -> selectedToReplace);
         mb.add(ro);
-
-        y += INC_Y;
-
-        final ReplacementPreview rp = new ReplacementPreview(
-                new Coord2D(atX(0.5), y), Anchor.CENTRAL_TOP, this);
-        mb.add(rp);
-
-        // TODO
     }
 
     private String colorTooltip(final Color c, final int indicence) {
