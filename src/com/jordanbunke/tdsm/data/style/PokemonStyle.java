@@ -15,7 +15,6 @@ import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.stip_parser.ParserSerializer;
-import com.jordanbunke.stip_parser.rep.IRPalette;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
@@ -27,21 +26,19 @@ import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
-import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.Checkbox;
+import com.jordanbunke.tdsm.menu.*;
 import com.jordanbunke.tdsm.menu.pre_export.ColorReplacementButton;
 import com.jordanbunke.tdsm.menu.pre_export.ReplacementOptions;
 import com.jordanbunke.tdsm.menu.pre_export.ReplacementPreview;
 import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.MenuAssembly;
-import com.jordanbunke.tdsm.util.ParserUtils;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 
 import java.awt.*;
-import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -415,10 +412,10 @@ public final class PokemonStyle extends Style {
                 Anchor.LEFT_TOP, () -> quantize, b -> quantize = b);
         final StaticLabel quantizeLabel = StaticLabel.init(
                 quantizeCheckbox.followMiniLabel(),
-                        "Quantize to Pokemon Gen IV sprite palette")
+                        "Quantize to Game Boy Advance colors")
                 .setMini().build();
         final Indicator quantizeInfo = Indicator.make(
-                ResourceCodes.QUANTIZE_PKMN_G4,
+                ResourceCodes.QUANTIZE_GBA,
                 quantizeLabel.follow(), Anchor.LEFT_TOP);
 
         y += (int) (INC_Y * 0.5);
@@ -601,10 +598,24 @@ public final class PokemonStyle extends Style {
     }
 
     private Function<Color, Color> buildPaletteQuantizer() {
-        final String content = ParserUtils.read(Constants.ASSET_ROOT_FOLDER
-                .resolve(Path.of(id, "palettes", "palette.stippal")));
-        final IRPalette rep = ParserSerializer.loadPalette(content);
-        return ColorAlgo.quantizeToPalette(rep.colors());
+        final Integer[] FIVE_BITS_AS_EIGHT_BITS = new Integer[] {
+                0, 8, 16, 25, 33, 41, 49, 58, 66, 74,
+                82, 90, 99, 107, 115, 123, 132, 140,
+                148, 156, 165, 173, 181, 189, 197,
+                206, 214, 222, 230, 239, 247, 255
+        };
+
+        final Function<Integer, Integer> quantizeChannel =
+                i -> MathPlus.findBest(i, 0, n -> n,
+                        (i1, i2) -> Math.abs(i1 - i) < Math.abs(i2 - i),
+                        FIVE_BITS_AS_EIGHT_BITS);
+        return c -> {
+            if (c.getAlpha() == 0) return c;
+
+            return new Color(quantizeChannel.apply(c.getRed()),
+                    quantizeChannel.apply(c.getGreen()),
+                    quantizeChannel.apply(c.getBlue()));
+        };
     }
 
     private AssetChoiceLayer buildEyes() {

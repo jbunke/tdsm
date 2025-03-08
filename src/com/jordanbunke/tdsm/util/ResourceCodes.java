@@ -34,7 +34,7 @@ public final class ResourceCodes {
             EXPORT_STIP = "export_stip",
             FIRST_SPRITE = "first_sprite",
             STYLE_SETTINGS = "style_settings",
-            QUANTIZE_PKMN_G4 = "quantize_pkmn_g4",
+            QUANTIZE_GBA = "quantize_gba",
             WARN_ROM_15_COLS = "warn_rom_15_cols",
             REPLACEMENT = "replacement",
             NO_REPL = "no_repl",

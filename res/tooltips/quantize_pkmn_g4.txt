@@ -1,4 +1,0 @@
-"Snaps" each color in the sprite to the
-nearest color known to be used in sprites
-in the fourth generation of Pokemon games,
-calculated by difference in RGB values
