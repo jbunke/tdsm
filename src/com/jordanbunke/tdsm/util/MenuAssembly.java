@@ -29,6 +29,7 @@ import com.jordanbunke.tdsm.menu.config.AnimationSequencer;
 import com.jordanbunke.tdsm.menu.config.DirectionSequencer;
 import com.jordanbunke.tdsm.menu.config.PaddingTextbox;
 import com.jordanbunke.tdsm.menu.layer.CustomizationElement;
+import com.jordanbunke.tdsm.menu.pre_export.StyleOption;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
 import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
@@ -593,10 +594,40 @@ public final class MenuAssembly {
 
         menuTitle(mb, "Style Settings");
 
-        style.buildSettingsMenu(mb);
-
         final double REL_W = 0.6;
-        final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W);
+        final int LEFT = atX((1.0 - REL_W) / 2.0),
+                RIGHT = LEFT + atX(REL_W), INC_Y = atY(1 / 9.0);
+
+        int y = atY(0.2);
+
+        final StyleOption[] options = style.getOptionSettings();
+
+        if (options.length > 0) {
+            final StaticLabel optionsHeader = StaticLabel.init(
+                    new Coord2D(LEFT, y), "Options").build();
+            mb.add(optionsHeader);
+
+            y += INC_Y;
+
+            for (StyleOption option : options) {
+                final Checkbox checkbox = new Checkbox(new Coord2D(LEFT, y),
+                        Anchor.LEFT_TOP, option.checker(), option.setter());
+                final StaticLabel label = StaticLabel.init(
+                                checkbox.followMiniLabel(),
+                                option.description()).setMini().build();
+                mb.addAll(checkbox, label);
+
+                if (option.infoCode() != null) {
+                    final Indicator info = Indicator.make(option.infoCode(),
+                            label.follow(), Anchor.LEFT_TOP);
+                    mb.add(info);
+                }
+
+                y += (int) (INC_Y * 0.5);
+            }
+        }
+
+        style.buildSettingsMenu(mb, y);
 
         final MenuElement close = StaticTextButton.make("Close",
                 new Coord2D(RIGHT, CANVAS_H - BUFFER),

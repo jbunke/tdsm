@@ -26,11 +26,14 @@ import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
-import com.jordanbunke.tdsm.menu.Checkbox;
-import com.jordanbunke.tdsm.menu.*;
+import com.jordanbunke.tdsm.menu.DynamicLabel;
+import com.jordanbunke.tdsm.menu.IconButton;
+import com.jordanbunke.tdsm.menu.Indicator;
+import com.jordanbunke.tdsm.menu.StaticLabel;
 import com.jordanbunke.tdsm.menu.pre_export.ColorReplacementButton;
 import com.jordanbunke.tdsm.menu.pre_export.ReplacementOptions;
 import com.jordanbunke.tdsm.menu.pre_export.ReplacementPreview;
+import com.jordanbunke.tdsm.menu.pre_export.StyleOption;
 import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.MenuAssembly;
@@ -46,8 +49,8 @@ import static com.jordanbunke.color_proc.ColorProc.*;
 import static com.jordanbunke.tdsm.util.Colors.black;
 import static com.jordanbunke.tdsm.util.Layout.*;
 
-public final class PokemonStyle extends Style {
-    private static final PokemonStyle INSTANCE;
+public final class PokemonGen4Style extends Style {
+    private static final PokemonGen4Style INSTANCE;
 
     private static final String ID = "pkmn";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
@@ -169,7 +172,7 @@ public final class PokemonStyle extends Style {
                 new Color(0x989090)
         };
 
-        INSTANCE = new PokemonStyle();
+        INSTANCE = new PokemonGen4Style();
     }
 
     private enum BodyType {
@@ -182,7 +185,7 @@ public final class PokemonStyle extends Style {
         }
     }
 
-    private PokemonStyle() {
+    private PokemonGen4Style() {
         super(ID, DIMS, setUpDirections(), setUpAnimations(), new Layers());
 
         // Initialize settings
@@ -220,7 +223,7 @@ public final class PokemonStyle extends Style {
         update();
     }
 
-    public static PokemonStyle get() {
+    public static PokemonGen4Style get() {
         return INSTANCE;
     }
 
@@ -388,7 +391,7 @@ public final class PokemonStyle extends Style {
 
     @Override
     public String name() {
-        return "Pokémon Trainer [Gen 4]";
+        return "Hokkaido";
     }
 
     @Override
@@ -402,35 +405,15 @@ public final class PokemonStyle extends Style {
     }
 
     @Override
-    public void buildSettingsMenu(final MenuBuilder mb) {
-        final double REL_W = 0.6;
-        final int LEFT = atX((1.0 - REL_W) / 2.0), INC_Y = atY(1 / 9.0);
-
-        int y = atY(0.25);
-
-        final Checkbox quantizeCheckbox = new Checkbox(new Coord2D(LEFT, y),
-                Anchor.LEFT_TOP, () -> quantize, b -> quantize = b);
-        final StaticLabel quantizeLabel = StaticLabel.init(
-                quantizeCheckbox.followMiniLabel(),
-                        "Quantize to Game Boy Advance colors")
-                .setMini().build();
-        final Indicator quantizeInfo = Indicator.make(
-                ResourceCodes.QUANTIZE_GBA,
-                quantizeLabel.follow(), Anchor.LEFT_TOP);
-
-        y += (int) (INC_Y * 0.5);
-        final Checkbox romColLimitCheckbox = new Checkbox(new Coord2D(LEFT, y),
-                Anchor.LEFT_TOP, () -> warnROMColLimit, b -> warnROMColLimit = b);
-        final StaticLabel romColLimitLabel = StaticLabel.init(
-                        romColLimitCheckbox.followMiniLabel(),
-                        "Warn if sprite contains more than 15 colors")
-                .setMini().build();
-        final Indicator romColLimitInfo = Indicator.make(
-                ResourceCodes.WARN_ROM_15_COLS,
-                romColLimitLabel.follow(), Anchor.LEFT_TOP);
-
-        mb.addAll(quantizeCheckbox, quantizeLabel, quantizeInfo,
-                romColLimitCheckbox, romColLimitLabel, romColLimitInfo);
+    public StyleOption[] getOptionSettings() {
+        return new StyleOption[] {
+                new StyleOption("Quantize to Game Boy Advance colors",
+                        () -> quantize, b -> quantize = b,
+                        ResourceCodes.QUANTIZE_GBA),
+                new StyleOption("Warn if sprite contains more than 15 colors",
+                        () -> warnROMColLimit, b -> warnROMColLimit = b,
+                        ResourceCodes.WARN_ROM_15_COLS)
+        };
     }
 
     @Override

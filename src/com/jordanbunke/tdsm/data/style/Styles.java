@@ -5,7 +5,7 @@ public enum Styles {
 
     public Style get() {
         return switch (this) {
-            case PKMN -> PokemonStyle.get();
+            case PKMN -> PokemonGen4Style.get();
             case VIGILANTE -> VigilanteStyle.get();
         };
     }

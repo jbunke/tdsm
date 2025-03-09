@@ -1,6 +1,5 @@
 package com.jordanbunke.tdsm.data.style;
 
-import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
@@ -136,10 +135,4 @@ public final class VigilanteStyle extends Style {
     public boolean hasSettings() {
         return false;
     }
-
-    @Override
-    public void buildSettingsMenu(final MenuBuilder mb) {}
-
-    @Override
-    public void buildPreExportMenu(final MenuBuilder mb) {}
 }
