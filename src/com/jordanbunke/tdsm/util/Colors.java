@@ -3,9 +3,13 @@ package com.jordanbunke.tdsm.util;
 import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.stip_parser.ParserSerializer;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
+import com.jordanbunke.tdsm.data.style.Style;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 
 public final class Colors {
@@ -98,6 +102,31 @@ public final class Colors {
 
     public static Color invalid() {
         return INVALID;
+    }
+
+    public static String hexCode(final Color c) {
+        return "#" + ParserSerializer.serializeColor(c, true);
+    }
+
+    public static Map<Color, Integer> colorOccurrences(final Style style) {
+        final GameImage spriteSheet = style.renderSpriteSheet();
+        final int w = spriteSheet.getWidth(), h = spriteSheet.getHeight();
+        final Map<Color, Integer> cs = new HashMap<>();
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+                final Color c = spriteSheet.getColorAt(x, y);
+
+                if (c.getAlpha() == 0) continue;
+
+                if (cs.containsKey(c))
+                    cs.put(c, cs.get(c) + 1);
+                else
+                    cs.put(c, 1);
+            }
+        }
+
+        return cs;
     }
 
     public static GameImage runColorReplacement(

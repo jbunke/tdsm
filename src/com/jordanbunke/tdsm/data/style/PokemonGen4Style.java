@@ -3,8 +3,6 @@ package com.jordanbunke.tdsm.data.style;
 import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
-import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
-import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
@@ -14,7 +12,6 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.delta_time.utility.math.Pair;
-import com.jordanbunke.stip_parser.ParserSerializer;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
@@ -26,17 +23,8 @@ import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
-import com.jordanbunke.tdsm.menu.DynamicLabel;
-import com.jordanbunke.tdsm.menu.IconButton;
-import com.jordanbunke.tdsm.menu.Indicator;
-import com.jordanbunke.tdsm.menu.StaticLabel;
-import com.jordanbunke.tdsm.menu.pre_export.ColorReplacementButton;
-import com.jordanbunke.tdsm.menu.pre_export.ReplacementOptions;
-import com.jordanbunke.tdsm.menu.pre_export.ReplacementPreview;
-import com.jordanbunke.tdsm.menu.pre_export.StyleOption;
-import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
+import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Constants;
-import com.jordanbunke.tdsm.util.MenuAssembly;
 import com.jordanbunke.tdsm.util.ResourceCodes;
 import com.jordanbunke.tdsm.util.hardware.GBAUtils;
 
@@ -48,7 +36,6 @@ import java.util.stream.IntStream;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
 import static com.jordanbunke.tdsm.util.Colors.black;
-import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class PokemonGen4Style extends Style {
     private static final PokemonGen4Style INSTANCE;
@@ -422,137 +409,14 @@ public final class PokemonGen4Style extends Style {
         if (!warnROMColLimit)
             return false;
 
-        return spriteSheetColors().size() > Constants.GBA_SPRITE_COL_LIMIT;
-    }
-
-    private Map<Color, Integer> spriteSheetColors() {
-        final GameImage spriteSheet = renderSpriteSheet();
-        final int w = spriteSheet.getWidth(), h = spriteSheet.getHeight();
-        final Map<Color, Integer> cs = new HashMap<>();
-
-        for (int x = 0; x < w; x++) {
-            for (int y = 0; y < h; y++) {
-                final Color c = spriteSheet.getColorAt(x, y);
-
-                if (c.getAlpha() == 0) continue;
-
-                if (cs.containsKey(c))
-                    cs.put(c, cs.get(c) + 1);
-                else
-                    cs.put(c, 1);
-            }
-        }
-
-        return cs;
+        return Colors.colorOccurrences(this).size() >
+                Constants.GBA_SPRITE_COL_LIMIT;
     }
 
     @Override
     public void buildPreExportMenu(final MenuBuilder mb) {
-        resetPreExport();
-        final Map<Color, Integer> cs = spriteSheetColors();
-        final Color[] sequence = cs.keySet().stream()
-                .sorted(Comparator.comparingInt(cs::get))
-                .toArray(Color[]::new);
-
-        MenuAssembly.preExportExplanation(mb, """
-                Warning: The sprite sheet has $cols non-transparent
-                colors, which is more that the $max-color maximum
-                permitted for Game Boy Advance sprites."""
-                .replace("$cols", String.valueOf(cs.size()))
-                .replace("$max", String.valueOf(Constants.GBA_SPRITE_COL_LIMIT)),
-                0.05, 0.15);
-
-        final double REL_W = 0.6;
-        final int LEFT = atX((1.0 - REL_W) / 2.0), INC_Y = atY(1 / 9.0);
-
-        final ReplacementPreview rp = new ReplacementPreview(
-                new Coord2D(atX(0.35), atY(0.15)), Anchor.CENTRAL_TOP, this);
-        mb.add(rp);
-
-        int y = atY(0.43);
-
-        final StaticLabel replacementLabel = StaticLabel.init(
-                new Coord2D(LEFT, y), "Replacement").build();
-        final Indicator replacementInfo = Indicator.make(
-                ResourceCodes.REPLACEMENT, replacementLabel.followIcon17(),
-                Anchor.LEFT_TOP);
-        final IconButton replacementReset = IconButton.init(
-                ResourceCodes.RESET, replacementInfo.following(),
-                this::resetPreExport).build();
-
-        mb.addAll(replacementLabel, replacementInfo, replacementReset);
-
-        y += INC_Y;
-
-        final String CC_PREFIX = "Updated color count: ",
-                CC_SUFFIX = " (valid for GBA)";
-        final DynamicLabel colorCount = DynamicLabel.init(
-                new Coord2D(LEFT, y), () -> {
-                    final Set<Color> used = new HashSet<>();
-
-                    for (Color c : sequence)
-                        used.add(replacementMap.getOrDefault(c, c));
-
-                    final int size = used.size();
-
-                    return CC_PREFIX + size +
-                            (size <= Constants.GBA_SPRITE_COL_LIMIT
-                                    ? CC_SUFFIX : "");
-                }, CC_PREFIX + "XXX" + CC_SUFFIX
-        ).setMini().build();
-        mb.add(colorCount);
-
-        y += (int) (INC_Y * 0.5);
-
-        Coord2D replPos = new Coord2D(LEFT, y);
-        final MenuBuilder crbs = new MenuBuilder();
-
-        for (Color entry : sequence) {
-            final ColorReplacementButton crb = new ColorReplacementButton(
-                    replPos, entry, colorTooltip(entry, cs.get(entry)),
-                    c -> replacementMap.getOrDefault(c, null),
-                    () -> selectedToReplace, c -> selectedToReplace = c);
-            crbs.add(crb);
-
-            replPos = replPos.displaceX(crb.getWidth() + ASSET_BUFFER_X);
-        }
-
-        final HorzScrollBox choicesBox = new HorzScrollBox(
-                new Coord2D(LEFT, y), new Bounds2D(atX(REL_W),
-                COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
-                Arrays.stream(crbs.build().getMenuElements())
-                        .map(Scrollable::new).toArray(Scrollable[]::new),
-                replPos.x - ASSET_BUFFER_X, 0);
-        mb.add(choicesBox);
-
-        y += INC_Y;
-
-        final String REPL_PREFIX = "Replace ", REPL_SUFFIX = " with:";
-        final DynamicLabel replaceWithLabel = DynamicLabel.init(
-                new Coord2D(LEFT, y), () -> {
-                    if (selectedToReplace == null)
-                        return "";
-
-                    final String hexCode = "#" + ParserSerializer
-                            .serializeColor(selectedToReplace, true);
-
-                    return REPL_PREFIX + hexCode + REPL_SUFFIX;
-                }, REPL_PREFIX + "#" + "X".repeat(7) + REPL_SUFFIX
-        ).setMini().build();
-        mb.add(replaceWithLabel);
-
-        y += (int) (INC_Y * 0.5);
-
-        final ReplacementOptions ro = new ReplacementOptions(
-                new Coord2D(LEFT, y), new Bounds2D(atX(REL_W),
-                COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
-                replacementMap, cs.keySet(), () -> selectedToReplace);
-        mb.add(ro);
-    }
-
-    private String colorTooltip(final Color c, final int indicence) {
-        return "#" + ParserSerializer.serializeColor(c, true) +
-                "\n" + indicence + " occurrences";
+        GBAUtils.buildReplacementMenu(mb, this, replacementMap,
+                () -> selectedToReplace, c -> selectedToReplace = c);
     }
 
     @Override

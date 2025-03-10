@@ -19,7 +19,6 @@ import com.jordanbunke.tdsm.io.json.JSONArray;
 import com.jordanbunke.tdsm.io.json.JSONBuilder;
 import com.jordanbunke.tdsm.io.json.JSONObject;
 import com.jordanbunke.tdsm.io.json.JSONPair;
-import com.jordanbunke.tdsm.menu.pre_export.StyleOption;
 import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
@@ -536,6 +535,7 @@ public abstract class Style {
 
     public StyleOption[] getOptionSettings() { return new StyleOption[0]; }
 
+    @SuppressWarnings("unused")
     public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
 
     public void buildPreExportMenu(final MenuBuilder mb) {}
