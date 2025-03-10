@@ -40,7 +40,7 @@ import static com.jordanbunke.tdsm.util.Colors.black;
 public final class PokemonGen4Style extends Style {
     private static final PokemonGen4Style INSTANCE;
 
-    private static final String ID = "pkmn";
+    private static final String ID = "hokkaido";
     private static final Bounds2D DIMS = new Bounds2D(32, 32);
 
     private final String COMBINED_OUTFIT = "Combined outfit";
@@ -221,18 +221,19 @@ public final class PokemonGen4Style extends Style {
     }
 
     private static Animation[] setUpAnimations() {
-        return new Animation[]{
-                Animation.make("walk", 3, i -> {
-                    final int x = 0;
-                    final int y = switch (i) {
-                        case 0 -> 1;
-                        case 1 -> 0;
-                        default -> 2;
-                    };
-                    return new Coord2D(x, y);
-                }, PlaybackMode.PONG),
-                Animation.make("idle", 1, new Coord2D(),
-                        false, PlaybackMode.LOOP),
+        return new Animation[] {
+                Animation.init("walk", 3)
+                        .setPlaybackMode(PlaybackMode.PONG)
+                        .setCoordFunc(f -> {
+                            final int x = 0;
+                            final int y = switch (f) {
+                                case 0 -> 1;
+                                case 1 -> 0;
+                                default -> 2;
+                            };
+                            return new Coord2D(x, y);
+                        }).build(),
+                Animation.init("idle", 1).build(),
         };
     }
 

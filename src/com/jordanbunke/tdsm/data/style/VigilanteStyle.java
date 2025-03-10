@@ -4,7 +4,6 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
-import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
@@ -52,18 +51,17 @@ public final class VigilanteStyle extends Style {
         final boolean vertical = false;
 
         return new Animation[] {
-                Animation.make("idle", 1, new Coord2D(0, 0),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("walk", 2, new Coord2D(0, 1),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("box", 2, new Coord2D(0, 3),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("reload_1", 3, new Coord2D(0, 18),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("reload_2", 3, new Coord2D(0, 30),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("death", 5, new Coord2D(0, 39),
-                        vertical, PlaybackMode.LOOP)
+                Animation.init("idle", 1).build(),
+                Animation.init("walk", 2)
+                        .setCoordFunc(new Coord2D(0, 1), vertical).build(),
+                Animation.init("box", 2)
+                        .setCoordFunc(new Coord2D(0, 3), vertical).build(),
+                Animation.init("reload_1", 3)
+                        .setCoordFunc(new Coord2D(0, 18), vertical).build(),
+                Animation.init("reload_2", 3)
+                        .setCoordFunc(new Coord2D(0, 30), vertical).build(),
+                Animation.init("death", 5)
+                        .setCoordFunc(new Coord2D(0, 39), vertical).build()
                 // TODO
         };
     }
