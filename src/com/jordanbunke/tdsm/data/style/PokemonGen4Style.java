@@ -38,6 +38,7 @@ import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.MenuAssembly;
 import com.jordanbunke.tdsm.util.ResourceCodes;
+import com.jordanbunke.tdsm.util.hardware.GBAUtils;
 
 import java.awt.*;
 import java.util.List;
@@ -192,7 +193,7 @@ public final class PokemonGen4Style extends Style {
         quantize = false;
         warnROMColLimit = false;
 
-        quantizeToPalette = buildPaletteQuantizer();
+        quantizeToPalette = GBAUtils::quantize;
         replacementMap = new HashMap<>();
         selectedToReplace = null;
 
@@ -578,27 +579,6 @@ public final class PokemonGen4Style extends Style {
             for (String layerID : layerIDs)
                 assembler.addFilter(quantizeID, quantizeToPalette, layerID);
         }
-    }
-
-    private Function<Color, Color> buildPaletteQuantizer() {
-        final Integer[] FIVE_BITS_AS_EIGHT_BITS = new Integer[] {
-                0, 8, 16, 25, 33, 41, 49, 58, 66, 74,
-                82, 90, 99, 107, 115, 123, 132, 140,
-                148, 156, 165, 173, 181, 189, 197,
-                206, 214, 222, 230, 239, 247, 255
-        };
-
-        final Function<Integer, Integer> quantizeChannel =
-                i -> MathPlus.findBest(i, 0, n -> n,
-                        (i1, i2) -> Math.abs(i1 - i) < Math.abs(i2 - i),
-                        FIVE_BITS_AS_EIGHT_BITS);
-        return c -> {
-            if (c.getAlpha() == 0) return c;
-
-            return new Color(quantizeChannel.apply(c.getRed()),
-                    quantizeChannel.apply(c.getGreen()),
-                    quantizeChannel.apply(c.getBlue()));
-        };
     }
 
     private AssetChoiceLayer buildEyes() {
