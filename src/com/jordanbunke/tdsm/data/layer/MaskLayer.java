@@ -5,23 +5,23 @@ import com.jordanbunke.tdsm.util.StringUtils;
 
 public final class MaskLayer extends CustomizationLayer {
     private final String name;
-    private final CustomizationLayer target;
+    private final CustomizationLayer[] targets;
     private final SpriteConstituent<String> logic;
 
     public MaskLayer(
-            final String id, final CustomizationLayer target,
+            final String id, final CustomizationLayer[] targets,
             final SpriteConstituent<String> logic
     ) {
         super(id);
 
         name = StringUtils.nameFromID(id);
 
-        this.target = target;
+        this.targets = targets;
         this.logic = logic;
     }
 
-    public CustomizationLayer getTarget() {
-        return target;
+    public CustomizationLayer[] getTargets() {
+        return targets;
     }
 
     @Override

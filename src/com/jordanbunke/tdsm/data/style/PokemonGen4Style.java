@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
@@ -29,6 +30,7 @@ import com.jordanbunke.tdsm.util.ResourceCodes;
 import com.jordanbunke.tdsm.util.hardware.GBAUtils;
 
 import java.awt.*;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.*;
 import java.util.function.Function;
@@ -52,6 +54,10 @@ public final class PokemonGen4Style extends Style {
 
     private final String COMBINED_OUTFIT = "Combined outfit";
 
+    private static final String[] BODY_IDs = new String[] {
+            "average-body", "small-body"
+    };
+
     private static final Set<Color>
             SKIN, SKIN_OUTLINES, HAIR, IRIS, EYE_WHITE,
             CLOTH_1, CLOTH_2, CLOTH_3, CLOTH_4;
@@ -62,6 +68,8 @@ public final class PokemonGen4Style extends Style {
     private static final Color[]
             SKIN_SWATCHES, HAIR_SWATCHES,
             IRIS_SWATCHES, CLOTHES_SWATCHES;
+
+    private final Map<String, SpriteSheet> headMasks;
 
     private final Function<Color, Color> quantizeToPalette;
     private final Map<Color, Color> replacementMap;
@@ -203,6 +211,17 @@ public final class PokemonGen4Style extends Style {
         botCS = IntStream.range(0, 4).mapToObj(this::clothesSwatch).toArray(ColorSelection[]::new);
         shoeCS = IntStream.range(0, 2).mapToObj(this::clothesSwatch).toArray(ColorSelection[]::new);
 
+        headMasks = new HashMap<>();
+
+        for (String bodyID : BODY_IDs) {
+            final Path filepath = Constants.ASSET_ROOT_FOLDER
+                    .resolve(Path.of(id, "head-mask", bodyID + ".png"));
+            final GameImage source = ResourceLoader
+                    .loadImageResource(filepath);
+            headMasks.put(bodyID, new SpriteSheet(source,
+                    dims.width(), dims.height()));
+        }
+
         bodyLayer = null;
         hatLayer = null;
         eyeHeightLayer = new MathLayer("eye-height", -1, 1, 0,
@@ -277,18 +296,14 @@ public final class PokemonGen4Style extends Style {
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
 
-        bodyLayer = ACLBuilder.of("body", this,
-                new AssetChoiceTemplate("average-body",
-                        this::replace),
-                new AssetChoiceTemplate("small-body",
-                        this::replace)).setName("Body Type").build();
+        bodyLayer = buildBody();
         bodyLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer headLayer = ACLBuilder.of(
                         "head", this,
                         new AssetChoiceTemplate("oval-head", this::replace),
                         new AssetChoiceTemplate("round-head", this::replace),
-                        new AssetChoiceTemplate("square-head", this::replace))
+                        new AssetChoiceTemplate("square-jaw", this::replace))
                 .setComposer(this::composeHead).setDims(HEAD_DIMS)
                 .setName("Head Shape").build();
         headLayer.addInfluencingSelection(skinTones);
@@ -408,12 +423,31 @@ public final class PokemonGen4Style extends Style {
 
         // TODO - still assembling
         layers.add(
-                skinLayer, hairBack, bodyLayer, headLayer,
-                eyeLayer, eyeColorLayer, eyeHeightLayer,
+                skinLayer, hairBack, bodyLayer,
                 clothingTypeLayer, clothingLogic,
+                headLayer,
+                eyeLayer, eyeColorLayer, eyeHeightLayer,
                 hairLayer, hairColorLayer,
                 hatLayer, hatMaskLayer, hairFront
         );
+
+        final CustomizationLayer[] headLayers = new CustomizationLayer[] {
+                hairBack, headLayer, eyeLayer, hairLayer, hatLayer, hairFront
+        };
+
+        final MaskLayer headMask = MLBuilder.init("head-mask", headLayers)
+                .setLogic(s -> {
+                    final String animID =
+                            SpriteStates.extractContributor(ANIM, s);
+
+                    return switch (animID) {
+                        case ANIM_ID_CAPSULE, ANIM_ID_SWIM ->
+                                bodyLayer.composer.build(headMasks.get(
+                                        bodyLayer.getChoice().id)).getSprite(s);
+                        default -> new GameImage(dims.width(), dims.height());
+                    };
+                }).build();
+        layers.add(headMask);
     }
 
     @Override
@@ -482,6 +516,13 @@ public final class PokemonGen4Style extends Style {
             for (String layerID : layerIDs)
                 assembler.addFilter(quantizeID, quantizeToPalette, layerID);
         }
+    }
+
+    private AssetChoiceLayer buildBody() {
+        return ACLBuilder.of("body", this, Arrays.stream(BODY_IDs)
+                .map(id -> new AssetChoiceTemplate(id, this::replace))
+                .toArray(AssetChoiceTemplate[]::new))
+                .setName("Body Type").build();
     }
 
     private AssetChoiceLayer buildEyes() {

@@ -7,6 +7,7 @@ import com.jordanbunke.delta_time.sprite.SpriteMap;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
 import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
+import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
@@ -466,9 +467,17 @@ public abstract class Style {
     ) {
         if (layer instanceof DecisionLayer dl)
             addLayerToAssembler(assembler, dl.getDecision());
-        else if (layer instanceof MaskLayer ml)
-            assembler.addMask(ml.id, ml.compose(), ml.getTarget().id);
-        else if (layer instanceof GroupLayer gl)
+        else if (layer instanceof MaskLayer ml) {
+            final CustomizationLayer[] targets = ml.getTargets();
+            final SpriteConstituent<String> mask = ml.compose();
+
+            for (int i = 0; i < targets.length; i++) {
+                final CustomizationLayer target = targets[i];
+
+                assembler.addMask(ml.id + (targets.length > 1 ? "-" + i : ""),
+                        mask, target.id);
+            }
+        } else if (layer instanceof GroupLayer gl)
             gl.all().forEach(l -> addLayerToAssembler(assembler, l));
         else if (layer.isRendered())
             assembler.addLayer(layer.id, layer.compose());

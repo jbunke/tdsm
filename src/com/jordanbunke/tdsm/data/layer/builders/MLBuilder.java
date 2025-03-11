@@ -14,27 +14,27 @@ import java.nio.file.Path;
 
 public final class MLBuilder {
     private final String id;
-    private final CustomizationLayer target;
+    private final CustomizationLayer[] targets;
 
     private SpriteConstituent<String> logic;
 
     public static MLBuilder init(
-            final String id, final CustomizationLayer target
+            final String id, final CustomizationLayer... targets
     ) {
-        return new MLBuilder(id, target);
+        return new MLBuilder(id, targets);
     }
 
     private MLBuilder(
-            final String id, final CustomizationLayer target
+            final String id, final CustomizationLayer[] targets
     ) {
         this.id = id;
-        this.target = target;
+        this.targets = targets;
 
         logic = s -> GameImage.dummy();
     }
 
     public MaskLayer build() {
-        return new MaskLayer(id, target, logic);
+        return new MaskLayer(id, targets, logic);
     }
 
     public MLBuilder setLogic(final SpriteConstituent<String> logic) {
