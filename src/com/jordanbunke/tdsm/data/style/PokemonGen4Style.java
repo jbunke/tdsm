@@ -6,7 +6,7 @@ import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
-import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheetWithOffset;
+import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
@@ -41,7 +41,13 @@ public final class PokemonGen4Style extends Style {
     private static final PokemonGen4Style INSTANCE;
 
     private static final String ID = "hokkaido";
-    private static final Bounds2D DIMS = new Bounds2D(32, 32);
+    private static final Bounds2D DIMS = new Bounds2D(48, 48),
+            HEAD_DIMS = new Bounds2D(32, 32);
+
+    private static final String ANIM_ID_IDLE = "idle", ANIM_ID_WALK = "walk",
+            ANIM_ID_RUN = "run", ANIM_ID_FISH = "fish",
+            ANIM_ID_BIKE_IDLE = "bike-idle", ANIM_ID_CYCLE = "cycle",
+            ANIM_ID_CROUCH = "crouch", ANIM_ID_CAPSULE = "use-capsule";
 
     private final String COMBINED_OUTFIT = "Combined outfit";
 
@@ -216,24 +222,25 @@ public final class PokemonGen4Style extends Style {
     }
 
     private static Directions setUpDirections() {
-        return new Directions(NumDirs.FOUR, true,
+        return new Directions(NumDirs.FOUR, false,
                 Dir.DOWN, Dir.LEFT, Dir.RIGHT, Dir.UP);
     }
 
     private static Animation[] setUpAnimations() {
         return new Animation[] {
-                Animation.init("walk", 3)
+                Animation.init(ANIM_ID_WALK, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
                         .setCoordFunc(f -> {
-                            final int x = 0;
-                            final int y = switch (f) {
+                            final int x = switch (f) {
                                 case 0 -> 1;
                                 case 1 -> 0;
                                 default -> 2;
                             };
+                            final int y = 0;
                             return new Coord2D(x, y);
-                        }).build(),
-                Animation.init("idle", 1).build(),
+                        }).setFrameTiming(10).build(),
+                Animation.init(ANIM_ID_IDLE, 1).build(),
+                // TODO
         };
     }
 
@@ -252,8 +259,8 @@ public final class PokemonGen4Style extends Style {
                         "head", this,
                         new AssetChoiceTemplate("oval-head", this::replace),
                         new AssetChoiceTemplate("round-head", this::replace))
-                .setComposer(this::composeHead).setName("Head Shape")
-                .build();
+                .setComposer(this::composeHead).setDims(HEAD_DIMS)
+                .setName("Head Shape").build();
         headLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer eyeLayer = buildEyes();
@@ -342,9 +349,9 @@ public final class PokemonGen4Style extends Style {
                         new AssetChoiceTemplate("silver-fox", this::replace),
                         new AssetChoiceTemplate("high-ponytail", this::replace),
                         new AssetChoiceTemplate("chic", this::replace))
-                .setComposer(this::composeHead).setName("Hairstyle")
+                .setComposer(this::composeOnHead).setName("Hairstyle")
                 .setNoAssetChoice(NoAssetChoice.equal())
-                .build();
+                .setDims(HEAD_DIMS).build();
         hairLayer.addInfluencingSelections(skinTones, hairColors);
 
         final DependentComponentLayer hairBack = new DependentComponentLayer(
@@ -362,8 +369,9 @@ public final class PokemonGen4Style extends Style {
                                 this::clothesReplace, hatCS[0], hatCS[1]),
                         new AssetChoiceTemplate("durag",
                                 this::clothesReplace, hatCS[0]))
-                .setName("Headwear").setComposer(this::composeHead)
-                .setNoAssetChoice(NoAssetChoice.prob(0.75)).build();
+                .setName("Headwear").setComposer(this::composeOnHead)
+                .setNoAssetChoice(NoAssetChoice.prob(0.75))
+                .setDims(HEAD_DIMS).build();
 
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
                 .trySetNaiveLogic(this, hatLayer).build();
@@ -455,7 +463,7 @@ public final class PokemonGen4Style extends Style {
         return ACLBuilder.of("eyes", this, Arrays.stream(ids)
                 .map(id -> new AssetChoiceTemplate(id, this::replace))
                 .toArray(AssetChoiceTemplate[]::new))
-                .setComposer(this::composeEyes).build();
+                .setDims(HEAD_DIMS).setComposer(this::composeEyes).build();
     }
 
     private AssetChoiceLayer buildOutfit(
@@ -629,20 +637,35 @@ public final class PokemonGen4Style extends Style {
     private SpriteConstituent<String> composeEyes(
             final SpriteSheet sheet
     ) {
-        return composeHead(sheet, -eyeHeightLayer.getValue());
+        return composeHead(sheet, false, -eyeHeightLayer.getValue());
+    }
+
+    private SpriteConstituent<String> composeOnHead(final SpriteSheet sheet) {
+        return composeHead(sheet, false, 0);
     }
 
     private SpriteConstituent<String> composeHead(
             final SpriteSheet sheet
     ) {
-        return composeHead(sheet, 0);
+        return composeHead(sheet, true, 0);
     }
 
     private SpriteConstituent<String> composeHead(
-            final SpriteSheet sheet, final int augY
+            final SpriteSheet sheet, final boolean hasTiltedDown, final int augY
     ) {
-        return new InterpretedSpriteSheetWithOffset<>(
-                sheet, this::forDir, id -> headOffset(id, augY));
+        final SpriteConstituent<String> assetFetcher =
+                new InterpretedSpriteSheet<>(sheet,
+                        id -> headDirX(id, hasTiltedDown));
+
+        return id -> {
+            final GameImage sprite = new GameImage(DIMS.width(), DIMS.height());
+            final Coord2D offset = headOffset(id, augY);
+            final int BASE_X = 8, BASE_Y = 8,
+                    x = BASE_X + offset.x, y = BASE_Y + offset.y;
+
+            sprite.draw(assetFetcher.getSprite(id), x, y);
+            return sprite.submit();
+        };
     }
 
     private Coord2D headOffset(final String spriteID, final int augY) {
@@ -654,18 +677,31 @@ public final class PokemonGen4Style extends Style {
         final int bodyComp = getBodyLayerChoice(), frameComp;
 
         frameComp = switch (animID) {
-            case "walk" -> frame == 1 ? 1 : 0;
-            case "idle" -> 1;
+            case ANIM_ID_WALK -> frame == 1 ? 1 : 0;
+            case ANIM_ID_IDLE -> 1;
             default -> 0;
         };
 
         return new Coord2D(0, bodyComp + frameComp + augY);
     }
 
-    private Coord2D forDir(final String spriteID) {
+    private Coord2D headDirX(final String spriteID, final boolean hasTiltedDown) {
         final Directions.Dir dir = Directions.get(
                 SpriteStates.extractContributor(DIRECTION, spriteID));
-        return new Coord2D(indexOfDir(dir), 0);
+        final String animID =
+                SpriteStates.extractContributor(ANIM, spriteID);
+        final int frame = Integer.parseInt(
+                SpriteStates.extractContributor(FRAME, spriteID));
+
+        final int x = indexOfDir(dir);
+
+        final int y = hasTiltedDown && dir.equals(Dir.DOWN) ? switch (animID) {
+            case ANIM_ID_RUN, ANIM_ID_CYCLE, ANIM_ID_CROUCH -> 1;
+            case ANIM_ID_FISH -> frame == 2 ? 1 : 0;
+            default -> 0;
+        } : 0;
+
+        return new Coord2D(x, y);
     }
 
     private int getBodyLayerChoice() {

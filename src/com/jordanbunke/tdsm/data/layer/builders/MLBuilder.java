@@ -47,7 +47,7 @@ public final class MLBuilder {
     ) {
         logic = s -> {
             final GameImage ifFail = new GameImage(
-                    projector.dims.width(), projector.dims.height());
+                    style.dims.width(), style.dims.height());
 
             try {
                 if (!projector.hasChoice())
