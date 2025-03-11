@@ -722,14 +722,23 @@ public final class PokemonGen4Style extends Style {
             default -> getBodyLayerChoice();
         };
 
-        final Function<Integer, Integer> cycleFunc = f -> f % 2 == 0 ? 0 : (f - 2),
-                runFunc = f -> f % 2 == 0 ? (f - 1) : 0;
+        final Function<Integer, Integer>
+                cycleFunc = f -> f % 2 == 0 ? 0 : (f - 2),
+                runFunc = f -> f % 2 == 0 ? (f - 1) : 0,
+                fishSideFunc = f -> (f < 2 ? -1 : 1) * (f % 3 == 0 ? 1 : 2);
 
         x = switch (animID) {
             case ANIM_ID_RUN -> switch (dir) {
                 case LEFT -> -3 + runFunc.apply(frame);
                 case RIGHT -> 3 + runFunc.apply(frame);
                 default -> runFunc.apply(frame);
+            };
+            case ANIM_ID_FISH -> switch (dir) {
+                case LEFT -> -1 * fishSideFunc.apply(frame);
+                case RIGHT -> fishSideFunc.apply(frame);
+                case DOWN -> frame < 2 ? 1 : 0;
+                case UP -> frame < 3 ? -1 : 0;
+                default -> 0;
             };
             case ANIM_ID_BIKE_IDLE -> switch (dir) {
                 case LEFT -> -1;
@@ -754,7 +763,7 @@ public final class PokemonGen4Style extends Style {
         animComp = switch (animID) {
             case ANIM_ID_IDLE -> 1;
             case ANIM_ID_RUN -> dir.equals(Dir.DOWN) ? 6 : 2;
-            case ANIM_ID_BIKE_IDLE -> switch (dir) {
+            case ANIM_ID_FISH, ANIM_ID_BIKE_IDLE -> switch (dir) {
                 case LEFT, RIGHT -> 1;
                 default -> 0;
             };
@@ -774,6 +783,21 @@ public final class PokemonGen4Style extends Style {
             case ANIM_ID_WALK -> frame == 1 ? 1 : 0;
             case ANIM_ID_RUN -> frame == 1
                     ? (dir.equals(Dir.DOWN) ? -1 : 1) : 0;
+            case ANIM_ID_FISH -> switch (dir) {
+                case LEFT, RIGHT -> frame == 3 ? 1 : 0;
+                case DOWN -> switch (frame) {
+                    case 0 -> 2;
+                    case 2 -> 5;
+                    case 3 -> 3;
+                    default -> 1;
+                };
+                case UP -> switch (frame) {
+                    case 1 -> 4;
+                    case 2 -> 2;
+                    default -> 3;
+                };
+                default -> 0;
+            };
             case ANIM_ID_SWIM -> switch (dir) {
                 case LEFT, RIGHT -> frame != 1 ? 1 : 0;
                 default -> 0;
