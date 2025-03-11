@@ -46,8 +46,9 @@ public final class PokemonGen4Style extends Style {
 
     private static final String ANIM_ID_IDLE = "idle", ANIM_ID_WALK = "walk",
             ANIM_ID_RUN = "run", ANIM_ID_FISH = "fish",
-            ANIM_ID_BIKE_IDLE = "bike-idle", ANIM_ID_CYCLE = "cycle",
-            ANIM_ID_CROUCH = "crouch", ANIM_ID_CAPSULE = "use-capsule";
+            ANIM_ID_BIKE_IDLE = "bike_idle", ANIM_ID_CYCLE = "cycle",
+            ANIM_ID_SURF = "surf", ANIM_ID_SWIM = "swim",
+            ANIM_ID_CAPSULE = "use_capsule";
 
     private final String COMBINED_OUTFIT = "Combined outfit";
 
@@ -227,6 +228,8 @@ public final class PokemonGen4Style extends Style {
     }
 
     private static Animation[] setUpAnimations() {
+        final boolean horizontal = true;
+
         return new Animation[] {
                 Animation.init(ANIM_ID_WALK, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
@@ -240,7 +243,33 @@ public final class PokemonGen4Style extends Style {
                             return new Coord2D(x, y);
                         }).setFrameTiming(10).build(),
                 Animation.init(ANIM_ID_IDLE, 1).build(),
-                // TODO
+                Animation.init(ANIM_ID_RUN, 3)
+                        .setPlaybackMode(PlaybackMode.PONG)
+                        .setCoordFunc(new Coord2D(3, 0), horizontal)
+                        .setFrameTiming(6).build(),
+                Animation.init(ANIM_ID_FISH, 4)
+                        .setCoordFunc(new Coord2D(6, 0), horizontal)
+                        .build(),
+                Animation.init(ANIM_ID_BIKE_IDLE, 1)
+                        .setCoordFunc(new Coord2D(10, 0), horizontal).build(),
+                Animation.init(ANIM_ID_CYCLE, 4)
+                        .setCoordFunc(new Coord2D(11, 0), horizontal)
+                        .setFrameTiming(8).build(),
+                Animation.init(ANIM_ID_SURF, 1)
+                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
+                Animation.init(ANIM_ID_SWIM, 3)
+                        .setPlaybackMode(PlaybackMode.PONG)
+                        .setCoordFunc(f -> {
+                            final int x = switch (f) {
+                                case 0 -> 1;
+                                case 1 -> 0;
+                                default -> 2;
+                            };
+                            final int y = 0;
+                            return new Coord2D(16 + x, y);
+                        }).build(),
+                Animation.init(ANIM_ID_CAPSULE, 4)
+                        .setCoordFunc(new Coord2D(19, 0), horizontal).build(),
         };
     }
 
@@ -258,7 +287,8 @@ public final class PokemonGen4Style extends Style {
         final AssetChoiceLayer headLayer = ACLBuilder.of(
                         "head", this,
                         new AssetChoiceTemplate("oval-head", this::replace),
-                        new AssetChoiceTemplate("round-head", this::replace))
+                        new AssetChoiceTemplate("round-head", this::replace),
+                        new AssetChoiceTemplate("square-head", this::replace))
                 .setComposer(this::composeHead).setDims(HEAD_DIMS)
                 .setName("Head Shape").build();
         headLayer.addInfluencingSelection(skinTones);
@@ -659,6 +689,15 @@ public final class PokemonGen4Style extends Style {
 
         return id -> {
             final GameImage sprite = new GameImage(DIMS.width(), DIMS.height());
+
+            final Directions.Dir dir = Directions.get(
+                    SpriteStates.extractContributor(DIRECTION, id));
+            final String animID =
+                    SpriteStates.extractContributor(ANIM, id);
+
+            if (animID.equals(ANIM_ID_CAPSULE) && !dir.equals(Dir.DOWN))
+                return sprite;
+
             final Coord2D offset = headOffset(id, augY);
             final int BASE_X = 8, BASE_Y = 8,
                     x = BASE_X + offset.x, y = BASE_Y + offset.y;
@@ -669,20 +708,85 @@ public final class PokemonGen4Style extends Style {
     }
 
     private Coord2D headOffset(final String spriteID, final int augY) {
+        final Directions.Dir dir = Directions.get(
+                SpriteStates.extractContributor(DIRECTION, spriteID));
         final String animID =
                 SpriteStates.extractContributor(ANIM, spriteID);
         final int frame = Integer.parseInt(
                 SpriteStates.extractContributor(FRAME, spriteID));
 
-        final int bodyComp = getBodyLayerChoice(), frameComp;
+        final int bodyComp, animComp, frameComp, x;
 
-        frameComp = switch (animID) {
-            case ANIM_ID_WALK -> frame == 1 ? 1 : 0;
-            case ANIM_ID_IDLE -> 1;
+        bodyComp = switch (animID) {
+            case ANIM_ID_SWIM, ANIM_ID_RUN, ANIM_ID_CYCLE -> 0;
+            default -> getBodyLayerChoice();
+        };
+
+        final Function<Integer, Integer> cycleFunc = f -> f % 2 == 0 ? 0 : (f - 2),
+                runFunc = f -> f % 2 == 0 ? (f - 1) : 0;
+
+        x = switch (animID) {
+            case ANIM_ID_RUN -> switch (dir) {
+                case LEFT -> -3 + runFunc.apply(frame);
+                case RIGHT -> 3 + runFunc.apply(frame);
+                default -> runFunc.apply(frame);
+            };
+            case ANIM_ID_BIKE_IDLE -> switch (dir) {
+                case LEFT -> -1;
+                case RIGHT -> 1;
+                case UP -> -2;
+                case DOWN -> 2;
+                default -> 0;
+            };
+            case ANIM_ID_CYCLE -> switch (dir) {
+                case LEFT -> -2 + cycleFunc.apply(frame);
+                case RIGHT -> 2 - cycleFunc.apply(frame);
+                default -> cycleFunc.apply(frame);
+            };
+            case ANIM_ID_CAPSULE -> switch (frame) {
+                case 0, 2 -> 0;
+                default -> -1;
+            };
             default -> 0;
         };
 
-        return new Coord2D(0, bodyComp + frameComp + augY);
+        // animation Y offset component
+        animComp = switch (animID) {
+            case ANIM_ID_IDLE -> 1;
+            case ANIM_ID_RUN -> dir.equals(Dir.DOWN) ? 6 : 2;
+            case ANIM_ID_BIKE_IDLE -> switch (dir) {
+                case LEFT, RIGHT -> 1;
+                default -> 0;
+            };
+            case ANIM_ID_CYCLE -> dir.equals(Dir.DOWN) ? 1 : 0;
+            case ANIM_ID_SURF -> switch (dir) {
+                case LEFT, RIGHT -> 3;
+                case UP -> 2;
+                case DOWN -> 4;
+                default -> 0;
+            };
+            case ANIM_ID_SWIM -> 7;
+            default -> 0;
+        };
+
+        // animation frame Y offset component
+        frameComp = switch (animID) {
+            case ANIM_ID_WALK -> frame == 1 ? 1 : 0;
+            case ANIM_ID_RUN -> frame == 1
+                    ? (dir.equals(Dir.DOWN) ? -1 : 1) : 0;
+            case ANIM_ID_SWIM -> switch (dir) {
+                case LEFT, RIGHT -> frame != 1 ? 1 : 0;
+                default -> 0;
+            };
+            case ANIM_ID_CAPSULE -> switch (frame) {
+                case 0 -> 4;
+                case 1 -> 5;
+                default -> 1;
+            };
+            default -> 0;
+        };
+
+        return new Coord2D(x, bodyComp + animComp + frameComp + augY);
     }
 
     private Coord2D headDirX(final String spriteID, final boolean hasTiltedDown) {
@@ -695,13 +799,15 @@ public final class PokemonGen4Style extends Style {
 
         final int x = indexOfDir(dir);
 
-        final int y = hasTiltedDown && dir.equals(Dir.DOWN) ? switch (animID) {
-            case ANIM_ID_RUN, ANIM_ID_CYCLE, ANIM_ID_CROUCH -> 1;
-            case ANIM_ID_FISH -> frame == 2 ? 1 : 0;
-            default -> 0;
-        } : 0;
+        final boolean tiltedDown = hasTiltedDown && dir.equals(Dir.DOWN) &&
+                switch (animID) {
+            case ANIM_ID_RUN, ANIM_ID_CYCLE, ANIM_ID_SURF -> true;
+            case ANIM_ID_FISH -> frame == 2;
+            case ANIM_ID_CAPSULE -> frame < 2;
+            default -> false;
+        };
 
-        return new Coord2D(x, y);
+        return new Coord2D(x + (tiltedDown ? 4 : 0), 0);
     }
 
     private int getBodyLayerChoice() {
