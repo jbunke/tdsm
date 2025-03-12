@@ -423,21 +423,33 @@ public final class PokemonGen4Style extends Style {
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
                 .trySetNaiveLogic(this, hatLayer).build();
 
-        // TODO - still assembling
+        // TODO - accessories, capsule
         layers.addToCustomization(
                 bodyLayer, skinLayer, headLayer, eyeLayer,
                 eyeColorLayer, eyeHeightLayer, hairLayer, hairColorLayer,
                 clothingTypeLayer, clothingLogic, hatLayer
         );
 
-        // TODO - consider separating hairBack from combined head
+        final PureComposeLayer combinedHeadBackLayer =
+                new PureComposeLayer("combined-head-back",
+                        spriteID -> {
+                    final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
+
+                    // TODO - hat back & hat mask back
+                    preassembled.draw(hairBack.compose().getSprite(spriteID));
+
+                    final SpriteSheet combined =
+                            new SpriteSheet(preassembled.submit(),
+                                    HEAD_DIMS.width(), HEAD_DIMS.height());
+
+                    return composeHead(combined).getSprite(spriteID);
+                });
 
         final PureComposeLayer combinedHeadLayer =
                 new PureComposeLayer("combined-head",
                         spriteID -> {
                     final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
 
-                    preassembled.draw(hairBack.compose().getSprite(spriteID));
                     preassembled.draw(headLayer.compose().getSprite(spriteID));
                     preassembled.draw(eyeLayer.compose().getSprite(spriteID));
 
@@ -449,14 +461,15 @@ public final class PokemonGen4Style extends Style {
                     preassembled.draw(hatLayer.compose().getSprite(spriteID));
                     preassembled.draw(hairFront.compose().getSprite(spriteID));
 
-                    final SpriteSheet combinedHead =
+                    final SpriteSheet combined =
                             new SpriteSheet(preassembled.submit(),
                                     HEAD_DIMS.width(), HEAD_DIMS.height());
 
-                    return composeHead(combinedHead).getSprite(spriteID);
+                    return composeHead(combined).getSprite(spriteID);
                 });
 
-        final MaskLayer headMask = MLBuilder.init("head-mask", combinedHeadLayer)
+        final MaskLayer headMask = MLBuilder.init("head-mask",
+                        combinedHeadBackLayer, combinedHeadLayer)
                 .setLogic(s -> {
                     final String animID =
                             SpriteStates.extractContributor(ANIM, s);
@@ -470,7 +483,7 @@ public final class PokemonGen4Style extends Style {
                 }).build();
 
         layers.addToAssembly(
-                skinLayer, /* hairBack, */ bodyLayer,
+                combinedHeadBackLayer, bodyLayer,
                 clothingTypeLayer, clothingLogic,
                 combinedHeadLayer, headMask);
     }
