@@ -422,7 +422,13 @@ public final class PokemonGen4Style extends Style {
                 .trySetNaiveLogic(this, hatLayer).build();
 
         // TODO - still assembling
-        layers.add(
+        layers.addToCustomization(
+                bodyLayer, skinLayer, headLayer, eyeLayer,
+                eyeColorLayer, eyeHeightLayer, hairLayer, hairColorLayer,
+                clothingTypeLayer, clothingLogic, hatLayer
+        );
+
+        layers.addToAssembly(
                 skinLayer, hairBack, bodyLayer,
                 clothingTypeLayer, clothingLogic,
                 headLayer,
@@ -447,7 +453,7 @@ public final class PokemonGen4Style extends Style {
                         default -> new GameImage(dims.width(), dims.height());
                     };
                 }).build();
-        layers.add(headMask);
+        layers.addToAssembly(headMask);
     }
 
     @Override
