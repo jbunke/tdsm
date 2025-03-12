@@ -332,7 +332,7 @@ public abstract class Style {
         final List<Pair<String, GameImage>> stipRep = new ArrayList<>();
 
         // Set up render layers
-        for (CustomizationLayer layer : layers.get())
+        for (CustomizationLayer layer : layers.assembly())
             addLayerIfRendered(renderLayers, layer);
 
 
@@ -445,7 +445,7 @@ public abstract class Style {
     }
 
     public void randomize() {
-        layers.get().forEach(l -> l.randomize(false));
+        layers.customization().forEach(l -> l.randomize(false));
         update();
     }
 
@@ -453,7 +453,7 @@ public abstract class Style {
         final SpriteAssembler<String, String> assembler =
                 new SpriteAssembler<>(dims.width(), dims.height());
 
-        for (CustomizationLayer layer : layers.get())
+        for (CustomizationLayer layer : layers.assembly())
             addLayerToAssembler(assembler, layer);
 
         considerations(assembler);

@@ -108,6 +108,18 @@ public final class Colors {
         return "#" + ParserSerializer.serializeColor(c, true);
     }
 
+    public static void alphaMask(final GameImage source, final GameImage mask) {
+        final int w = source.getWidth(), h = source.getHeight(),
+                tp = TRANSPARENT.getRGB();
+        if (mask.getWidth() != w || mask.getHeight() != h)
+            return;
+
+        for (int x = 0; x < w; x++)
+            for (int y = 0; y < h; y++)
+                if (mask.getColorAt(x, y).getAlpha() > 0)
+                    source.setRGB(x, y, tp);
+    }
+
     public static Map<Color, Integer> colorOccurrences(final Style style) {
         final GameImage spriteSheet = style.renderSpriteSheet();
         final int w = spriteSheet.getWidth(), h = spriteSheet.getHeight();

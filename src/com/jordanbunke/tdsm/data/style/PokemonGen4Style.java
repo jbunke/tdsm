@@ -37,6 +37,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
+import static com.jordanbunke.tdsm.util.Colors.alphaMask;
 import static com.jordanbunke.tdsm.util.Colors.black;
 
 public final class PokemonGen4Style extends Style {
@@ -44,7 +45,8 @@ public final class PokemonGen4Style extends Style {
 
     private static final String ID = "hokkaido";
     private static final Bounds2D DIMS = new Bounds2D(48, 48),
-            HEAD_DIMS = new Bounds2D(32, 32);
+            HEAD_DIMS = new Bounds2D(32, 32),
+            HEAD_SHEET_DIMS = new Bounds2D(160, 32);
 
     private static final String ANIM_ID_IDLE = "idle", ANIM_ID_WALK = "walk",
             ANIM_ID_RUN = "run", ANIM_ID_FISH = "fish",
@@ -304,8 +306,8 @@ public final class PokemonGen4Style extends Style {
                         new AssetChoiceTemplate("oval-head", this::replace),
                         new AssetChoiceTemplate("round-head", this::replace),
                         new AssetChoiceTemplate("square-jaw", this::replace))
-                .setComposer(this::composeHead).setDims(HEAD_DIMS)
-                .setName("Head Shape").build();
+                .setComposer(sheet -> spriteID -> sheet.getSheet())
+                .setDims(HEAD_DIMS).setName("Head Shape").build();
         headLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer eyeLayer = buildEyes();
@@ -422,20 +424,39 @@ public final class PokemonGen4Style extends Style {
                 .trySetNaiveLogic(this, hatLayer).build();
 
         // TODO - still assembling
-        layers.add(
-                skinLayer, hairBack, bodyLayer,
-                clothingTypeLayer, clothingLogic,
-                headLayer,
-                eyeLayer, eyeColorLayer, eyeHeightLayer,
-                hairLayer, hairColorLayer,
-                hatLayer, hatMaskLayer, hairFront
+        layers.addToCustomization(
+                bodyLayer, skinLayer, headLayer, eyeLayer,
+                eyeColorLayer, eyeHeightLayer, hairLayer, hairColorLayer,
+                clothingTypeLayer, clothingLogic, hatLayer
         );
 
-        final CustomizationLayer[] headLayers = new CustomizationLayer[] {
-                hairBack, headLayer, eyeLayer, hairLayer, hatLayer, hairFront
-        };
+        // TODO - consider separating hairBack from combined head
 
-        final MaskLayer headMask = MLBuilder.init("head-mask", headLayers)
+        final PureComposeLayer combinedHeadLayer =
+                new PureComposeLayer("combined-head",
+                        spriteID -> {
+                    final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
+
+                    preassembled.draw(hairBack.compose().getSprite(spriteID));
+                    preassembled.draw(headLayer.compose().getSprite(spriteID));
+                    preassembled.draw(eyeLayer.compose().getSprite(spriteID));
+
+                    final GameImage hair = hairLayer.compose().getSprite(spriteID),
+                            hatMask = hatMaskLayer.compose().getSprite(spriteID);
+                    alphaMask(hair, hatMask);
+
+                    preassembled.draw(hair);
+                    preassembled.draw(hatLayer.compose().getSprite(spriteID));
+                    preassembled.draw(hairFront.compose().getSprite(spriteID));
+
+                    final SpriteSheet combinedHead =
+                            new SpriteSheet(preassembled.submit(),
+                                    HEAD_DIMS.width(), HEAD_DIMS.height());
+
+                    return composeHead(combinedHead).getSprite(spriteID);
+                });
+
+        final MaskLayer headMask = MLBuilder.init("head-mask", combinedHeadLayer)
                 .setLogic(s -> {
                     final String animID =
                             SpriteStates.extractContributor(ANIM, s);
@@ -447,7 +468,11 @@ public final class PokemonGen4Style extends Style {
                         default -> new GameImage(dims.width(), dims.height());
                     };
                 }).build();
-        layers.add(headMask);
+
+        layers.addToAssembly(
+                skinLayer, /* hairBack, */ bodyLayer,
+                clothingTypeLayer, clothingLogic,
+                combinedHeadLayer, headMask);
     }
 
     @Override
@@ -708,25 +733,35 @@ public final class PokemonGen4Style extends Style {
     private SpriteConstituent<String> composeEyes(
             final SpriteSheet sheet
     ) {
-        return composeHead(sheet, false, -eyeHeightLayer.getValue());
+        return composeOnHead(sheet, -eyeHeightLayer.getValue());
     }
 
     private SpriteConstituent<String> composeOnHead(final SpriteSheet sheet) {
-        return composeHead(sheet, false, 0);
+        return composeOnHead(sheet, 0);
     }
 
-    private SpriteConstituent<String> composeHead(
-            final SpriteSheet sheet
+    private SpriteConstituent<String> composeOnHead(
+            final SpriteSheet sheet, final int augY
     ) {
-        return composeHead(sheet, true, 0);
+        return id -> {
+            final GameImage dest = new GameImage(HEAD_SHEET_DIMS);
+
+            for (int x = 0; x < 4; x++) {
+                final GameImage source = sheet.getSprite(new Coord2D(x, 0));
+
+                dest.draw(source, x * HEAD_DIMS.width(), augY);
+
+                if (x == 0)
+                    dest.draw(source, 4 * HEAD_DIMS.width(), augY);
+            }
+
+            return dest.submit();
+        };
     }
 
-    private SpriteConstituent<String> composeHead(
-            final SpriteSheet sheet, final boolean hasTiltedDown, final int augY
-    ) {
+    private SpriteConstituent<String> composeHead(final SpriteSheet sheet) {
         final SpriteConstituent<String> assetFetcher =
-                new InterpretedSpriteSheet<>(sheet,
-                        id -> headDirX(id, hasTiltedDown));
+                new InterpretedSpriteSheet<>(sheet, this::headDirX);
 
         return id -> {
             final GameImage sprite = new GameImage(DIMS.width(), DIMS.height());
@@ -739,7 +774,7 @@ public final class PokemonGen4Style extends Style {
             if (animID.equals(ANIM_ID_CAPSULE) && !dir.equals(Dir.DOWN))
                 return sprite;
 
-            final Coord2D offset = headOffset(id, augY);
+            final Coord2D offset = headOffset(id);
             final int BASE_X = 8, BASE_Y = 8,
                     x = BASE_X + offset.x, y = BASE_Y + offset.y;
 
@@ -748,7 +783,7 @@ public final class PokemonGen4Style extends Style {
         };
     }
 
-    private Coord2D headOffset(final String spriteID, final int augY) {
+    private Coord2D headOffset(final String spriteID) {
         final Directions.Dir dir = Directions.get(
                 SpriteStates.extractContributor(DIRECTION, spriteID));
         final String animID =
@@ -851,10 +886,10 @@ public final class PokemonGen4Style extends Style {
             default -> 0;
         };
 
-        return new Coord2D(x, bodyComp + animComp + frameComp + augY);
+        return new Coord2D(x, bodyComp + animComp + frameComp);
     }
 
-    private Coord2D headDirX(final String spriteID, final boolean hasTiltedDown) {
+    private Coord2D headDirX(final String spriteID) {
         final Directions.Dir dir = Directions.get(
                 SpriteStates.extractContributor(DIRECTION, spriteID));
         final String animID =
@@ -864,7 +899,7 @@ public final class PokemonGen4Style extends Style {
 
         final int x = indexOfDir(dir);
 
-        final boolean tiltedDown = hasTiltedDown && dir.equals(Dir.DOWN) &&
+        final boolean tiltedDown = dir.equals(Dir.DOWN) &&
                 switch (animID) {
             case ANIM_ID_RUN, ANIM_ID_CYCLE, ANIM_ID_SURF -> true;
             case ANIM_ID_FISH -> frame == 2;
