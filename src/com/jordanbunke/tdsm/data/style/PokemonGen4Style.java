@@ -251,6 +251,7 @@ public final class PokemonGen4Style extends Style {
     private static Animation[] setUpAnimations() {
         final boolean horizontal = true;
 
+        // TODO - uncomment animations as implemented
         return new Animation[] {
                 Animation.init(ANIM_ID_WALK, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
@@ -268,14 +269,14 @@ public final class PokemonGen4Style extends Style {
                         .setPlaybackMode(PlaybackMode.PONG)
                         .setCoordFunc(new Coord2D(3, 0), horizontal)
                         .setFrameTiming(6).build(),
-                Animation.init(ANIM_ID_FISH, 4)
-                        .setCoordFunc(new Coord2D(6, 0), horizontal)
-                        .build(),
-                Animation.init(ANIM_ID_BIKE_IDLE, 1)
-                        .setCoordFunc(new Coord2D(10, 0), horizontal).build(),
-                Animation.init(ANIM_ID_CYCLE, 4)
-                        .setCoordFunc(new Coord2D(11, 0), horizontal)
-                        .setFrameTiming(8).build(),
+//                Animation.init(ANIM_ID_FISH, 4)
+//                        .setCoordFunc(new Coord2D(6, 0), horizontal)
+//                        .build(),
+//                Animation.init(ANIM_ID_BIKE_IDLE, 1)
+//                        .setCoordFunc(new Coord2D(10, 0), horizontal).build(),
+//                Animation.init(ANIM_ID_CYCLE, 4)
+//                        .setCoordFunc(new Coord2D(11, 0), horizontal)
+//                        .setFrameTiming(8).build(),
                 Animation.init(ANIM_ID_SURF, 1)
                         .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
                 Animation.init(ANIM_ID_SWIM, 3)
@@ -289,8 +290,8 @@ public final class PokemonGen4Style extends Style {
                             final int y = 0;
                             return new Coord2D(16 + x, y);
                         }).build(),
-                Animation.init(ANIM_ID_CAPSULE, 4)
-                        .setCoordFunc(new Coord2D(19, 0), horizontal).build(),
+//                Animation.init(ANIM_ID_CAPSULE, 4)
+//                        .setCoordFunc(new Coord2D(19, 0), horizontal).build(),
         };
     }
 
