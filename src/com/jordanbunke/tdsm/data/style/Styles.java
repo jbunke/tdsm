@@ -1,11 +1,15 @@
 package com.jordanbunke.tdsm.data.style;
 
+import com.jordanbunke.tdsm.data.style.pkmn.HokkaidoStyle;
+import com.jordanbunke.tdsm.data.style.pkmn.KyushuStyle;
+
 public enum Styles {
-    PKMN, VIGILANTE;
+    HOKKAIDO, KYUSHU, VIGILANTE;
 
     public Style get() {
         return switch (this) {
-            case PKMN -> PokemonGen4Style.get();
+            case HOKKAIDO -> HokkaidoStyle.get();
+            case KYUSHU -> KyushuStyle.get();
             case VIGILANTE -> VigilanteStyle.get();
         };
     }

@@ -84,6 +84,11 @@ public final class ACLBuilder {
         return this;
     }
 
+    public ACLBuilder trivialComposer() {
+        composer = sheet -> spriteID -> sheet.getSheet();
+        return this;
+    }
+
     public ACLBuilder setNoAssetChoice(final NoAssetChoice noAssetChoice) {
         this.noAssetChoice = noAssetChoice;
         return this;

@@ -30,7 +30,7 @@ import static com.jordanbunke.tdsm.util.Constants.*;
 
 public abstract class Style {
 
-    static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
+    public static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
 
     public final String id;
 
@@ -54,7 +54,7 @@ public abstract class Style {
     private boolean multipleAnimsPerDim, singleDim, wrapAnimsAcrossDims;
     private int framesPerDim;
 
-    Style(
+    protected Style(
             final String id, final Bounds2D dims, final Directions directions,
             final Animation[] animations, final Layers layers
     ) {
@@ -509,7 +509,7 @@ public abstract class Style {
         });
     }
 
-    final int indexOfDir(final Directions.Dir dir) {
+    protected final int indexOfDir(final Directions.Dir dir) {
         for (int i = 0; i < directions.order().length; i++)
             if (dir == directions.order()[i])
                 return i;
@@ -530,7 +530,7 @@ public abstract class Style {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
-    void considerations(final SpriteAssembler<String, String> assembler) {}
+    protected void considerations(final SpriteAssembler<String, String> assembler) {}
 
     public boolean hasPreExportStep() {
         return false;

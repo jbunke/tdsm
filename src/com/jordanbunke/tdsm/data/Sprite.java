@@ -20,7 +20,7 @@ public final class Sprite {
     private Directions.Dir previewDir;
 
     static {
-        INSTANCE = new Sprite(Styles.PKMN.get());
+        INSTANCE = new Sprite(Styles.HOKKAIDO.get());
         rebuildMenus();
     }
 
