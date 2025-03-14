@@ -74,13 +74,13 @@ public final class KyushuStyle extends PokemonStyle {
                         .setPlaybackMode(PlaybackMode.PONG)
                         .setCoordFunc(new Coord2D(6, 0), horizontal)
                         .setFrameTiming(6).build(),
-                Animation.init(ANIM_ID_FISH, 4)
-                        .setCoordFunc(new Coord2D(9, 0), horizontal).build(),
+//                Animation.init(ANIM_ID_FISH, 4)
+//                        .setCoordFunc(new Coord2D(9, 0), horizontal).build(),
                 Animation.init(ANIM_ID_SURF, 2)
                         .setCoordFunc(new Coord2D(13, 0), horizontal)
                         .setFrameTiming(15).build(),
-                Animation.init(ANIM_ID_CAPSULE, 5)
-                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
+//                Animation.init(ANIM_ID_CAPSULE, 5)
+//                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
         };
     }
 
