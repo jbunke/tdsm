@@ -547,7 +547,7 @@ public abstract class Style {
     @SuppressWarnings("unused")
     public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
 
-    public void buildPreExportMenu(final MenuBuilder mb) {}
+    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {}
 
     public abstract String name();
     public abstract boolean shipping();

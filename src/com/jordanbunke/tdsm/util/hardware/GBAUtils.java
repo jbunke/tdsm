@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.util.hardware;
 
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
+import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
@@ -55,7 +56,8 @@ public final class GBAUtils {
             final MenuBuilder mb, final Style style,
             final Map<Color, Color> replacementMap,
             final Supplier<Color> selectGetter,
-            final Consumer<Color> selector
+            final Consumer<Color> selector,
+            final Coord2D warningPos
     ) {
         style.resetPreExport();
         final Map<Color, Integer> cs = Colors.colorOccurrences(style);
@@ -158,5 +160,9 @@ public final class GBAUtils {
                 COL_SEL_BUTTON_DIM + ASSET_BUFFER_Y),
                 replacementMap, cs.keySet(), selectGetter);
         mb.add(ro);
+
+        final Indicator warning = Indicator.make(
+                ResourceCodes.BACK_FROM_REPL, warningPos, Anchor.LEFT_TOP);
+        mb.add(warning);
     }
 }

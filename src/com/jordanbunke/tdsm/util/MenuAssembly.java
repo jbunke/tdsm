@@ -53,9 +53,10 @@ public final class MenuAssembly {
 
     public static Menu customization() {
         final MenuBuilder mb = new MenuBuilder();
+        final Style style = Sprite.get().getStyle();
 
         // PREVIEW
-        if (Sprite.get().getStyle().hasSettings()) {
+        if (style.hasSettings()) {
             IconButton settings = IconButton.init(
                     ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                     () -> ProgramState.set(ProgramState.MENU, styleSettings())
@@ -66,7 +67,7 @@ public final class MenuAssembly {
         final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
                 PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
 
-        final Animation[] anims = Sprite.get().getStyle().animations;
+        final Animation[] anims = style.animations;
         final Dropdown animationDropdown = Dropdown.create(
                 animationLabel.followTB(),
                 Arrays.stream(anims).map(Animation::name)
@@ -117,15 +118,14 @@ public final class MenuAssembly {
                         .map(s -> (Runnable) () -> Sprite.get().setStyle(s))
                         .toArray(Runnable[]::new),
                 () -> Arrays.stream(styles).toList()
-                        .indexOf(Sprite.get().getStyle()));
+                        .indexOf(style));
         final Indicator styleInfo = Indicator.make(
-                ResourceCodes.CHANGE_STYLE, styleDropdown.followIcon17(),
+                style.id, iconAfterTextButton(styleDropdown),
                 Anchor.LEFT_TOP);
 
         final IconButton randomSpriteButton = IconButton.init(
                 ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
-                Sprite.get().getStyle()::randomize)
-                .setAnchor(Anchor.CENTRAL)
+                style::randomize).setAnchor(Anchor.CENTRAL)
                 .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo, randomSpriteButton);
@@ -368,8 +368,6 @@ public final class MenuAssembly {
         final double REL_W = 0.6;
         final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W);
 
-        style.buildPreExportMenu(mb);
-
         final MenuElement backButton = StaticTextButton.make("< Configure...",
                 new Coord2D(LEFT, CANVAS_H - BUFFER),
                 Anchor.LEFT_BOTTOM, () -> true,
@@ -380,6 +378,8 @@ public final class MenuAssembly {
                         () -> ProgramState.set(ProgramState.MENU, export()));
 
         mb.addAll(backButton, exportButton);
+
+        style.buildPreExportMenu(mb, iconAfterTextButton(backButton));
 
         return mb.build();
     }

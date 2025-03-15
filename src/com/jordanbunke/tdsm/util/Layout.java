@@ -9,7 +9,7 @@ import java.awt.*;
 
 public final class Layout {
     public static final int SCALE_UP, CANVAS_W = 500, CANVAS_H = 300,
-            SPRITE_PREVIEW_SCALE_UP = 2, PREVIEW_RENDER_Y = 20;
+            SPRITE_PREVIEW_SCALE_UP = 2;
 
     static {
         if (Settings.isCapture()) {
@@ -195,5 +195,9 @@ public final class Layout {
 
     public static Coord2D follow(final MenuElement ref) {
         return ref.getRenderPosition().displace(ref.getWidth(), 0);
+    }
+
+    public static Coord2D iconAfterTextButton(final MenuElement button) {
+        return follow(button).displaceY(ICON_TEXTBOX_RELATIVE_DIFF_Y);
     }
 }

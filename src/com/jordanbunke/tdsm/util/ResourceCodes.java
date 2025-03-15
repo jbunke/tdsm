@@ -38,7 +38,7 @@ public final class ResourceCodes {
             WARN_ROM_15_COLS = "warn_rom_15_cols",
             REPLACEMENT = "replacement",
             NO_REPL = "no_repl",
-            CHANGE_STYLE = "change_style",
+            BACK_FROM_REPL = "back_from_repl",
             RANDOM_SPRITE = "random_sprite";
 
     // blurbs

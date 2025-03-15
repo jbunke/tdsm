@@ -89,7 +89,9 @@ public final class KyushuStyle extends PokemonStyle {
                 "skin", "Skin Color", skinTones);
 
         bodyLayer = ACLBuilder.of("body", this,
-                buildTemplates("player-example")).setName("Body Type").build();
+                buildTemplates("player-example"))
+                .setPreviewCoord(new Coord2D(DIMS.width(), 0))
+                .setName("Body Type").build();
         bodyLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer headLayer = ACLBuilder.of("head", this,

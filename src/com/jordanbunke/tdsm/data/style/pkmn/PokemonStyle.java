@@ -5,6 +5,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
+import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
@@ -323,9 +324,10 @@ public abstract class PokemonStyle extends Style {
     }
 
     @Override
-    public void buildPreExportMenu(final MenuBuilder mb) {
+    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {
         GBAUtils.buildReplacementMenu(mb, this, replacementMap,
-                () -> selectedToReplace, c -> selectedToReplace = c);
+                () -> selectedToReplace, c -> selectedToReplace = c,
+                warningPos);
     }
 
     @Override
