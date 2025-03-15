@@ -409,26 +409,28 @@ public final class HokkaidoStyle extends PokemonStyle {
     private SpriteConstituent<String> composeEyes(
             final SpriteSheet sheet
     ) {
-        return composeOnHead(sheet, -eyeHeightLayer.getValue());
+        return composeOnHead(sheet, -eyeHeightLayer.getValue(), true);
     }
 
     private SpriteConstituent<String> composeOnHead(final SpriteSheet sheet) {
-        return composeOnHead(sheet, 0);
+        return composeOnHead(sheet, 0, false);
     }
 
     private SpriteConstituent<String> composeOnHead(
-            final SpriteSheet sheet, final int augY
+            final SpriteSheet sheet, final int augY, final boolean copyTiltedDown
     ) {
+        final int max = copyTiltedDown ? 4 : 5;
+
         return id -> {
             final GameImage dest = new GameImage(HEAD_SHEET_DIMS);
 
-            for (int x = 0; x < 4; x++) {
+            for (int x = 0; x < max; x++) {
                 final GameImage source = sheet.getSprite(new Coord2D(x, 0));
 
                 dest.draw(source, x * HEAD_DIMS.width(), augY);
 
-                if (x == 0)
-                    dest.draw(source, 4 * HEAD_DIMS.width(), augY);
+                if (x == 0 && copyTiltedDown)
+                    dest.draw(source, max * HEAD_DIMS.width(), augY);
             }
 
             return dest.submit();
