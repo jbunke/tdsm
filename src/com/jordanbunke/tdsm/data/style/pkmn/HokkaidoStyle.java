@@ -19,6 +19,7 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.util.Constants;
+import com.jordanbunke.tdsm.util.ParserUtils;
 
 import java.awt.*;
 import java.nio.file.Path;
@@ -227,48 +228,7 @@ public final class HokkaidoStyle extends PokemonStyle {
         clothingTypeLayer.addDependent(clothingLogic);
         bodyLayer.addDependent(clothingLogic);
 
-        final AssetChoiceLayer hairLayer = ACLBuilder.of(
-                        "hair", this,
-                        new AssetChoiceTemplate("dragon-master", PokemonStyle::replace),
-                        new AssetChoiceTemplate("nest", PokemonStyle::replace),
-                        new AssetChoiceTemplate("afro", PokemonStyle::replace),
-                        new AssetChoiceTemplate("bangs", PokemonStyle::replace),
-                        new AssetChoiceTemplate("closer", PokemonStyle::replace),
-                        new AssetChoiceTemplate("waves", PokemonStyle::replace),
-                        new AssetChoiceTemplate("disheveled", PokemonStyle::replace),
-                        new AssetChoiceTemplate("framed", PokemonStyle::replace),
-                        new AssetChoiceTemplate("pageant-queen", PokemonStyle::replace),
-                        new AssetChoiceTemplate("pippi",
-                                c -> replaceWithNSelections(c, 1), hairAcc),
-                        new AssetChoiceTemplate("pixie", PokemonStyle::replace),
-                        new AssetChoiceTemplate("prodigy", PokemonStyle::replace),
-                        new AssetChoiceTemplate("raven", PokemonStyle::replace),
-                        new AssetChoiceTemplate("professional", PokemonStyle::replace),
-                        new AssetChoiceTemplate("crew-cut", PokemonStyle::replace),
-                        new AssetChoiceTemplate("dainty",
-                                c -> replaceWithNSelections(c, 1), hairAcc),
-                        new AssetChoiceTemplate("flared-curtains", PokemonStyle::replace),
-                        new AssetChoiceTemplate("geezer", PokemonStyle::replace),
-                        new AssetChoiceTemplate("mop", PokemonStyle::replace),
-                        new AssetChoiceTemplate("outta-my-face",
-                                c -> replaceWithNSelections(c, 1), hairAcc),
-                        new AssetChoiceTemplate("pigtails",
-                                c -> replaceWithNSelections(c, 1), hairAcc),
-                        new AssetChoiceTemplate("rocker", PokemonStyle::replace),
-                        new AssetChoiceTemplate("serene",
-                                c -> replaceWithNSelections(c, 1), hairAcc),
-                        new AssetChoiceTemplate("porcupine", PokemonStyle::replace),
-                        new AssetChoiceTemplate("mane", PokemonStyle::replace),
-                        new AssetChoiceTemplate("receding", PokemonStyle::replace),
-                        new AssetChoiceTemplate("heli-pad", PokemonStyle::replace),
-                        new AssetChoiceTemplate("cowlick", PokemonStyle::replace),
-                        new AssetChoiceTemplate("magnate", PokemonStyle::replace),
-                        new AssetChoiceTemplate("silver-fox", PokemonStyle::replace),
-                        new AssetChoiceTemplate("high-ponytail", PokemonStyle::replace),
-                        new AssetChoiceTemplate("chic", PokemonStyle::replace))
-                .setComposer(this::composeOnHead).setName("Hairstyle")
-                .setNoAssetChoice(NoAssetChoice.equal())
-                .setDims(HEAD_DIMS).build();
+        final AssetChoiceLayer hairLayer = buildHair();
         hairLayer.addInfluencingSelections(skinTones, hairColors);
 
         final DependentComponentLayer hairBack = new DependentComponentLayer(
@@ -276,16 +236,7 @@ public final class HokkaidoStyle extends PokemonStyle {
                 hairFront = new DependentComponentLayer(
                         "hair-front", this, hairLayer, 1);
 
-        // TODO - add more
-        hatLayer = ACLBuilder.of("hat", this,
-                        new AssetChoiceTemplate("fitted-front",
-                                PokemonStyle::clothesReplace, hatCS[0], hatCS[1]),
-                        new AssetChoiceTemplate("fitted-back",
-                                PokemonStyle::clothesReplace, hatCS[0], hatCS[1]),
-                        new AssetChoiceTemplate("fedora",
-                                PokemonStyle::clothesReplace, hatCS[0], hatCS[1]),
-                        new AssetChoiceTemplate("durag",
-                                PokemonStyle::clothesReplace, hatCS[0]))
+        hatLayer = buildClothes("hat", hatCS)
                 .setName("Headwear").setComposer(this::composeOnHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75))
                 .setDims(HEAD_DIMS).build();
@@ -366,63 +317,92 @@ public final class HokkaidoStyle extends PokemonStyle {
     }
 
     private AssetChoiceLayer buildEyes() {
-        final String[] ids = new String[] {
-                "determined", "hooded", "soft", "vacant", "narrow",
-                "menacing", "feminine", "tired", "lashes", "cranky"
-        };
+        final String layerID = "eyes";
+        final String[] ids = ParserUtils.readAssetCSV(id, layerID);
 
-        return ACLBuilder.of("eyes", this, Arrays.stream(ids)
+        return ACLBuilder.of(layerID, this, Arrays.stream(ids)
                 .map(id -> new AssetChoiceTemplate(id, PokemonStyle::replace))
                 .toArray(AssetChoiceTemplate[]::new))
                 .setDims(HEAD_DIMS).setComposer(this::composeEyes).build();
     }
 
+    private AssetChoiceLayer buildHair() {
+        final String layerID = "hair";
+        final String[] csv = ParserUtils.readAssetCSV(id, layerID);
+
+        final AssetChoiceTemplate[] templates = Arrays.stream(csv)
+                .map(s -> s.split(":")).map(s -> switch (s.length) {
+                    case 1 -> new AssetChoiceTemplate(s[0],
+                            PokemonStyle::replace);
+                    case 2 -> {
+                        final String code = s[0];
+                        final int selections = Integer.parseInt(s[1]);
+
+                        yield new AssetChoiceTemplate(code,
+                                c -> replaceWithNSelections(c, selections),
+                                hairAcc);
+                    }
+                    default -> null;
+                }).toArray(AssetChoiceTemplate[]::new);
+
+        return ACLBuilder.of(layerID, this, templates)
+                .setComposer(this::composeOnHead).setName("Hairstyle")
+                .setNoAssetChoice(NoAssetChoice.equal())
+                .setDims(HEAD_DIMS).build();
+    }
+
     private AssetChoiceLayer buildOutfit(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-outfit",
-                new AssetChoiceTemplate("gi",
-                        PokemonStyle::clothesReplace, topCS[0], topCS[1]),
-                new AssetChoiceTemplate("farmer-1",
-                        PokemonStyle::clothesReplace, topCS[0], topCS[1], topCS[2]))
+        return buildClothes(bt.prefix + "-outfit", topCS)
                 .setName("Outfit").build();
     }
 
     private AssetChoiceLayer buildTop(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-top",
-                new AssetChoiceTemplate("vest",
-                        PokemonStyle::clothesReplace, topCS[0], topCS[1]),
-                new AssetChoiceTemplate("blouse",
-                        PokemonStyle::clothesReplace, topCS[0], topCS[1]))
+        return buildClothes(bt.prefix + "-top", topCS)
                 .setName("Torso").build();
     }
 
     private AssetChoiceLayer buildBottom(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-bottom",
-                new AssetChoiceTemplate("slacks",
-                        PokemonStyle::clothesReplace, botCS[0]),
-                new AssetChoiceTemplate("shorts",
-                        PokemonStyle::clothesReplace, botCS[0]))
+        return buildClothes(bt.prefix + "-bottom", botCS)
                 .setName("Legs").build();
     }
 
     private AssetChoiceLayer buildShoes(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-shoes",
-                new AssetChoiceTemplate("simple",
-                        PokemonStyle::clothesReplace, shoeCS[0]))
+        return buildClothes(bt.prefix + "-shoes", shoeCS)
                 .setName("Shoes").build();
     }
 
     private ACLBuilder buildClothes(
-            final String id, final AssetChoiceTemplate... choices
+            final String layerID, final ColorSelection[] selections
     ) {
-        return ACLBuilder.of(id, this, choices)
+        final String[] csv = ParserUtils.readAssetCSV(id, layerID);
+
+        final Function<Integer, ColorSelection[]> shortener = l -> {
+            final ColorSelection[] shortened = new ColorSelection[l];
+
+            System.arraycopy(selections, 0, shortened, 0, l);
+
+            return shortened;
+        };
+
+        final AssetChoiceTemplate[] templates = Arrays.stream(csv)
+                .map(s -> s.split(":")).map(s -> {
+                    final String code = s[0];
+                    final int numSels = Integer.parseInt(s[1]);
+                    final ColorSelection[] sels = shortener.apply(numSels);
+
+                    return new AssetChoiceTemplate(code,
+                            PokemonStyle::clothesReplace, sels);
+                }).toArray(AssetChoiceTemplate[]::new);
+
+        return ACLBuilder.of(layerID, this, templates)
                 .setNoAssetChoice(NoAssetChoice.prob(0.0));
     }
 
