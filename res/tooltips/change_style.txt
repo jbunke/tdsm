@@ -1,2 +1,0 @@
-Changing the sprite style will reset all
-customization and configuration changes!
