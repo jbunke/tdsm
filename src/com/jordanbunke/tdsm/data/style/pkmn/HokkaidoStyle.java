@@ -182,10 +182,8 @@ public final class HokkaidoStyle extends PokemonStyle {
         headLayer.addInfluencingSelection(skinTones);
 
         final AssetChoiceLayer eyeLayer = buildEyes();
-        eyeLayer.addInfluencingSelection(skinTones);
-        eyeLayer.addInfluencingSelection(eyebrowColors);
-        eyeLayer.addInfluencingSelection(irisColors);
-        eyeLayer.addInfluencingSelection(ewColors);
+        eyeLayer.addInfluencingSelections(skinTones,
+                eyebrowColors, irisColors, ewColors);
 
         final ColorSelectionLayer eyeColorLayer = new ColorSelectionLayer(
                 "eye-color", irisColors, ewColors),

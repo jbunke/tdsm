@@ -12,13 +12,14 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
-import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
-import com.jordanbunke.tdsm.data.layer.PureComposeLayer;
+import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
+import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
+import com.jordanbunke.tdsm.util.ParserUtils;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -31,11 +32,20 @@ public final class KyushuStyle extends PokemonStyle {
             HEAD_SHEET_DIMS = new Bounds2D(5 * HEAD_DIMS.width(),
                     HEAD_DIMS.height());
 
+    private static final Color[] KYUSHU_EYES;
+
     private AssetChoiceLayer bodyLayer;
 
-    private final ColorSelection skinTones;
+    private final ColorSelection skinTones, hairColors,
+            eyebrowColors, eyeColors, hairAcc;
 
     static {
+        KYUSHU_EYES = new Color[] {
+                new Color(0x7b4141),
+                new Color(0x8b8b94),
+                new Color(0x522041)
+        };
+
         INSTANCE = new KyushuStyle();
     }
 
@@ -43,7 +53,10 @@ public final class KyushuStyle extends PokemonStyle {
         super(ID, DIMS, setUpAnimations());
 
         skinTones = new ColorSelection("Skin", true, SKIN_SWATCHES);
-        // TODO - color selections
+        hairColors = new ColorSelection("Hair", true, HAIR_SWATCHES);
+        eyebrowColors = new ColorSelection("Brows", true, HAIR_SWATCHES);
+        eyeColors = new ColorSelection("Eye", true, KYUSHU_EYES);
+        hairAcc = new ColorSelection("Accessory", true, CLOTHES_SWATCHES);
 
         bodyLayer = null;
 
@@ -88,26 +101,66 @@ public final class KyushuStyle extends PokemonStyle {
         final ColorSelectionLayer skinLayer = new ColorSelectionLayer(
                 "skin", "Skin Color", skinTones);
 
-        bodyLayer = ACLBuilder.of("body", this,
-                buildTemplates("player-example"))
+        bodyLayer = prepReplaceACLB("body")
                 .setPreviewCoord(new Coord2D(DIMS.width(), 0))
                 .setName("Body Type").build();
         bodyLayer.addInfluencingSelection(skinTones);
 
-        final AssetChoiceLayer headLayer = ACLBuilder.of("head", this,
-                buildTemplates("standard-head")).trivialComposer()
-                .setDims(HEAD_DIMS).setName("Head Shape").build();
+        final AssetChoiceLayer headLayer = prepReplaceACLB("head")
+                .trivialComposer().setDims(HEAD_DIMS)
+                .setName("Head Shape").build();
         headLayer.addInfluencingSelection(skinTones);
+
+        final MathLayer eyeHeight = new MathLayer("eye-height", -1, 1, 0,
+                i -> switch (i) {
+            case -1 -> "Low";
+            case 1 -> "High";
+            default -> "Average";
+        });
+        final AssetChoiceLayer eyeLayer = buildEyes(eyeHeight);
+        eyeLayer.addInfluencingSelections(skinTones, eyebrowColors, eyeColors);
+
+        final ColorSelectionLayer eyeColorLayer =
+                new ColorSelectionLayer("eye-color", eyeColors, eyebrowColors);
+
+        final AssetChoiceLayer hairLayer = buildHair();
+        hairLayer.addInfluencingSelections(skinTones, hairColors);
+
+        final DependentComponentLayer hairBack = new DependentComponentLayer(
+                "hair-back", this, hairLayer, -1);
 
         // TODO
 
-        layers.addToCustomization(skinLayer, bodyLayer, headLayer);
+        layers.addToCustomization(skinLayer, bodyLayer, headLayer,
+                eyeLayer, eyeColorLayer, eyeHeight, hairLayer);
+
+        final PureComposeLayer combinedHeadBackLayer =
+                new PureComposeLayer("combined-head-back",
+                        spriteID -> {
+                            final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
+
+                            // TODO - hat back & hat mask back
+                            preassembled.draw(hairBack.compose().getSprite(spriteID));
+
+                            final SpriteSheet combined =
+                                    new SpriteSheet(preassembled.submit(),
+                                            HEAD_DIMS.width(), HEAD_DIMS.height());
+
+                            return composeHead(combined).getSprite(spriteID);
+                        });
 
         final PureComposeLayer combinedHeadLayer =
                 new PureComposeLayer("combined-head", spriteID -> {
                     final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
 
                     preassembled.draw(headLayer.compose().getSprite(spriteID));
+                    preassembled.draw(eyeLayer.compose().getSprite(spriteID));
+
+                    final GameImage hair = hairLayer.compose().getSprite(spriteID);
+                    // TODO - hat mask
+
+                    preassembled.draw(hair);
+
                     // TODO
 
                     final SpriteSheet combined =
@@ -117,7 +170,43 @@ public final class KyushuStyle extends PokemonStyle {
                     return composeHead(combined).getSprite(spriteID);
                 });
 
-        layers.addToAssembly(bodyLayer, combinedHeadLayer);
+        // TODO - head mask
+
+        layers.addToAssembly(
+                combinedHeadBackLayer, bodyLayer, combinedHeadLayer);
+    }
+
+    private AssetChoiceLayer buildHair() {
+        final String layerID = "hair";
+        final String[] csv = ParserUtils.readAssetCSV(id, layerID);
+
+        final AssetChoiceTemplate[] templates = Arrays.stream(csv)
+                .map(s -> s.split(":")).map(s -> {
+                    final String code = s[0];
+                    final int numSels = Integer.parseInt(s[1]);
+
+                    final ColorSelection[] sels = numSels == 1
+                            ? new ColorSelection[] { hairColors }
+                            : new ColorSelection[] { hairColors, hairAcc };
+
+                    return new AssetChoiceTemplate(code,
+                            c -> replaceWithNSelections(c, numSels), sels);
+                }).toArray(AssetChoiceTemplate[]::new);
+
+        return ACLBuilder.of(layerID, this, templates)
+                .setComposer(this::composeOnHead).setName("Hairstyle")
+                .setNoAssetChoice(NoAssetChoice.equal()).setDims(HEAD_DIMS)
+                .build();
+    }
+
+    private AssetChoiceLayer buildEyes(final MathLayer eyeHeight) {
+        return prepReplaceACLB("eyes").setDims(HEAD_DIMS)
+                .setComposer(sheet -> composeEyes(sheet, eyeHeight)).build();
+    }
+
+    private ACLBuilder prepReplaceACLB(final String layerID) {
+        return ACLBuilder.of(layerID, this,
+                buildTemplates(ParserUtils.readAssetCSV(id, layerID)));
     }
 
     private AssetChoiceTemplate[] buildTemplates(final String... ids) {
@@ -130,6 +219,37 @@ public final class KyushuStyle extends PokemonStyle {
         return Arrays.stream(ids)
                 .map(id -> new AssetChoiceTemplate(id, f))
                 .toArray(AssetChoiceTemplate[]::new);
+    }
+
+    private SpriteConstituent<String> composeEyes(
+            final SpriteSheet sheet, final MathLayer eyeHeight
+    ) {
+        return composeOnHead(sheet, -eyeHeight.getValue(), true);
+    }
+
+    private SpriteConstituent<String> composeOnHead(final SpriteSheet sheet) {
+        return composeOnHead(sheet, 0, false);
+    }
+
+    private SpriteConstituent<String> composeOnHead(
+            final SpriteSheet sheet, final int augY, final boolean copyTiltedDown
+    ) {
+        final int max = copyTiltedDown ? 4 : 5;
+
+        return id -> {
+            final GameImage dest = new GameImage(HEAD_SHEET_DIMS);
+
+            for (int x = 0; x < max; x++) {
+                final GameImage source = sheet.getSprite(new Coord2D(x, 0));
+
+                dest.draw(source, x * HEAD_DIMS.width(), augY);
+
+                if (x == 0 && copyTiltedDown)
+                    dest.draw(source, max * HEAD_DIMS.width(), augY);
+            }
+
+            return dest.submit();
+        };
     }
 
     private SpriteConstituent<String> composeHead(final SpriteSheet sheet) {
