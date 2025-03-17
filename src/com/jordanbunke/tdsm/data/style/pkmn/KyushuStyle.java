@@ -22,6 +22,7 @@ import com.jordanbunke.tdsm.util.ParserUtils;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 public final class KyushuStyle extends PokemonStyle {
     private static final KyushuStyle INSTANCE;
@@ -37,7 +38,9 @@ public final class KyushuStyle extends PokemonStyle {
     private AssetChoiceLayer bodyLayer;
 
     private final ColorSelection skinTones, hairColors,
-            eyebrowColors, eyeColors, hairAcc;
+            eyebrowColors, eyeColors;
+
+    private final ColorSelection[] hairAccCS;
 
     static {
         KYUSHU_EYES = new Color[] {
@@ -56,7 +59,12 @@ public final class KyushuStyle extends PokemonStyle {
         hairColors = new ColorSelection("Hair", true, HAIR_SWATCHES);
         eyebrowColors = new ColorSelection("Brows", true, HAIR_SWATCHES);
         eyeColors = new ColorSelection("Eye", true, KYUSHU_EYES);
-        hairAcc = new ColorSelection("Accessory", true, CLOTHES_SWATCHES);
+
+
+        hairAccCS = IntStream.range(0, 2).mapToObj(i ->
+                new ColorSelection(i == 0 ? "Accessory" : "Acc. 2",
+                        true, CLOTHES_SWATCHES))
+                .toArray(ColorSelection[]::new);
 
         bodyLayer = null;
 
@@ -127,7 +135,9 @@ public final class KyushuStyle extends PokemonStyle {
         hairLayer.addInfluencingSelections(skinTones, hairColors);
 
         final DependentComponentLayer hairBack = new DependentComponentLayer(
-                "hair-back", this, hairLayer, -1);
+                "hair-back", this, hairLayer, -1),
+                hairFront = new DependentComponentLayer(
+                        "hair-front", this, hairLayer, 1);
 
         // TODO
 
@@ -160,6 +170,9 @@ public final class KyushuStyle extends PokemonStyle {
                     // TODO - hat mask
 
                     preassembled.draw(hair);
+                    // TODO - hat layer
+
+                    preassembled.draw(hairFront.compose().getSprite(spriteID));
 
                     // TODO
 
@@ -185,9 +198,12 @@ public final class KyushuStyle extends PokemonStyle {
                     final String code = s[0];
                     final int numSels = Integer.parseInt(s[1]) + 1;
 
-                    final ColorSelection[] sels = numSels == 1
-                            ? new ColorSelection[] { hairColors }
-                            : new ColorSelection[] { hairAcc, hairColors };
+                    final ColorSelection[] sels = switch (numSels) {
+                        case 3 -> new ColorSelection[] { hairAccCS[0],
+                                hairAccCS[1], hairColors };
+                        case 2 -> new ColorSelection[] { hairAccCS[0], hairColors };
+                        default -> new ColorSelection[] { hairColors };
+                    };
 
                     return new AssetChoiceTemplate(code,
                             c -> replaceWithNSelections(c, numSels), sels);
