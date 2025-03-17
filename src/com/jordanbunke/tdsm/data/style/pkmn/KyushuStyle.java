@@ -183,11 +183,11 @@ public final class KyushuStyle extends PokemonStyle {
         final AssetChoiceTemplate[] templates = Arrays.stream(csv)
                 .map(s -> s.split(":")).map(s -> {
                     final String code = s[0];
-                    final int numSels = Integer.parseInt(s[1]);
+                    final int numSels = Integer.parseInt(s[1]) + 1;
 
                     final ColorSelection[] sels = numSels == 1
                             ? new ColorSelection[] { hairColors }
-                            : new ColorSelection[] { hairColors, hairAcc };
+                            : new ColorSelection[] { hairAcc, hairColors };
 
                     return new AssetChoiceTemplate(code,
                             c -> replaceWithNSelections(c, numSels), sels);
