@@ -46,7 +46,8 @@ public final class KyushuStyle extends PokemonStyle {
         KYUSHU_EYES = new Color[] {
                 new Color(0x7b4141),
                 new Color(0x8b8b94),
-                new Color(0x522041)
+                new Color(0x522041),
+                new Color(0x442525)
         };
 
         INSTANCE = new KyushuStyle();
