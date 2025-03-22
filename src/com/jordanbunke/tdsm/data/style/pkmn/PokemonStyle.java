@@ -13,20 +13,18 @@ import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
 import com.jordanbunke.tdsm.data.layer.Layers;
+import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
+import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.StyleOption;
-import com.jordanbunke.tdsm.util.Colors;
-import com.jordanbunke.tdsm.util.Constants;
-import com.jordanbunke.tdsm.util.ResourceCodes;
-import com.jordanbunke.tdsm.util.StringUtils;
+import com.jordanbunke.tdsm.util.*;
 import com.jordanbunke.tdsm.util.hardware.GBAUtils;
 
 import java.awt.*;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
@@ -34,6 +32,7 @@ import static com.jordanbunke.color_proc.ColorProc.fromHSV;
 import static com.jordanbunke.tdsm.util.Colors.black;
 
 public abstract class PokemonStyle extends Style {
+    static final String COMBINED_OUTFIT = "Combined outfit";
 
     static final String ANIM_ID_IDLE = "idle", ANIM_ID_WALK = "walk",
             ANIM_ID_RUN = "run", ANIM_ID_FISH = "fish",
@@ -214,6 +213,34 @@ public abstract class PokemonStyle extends Style {
 
             return fromHSV(ch, s, v, input.getAlpha());
         });
+    }
+
+    static ACLBuilder buildClothes(
+            final PokemonStyle style, final String layerID,
+            final ColorSelection[] selections
+    ) {
+        final String[] csv = ParserUtils.readAssetCSV(style.id, layerID);
+
+        final Function<Integer, ColorSelection[]> shortener = l -> {
+            final ColorSelection[] shortened = new ColorSelection[l];
+
+            System.arraycopy(selections, 0, shortened, 0, l);
+
+            return shortened;
+        };
+
+        final AssetChoiceTemplate[] templates = Arrays.stream(csv)
+                .map(s -> s.split(":")).map(s -> {
+                    final String code = s[0];
+                    final int numSels = Integer.parseInt(s[1]);
+                    final ColorSelection[] sels = shortener.apply(numSels);
+
+                    return new AssetChoiceTemplate(code,
+                            PokemonStyle::clothesReplace, sels);
+                }).toArray(AssetChoiceTemplate[]::new);
+
+        return ACLBuilder.of(layerID, style, templates)
+                .setNoAssetChoice(NoAssetChoice.prob(0.0));
     }
 
     static Pair<Integer, Function<Color, Color>> replace(

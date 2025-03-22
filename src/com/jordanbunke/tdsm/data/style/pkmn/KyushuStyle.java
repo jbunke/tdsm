@@ -40,7 +40,7 @@ public final class KyushuStyle extends PokemonStyle {
     private final ColorSelection skinTones, hairColors,
             eyebrowColors, eyeColors;
 
-    private final ColorSelection[] hairAccCS;
+    private final ColorSelection[] hairAccCS, hatCS, topCS, botCS, shoeCS;
 
     static {
         KYUSHU_EYES = new Color[] {
@@ -51,6 +51,17 @@ public final class KyushuStyle extends PokemonStyle {
         };
 
         INSTANCE = new KyushuStyle();
+    }
+
+    private enum BodyType {
+        DEFAULT_MALE, DEFAULT_FEMALE;
+
+        String prefix() {
+            return switch (this) {
+                case DEFAULT_MALE -> "dm";
+                case DEFAULT_FEMALE -> "df";
+            };
+        }
     }
 
     private KyushuStyle() {
@@ -65,6 +76,14 @@ public final class KyushuStyle extends PokemonStyle {
         hairAccCS = IntStream.range(0, 2).mapToObj(i ->
                 new ColorSelection(i == 0 ? "Accessory" : "Acc. 2",
                         true, CLOTHES_SWATCHES))
+                .toArray(ColorSelection[]::new);
+        hatCS = IntStream.range(0, 4).mapToObj(PokemonStyle::clothesSwatch)
+                .toArray(ColorSelection[]::new);
+        topCS = IntStream.range(0, 4).mapToObj(PokemonStyle::clothesSwatch)
+                .toArray(ColorSelection[]::new);
+        botCS = IntStream.range(0, 4).mapToObj(PokemonStyle::clothesSwatch)
+                .toArray(ColorSelection[]::new);
+        shoeCS = IntStream.range(0, 2).mapToObj(PokemonStyle::clothesSwatch)
                 .toArray(ColorSelection[]::new);
 
         bodyLayer = null;
@@ -140,10 +159,50 @@ public final class KyushuStyle extends PokemonStyle {
                 hairFront = new DependentComponentLayer(
                         "hair-front", this, hairLayer, 1);
 
+        final ChoiceLayer clothingTypeLayer = new ChoiceLayer("outfit-type",
+                "Separate articles", COMBINED_OUTFIT);
+
+        final AssetChoiceLayer
+                dmOutfitLayer = buildOutfit(BodyType.DEFAULT_MALE),
+                dmTopsLayer = buildTop(BodyType.DEFAULT_MALE),
+                dmBottomsLayer = buildBottom(BodyType.DEFAULT_MALE),
+                dmShoesLayer = buildShoes(BodyType.DEFAULT_MALE);
+        final GroupLayer dmArticlesLayer = new GroupLayer("outfit",
+                "Outfit", dmBottomsLayer, dmShoesLayer, dmTopsLayer);
+
+        final AssetChoiceLayer
+                dfOutfitLayer = buildOutfit(BodyType.DEFAULT_FEMALE),
+                dfTopsLayer = buildTop(BodyType.DEFAULT_FEMALE),
+                dfBottomsLayer = buildBottom(BodyType.DEFAULT_FEMALE),
+                dfShoesLayer = buildShoes(BodyType.DEFAULT_FEMALE);
+        final GroupLayer dfArticlesLayer = new GroupLayer("outfit",
+                "Outfit", dfBottomsLayer, dfShoesLayer, dfTopsLayer);
+
+        AssetChoiceLayer.parallelMatchers(dmOutfitLayer, dfOutfitLayer);
+        AssetChoiceLayer.parallelMatchers(dmBottomsLayer, dfBottomsLayer);
+        AssetChoiceLayer.parallelMatchers(dmTopsLayer, dfTopsLayer);
+        AssetChoiceLayer.parallelMatchers(dmShoesLayer, dfShoesLayer);
+
+        @SuppressWarnings("all")
+        final DecisionLayer clothingLogic = new DecisionLayer(
+                "outfit", () -> {
+            final boolean combined = clothingTypeLayer
+                    .getChoice().equals(COMBINED_OUTFIT);
+
+            // TODO - if more body shapes are added
+            return switch (getBodyLayerChoice()) {
+                case 0 -> combined ? dmOutfitLayer : dmArticlesLayer;
+                default -> combined ? dfOutfitLayer : dfArticlesLayer;
+            };
+        });
+        clothingTypeLayer.addDependent(clothingLogic);
+        bodyLayer.addDependent(clothingLogic);
+
         // TODO
 
         layers.addToCustomization(skinLayer, bodyLayer, headLayer,
-                eyeLayer, eyeColorLayer, eyeHeight, hairLayer);
+                eyeLayer, eyeColorLayer, eyeHeight, hairLayer,
+                clothingTypeLayer, clothingLogic);
 
         final PureComposeLayer combinedHeadBackLayer =
                 new PureComposeLayer("combined-head-back",
@@ -187,7 +246,8 @@ public final class KyushuStyle extends PokemonStyle {
         // TODO - head mask
 
         layers.addToAssembly(
-                combinedHeadBackLayer, bodyLayer, combinedHeadLayer);
+                combinedHeadBackLayer, bodyLayer, clothingLogic,
+                combinedHeadLayer);
     }
 
     private AssetChoiceLayer buildHair() {
@@ -236,6 +296,39 @@ public final class KyushuStyle extends PokemonStyle {
         return Arrays.stream(ids)
                 .map(id -> new AssetChoiceTemplate(id, f))
                 .toArray(AssetChoiceTemplate[]::new);
+    }
+
+    private AssetChoiceLayer buildOutfit(final BodyType bt) {
+        return buildClothes(bt.prefix() + "-outfit", topCS)
+                .setName("Outfit").build();
+    }
+
+    private AssetChoiceLayer buildTop(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix() + "-top", topCS)
+                .setName("Torso").build();
+    }
+
+    private AssetChoiceLayer buildBottom(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix() + "-bottom", botCS)
+                .setName("Legs").build();
+    }
+
+    private AssetChoiceLayer buildShoes(
+            final BodyType bt
+    ) {
+        return buildClothes(bt.prefix() + "-shoes", shoeCS)
+                .setName("Shoes").build();
+    }
+
+    private ACLBuilder buildClothes(
+            final String layerID, final ColorSelection[] selections
+    ) {
+        return buildClothes(this, layerID, selections)
+                .setPreviewCoord(new Coord2D(DIMS.width(), 0));
     }
 
     private SpriteConstituent<String> composeEyes(
@@ -372,5 +465,12 @@ public final class KyushuStyle extends PokemonStyle {
                 animID.equals(ANIM_ID_RUN);
 
         return new Coord2D(x + (tiltedDown ? 4 : 0), 0);
+    }
+
+    private int getBodyLayerChoice() {
+        if (bodyLayer == null)
+            return 0;
+
+        return bodyLayer.getChoiceIndex();
     }
 }

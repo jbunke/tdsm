@@ -39,8 +39,6 @@ public final class HokkaidoStyle extends PokemonStyle {
             HEAD_DIMS = new Bounds2D(32, 32),
             HEAD_SHEET_DIMS = new Bounds2D(160, 32);
 
-    private final String COMBINED_OUTFIT = "Combined outfit";
-
     private static final String[] BODY_IDs = new String[] {
             "average-body", "small-body"
     };
@@ -234,7 +232,7 @@ public final class HokkaidoStyle extends PokemonStyle {
                 hairFront = new DependentComponentLayer(
                         "hair-front", this, hairLayer, 1);
 
-        hatLayer = buildClothes("hat", hatCS)
+        hatLayer = buildClothes(this, "hat", hatCS)
                 .setName("Headwear").setComposer(this::composeOnHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75))
                 .setDims(HEAD_DIMS).build();
@@ -303,8 +301,7 @@ public final class HokkaidoStyle extends PokemonStyle {
 
         layers.addToAssembly(
                 combinedHeadBackLayer, bodyLayer,
-                clothingTypeLayer, clothingLogic,
-                combinedHeadLayer, headMask);
+                clothingLogic, combinedHeadLayer, headMask);
     }
 
     private AssetChoiceLayer buildBody() {
@@ -352,56 +349,29 @@ public final class HokkaidoStyle extends PokemonStyle {
     private AssetChoiceLayer buildOutfit(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-outfit", topCS)
+        return buildClothes(this, bt.prefix + "-outfit", topCS)
                 .setName("Outfit").build();
     }
 
     private AssetChoiceLayer buildTop(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-top", topCS)
+        return buildClothes(this, bt.prefix + "-top", topCS)
                 .setName("Torso").build();
     }
 
     private AssetChoiceLayer buildBottom(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-bottom", botCS)
+        return buildClothes(this, bt.prefix + "-bottom", botCS)
                 .setName("Legs").build();
     }
 
     private AssetChoiceLayer buildShoes(
             final BodyType bt
     ) {
-        return buildClothes(bt.prefix + "-shoes", shoeCS)
+        return buildClothes(this, bt.prefix + "-shoes", shoeCS)
                 .setName("Shoes").build();
-    }
-
-    private ACLBuilder buildClothes(
-            final String layerID, final ColorSelection[] selections
-    ) {
-        final String[] csv = ParserUtils.readAssetCSV(id, layerID);
-
-        final Function<Integer, ColorSelection[]> shortener = l -> {
-            final ColorSelection[] shortened = new ColorSelection[l];
-
-            System.arraycopy(selections, 0, shortened, 0, l);
-
-            return shortened;
-        };
-
-        final AssetChoiceTemplate[] templates = Arrays.stream(csv)
-                .map(s -> s.split(":")).map(s -> {
-                    final String code = s[0];
-                    final int numSels = Integer.parseInt(s[1]);
-                    final ColorSelection[] sels = shortener.apply(numSels);
-
-                    return new AssetChoiceTemplate(code,
-                            PokemonStyle::clothesReplace, sels);
-                }).toArray(AssetChoiceTemplate[]::new);
-
-        return ACLBuilder.of(layerID, this, templates)
-                .setNoAssetChoice(NoAssetChoice.prob(0.0));
     }
 
     private SpriteConstituent<String> composeEyes(
