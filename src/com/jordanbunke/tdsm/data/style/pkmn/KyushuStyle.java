@@ -14,6 +14,7 @@ import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
+import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
@@ -23,6 +24,8 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+
+import static com.jordanbunke.tdsm.util.Colors.alphaMask;
 
 public final class KyushuStyle extends PokemonStyle {
     private static final KyushuStyle INSTANCE;
@@ -159,6 +162,19 @@ public final class KyushuStyle extends PokemonStyle {
                 hairFront = new DependentComponentLayer(
                         "hair-front", this, hairLayer, 1);
 
+        final AssetChoiceLayer hatLayer = buildClothes(this, "hat", hatCS)
+                .setName("Headwear").setComposer(this::composeOnHead)
+                .setNoAssetChoice(NoAssetChoice.prob(0.75))
+                .setDims(HEAD_DIMS).build();
+
+        final DependentComponentLayer hatBack = new DependentComponentLayer(
+                "hat-back", this, hatLayer, -1);
+
+        final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
+                .trySetNaiveLogic(this, hatLayer).build(),
+                hatBackMaskLayer = MLBuilder.init("hat-back-mask", hairBack)
+                        .trySetNaiveLogic(this, hatBack).build();
+
         final ChoiceLayer clothingTypeLayer = new ChoiceLayer("outfit-type",
                 "Separate articles", COMBINED_OUTFIT);
 
@@ -202,22 +218,26 @@ public final class KyushuStyle extends PokemonStyle {
 
         layers.addToCustomization(skinLayer, bodyLayer, headLayer,
                 eyeLayer, eyeColorLayer, eyeHeight, hairLayer,
-                clothingTypeLayer, clothingLogic);
+                clothingTypeLayer, clothingLogic, hatLayer);
 
         final PureComposeLayer combinedHeadBackLayer =
-                new PureComposeLayer("combined-head-back",
-                        spriteID -> {
-                            final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
+                new PureComposeLayer("combined-head-back", spriteID -> {
+                    final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
 
-                            // TODO - hat back & hat mask back
-                            preassembled.draw(hairBack.compose().getSprite(spriteID));
+                    preassembled.draw(hatBack.compose().getSprite(spriteID));
 
-                            final SpriteSheet combined =
-                                    new SpriteSheet(preassembled.submit(),
-                                            HEAD_DIMS.width(), HEAD_DIMS.height());
+                    final GameImage hairB = hairBack.compose().getSprite(spriteID),
+                            hatBMask = hatBackMaskLayer.compose().getSprite(spriteID);
+                    alphaMask(hairB, hatBMask);
 
-                            return composeHead(combined).getSprite(spriteID);
-                        });
+                    preassembled.draw(hairB);
+
+                    final SpriteSheet combined =
+                            new SpriteSheet(preassembled.submit(),
+                                    HEAD_DIMS.width(), HEAD_DIMS.height());
+
+                    return composeHead(combined).getSprite(spriteID);
+                });
 
         final PureComposeLayer combinedHeadLayer =
                 new PureComposeLayer("combined-head", spriteID -> {
@@ -226,15 +246,13 @@ public final class KyushuStyle extends PokemonStyle {
                     preassembled.draw(headLayer.compose().getSprite(spriteID));
                     preassembled.draw(eyeLayer.compose().getSprite(spriteID));
 
-                    final GameImage hair = hairLayer.compose().getSprite(spriteID);
-                    // TODO - hat mask
+                    final GameImage hair = hairLayer.compose().getSprite(spriteID),
+                            hatMask = hatMaskLayer.compose().getSprite(spriteID);
+                    alphaMask(hair, hatMask);
 
                     preassembled.draw(hair);
-                    // TODO - hat layer
-
+                    preassembled.draw(hatLayer.compose().getSprite(spriteID));
                     preassembled.draw(hairFront.compose().getSprite(spriteID));
-
-                    // TODO
 
                     final SpriteSheet combined =
                             new SpriteSheet(preassembled.submit(),

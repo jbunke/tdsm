@@ -237,8 +237,13 @@ public final class HokkaidoStyle extends PokemonStyle {
                 .setNoAssetChoice(NoAssetChoice.prob(0.75))
                 .setDims(HEAD_DIMS).build();
 
+        final DependentComponentLayer hatBack = new DependentComponentLayer(
+                "hat-back", this, hatLayer, -1);
+
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
-                .trySetNaiveLogic(this, hatLayer).build();
+                .trySetNaiveLogic(this, hatLayer).build(),
+                hatBackMaskLayer = MLBuilder.init("hat-back-mask", hairBack)
+                        .trySetNaiveLogic(this, hatBack).build();
 
         // TODO - accessories, capsule
         layers.addToCustomization(
@@ -248,12 +253,16 @@ public final class HokkaidoStyle extends PokemonStyle {
         );
 
         final PureComposeLayer combinedHeadBackLayer =
-                new PureComposeLayer("combined-head-back",
-                        spriteID -> {
+                new PureComposeLayer("combined-head-back", spriteID -> {
                     final GameImage preassembled = new GameImage(HEAD_SHEET_DIMS);
 
-                    // TODO - hat back & hat mask back
-                    preassembled.draw(hairBack.compose().getSprite(spriteID));
+                    preassembled.draw(hatBack.compose().getSprite(spriteID));
+
+                    final GameImage hairB = hairBack.compose().getSprite(spriteID),
+                            hatBMask = hatBackMaskLayer.compose().getSprite(spriteID);
+                    alphaMask(hairB, hatBMask);
+
+                    preassembled.draw(hairB);
 
                     final SpriteSheet combined =
                             new SpriteSheet(preassembled.submit(),
