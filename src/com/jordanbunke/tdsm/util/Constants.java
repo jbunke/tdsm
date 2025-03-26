@@ -8,6 +8,7 @@ public final class Constants {
             IS_DEVBUILD_CODE = "devbuild";
 
     public static final Path PROGRAM_FILE = Path.of("program"),
+            VERSION_FILE = Path.of("version"),
             ASSET_ROOT_FOLDER = Path.of("sprite_assets"),
             TOOLTIPS_FOLDER = Path.of("tooltips"),
             LOGO_FOLDER = Path.of("logo"),

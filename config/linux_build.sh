@@ -15,8 +15,6 @@ echo "Modules: $MODULES"
 jlink --module-path "$JAVA_HOME/jmods" --add-modules "$MODULES" --output "$OUTPUT_DIR/runtime"
 echo "2/3: Generated runtime image"
 
-cmd.exe /c "$(wslpath -w "./win_build.bat")"
-
 # Package application with jpackage for Linux
 jpackage --input "$OUTPUT_DIR" --name "$NAME" --main-jar tdsm.jar --type deb --runtime-image "$OUTPUT_DIR/runtime" --dest "$BUILD_DIR/linux"
 

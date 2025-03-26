@@ -69,10 +69,12 @@ public final class TDSM implements ProgramContext {
             }
         }
 
+        final Path RES_ROOT = Path.of("res");
+
         if (IS_DEVBUILD) {
             VERSION.incrementBuild();
 
-            final Path toSave = Path.of("res").resolve(Constants.PROGRAM_FILE);
+            final Path toSave = RES_ROOT.resolve(Constants.PROGRAM_FILE);
 
             final StringBuilder updated = new StringBuilder();
 
@@ -84,6 +86,9 @@ public final class TDSM implements ProgramContext {
 
             FileIO.writeFile(toSave, updated.toString());
         }
+
+        final Path versionFile = RES_ROOT.resolve(Constants.VERSION_FILE);
+        FileIO.writeFile(versionFile, VERSION.toString());
     }
 
     public static String getVersion() {
