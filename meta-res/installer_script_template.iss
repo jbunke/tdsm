@@ -35,6 +35,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "%PROJ_ROOT%\out\artifacts\dist\win\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "%PROJ_ROOT%\out\artifacts\dist\win\runtime\*"; DestDir: "{app}\runtime"; Flags: recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

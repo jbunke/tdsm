@@ -1,6 +1,6 @@
 #define MyAppName "Top Down Sprite Maker"
-#define MyAppVersion "1.1.0.261"
-#define VersionCode "1_1_0_261"
+#define MyAppVersion "1.1.0.268"
+#define VersionCode "1_1_0_268"
 #define InstallerName "tdsm-" + VersionCode
 #define MyAppPublisher "Jordan Bunke"
 #define MyAppURL "https://flinkerflitzer.itch.io/tdsm"
@@ -35,6 +35,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "C:\Users\Jordan\Documents\code\java\tdsm\out\artifacts\dist\win\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\Jordan\Documents\code\java\tdsm\out\artifacts\dist\win\runtime\*"; DestDir: "{app}\runtime"; Flags: recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

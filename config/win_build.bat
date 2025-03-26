@@ -28,5 +28,6 @@ echo 3/4: Built %NAME% for Windows
 
 :: Compile installer script
 iscc installer_script.iss
+echo 4/4: Compiled Windows installer script
 
 endlocal
