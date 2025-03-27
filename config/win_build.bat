@@ -3,6 +3,9 @@
 setlocal
 
 set NAME="Top Down Sprite Maker"
+
+echo Building %NAME% for Windows...
+
 set ARTIFACT_DIR="..\out\artifacts\release"
 set OUTPUT_DIR="..\out\artifacts\dist\win"
 
@@ -24,7 +27,7 @@ echo 2/4: Generated runtime image
 
 :: Build the EXE with Launch4J
 call l4j.bat
-echo 3/4: Built %NAME% for Windows
+echo 3/4: Built Windows executable with Launch4J
 
 :: Compile installer script
 iscc installer_script.iss

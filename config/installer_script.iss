@@ -1,6 +1,6 @@
 #define MyAppName "Top Down Sprite Maker"
-#define MyAppVersion "1.1.0.268"
-#define VersionCode "1_1_0_268"
+#define MyAppVersion "1.1.0.275"
+#define VersionCode "1_1_0_275"
 #define InstallerName "tdsm-" + VersionCode
 #define MyAppPublisher "Jordan Bunke"
 #define MyAppURL "https://flinkerflitzer.itch.io/tdsm"

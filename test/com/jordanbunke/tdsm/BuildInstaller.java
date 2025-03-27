@@ -22,6 +22,8 @@ public class BuildInstaller {
         final String name = TDSM.PROGRAM_NAME,
                 version = ParserUtils.read(Constants.VERSION_FILE);
 
+        System.out.println("Building installer for v" + version);
+
         final String script = generateInstallerScript(
                 root.toString(), name, version);
         FileIO.writeFile(root.resolve(
