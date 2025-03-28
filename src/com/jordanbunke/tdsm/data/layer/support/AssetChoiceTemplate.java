@@ -1,7 +1,7 @@
 package com.jordanbunke.tdsm.data.layer.support;
 
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
+import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.StringUtils;
 
@@ -34,7 +34,7 @@ public final class AssetChoiceTemplate {
         this.colorReplacementFunc = colorReplacementFunc;
     }
 
-    public AssetChoice realize(final Style style, final AssetChoiceLayer layer) {
+    public AssetChoice realize(final Style style, final CustomizationLayer layer) {
         for (ColorSelection selection : colorSelections)
             selection.addDependent(layer);
 

@@ -63,8 +63,9 @@ public final class CustomizationElement extends MenuElementContainer {
         final MenuBuilder mb = new MenuBuilder();
 
         final Coord2D INITIAL = getPosition();
-        final CustomizationLayer[] layers = Sprite.get().getStyle().layers
-                .get().stream().filter(CustomizationLayer::isNonTrivial)
+        final CustomizationLayer[] layers = Sprite.get().getStyle()
+                .layers.customization().stream()
+                .filter(CustomizationLayer::isNonTrivial)
                 .toArray(CustomizationLayer[]::new);
 
         for (int l = 0; l < layers.length; l++) {

@@ -3,7 +3,7 @@ package com.jordanbunke.tdsm.data.layer.support;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
+import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.Colors;
 import com.jordanbunke.tdsm.util.Constants;
@@ -17,10 +17,10 @@ import java.util.List;
 public final class AssetChoice {
     public final String id, name;
     private final Style style;
-    private final AssetChoiceLayer layer;
+    private final CustomizationLayer layer;
 
     private final ColorSelection[] colorSelections;
-    private final ColorReplacementFunc colorReplacementFunc;
+    public final ColorReplacementFunc colorReplacementFunc;
 
     private final GameImage asset;
     private GameImage render;
@@ -28,7 +28,7 @@ public final class AssetChoice {
     AssetChoice(
             final String id, final String name,
             final Style style,
-            final AssetChoiceLayer layer,
+            final CustomizationLayer layer,
             final ColorSelection[] colorSelections,
             final ColorReplacementFunc colorReplacementFunc
     ) {

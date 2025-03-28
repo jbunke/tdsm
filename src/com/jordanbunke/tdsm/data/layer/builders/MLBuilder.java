@@ -4,7 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
-import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
+import com.jordanbunke.tdsm.data.layer.AbstractACLayer;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
 import com.jordanbunke.tdsm.data.layer.MaskLayer;
 import com.jordanbunke.tdsm.data.style.Style;
@@ -14,27 +14,27 @@ import java.nio.file.Path;
 
 public final class MLBuilder {
     private final String id;
-    private final CustomizationLayer target;
+    private final CustomizationLayer[] targets;
 
     private SpriteConstituent<String> logic;
 
     public static MLBuilder init(
-            final String id, final CustomizationLayer target
+            final String id, final CustomizationLayer... targets
     ) {
-        return new MLBuilder(id, target);
+        return new MLBuilder(id, targets);
     }
 
     private MLBuilder(
-            final String id, final CustomizationLayer target
+            final String id, final CustomizationLayer[] targets
     ) {
         this.id = id;
-        this.target = target;
+        this.targets = targets;
 
         logic = s -> GameImage.dummy();
     }
 
     public MaskLayer build() {
-        return new MaskLayer(id, target, logic);
+        return new MaskLayer(id, targets, logic);
     }
 
     public MLBuilder setLogic(final SpriteConstituent<String> logic) {
@@ -43,7 +43,7 @@ public final class MLBuilder {
     }
 
     public MLBuilder trySetNaiveLogic(
-            final Style style, final AssetChoiceLayer projector
+            final Style style, final AbstractACLayer projector
     ) {
         logic = s -> {
             final GameImage ifFail = new GameImage(

@@ -1,0 +1,4 @@
+Select a color to replace it with another color in
+the sprite sheet. Colors are sorted in order of how
+often they occur in the sprite sheet - replacement
+options are sorted in order of their similarity.

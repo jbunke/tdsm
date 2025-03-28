@@ -5,17 +5,32 @@ import java.util.Arrays;
 import java.util.List;
 
 public final class Layers {
-    private final List<CustomizationLayer> layers;
+    private final List<CustomizationLayer> customization, assembly;
 
     public Layers() {
-        layers = new ArrayList<>();
+        assembly = new ArrayList<>();
+        customization = new ArrayList<>();
     }
 
-    public List<CustomizationLayer> get() {
-        return layers;
+    public List<CustomizationLayer> customization() {
+        return customization;
+    }
+
+    public List<CustomizationLayer> assembly() {
+        return assembly;
+    }
+
+    public void addToCustomization(final CustomizationLayer... toAdd) {
+        customization.addAll(Arrays.stream(toAdd)
+                .filter(CustomizationLayer::isNonTrivial).toList());
+    }
+
+    public void addToAssembly(final CustomizationLayer... toAdd) {
+        assembly.addAll(Arrays.stream(toAdd).toList());
     }
 
     public void add(final CustomizationLayer... toAdd) {
-        layers.addAll(Arrays.stream(toAdd).toList());
+        addToCustomization(toAdd);
+        addToAssembly(toAdd);
     }
 }

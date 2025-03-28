@@ -1,0 +1,4 @@
+"Snaps" each color in the sprite to the
+nearest color that can be displayed by
+the Game Boy Advance. Maps a 24-bit RGB
+color to the nearest 15-bit RGB color.

@@ -4,7 +4,6 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
-import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
@@ -20,7 +19,7 @@ import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import java.awt.*;
 import java.util.function.Function;
 
-import static com.jordanbunke.tdsm.util.Colors.*;
+import static com.jordanbunke.color_proc.ColorProc.*;
 
 public final class VigilanteStyle extends Style {
     private static final VigilanteStyle INSTANCE;
@@ -52,18 +51,17 @@ public final class VigilanteStyle extends Style {
         final boolean vertical = false;
 
         return new Animation[] {
-                Animation.make("idle", 1, new Coord2D(0, 0),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("walk", 2, new Coord2D(0, 1),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("box", 2, new Coord2D(0, 3),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("reload_1", 3, new Coord2D(0, 18),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("reload_2", 3, new Coord2D(0, 30),
-                        vertical, PlaybackMode.LOOP),
-                Animation.make("death", 5, new Coord2D(0, 39),
-                        vertical, PlaybackMode.LOOP)
+                Animation.init("idle", 1).build(),
+                Animation.init("walk", 2)
+                        .setCoordFunc(new Coord2D(0, 1), vertical).build(),
+                Animation.init("box", 2)
+                        .setCoordFunc(new Coord2D(0, 3), vertical).build(),
+                Animation.init("reload_1", 3)
+                        .setCoordFunc(new Coord2D(0, 18), vertical).build(),
+                Animation.init("reload_2", 3)
+                        .setCoordFunc(new Coord2D(0, 30), vertical).build(),
+                Animation.init("death", 5)
+                        .setCoordFunc(new Coord2D(0, 39), vertical).build()
                 // TODO
         };
     }
@@ -103,7 +101,7 @@ public final class VigilanteStyle extends Style {
         final int TARGET_H = 120, LENIENCY = 2, MIN_SAT = 10,
                 hue = hue(input), sat = sat(input), index;
 
-        if (input.equals(new Color(0x80, 0, 0xff)))
+        if (input.equals(new Color(0x8000ff)))
             index = 1;
         else if (Math.abs(TARGET_H - hue) <= LENIENCY && sat >= MIN_SAT)
             index = 0;
@@ -128,6 +126,11 @@ public final class VigilanteStyle extends Style {
 
     @Override
     public boolean shipping() {
+        return false;
+    }
+
+    @Override
+    public boolean hasSettings() {
         return false;
     }
 }

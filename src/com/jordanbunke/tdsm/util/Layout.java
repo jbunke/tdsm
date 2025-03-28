@@ -9,7 +9,7 @@ import java.awt.*;
 
 public final class Layout {
     public static final int SCALE_UP, CANVAS_W = 500, CANVAS_H = 300,
-            SPRITE_PREVIEW_SCALE_UP = 2, PREVIEW_RENDER_Y = 20;
+            SPRITE_PREVIEW_SCALE_UP = 2;
 
     static {
         if (Settings.isCapture()) {
@@ -103,7 +103,7 @@ public final class Layout {
 
     public static final int LABEL_OFFSET_X = 10, LABEL_OFFSET_Y = -3,
             TOOLTIP_OFFSET_LEFT = -7, TOOLTIP_OFFSET_RIGHT = 5,
-            TEXT_IN_BUTTON_OFFSET_Y = -8,
+            TEXT_IN_BUTTON_OFFSET_Y = -9,
             TEXT_BUTTON_H = 20, TEXT_BUTTON_EXTRA_W = 12,
             TEXT_BUTTON_RENDER_BUFFER_X = 4, DD_ICON_LEFT_NUDGE = 2,
             PX_PER_SCROLL = TEXT_BUTTON_H, DROPDOWN_EXTRA_W = 32,
@@ -133,7 +133,7 @@ public final class Layout {
             INNER_ASSET_BUFFER_X = 20, INNER_ASSET_BUFFER_Y = 10,
             ASSETS_BASE_H = ASSET_BUFFER_Y + INNER_ASSET_BUFFER_Y + 23,
             MAX_SELECTORS_WO_SCROLL = 5, POST_ASSETS_COL_SEL_BASE_H = 33,
-            SUBHEADING_INC_Y = 13, SCREEN_BOX_EDGE = 3;
+            SUBHEADING_INC_Y = 13, SCREEN_BOX_EDGE = 3, COL_REPL_OFF_DIM = 10;
 
     public static double SEQUENCER_REL_H = 0.58;
 
@@ -195,5 +195,9 @@ public final class Layout {
 
     public static Coord2D follow(final MenuElement ref) {
         return ref.getRenderPosition().displace(ref.getWidth(), 0);
+    }
+
+    public static Coord2D iconAfterTextButton(final MenuElement button) {
+        return follow(button).displaceY(ICON_TEXTBOX_RELATIVE_DIFF_Y);
     }
 }

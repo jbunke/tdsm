@@ -1,3 +1,38 @@
 Header Format: [VERSION]  -  [YYYY]-[MM]-[DD]  -  [UPDATE TYPE]
 
+-----------------------------------------------------------
+
+v1.1.0 - 2025-03-28 - Content update
+
+[General]
+
+  Added:
+  > Style-specific settings
+  > Color replacement menu
+
+  Changed:
+  > New build and distribution pipeline produces dedicated Windows, macOS, and
+    Linux builds that are significantly smaller than the old Windows installer
+  > Optimized sprite assembly pipeline
+
+[Hokkaido]
+
+  Added:
+  > Added animations: Run, Surf, Swim
+  > Added settings:
+    > Quantize to GBA colors
+    > Warn if sprite contains more than 15 non-transparent colors
+  > Added customization options
+
+  Changed:
+  > Renamed "Pokemon Trainer [Gen 4]" style to "Hokkaido"
+  > Separated "Headwear" and "Hairstyle" options onto multiple layers
+
+[Kyushu]
+
+  Added:
+  > Added "Kyushu" sprite style
+
+-----------------------------------------------------------
+
 v1.0.0  -  2025-02-21  -  Initial release

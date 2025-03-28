@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Function;
 
+import static com.jordanbunke.color_proc.ColorProc.fromHSV;
 import static com.jordanbunke.tdsm.util.Layout.*;
 import static com.jordanbunke.tdsm.util.Layout.ScreenBox.PREVIEW;
 import static com.jordanbunke.tdsm.util.Colors.*;
@@ -87,7 +88,7 @@ public final class Graphics {
             }
             default -> {
                 bgColor = transparent();
-                textColor = darkAccent();
+                textColor = lightAccent();
             }
         }
 
@@ -289,6 +290,24 @@ public final class Graphics {
             final Color color, final Button b
     ) {
         return drawSwatchButton(color, b);
+    }
+
+    public static GameImage drawColReplButton(
+            final Color color, final Color replacement, final Button b
+    ) {
+        final int OFFSET_X = COL_REPL_OFF_DIM;
+        final GameImage button = new GameImage(
+                OFFSET_X + COL_SEL_BUTTON_DIM, COL_SEL_BUTTON_DIM);
+
+        if (replacement != null) {
+            final GameImage repl = drawColSelButton(replacement,
+                    Button.sim(false, b.isHighlighted()));
+            button.draw(repl, OFFSET_X, 0);
+        }
+
+        button.draw(drawColSelButton(color, b));
+
+        return button.submit();
     }
 
     public static GameImage drawAssetChoiceButton(

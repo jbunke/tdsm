@@ -18,6 +18,7 @@ import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.style.Style;
+import com.jordanbunke.tdsm.data.style.StyleOption;
 import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
@@ -52,12 +53,21 @@ public final class MenuAssembly {
 
     public static Menu customization() {
         final MenuBuilder mb = new MenuBuilder();
+        final Style style = Sprite.get().getStyle();
 
         // PREVIEW
+        if (style.hasSettings()) {
+            IconButton settings = IconButton.init(
+                    ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
+                    () -> ProgramState.set(ProgramState.MENU, styleSettings())
+            ).setTooltipCode(ResourceCodes.STYLE_SETTINGS).build();
+            mb.add(settings);
+        }
+
         final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
                 PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
 
-        final Animation[] anims = Sprite.get().getStyle().animations;
+        final Animation[] anims = style.animations;
         final Dropdown animationDropdown = Dropdown.create(
                 animationLabel.followTB(),
                 Arrays.stream(anims).map(Animation::name)
@@ -108,15 +118,14 @@ public final class MenuAssembly {
                         .map(s -> (Runnable) () -> Sprite.get().setStyle(s))
                         .toArray(Runnable[]::new),
                 () -> Arrays.stream(styles).toList()
-                        .indexOf(Sprite.get().getStyle()));
+                        .indexOf(style));
         final Indicator styleInfo = Indicator.make(
-                ResourceCodes.CHANGE_STYLE, styleDropdown.followIcon17(),
+                style.id, iconAfterTextButton(styleDropdown),
                 Anchor.LEFT_TOP);
 
         final IconButton randomSpriteButton = IconButton.init(
                 ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
-                Sprite.get().getStyle()::randomize)
-                .setAnchor(Anchor.CENTRAL)
+                style::randomize).setAnchor(Anchor.CENTRAL)
                 .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo, randomSpriteButton);
@@ -143,6 +152,7 @@ public final class MenuAssembly {
 
     public static Menu configuration() {
         final MenuBuilder mb = new MenuBuilder();
+        final Style style = Sprite.get().getStyle();
 
         // PREVIEW
         final Indicator firstSpriteInfo = Indicator.make(
@@ -172,7 +182,7 @@ public final class MenuAssembly {
         final IconButton resetSequencingButton = IconButton.init(
                 ResourceCodes.RESET, sequencingInfo.following(),
                 () -> {
-                    Sprite.get().getStyle().resetSequencing();
+                    style.resetSequencing();
                     dirSequencer.refreshScrollBox();
                     animSequencer.refreshScrollBox();
                 }).build();
@@ -180,8 +190,8 @@ public final class MenuAssembly {
         final String NO_FRAMES = "Configuration produces no frames!";
         final DynamicLabel frameCountLabel = DynamicLabel.init(
                         SEQUENCING.at(0.5, 0.98),
-                        () -> Sprite.get().getStyle().exportsASprite()
-                                ? (Sprite.get().getStyle().exportFrameCount() +
+                        () -> style.exportsASprite()
+                                ? (style.exportFrameCount() +
                                 " animation frames") : NO_FRAMES, NO_FRAMES)
                 .setAnchor(Anchor.CENTRAL_BOTTOM)
                 .setMini().build();
@@ -196,7 +206,7 @@ public final class MenuAssembly {
                 paddingLabel.followIcon17(), Anchor.LEFT_TOP);
         final IconButton resetPaddingButton = IconButton.init(
                 ResourceCodes.RESET, paddingInfo.following(),
-                Sprite.get().getStyle()::resetPadding).build();
+                style::resetPadding).build();
 
         final double EDGES_Y = 0.1, EDGES_Y_INC = 0.08;
         EnumUtils.stream(Edge.class).forEach(e -> {
@@ -216,8 +226,7 @@ public final class MenuAssembly {
         final String SPRITE_SIZE_PREFIX = "Individual sprite size: ";
         final DynamicLabel spriteSizeLabel = DynamicLabel.init(
                 miniLabelPosFor(LAYOUT.x, LAYOUT.atY(SPRITE_SIZE_Y)), () -> {
-                    final Bounds2D dims = Sprite.get()
-                            .getStyle().getExportSpriteDims();
+                    final Bounds2D dims = style.getExportSpriteDims();
                     return SPRITE_SIZE_PREFIX + dims.width() + "x" + dims.height();
                 }, SPRITE_SIZE_PREFIX + MAX_SPRITE_EXPORT_W + "x" +
                         MAX_SPRITE_EXPORT_H).setMini().build();
@@ -232,7 +241,7 @@ public final class MenuAssembly {
                 layoutLabel.followIcon17(), Anchor.LEFT_TOP);
         final IconButton resetLayoutButton = IconButton.init(
                 ResourceCodes.RESET, layoutInfo.following(),
-                Sprite.get().getStyle()::resetLayout).build();
+                style::resetLayout).build();
 
         final double LAYOUT_INC_Y = 0.1;
         double layoutY = 0.5;
@@ -244,18 +253,15 @@ public final class MenuAssembly {
                 EnumUtils.stream(Orientation.class)
                         .map(Orientation::format).toArray(String[]::new),
                 EnumUtils.stream(Orientation.class).map(o ->
-                                (Runnable) () -> Sprite.get().getStyle()
-                                        .setAnimationOrientation(o))
+                                (Runnable) () -> style.setAnimationOrientation(o))
                         .toArray(Runnable[]::new),
-                () -> Sprite.get().getStyle()
-                        .getAnimationOrientation().ordinal());
+                () -> style.getAnimationOrientation().ordinal());
 
         layoutY += LAYOUT_INC_Y;
         final String DIR_PREFIX = "(Directions are oriented ";
         final DynamicLabel directionDimLabel = DynamicLabel.init(
                         miniLabelPosFor(LAYOUT.x, LAYOUT.atY(layoutY)),
-                        () -> DIR_PREFIX + Sprite.get()
-                                .getStyle().getAnimationOrientation()
+                        () -> DIR_PREFIX + style.getAnimationOrientation()
                                 .complementaryAdverb() + ")",
                         DIR_PREFIX + Orientation.VERTICAL.complementaryAdverb() + ")")
                 .setMini().build();
@@ -264,13 +270,12 @@ public final class MenuAssembly {
         final String ANIMS_PER_DIM_PREFIX = "Multiple animations per ";
         final Checkbox animsPerDimCheckbox = new Checkbox(
                 new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
-                Anchor.LEFT_TOP,
-                Sprite.get().getStyle()::isMultipleAnimsPerDim,
-                Sprite.get().getStyle()::setMultipleAnimsPerDim);
+                Anchor.LEFT_TOP, style::isMultipleAnimsPerDim,
+                style::setMultipleAnimsPerDim);
         final DynamicLabel animsPerDimLabel = DynamicLabel.init(
                         animsPerDimCheckbox.followMiniLabel(),
-                        () -> ANIMS_PER_DIM_PREFIX + Sprite.get().getStyle()
-                                .getAnimationOrientation().animationDim(),
+                        () -> ANIMS_PER_DIM_PREFIX +
+                                style.getAnimationOrientation().animationDim(),
                         ANIMS_PER_DIM_PREFIX + Orientation.VERTICAL.animationDim())
                 .setMini().build();
 
@@ -278,12 +283,10 @@ public final class MenuAssembly {
         final String SINGLE_DIM_PREFIX = "All animation frames on a single ";
         final Checkbox singleDimCheckbox = new Checkbox(
                 new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
-                Anchor.LEFT_TOP,
-                Sprite.get().getStyle()::isSingleDim,
-                Sprite.get().getStyle()::setSingleDim);
+                Anchor.LEFT_TOP, style::isSingleDim, style::setSingleDim);
         final DynamicLabel singleDimLabel = DynamicLabel.init(
                         singleDimCheckbox.followMiniLabel(),
-                        () -> SINGLE_DIM_PREFIX + Sprite.get().getStyle()
+                        () -> SINGLE_DIM_PREFIX + style
                                 .getAnimationOrientation().animationDim(),
                         SINGLE_DIM_PREFIX + Orientation.VERTICAL.animationDim())
                 .setMini().build();
@@ -293,15 +296,14 @@ public final class MenuAssembly {
 
         final DynamicLabel framesPerDimLabel = DynamicLabel.init(
                 new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
-                () -> FRAMES_PER_DIM_PREFIX + Sprite.get().getStyle()
+                () -> FRAMES_PER_DIM_PREFIX + style
                         .getAnimationOrientation().animationDim() + ":",
                 FRAMES_PER_DIM_PREFIX +
                         Orientation.VERTICAL.animationDim() + ":").build();
         final DynamicTextbox framesPerDimTextbox = DynamicTextbox.init(
                         framesPerDimLabel.followTB(), () -> String.valueOf(
-                                Sprite.get().getStyle().getFramesPerDim()),
-                        s -> Sprite.get().getStyle()
-                                .setFramesPerDim(Integer.parseInt(s)))
+                                style.getFramesPerDim()),
+                        s -> style.setFramesPerDim(Integer.parseInt(s)))
                 .setMaxLength(2).setTextValidator(Textbox::validFramesPerDim)
                 .build();
         final Indicator framesPerDimInfo = Indicator.make(
@@ -312,12 +314,11 @@ public final class MenuAssembly {
         final String WRAP_PREFIX = "Wrap animations across ";
         final Checkbox wrapCheckbox = new Checkbox(
                 new Coord2D(LAYOUT.x + BUFFER, LAYOUT.atY(layoutY)),
-                Anchor.LEFT_TOP,
-                Sprite.get().getStyle()::isWrapAnimsAcrossDims,
-                Sprite.get().getStyle()::setWrapAnimsAcrossDims);
+                Anchor.LEFT_TOP, style::isWrapAnimsAcrossDims,
+                style::setWrapAnimsAcrossDims);
         final DynamicLabel wrapLabel = DynamicLabel.init(
                         wrapCheckbox.followMiniLabel(),
-                        () -> WRAP_PREFIX + Sprite.get().getStyle()
+                        () -> WRAP_PREFIX + style
                                 .getAnimationOrientation().animationDim() + "s",
                         WRAP_PREFIX + Orientation.VERTICAL.animationDim() + "s")
                 .setMini().build();
@@ -326,11 +327,11 @@ public final class MenuAssembly {
                 new MenuElementGrouping(framesPerDimLabel,
                         framesPerDimTextbox, framesPerDimInfo,
                         wrapCheckbox, wrapLabel),
-                () -> !Sprite.get().getStyle().isSingleDim()),
+                () -> !style.isSingleDim()),
                 multAnimsPerDimLogic = new GatewayMenuElement(
                         new MenuElementGrouping(singleDimCheckbox,
                                 singleDimLabel, notSingleRowLogic),
-                        () -> Sprite.get().getStyle().isMultipleAnimsPerDim());
+                        style::isMultipleAnimsPerDim);
 
         mb.addAll(layoutLabel, layoutInfo, resetLayoutButton,
                 orientationLabel, orientationDropdown, directionDimLabel,
@@ -345,11 +346,40 @@ public final class MenuAssembly {
         final MenuElement toExportButton = StaticTextButton.make(
                 "Export... >", BOTTOM.at(1.0, 0.5)
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
-                Anchor.RIGHT_CENTRAL,
-                () -> Sprite.get().getStyle().exportsASprite(),
-                () -> ProgramState.set(ProgramState.MENU, export()));
+                Anchor.RIGHT_CENTRAL, style::exportsASprite,
+                () -> {
+                    if (style.hasPreExportStep())
+                        ProgramState.set(ProgramState.MENU, preExport());
+                    else {
+                        style.resetPreExport();
+                        ProgramState.set(ProgramState.MENU, export());
+                    }
+                });
 
         mb.addAll(toCustomButton, toExportButton);
+
+        return mb.build();
+    }
+
+    private static Menu preExport() {
+        final MenuBuilder mb = new MenuBuilder();
+        final Style style = Sprite.get().getStyle();
+
+        final double REL_W = 0.6;
+        final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W);
+
+        final MenuElement backButton = StaticTextButton.make("< Configure...",
+                new Coord2D(LEFT, CANVAS_H - BUFFER),
+                Anchor.LEFT_BOTTOM, () -> true,
+                () -> ProgramState.set(ProgramState.CONFIGURATION, null)),
+                exportButton = StaticTextButton.make("Advance... >",
+                        new Coord2D(RIGHT, CANVAS_H - BUFFER),
+                        Anchor.RIGHT_BOTTOM, () -> true,
+                        () -> ProgramState.set(ProgramState.MENU, export()));
+
+        mb.addAll(backButton, exportButton);
+
+        style.buildPreExportMenu(mb, iconAfterTextButton(backButton));
 
         return mb.build();
     }
@@ -461,18 +491,34 @@ public final class MenuAssembly {
         } catch (Exception ignored) {}
     }
 
-    private static void menuTitle(
+    public static void menuTitle(
             final MenuBuilder mb, final String title
     ) {
         mb.add(StaticLabel.init(canvasAt(0.5, 0.0), title)
                 .setAnchor(Anchor.CENTRAL_TOP).setTextSize(2.0).build());
     }
 
+    public static void preExportExplanation(
+            final MenuBuilder mb, final String explanation,
+            final double percY, final double percH
+    ) {
+        menuBlurb(mb, Text.Orientation.CENTER, percY,
+                (int) (CANVAS_H * percH), explanation);
+    }
+
     private static void menuBlurb(
             final MenuBuilder mb, final String blurbCode,
             final Text.Orientation orientation, final int height
     ) {
-        final String[] blurb = ParserUtils.readTooltip(blurbCode).split("\n");
+        menuBlurb(mb, orientation, 0.2,
+                height, ParserUtils.readTooltip(blurbCode));
+    }
+
+    private static void menuBlurb(
+            final MenuBuilder mb, final Text.Orientation orientation,
+            final double percY, final int height, final String content
+    ) {
+        final String[] blurb = content.split("\n");
         final TextBuilder tb = ProgramFont.MINI.getBuilder(orientation);
 
         for (int line = 0; line < blurb.length; line++) {
@@ -483,9 +529,9 @@ public final class MenuAssembly {
         }
 
         final StaticLabel about = new StaticLabel(
-                canvasAt(0.5, 0.2), Anchor.CENTRAL_TOP, tb.build().draw());
+                canvasAt(0.5, percY), Anchor.CENTRAL_TOP, tb.build().draw());
         final VertScrollBox box = new VertScrollBox(
-                new Coord2D(SCREEN_BOX_EDGE, atY(0.2)),
+                new Coord2D(SCREEN_BOX_EDGE, atY(percY)),
                 new Bounds2D(CANVAS_W - (SCREEN_BOX_EDGE * 2), height),
                 new Scrollable[] { new Scrollable(about) },
                 about.getY() + about.getHeight(), 0);
@@ -542,8 +588,63 @@ public final class MenuAssembly {
         }
     }
 
+    public static Menu styleSettings() {
+        final MenuBuilder mb = new MenuBuilder();
+        final Style style = Sprite.get().getStyle();
+
+        menuTitle(mb, "Style Settings");
+
+        final double REL_W = 0.6;
+        final int LEFT = atX((1.0 - REL_W) / 2.0),
+                RIGHT = LEFT + atX(REL_W), INC_Y = atY(1 / 9.0);
+
+        int y = atY(0.2);
+
+        final StyleOption[] options = style.getOptionSettings();
+
+        if (options.length > 0) {
+            final StaticLabel optionsHeader = StaticLabel.init(
+                    new Coord2D(LEFT, y), "Options").build();
+            mb.add(optionsHeader);
+
+            y += INC_Y;
+
+            for (StyleOption option : options) {
+                final Checkbox checkbox = new Checkbox(new Coord2D(LEFT, y),
+                        Anchor.LEFT_TOP, option.checker(), option.setter());
+                final StaticLabel label = StaticLabel.init(
+                                checkbox.followMiniLabel(),
+                                option.description()).setMini().build();
+                mb.addAll(checkbox, label);
+
+                if (option.infoCode() != null) {
+                    final Indicator info = Indicator.make(option.infoCode(),
+                            label.follow(), Anchor.LEFT_TOP);
+                    mb.add(info);
+                }
+
+                y += (int) (INC_Y * 0.5);
+            }
+        }
+
+        style.buildSettingsMenu(mb, y);
+
+        final MenuElement close = StaticTextButton.make("Close",
+                new Coord2D(RIGHT, CANVAS_H - BUFFER),
+                Anchor.RIGHT_BOTTOM, () -> true,
+                () -> {
+            style.update();
+            ProgramState.set(ProgramState.CUSTOMIZATION, null);
+        });
+        mb.add(close);
+
+        return mb.build();
+    }
+
     public static Menu export() {
         final MenuBuilder mb = new MenuBuilder();
+
+        menuTitle(mb, "Export");
 
         final double REL_W = 0.6;
         final int LEFT = atX((1.0 - REL_W) / 2.0), RIGHT = LEFT + atX(REL_W),

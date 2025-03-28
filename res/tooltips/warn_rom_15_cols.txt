@@ -1,0 +1,4 @@
+Due to the hardware limitations of the Game Boy Advance,
+sprites may only contain up to 15 non-transparent colors.
+This is only relevant if you intend to use sprites for
+Game Boy Advance game development or ROM hacking.

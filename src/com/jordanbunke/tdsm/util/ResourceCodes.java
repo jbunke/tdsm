@@ -18,6 +18,7 @@ public final class ResourceCodes {
             LOCKED = "locked",
             UNLOCKED = "unlocked",
             BACK = "back",
+            SETTINGS = "settings",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
@@ -32,7 +33,12 @@ public final class ResourceCodes {
             FILE_NAME = "file_name",
             EXPORT_STIP = "export_stip",
             FIRST_SPRITE = "first_sprite",
-            CHANGE_STYLE = "change_style",
+            STYLE_SETTINGS = "style_settings",
+            QUANTIZE_GBA = "quantize_gba",
+            WARN_ROM_15_COLS = "warn_rom_15_cols",
+            REPLACEMENT = "replacement",
+            NO_REPL = "no_repl",
+            BACK_FROM_REPL = "back_from_repl",
             RANDOM_SPRITE = "random_sprite";
 
     // blurbs

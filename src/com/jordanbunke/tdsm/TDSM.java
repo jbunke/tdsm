@@ -11,7 +11,10 @@ import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.Version;
+import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.delta_time.window.GameWindow;
+import com.jordanbunke.stip_parser.ParserSerializer;
+import com.jordanbunke.stip_parser.SerialBlock;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.util.*;
 
@@ -32,24 +35,19 @@ public final class TDSM implements ProgramContext {
     }
 
     private static void readProgramFile() {
-        final String[] programFile = FileIO.readResource(ResourceLoader
-                .loadResource(Constants.PROGRAM_FILE), "prg").split("\n");
+        final String programFile = FileIO.readResource(ResourceLoader
+                .loadResource(Constants.PROGRAM_FILE), "prg");
 
-        for (String line : programFile) {
-            final String[] codeAndValue = ParserUtils.splitIntoCodeAndValue(line);
+        final SerialBlock[] blocks = ParserSerializer
+                .deserializeBlocksAtDepthLevel(programFile);
 
-            if (codeAndValue.length != ParserUtils.DESIRED)
-                continue;
-
-            final String code = codeAndValue[ParserUtils.CODE],
-                    value = codeAndValue[ParserUtils.VALUE];
-
-            switch (code) {
-                case Constants.NAME_CODE -> PROGRAM_NAME = value;
+        for (SerialBlock block : blocks) {
+            switch (block.tag()) {
+                case Constants.NAME_CODE -> PROGRAM_NAME = block.value();
                 case Constants.VERSION_CODE -> {
                     try {
                         final Integer[] components = Arrays
-                                .stream(value.split("\\."))
+                                .stream(block.value().split("\\."))
                                 .map(Integer::parseInt).toArray(Integer[]::new);
 
                         final int MAJOR = 0, MINOR = 1, PATCH = 2,
@@ -67,24 +65,30 @@ public final class TDSM implements ProgramContext {
                     }
                 }
                 case Constants.IS_DEVBUILD_CODE ->
-                        IS_DEVBUILD = Boolean.parseBoolean(value);
+                        IS_DEVBUILD = Boolean.parseBoolean(block.value());
             }
         }
+
+        final Path RES_ROOT = Path.of("res");
 
         if (IS_DEVBUILD) {
             VERSION.incrementBuild();
 
-            final Path toSave = Path.of("res").resolve(Constants.PROGRAM_FILE);
+            final Path toSave = RES_ROOT.resolve(Constants.PROGRAM_FILE);
 
-            final String write = ParserUtils.encloseSetting(
-                    Constants.NAME_CODE, PROGRAM_NAME) +
-                    ParserUtils.encloseSetting(Constants.VERSION_CODE,
-                            VERSION.toString()) +
-                    ParserUtils.encloseSetting(Constants.IS_DEVBUILD_CODE,
-                            String.valueOf(IS_DEVBUILD));
+            final StringBuilder updated = new StringBuilder();
 
-            FileIO.writeFile(toSave, write);
+            ParserSerializer.serializeSimpleAttributes(updated, -1,
+                    new Pair<>(Constants.NAME_CODE, PROGRAM_NAME),
+                    new Pair<>(Constants.VERSION_CODE, VERSION.toString()),
+                    new Pair<>(Constants.IS_DEVBUILD_CODE,
+                            String.valueOf(IS_DEVBUILD)));
+
+            FileIO.writeFile(toSave, updated.toString());
         }
+
+        final Path versionFile = RES_ROOT.resolve(Constants.VERSION_FILE);
+        FileIO.writeFile(versionFile, VERSION.toString());
     }
 
     public static String getVersion() {

@@ -123,9 +123,4 @@ public final class Dropdown extends AbstractDropdownList {
     protected Coord2D contentsDisplacement() {
         return new Coord2D(0, getHeight());
     }
-
-    public Coord2D followIcon17() {
-        return getRenderPosition().displace(getWidth(),
-                ICON_TEXTBOX_RELATIVE_DIFF_Y);
-    }
 }

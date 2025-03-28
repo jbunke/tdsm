@@ -54,7 +54,7 @@ public final class Customization implements ProgramContext {
                 Sprite.get().getStyle().getPreviewScaleUp());
 
         canvas.draw(sprite, (PREVIEW.width - sprite.getWidth()) / 2,
-                Layout.PREVIEW_RENDER_Y);
+                (int) ((PREVIEW.height - sprite.getHeight()) * 0.3));
 
         Arrays.stream(customizationBoxes())
                 .forEach(box -> Graphics.renderScreenBox(canvas, box));

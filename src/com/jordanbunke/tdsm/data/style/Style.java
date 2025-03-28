@@ -1,11 +1,13 @@
 package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteMap;
 import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
 import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
+import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
@@ -28,7 +30,7 @@ import static com.jordanbunke.tdsm.util.Constants.*;
 
 public abstract class Style {
 
-    static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
+    public static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
 
     public final String id;
 
@@ -52,7 +54,7 @@ public abstract class Style {
     private boolean multipleAnimsPerDim, singleDim, wrapAnimsAcrossDims;
     private int framesPerDim;
 
-    Style(
+    protected Style(
             final String id, final Bounds2D dims, final Directions directions,
             final Animation[] animations, final Layers layers
     ) {
@@ -86,12 +88,8 @@ public abstract class Style {
                 w = spriteW * spritesX, h = spriteH * spritesY;
         final GameImage spriteSheet = new GameImage(w, h);
 
-        final Directions.Dir[] dirs = directionOrder.stream()
-                .filter(directionInclusion::contains)
-                .toArray(Directions.Dir[]::new);
-        final Animation[] anims = animationOrder.stream()
-                .filter(animationInclusion::contains)
-                .toArray(Animation[]::new);
+        final Directions.Dir[] dirs = exportDirections();
+        final Animation[] anims = exportAnimations();
 
         for (int d = 0; d < dirs.length; d++) {
             final Directions.Dir dir = dirs[d];
@@ -122,6 +120,18 @@ public abstract class Style {
         return new Bounds2D(w, h);
     }
 
+    public Directions.Dir[] exportDirections() {
+        return directionOrder.stream()
+                .filter(directionInclusion::contains)
+                .toArray(Directions.Dir[]::new);
+    }
+
+    public Animation[] exportAnimations() {
+        return animationOrder.stream()
+                .filter(animationInclusion::contains)
+                .toArray(Animation[]::new);
+    }
+
     public String buildJSON() {
         final JSONBuilder jb = new JSONBuilder();
 
@@ -137,12 +147,8 @@ public abstract class Style {
 
         final List<JSONObject> frames = new ArrayList<>();
 
-        final Directions.Dir[] dirs = directionOrder.stream()
-                .filter(directionInclusion::contains)
-                .toArray(Directions.Dir[]::new);
-        final Animation[] anims = animationOrder.stream()
-                .filter(animationInclusion::contains)
-                .toArray(Animation[]::new);
+        final Directions.Dir[] dirs = exportDirections();
+        final Animation[] anims = exportAnimations();
 
         jb.add(new JSONPair("data", new JSONObject(
                 new JSONPair("directions", new JSONArray<>(
@@ -326,7 +332,7 @@ public abstract class Style {
         final List<Pair<String, GameImage>> stipRep = new ArrayList<>();
 
         // Set up render layers
-        for (CustomizationLayer layer : layers.get())
+        for (CustomizationLayer layer : layers.assembly())
             addLayerIfRendered(renderLayers, layer);
 
 
@@ -439,7 +445,7 @@ public abstract class Style {
     }
 
     public void randomize() {
-        layers.get().forEach(l -> l.randomize(false));
+        layers.customization().forEach(l -> l.randomize(false));
         update();
     }
 
@@ -447,8 +453,10 @@ public abstract class Style {
         final SpriteAssembler<String, String> assembler =
                 new SpriteAssembler<>(dims.width(), dims.height());
 
-        for (CustomizationLayer layer : layers.get())
+        for (CustomizationLayer layer : layers.assembly())
             addLayerToAssembler(assembler, layer);
+
+        considerations(assembler);
 
         map = new SpriteMap<>(assembler, states);
     }
@@ -459,9 +467,17 @@ public abstract class Style {
     ) {
         if (layer instanceof DecisionLayer dl)
             addLayerToAssembler(assembler, dl.getDecision());
-        else if (layer instanceof MaskLayer ml)
-            assembler.addMask(ml.id, ml.compose(), ml.getTarget().id);
-        else if (layer instanceof GroupLayer gl)
+        else if (layer instanceof MaskLayer ml) {
+            final CustomizationLayer[] targets = ml.getTargets();
+            final SpriteConstituent<String> mask = ml.compose();
+
+            for (int i = 0; i < targets.length; i++) {
+                final CustomizationLayer target = targets[i];
+
+                assembler.addMask(ml.id + (targets.length > 1 ? "-" + i : ""),
+                        mask, target.id);
+            }
+        } else if (layer instanceof GroupLayer gl)
             gl.all().forEach(l -> addLayerToAssembler(assembler, l));
         else if (layer.isRendered())
             assembler.addLayer(layer.id, layer.compose());
@@ -493,7 +509,7 @@ public abstract class Style {
         });
     }
 
-    final int indexOfDir(final Directions.Dir dir) {
+    protected final int indexOfDir(final Directions.Dir dir) {
         for (int i = 0; i < directions.order().length; i++)
             if (dir == directions.order()[i])
                 return i;
@@ -514,8 +530,28 @@ public abstract class Style {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
+    protected void considerations(final SpriteAssembler<String, String> assembler) {}
+
+    public boolean hasPreExportStep() {
+        return false;
+    }
+
+    public GameImage preExportTransform(final GameImage input) {
+        return input;
+    }
+
+    public void resetPreExport() {}
+
+    public StyleOption[] getOptionSettings() { return new StyleOption[0]; }
+
+    @SuppressWarnings("unused")
+    public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
+
+    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {}
+
     public abstract String name();
     public abstract boolean shipping();
+    public abstract boolean hasSettings();
 
     // SEQUENCING
     public void updateAnimationInclusion(

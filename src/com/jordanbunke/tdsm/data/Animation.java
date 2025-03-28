@@ -5,6 +5,8 @@ import com.jordanbunke.tdsm.data.func.CoordFunc;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.StringUtils;
 
+import java.util.Arrays;
+
 public final class Animation {
     public final String id;
     private final int[] ticksPerFrame;
@@ -26,30 +28,62 @@ public final class Animation {
         this.coordFunc = coordFunc;
     }
 
-    public static Animation make(
-            final String id, final int frameCount,
-            final Coord2D firstFrame, final boolean horizontal,
-            final PlaybackMode playbackMode
-    ) {
-        final CoordFunc coordFunc = f -> new Coord2D(
-                firstFrame.x + (horizontal ? f : 0),
-                firstFrame.y + (horizontal ? 0 : f)
-        );
-
-        return make(id, frameCount, coordFunc, playbackMode);
+    public static Builder init(final String id, final int frameCount) {
+        return new Builder(id, frameCount);
     }
 
-    public static Animation make(
-            final String id, final int frameCount,
-            final CoordFunc coordFunc,
-            final PlaybackMode playbackMode
-    ) {
-        final int[] frameTimings = new int[frameCount];
+    public static class Builder {
+        private final String id;
+        private final int[] ticksPerFrame;
 
-        for (int i = 0; i < frameCount; i++)
-            frameTimings[i] = Constants.FRAME_TICKS;
+        private CoordFunc coordFunc;
+        private PlaybackMode playbackMode;
 
-        return new Animation(id, frameTimings, coordFunc, playbackMode);
+        Builder(final String id, final int frameCount) {
+            this.id = id;
+            ticksPerFrame = new int[frameCount];
+            Arrays.fill(ticksPerFrame, Constants.FRAME_TICKS);
+
+            coordFunc = f -> new Coord2D(0, f);
+            playbackMode = PlaybackMode.LOOP;
+        }
+
+        public Builder setPlaybackMode(final PlaybackMode playbackMode) {
+            this.playbackMode = playbackMode;
+            return this;
+        }
+
+        public Builder setCoordFunc(final CoordFunc coordFunc) {
+            this.coordFunc = coordFunc;
+            return this;
+        }
+
+        public Builder setCoordFunc(
+                final Coord2D firstFrame, final boolean horizontal
+        ) {
+            coordFunc = f -> new Coord2D(
+                    firstFrame.x + (horizontal ? f : 0),
+                    firstFrame.y + (horizontal ? 0 : f)
+            );
+            return this;
+        }
+
+        public Builder setFrameTiming(final int ticks) {
+            Arrays.fill(ticksPerFrame, ticks);
+            return this;
+        }
+
+        public Builder setTicksPerFrame(final int... ticksPerFrame) {
+            if (ticksPerFrame.length == this.ticksPerFrame.length)
+                System.arraycopy(ticksPerFrame, 0,
+                        this.ticksPerFrame, 0, ticksPerFrame.length);
+
+            return this;
+        }
+
+        public Animation build() {
+            return new Animation(id, ticksPerFrame, coordFunc, playbackMode);
+        }
     }
 
     public int frameCount() {

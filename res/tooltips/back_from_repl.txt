@@ -1,0 +1,2 @@
+Returning to the configuration menu
+will reset the color replacements
