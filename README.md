@@ -1,6 +1,6 @@
 # ![Top Down Sprite Maker](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/logo/banner.gif)
 
-***Top Down Sprite Maker*** is a flexible and powerful **pixel art character creation tool**. It is a desktop GUI application with executable binaries distributed for Windows. The JAR distribution can also be run on macOS and Linux distros with compatible versions of Java (17 or above).
+***Top Down Sprite Maker*** is a flexible and powerful **pixel art character creation tool**. It is a desktop GUI application with executable binaries distributed for Windows, macOS, and Linux distributions.
 
 [![Buy on itch.io](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png)](https://flinkerflitzer.itch.io/tdsm)
 [![Art repository](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/art-repo-button.png)](https://github.com/jbunke/tdsm-art)
@@ -11,10 +11,11 @@
 
 ![Example](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/runthrough.gif)
 
-<div align="center">Making myself in the Pokémon Trainer sprite style</div>
+<div align="center">Making myself in the <em>Hokkaido</em> sprite style</div>
 
 ## Key Features
 
+* **Multiple sprite styles:** Unlike most pixel art character creators, which are built for a specific sprite art style, *TDSM* is designed and built with a modular, logic-first approach that allows for it to support multiple sprite styles with unique sets of animations, directions, and customization options.
 * **Complex customization logic:** Customization layers are connected with rules that cause them to affect each other
   * **Layer masks:** Equipping a hat or helmet will mask the hair pixels that should be confined by the headwear [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/mask.gif)
   * **Dynamic updates:** Changing your body type propagates changes to your clothing layers to reflect the updated sprite dimensions without altering the data of the clothing equipped [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/change-propagation.gif)
@@ -24,10 +25,6 @@
   * **Sequencing & Inclusion:** Determine the *order of directions and animations in the exported sprite sheet*, as well as which directions and animations to *include* [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/sequencing.gif)
   * **Layout:** Determine the axis along which directions and animations are exported in the sprite sheet, as well as how distinct animations follow one another [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/layout.gif)
 * **Export formats:** In addition to the standard PNG sprite sheet, *TDSM* optionally exports the sprite sheet's metadata in a JSON file, and the sprite sheet as a [*Stipple Effect*](https://github.com/stipple-effect/stipple-effect) project with the contents of each customization layer on its own layer in the file [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/export-formats.gif)
-
-> **Note:**
-> 
-> *TDSM* is not designed specifically for one sprite template. While it only features the *Pokémon Trainer \[Gen 4\]* sprite template at launch, it will soon be updated to feature more styles of sprites with entirely distinct animations and base assets.
 
 ## Contributing
 
