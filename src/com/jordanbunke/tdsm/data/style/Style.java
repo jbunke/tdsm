@@ -573,6 +573,18 @@ public abstract class Style {
         animationOrder.add(newIndex, animation);
     }
 
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setExportAnimations(final Animation[] animations) {
+        animationOrder.clear();
+        animationInclusion.clear();
+
+        for (Animation animation : animations) {
+            animationOrder.add(animation);
+            animationInclusion.add(animation);
+        }
+    }
+
     public boolean isAnimationIncluded(
             final Animation animation
     ) {
@@ -597,6 +609,18 @@ public abstract class Style {
     ) {
         directionOrder.remove(dir);
         directionOrder.add(newIndex, dir);
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setExportDirections(final Directions.Dir[] dirs) {
+        directionOrder.clear();
+        directionInclusion.clear();
+
+        for (Directions.Dir dir : dirs) {
+            directionOrder.add(dir);
+            directionInclusion.add(dir);
+        }
     }
 
     public boolean isDirectionIncluded(
