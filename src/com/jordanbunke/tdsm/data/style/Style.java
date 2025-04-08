@@ -687,6 +687,13 @@ public abstract class Style {
                 l = edge == Edge.LEFT ? px : padding.get(Edge.LEFT),
                 b = edge == Edge.BOTTOM ? px : padding.get(Edge.BOTTOM),
                 r = edge == Edge.RIGHT ? px : padding.get(Edge.RIGHT);
+
+        return validateEdgePadding(l, r, t, b);
+    }
+
+    public boolean validateEdgePadding(
+            final int l, final int r, final int t, final int b
+    ) {
         final int w = l + dims.width() + r, h = t + dims.height() + b;
 
         return w >= MIN_SPRITE_EXPORT_W && w <= MAX_SPRITE_EXPORT_W &&
@@ -695,6 +702,17 @@ public abstract class Style {
 
     public void setEdgePadding(final Edge edge, final int px) {
         padding.put(edge, px);
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setEdgePadding(
+            final int l, final int r, final int t, final int b
+    ) {
+        setEdgePadding(Edge.LEFT, l);
+        setEdgePadding(Edge.RIGHT, r);
+        setEdgePadding(Edge.TOP, t);
+        setEdgePadding(Edge.BOTTOM, b);
     }
 
     public int getEdgePadding(final Edge edge) {
