@@ -2,7 +2,7 @@
 name: Feature request
 about: 'Suggest an idea for this project. '
 title: "[FEATURE REQUEST] <feature_name_here>"
-labels: feature
+labels: feature, request
 assignees: jbunke
 
 ---
