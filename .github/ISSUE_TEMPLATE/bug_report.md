@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve
 title: "[BUG] [Short description here]"
-labels: bug, feature
+labels: bug, feature, request
 assignees: jbunke
 
 ---
