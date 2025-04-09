@@ -17,12 +17,23 @@ Before making a feature request, please read through the [existing requests](htt
 
 If your request is to have a problem with the program fixed, please file a [**bug report**](https://github.com/jbunke/tdsm/issues/new/choose) instead of a feature request.
 
-## Feature Request
+## Instructions
+
+1. Ensure you have read the **Please consider** section
+2. Replace *italicized text blocks* below with the requested contents and remove the asterisks (*)
+3. Replace *\<feature_name_here\>* in the title with a short name for the requested feature.
+4. Leave the right panel fields blank, [the developer](https://github.com/jbunke/tdsm) will get to them
+
+---
+
+# Feature Request
+
+*Brief name here - no more than 10 words*
 
 ###  Description
 
-<Here>
+*Here - be specific and clear with the implementation details that matter to you*
 
 ### Additional comments
 
-<Here>
+*Here*
