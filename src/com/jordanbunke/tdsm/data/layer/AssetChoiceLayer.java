@@ -19,7 +19,8 @@ import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
 
-public final class AssetChoiceLayer extends AbstractACLayer {
+public final class AssetChoiceLayer extends AbstractACLayer
+        implements ChoosingLayer {
     private final String name;
 
     private final AssetChoice[] choices;
@@ -112,11 +113,28 @@ public final class AssetChoiceLayer extends AbstractACLayer {
     }
 
     // scripting inclusion
-    @SuppressWarnings("unused")
+    @Override
+    public boolean choose(final String id) {
+        if (id == null) return false;
+
+        final String[] ids = getAssetChoiceIDs();
+
+        for (int i = 0; i < ids.length; i++)
+            if (id.equals(ids[i])) {
+                chooseFromScript(i);
+                return true;
+            }
+
+        return false;
+    }
+
+    // scripting inclusion
+    @Override
     public void chooseFromScript(final int selection) {
         choose(selection, false);
     }
 
+    @Override
     public void choose(final int selection) {
         choose(selection, true);
     }
@@ -265,11 +283,22 @@ public final class AssetChoiceLayer extends AbstractACLayer {
                 ? NONE : 0, choices.length).toArray();
     }
 
+    // scripting inclusion
+    @Override
+    public int getNumChoices() {
+        return choices.length;
+    }
+
     public GameImage getPreview(final int index) {
         return previews[index];
     }
 
     public String[] getAssetChoiceIDs() {
         return Arrays.stream(choices).map(ac -> ac.id).toArray(String[]::new);
+    }
+
+    @Override
+    public String getID() {
+        return id;
     }
 }
