@@ -69,6 +69,12 @@ public final class MathLayer extends CustomizationLayer {
         }
     }
 
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setValue(final int value) {
+        this.value = MathPlus.bounded(min, value, max);
+    }
+
     @Override
     public SpriteConstituent<String> compose() {
         return s -> GameImage.dummy();

@@ -111,6 +111,12 @@ public final class AssetChoiceLayer extends AbstractACLayer {
         choose(selection, false);
     }
 
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void chooseFromScript(final int selection) {
+        choose(selection, false);
+    }
+
     public void choose(final int selection) {
         choose(selection, true);
     }
