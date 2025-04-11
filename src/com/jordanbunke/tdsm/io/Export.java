@@ -90,7 +90,7 @@ public final class Export {
         if (exportJSON) exportJSON();
         if (exportStip) exportStip();
 
-        ProgramState.set(ProgramState.MENU, MenuAssembly.main());
+        ProgramState.set(ProgramState.MENU, MenuAssembly.mainMenu());
     }
 
     private void exportJSON() {

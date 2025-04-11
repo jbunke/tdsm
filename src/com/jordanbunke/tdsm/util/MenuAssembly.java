@@ -12,6 +12,7 @@ import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.tdsm.ProgramInfo;
 import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Edge;
@@ -138,7 +139,7 @@ public final class MenuAssembly {
                 "< Main Menu", BOTTOM.at(0.0, 0.5)
                         .displace(BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
-                () -> ProgramState.set(ProgramState.MENU, main()));
+                () -> ProgramState.set(ProgramState.MENU, mainMenu()));
         final MenuElement toConfigButton = StaticTextButton.make(
                 "Configure... >", BOTTOM.at(1.0, 0.5)
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
@@ -406,7 +407,7 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    public static Menu main() {
+    public static Menu mainMenu() {
         final MenuBuilder mb = new MenuBuilder();
 
         addMenuButtons(mb,
@@ -428,7 +429,7 @@ public final class MenuAssembly {
                 canvasAt(0.5, 0.98),
                 Anchor.CENTRAL_BOTTOM,
                 Graphics.miniText(Colors.darkSystem())
-                        .addText(TDSM.getVersion()).addLineBreak()
+                        .addText(ProgramInfo.getVersion()).addLineBreak()
                         .addText("(c) 2025 Jordan Bunke").build().draw());
 
         mb.add(programLabel);
@@ -445,7 +446,7 @@ public final class MenuAssembly {
 
     private static Menu about() {
         return openingMenu("About", ResourceCodes.ABOUT,
-                Text.Orientation.CENTER, main(),
+                Text.Orientation.CENTER, mainMenu(),
                 new Pair<>("Changelog", () -> ProgramState.to(changelog())),
                 new Pair<>("Roadmap", () -> ProgramState.to(roadmap())),
                 new Pair<>("License", () -> ProgramState.to(license())),
