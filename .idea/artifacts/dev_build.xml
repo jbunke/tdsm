@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="dev_build">
+    <output-path>$PROJECT_DIR$/out/artifacts/dev_build</output-path>
+    <root id="archive" name="tdsm.jar">
+      <element id="module-output" name="tdsm" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-sprite.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-fonts.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../stip-parser/out/artifacts/stip_parser/stip-parser.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-script.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-core.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-menu-extension.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

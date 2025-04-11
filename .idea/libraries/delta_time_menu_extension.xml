@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="delta-time-menu-extension">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-menu-extension.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="delta-time-fonts">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-fonts.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

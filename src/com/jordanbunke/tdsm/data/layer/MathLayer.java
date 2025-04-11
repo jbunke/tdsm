@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public final class MathLayer extends CustomizationLayer {
     private final String name;
-    private final int min, max;
+    public final int min, max;
     private final Function<Integer, String> formatFunc;
 
     private int value;

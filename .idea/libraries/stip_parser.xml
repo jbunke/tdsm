@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="stip-parser">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../stip-parser/out/artifacts/stip_parser/stip-parser.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
