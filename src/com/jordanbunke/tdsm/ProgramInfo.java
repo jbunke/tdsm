@@ -18,6 +18,10 @@ public final class ProgramInfo {
     private static boolean IS_DEVBUILD = false;
 
     static void readProgramFile() {
+        readProgramFile(true);
+    }
+
+    public static void readProgramFile(final boolean overwrite) {
         final String programFile = FileIO.readResource(ResourceLoader
                 .loadResource(Constants.PROGRAM_FILE), "prg");
 
@@ -52,26 +56,28 @@ public final class ProgramInfo {
             }
         }
 
-        final Path RES_ROOT = Path.of("res");
+        if (overwrite) {
+            final Path RES_ROOT = Path.of("res");
 
-        if (IS_DEVBUILD) {
-            VERSION.incrementBuild();
+            if (IS_DEVBUILD) {
+                VERSION.incrementBuild();
 
-            final Path toSave = RES_ROOT.resolve(Constants.PROGRAM_FILE);
+                final Path toSave = RES_ROOT.resolve(Constants.PROGRAM_FILE);
 
-            final StringBuilder updated = new StringBuilder();
+                final StringBuilder updated = new StringBuilder();
 
-            ParserSerializer.serializeSimpleAttributes(updated, -1,
-                    new Pair<>(Constants.NAME_CODE, PROGRAM_NAME),
-                    new Pair<>(Constants.VERSION_CODE, VERSION.toString()),
-                    new Pair<>(Constants.IS_DEVBUILD_CODE,
-                            String.valueOf(IS_DEVBUILD)));
+                ParserSerializer.serializeSimpleAttributes(updated, -1,
+                        new Pair<>(Constants.NAME_CODE, PROGRAM_NAME),
+                        new Pair<>(Constants.VERSION_CODE, VERSION.toString()),
+                        new Pair<>(Constants.IS_DEVBUILD_CODE,
+                                String.valueOf(IS_DEVBUILD)));
 
-            FileIO.writeFile(toSave, updated.toString());
+                FileIO.writeFile(toSave, updated.toString());
+            }
+
+            final Path versionFile = RES_ROOT.resolve(Constants.VERSION_FILE);
+            FileIO.writeFile(versionFile, VERSION.toString());
         }
-
-        final Path versionFile = RES_ROOT.resolve(Constants.VERSION_FILE);
-        FileIO.writeFile(versionFile, VERSION.toString());
     }
 
     public static String getVersion() {
