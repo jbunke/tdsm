@@ -33,4 +33,18 @@ public final class Layers {
         addToCustomization(toAdd);
         addToAssembly(toAdd);
     }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public CustomizationLayer getLayer(final String id) {
+        for (CustomizationLayer c : customization)
+            if (c.id.equals(id))
+                return c;
+
+        for (CustomizationLayer a : assembly)
+            if (a.id.equals(id))
+                return a;
+
+        return null;
+    }
 }
