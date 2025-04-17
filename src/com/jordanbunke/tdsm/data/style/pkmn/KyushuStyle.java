@@ -118,8 +118,8 @@ public final class KyushuStyle extends PokemonStyle {
                         .setPlaybackMode(PlaybackMode.PONG)
                         .setCoordFunc(new Coord2D(6, 0), horizontal)
                         .setFrameTiming(6).build(),
-//                Animation.init(ANIM_ID_FISH, 4)
-//                        .setCoordFunc(new Coord2D(9, 0), horizontal).build(),
+                Animation.init(ANIM_ID_FISH, 4)
+                        .setCoordFunc(new Coord2D(9, 0), horizontal).build(),
                 Animation.init(ANIM_ID_SURF, 2)
                         .setCoordFunc(new Coord2D(13, 0), horizontal)
                         .setFrameTiming(15).build(),
@@ -456,7 +456,8 @@ public final class KyushuStyle extends PokemonStyle {
                 case UP -> 0;
                 default -> 1;
             };
-            // TODO - capsule, fish
+            case ANIM_ID_FISH -> dir == Dir.DOWN ? -4 : 3;
+            // TODO - capsule
             default -> 0;
         };
 
@@ -464,7 +465,12 @@ public final class KyushuStyle extends PokemonStyle {
         frameComp = switch (animID) {
             case ANIM_ID_WALK, ANIM_ID_RUN -> frame != 1 ? 1 : 0;
             case ANIM_ID_SURF -> frame;
-            // TODO - capsule, fish
+            case ANIM_ID_FISH -> switch (dir) {
+                case UP -> frame == 3 ? -1 : 0;
+                case DOWN -> frame == 2 ? 1 : 0;
+                default -> frame % 2 == 0 ? 1 : 0;
+            };
+            // TODO - capsule
             default -> 0;
         };
 
