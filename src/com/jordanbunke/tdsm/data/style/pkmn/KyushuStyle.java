@@ -102,7 +102,6 @@ public final class KyushuStyle extends PokemonStyle {
     private static Animation[] setUpAnimations() {
         final boolean horizontal = true;
 
-        // TODO - uncomment animations as implemented
         return new Animation[] {
                 Animation.init(ANIM_ID_WALK, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
@@ -123,8 +122,8 @@ public final class KyushuStyle extends PokemonStyle {
                 Animation.init(ANIM_ID_SURF, 2)
                         .setCoordFunc(new Coord2D(13, 0), horizontal)
                         .setFrameTiming(15).build(),
-//                Animation.init(ANIM_ID_CAPSULE, 5)
-//                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
+                Animation.init(ANIM_ID_CAPSULE, 4)
+                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
         };
     }
 
@@ -457,7 +456,7 @@ public final class KyushuStyle extends PokemonStyle {
                 default -> 1;
             };
             case ANIM_ID_FISH -> dir == Dir.DOWN ? -4 : 3;
-            // TODO - capsule
+            case ANIM_ID_CAPSULE -> 2;
             default -> 0;
         };
 
@@ -470,7 +469,7 @@ public final class KyushuStyle extends PokemonStyle {
                 case DOWN -> frame == 2 ? 1 : 0;
                 default -> frame % 2 == 0 ? 1 : 0;
             };
-            // TODO - capsule
+            case ANIM_ID_CAPSULE -> frame == 3 ? -1 : 0;
             default -> 0;
         };
 
