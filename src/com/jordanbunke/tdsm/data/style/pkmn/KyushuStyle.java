@@ -43,7 +43,7 @@ public final class KyushuStyle extends PokemonStyle {
     private final ColorSelection skinTones, hairColors,
             eyebrowColors, eyeColors;
 
-    private final ColorSelection[] hairAccCS, hatCS, topCS, botCS, shoeCS;
+    private final ColorSelection[] hairAccCS, hatCS, topCS, botCS, shoeCS, capsuleCS;
 
     static {
         KYUSHU_EYES = new Color[] {
@@ -87,6 +87,8 @@ public final class KyushuStyle extends PokemonStyle {
         botCS = IntStream.range(0, 4).mapToObj(PokemonStyle::clothesSwatch)
                 .toArray(ColorSelection[]::new);
         shoeCS = IntStream.range(0, 2).mapToObj(PokemonStyle::clothesSwatch)
+                .toArray(ColorSelection[]::new);
+        capsuleCS = IntStream.range(0, 3).mapToObj(PokemonStyle::clothesSwatch)
                 .toArray(ColorSelection[]::new);
 
         bodyLayer = null;
@@ -214,10 +216,11 @@ public final class KyushuStyle extends PokemonStyle {
         bodyLayer.addDependent(clothingLogic);
 
         // TODO
+        final AssetChoiceLayer capsuleLayer = buildCapsule();
 
         layers.addToCustomization(skinLayer, bodyLayer, headLayer,
                 eyeLayer, eyeColorLayer, eyeHeight, hairLayer,
-                clothingTypeLayer, clothingLogic, hatLayer);
+                clothingTypeLayer, clothingLogic, hatLayer, capsuleLayer);
 
         final PureComposeLayer combinedHeadBackLayer =
                 new PureComposeLayer("combined-head-back", spriteID -> {
@@ -264,7 +267,7 @@ public final class KyushuStyle extends PokemonStyle {
 
         layers.addToAssembly(
                 combinedHeadBackLayer, bodyLayer, clothingLogic,
-                combinedHeadLayer);
+                combinedHeadLayer, capsuleLayer);
     }
 
     private AssetChoiceLayer buildHair() {
@@ -315,6 +318,14 @@ public final class KyushuStyle extends PokemonStyle {
                 .toArray(AssetChoiceTemplate[]::new);
     }
 
+    private AssetChoiceLayer buildCapsule() {
+        return buildClothes("capsule", capsuleCS)
+                .setDims(new Bounds2D(5, 5))
+                .setPreviewCoord(new Coord2D())
+                .setNoAssetChoice(NoAssetChoice.invalid())
+                .setComposer(this::composeCapsule).build();
+    }
+
     private AssetChoiceLayer buildOutfit(final BodyType bt) {
         return buildClothes(bt.prefix() + "-outfit", topCS)
                 .setName("Outfit").build();
@@ -346,6 +357,33 @@ public final class KyushuStyle extends PokemonStyle {
     ) {
         return buildClothes(this, layerID, selections)
                 .setPreviewCoord(new Coord2D(DIMS.width(), 0));
+    }
+
+    private SpriteConstituent<String> composeCapsule(final SpriteSheet sheet) {
+        return id -> {
+            final GameImage sprite = new GameImage(DIMS.width(), DIMS.height());
+
+            final Directions.Dir dir = Directions.get(
+                    SpriteStates.extractContributor(DIRECTION, id));
+            final String animID =
+                    SpriteStates.extractContributor(ANIM, id);
+            final int frame = Integer.parseInt(
+                    SpriteStates.extractContributor(FRAME, id));
+
+            if (!animID.equals(ANIM_ID_CAPSULE) ||
+                    !dir.equals(Dir.DOWN) || frame == 0)
+                return sprite;
+
+            final Coord2D offset = switch (frame) {
+                case 1 -> new Coord2D(15, 25);
+                case 2 -> new Coord2D(22, 24);
+                case 3 -> new Coord2D(23, 21);
+                default -> new Coord2D();
+            };
+
+            sprite.draw(sheet.getSprite(new Coord2D()), offset.x, offset.y);
+            return sprite.submit();
+        };
     }
 
     private SpriteConstituent<String> composeEyes(
