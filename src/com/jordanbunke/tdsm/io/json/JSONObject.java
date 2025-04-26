@@ -20,9 +20,9 @@ public final class JSONObject {
 
                     return Arrays.stream(lines)
                             .map(l -> "\t" + l)
-                            .reduce("", (a, b) -> a.equals("")
+                            .reduce("", (a, b) -> a.isEmpty()
                                     ? b : a + "\n" + b);
-                }).reduce("", (a, b) -> a.equals("")
+                }).reduce("", (a, b) -> a.isEmpty()
                         ? b : a + ",\n" + b) + "\n}";
     }
 }

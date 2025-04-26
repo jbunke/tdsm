@@ -4,6 +4,8 @@
       <root url="jar://$PROJECT_DIR$/../stip-parser/out/artifacts/stip_parser/stip-parser.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../stip-parser/src" />
+    </SOURCES>
   </library>
 </component>

@@ -24,9 +24,11 @@ import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
+import static com.jordanbunke.tdsm.util.JSONHelper.*;
 
 public abstract class Style {
 
@@ -135,6 +137,18 @@ public abstract class Style {
     public String buildJSON() {
         final JSONBuilder jb = new JSONBuilder();
 
+        jb.add(new JSONPair("style_id", id));
+
+        // customization choices
+        final List<JSONPair> choices = new LinkedList<>();
+
+        for (CustomizationLayer layer : layers.customization())
+            choices.add(new JSONPair(layer.id, getLayerJSONValue(layer)));
+
+        jb.add(new JSONPair("customization",
+                new JSONObject(choices.toArray(JSONPair[]::new))));
+
+        // sizing
         final Bounds2D spriteDims = getExportSpriteDims();
         final int spriteW = spriteDims.width(), spriteH = spriteDims.height(),
                 spritesX = getSpritesX(), spritesY = getSpritesY(),
@@ -153,7 +167,6 @@ public abstract class Style {
         jb.add(new JSONPair("data", new JSONObject(
                 new JSONPair("directions", new JSONArray<>(
                         Arrays.stream(dirs).map(directions::name)
-                                .map(s -> "\"" + s + "\"")
                                 .toArray(String[]::new))),
                 new JSONPair("animations", new JSONArray<>(
                         Arrays.stream(anims).map(a -> new JSONObject(

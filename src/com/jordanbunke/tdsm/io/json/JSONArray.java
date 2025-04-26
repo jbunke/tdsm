@@ -1,7 +1,6 @@
 package com.jordanbunke.tdsm.io.json;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 public final class JSONArray<T> {
     private final T[] array;
@@ -10,10 +9,20 @@ public final class JSONArray<T> {
         this.array = array;
     }
 
+    private String writeElement(final T element) {
+        if (element instanceof String s)
+            return "\"" + s + "\"";
+
+        return element.toString();
+    }
+
     @Override
     public String toString() {
+        if (array.length == 0)
+            return "[]";
+
         return "[\n" + Arrays.stream(array)
-                .map(Objects::toString).map(s -> {
+                .map(this::writeElement).map(s -> {
                     final String[] lines = s.split("\n");
 
                     if (lines.length == 1)
@@ -21,9 +30,9 @@ public final class JSONArray<T> {
 
                     return Arrays.stream(lines)
                             .map(l -> "\t" + l)
-                            .reduce("", (a, b) -> a.equals("")
+                            .reduce("", (a, b) -> a.isEmpty()
                                     ? b : a + "\n" + b);
-                }).reduce("", (a, b) -> a.equals("")
+                }).reduce("", (a, b) -> a.isEmpty()
                         ? b : a + ",\n" + b) + "\n]";
     }
 }
