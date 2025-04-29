@@ -1,5 +1,7 @@
 package com.jordanbunke.tdsm.io.json;
 
+import static com.jordanbunke.tdsm.io.json.JSONConstants.*;
+
 public final class JSONPair {
     private final String key;
     private final Object value;
@@ -10,12 +12,12 @@ public final class JSONPair {
     }
 
     public String write() {
-        return "\"" + key + "\": " + writeValue();
+        return QUOTE + key + QUOTE + ": " + writeValue();
     }
 
     private String writeValue() {
         if (value instanceof String s)
-            return "\"" + s + "\"";
+            return QUOTE + s + QUOTE;
 
         return value.toString();
     }

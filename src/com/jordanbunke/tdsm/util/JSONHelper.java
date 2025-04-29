@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-public class JSONHelper {
+public final class JSONHelper {
     public static JSONArray<String> buildColorSelectionArray(
             final ColorSelection[] selections
     ) {

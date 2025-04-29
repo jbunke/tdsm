@@ -2,6 +2,8 @@ package com.jordanbunke.tdsm.io.json;
 
 import java.util.Arrays;
 
+import static com.jordanbunke.tdsm.io.json.JSONConstants.*;
+
 public final class JSONArray<T> {
     private final T[] array;
 
@@ -11,7 +13,7 @@ public final class JSONArray<T> {
 
     private String writeElement(final T element) {
         if (element instanceof String s)
-            return "\"" + s + "\"";
+            return QUOTE + s + QUOTE;
 
         return element.toString();
     }
@@ -19,9 +21,9 @@ public final class JSONArray<T> {
     @Override
     public String toString() {
         if (array.length == 0)
-            return "[]";
+            return ARR_OPEN + ARR_CLOSE;
 
-        return "[\n" + Arrays.stream(array)
+        return ARR_OPEN + "\n" + Arrays.stream(array)
                 .map(this::writeElement).map(s -> {
                     final String[] lines = s.split("\n");
 
@@ -33,6 +35,6 @@ public final class JSONArray<T> {
                             .reduce("", (a, b) -> a.isEmpty()
                                     ? b : a + "\n" + b);
                 }).reduce("", (a, b) -> a.isEmpty()
-                        ? b : a + ",\n" + b) + "\n]";
+                        ? b : a + ELEM_SEP + "\n" + b) + "\n" + ARR_CLOSE;
     }
 }
