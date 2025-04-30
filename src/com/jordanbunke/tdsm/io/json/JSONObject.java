@@ -11,6 +11,10 @@ public final class JSONObject {
         this.contents = contents;
     }
 
+    public JSONPair[] get() {
+        return contents;
+    }
+
     @Override
     public String toString() {
         return SCOPE_OPEN + "\n" + Arrays.stream(contents)

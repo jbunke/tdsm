@@ -18,10 +18,14 @@ public final class JSONArray<T> {
         return element.toString();
     }
 
+    public T[] get() {
+        return array;
+    }
+
     @Override
     public String toString() {
         if (array.length == 0)
-            return ARR_OPEN + ARR_CLOSE;
+            return String.valueOf(ARR_OPEN) + ARR_CLOSE;
 
         return ARR_OPEN + "\n" + Arrays.stream(array)
                 .map(this::writeElement).map(s -> {
