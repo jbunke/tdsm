@@ -1,12 +1,10 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.json.*;
 import com.jordanbunke.stip_parser.ParserSerializer;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
-import com.jordanbunke.tdsm.io.json.JSONArray;
-import com.jordanbunke.tdsm.io.json.JSONObject;
-import com.jordanbunke.tdsm.io.json.JSONPair;
 
 import java.util.Arrays;
 import java.util.LinkedList;

@@ -11,15 +11,12 @@ import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.json.*;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.*;
-import com.jordanbunke.tdsm.io.json.JSONArray;
-import com.jordanbunke.tdsm.io.json.JSONBuilder;
-import com.jordanbunke.tdsm.io.json.JSONObject;
-import com.jordanbunke.tdsm.io.json.JSONPair;
 import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
