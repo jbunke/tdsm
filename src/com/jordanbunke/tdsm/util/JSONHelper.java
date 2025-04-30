@@ -11,6 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public final class JSONHelper {
+    public static final String STYLE_ID = "style_id", CHOICE = "choice",
+            COLORS = "colors", NONE = "%none%",
+            CUSTOMIZATION = "customization", FRAMES = "frames";
+
     public static JSONArray<String> buildColorSelectionArray(
             final ColorSelection[] selections
     ) {
@@ -31,11 +35,11 @@ public final class JSONHelper {
             if (acl.hasChoice()) {
                 final AssetChoice ac = acl.getChoice();
 
-                value = new JSONObject(new JSONPair("choice", ac.id),
-                        new JSONPair("colors", buildColorSelectionArray(
+                value = new JSONObject(new JSONPair(CHOICE, ac.id),
+                        new JSONPair(COLORS, buildColorSelectionArray(
                                 ac.getColorSelections())));
             } else
-                value = "none"; // TODO - constant
+                value = NONE;
         }
         else if (layer instanceof ChoiceLayer cl)
             value = cl.getChoice();
@@ -53,7 +57,7 @@ public final class JSONHelper {
             value = new JSONObject(members.toArray(JSONPair[]::new));
         }
         else
-            value = "???"; // TODO - constant
+            value = null; // TODO - constant
 
         return value;
     }

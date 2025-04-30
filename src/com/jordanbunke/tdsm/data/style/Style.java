@@ -134,7 +134,7 @@ public abstract class Style {
     public String buildJSON() {
         final JSONBuilder jb = new JSONBuilder();
 
-        jb.add(new JSONPair("style_id", id));
+        jb.add(new JSONPair(STYLE_ID, id));
 
         // customization choices
         final List<JSONPair> choices = new LinkedList<>();
@@ -142,7 +142,7 @@ public abstract class Style {
         for (CustomizationLayer layer : layers.customization())
             choices.add(new JSONPair(layer.id, getLayerJSONValue(layer)));
 
-        jb.add(new JSONPair("customization",
+        jb.add(new JSONPair(CUSTOMIZATION,
                 new JSONObject(choices.toArray(JSONPair[]::new))));
 
         // sizing
@@ -200,7 +200,7 @@ public abstract class Style {
             }
         }
 
-        jb.add(new JSONPair("frames",
+        jb.add(new JSONPair(FRAMES,
                 new JSONArray<>(frames.toArray(JSONObject[]::new))));
 
         return jb.write();
