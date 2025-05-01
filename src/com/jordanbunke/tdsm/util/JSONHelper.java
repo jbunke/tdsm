@@ -13,7 +13,9 @@ import java.util.List;
 public final class JSONHelper {
     public static final String STYLE_ID = "style_id", CHOICE = "choice",
             COLORS = "colors", NONE = "%none%",
-            CUSTOMIZATION = "customization", FRAMES = "frames";
+            CUSTOMIZATION = "customization", FRAMES = "frames",
+            CONFIG = "config", DIRECTIONS = "directions",
+            ANIMATIONS = "animations";
 
     public static JSONArray<String> buildColorSelectionArray(
             final ColorSelection[] selections

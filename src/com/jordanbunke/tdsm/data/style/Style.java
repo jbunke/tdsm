@@ -145,6 +145,18 @@ public abstract class Style {
         jb.add(new JSONPair(CUSTOMIZATION,
                 new JSONObject(choices.toArray(JSONPair[]::new))));
 
+        // config
+        final Directions.Dir[] dirs = exportDirections();
+        final Animation[] anims = exportAnimations();
+
+        jb.add(new JSONPair(CONFIG, new JSONObject(
+                new JSONPair(DIRECTIONS, new JSONArray<>(
+                        Arrays.stream(dirs).map(directions::name)
+                                .toArray(String[]::new))),
+                new JSONPair(ANIMATIONS, new JSONObject(Arrays.stream(anims)
+                        .map(a -> new JSONPair(a.id, a.frameCount()))
+                        .toArray(JSONPair[]::new))))));
+
         // sizing
         final Bounds2D spriteDims = getExportSpriteDims();
         final int spriteW = spriteDims.width(), spriteH = spriteDims.height(),
@@ -157,19 +169,6 @@ public abstract class Style {
                 new JSONPair("sprite_h", spriteH))));
 
         final List<JSONObject> frames = new ArrayList<>();
-
-        final Directions.Dir[] dirs = exportDirections();
-        final Animation[] anims = exportAnimations();
-
-        jb.add(new JSONPair("data", new JSONObject(
-                new JSONPair("directions", new JSONArray<>(
-                        Arrays.stream(dirs).map(directions::name)
-                                .toArray(String[]::new))),
-                new JSONPair("animations", new JSONArray<>(
-                        Arrays.stream(anims).map(a -> new JSONObject(
-                                new JSONPair("id", a.id),
-                                new JSONPair("frame_count", a.frameCount())
-                        )).toArray(JSONObject[]::new))))));
 
         for (int d = 0; d < dirs.length; d++) {
             final Directions.Dir dir = dirs[d];
