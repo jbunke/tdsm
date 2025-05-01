@@ -155,7 +155,20 @@ public abstract class Style {
                                 .toArray(String[]::new))),
                 new JSONPair(ANIMATIONS, new JSONObject(Arrays.stream(anims)
                         .map(a -> new JSONPair(a.id, a.frameCount()))
-                        .toArray(JSONPair[]::new))))));
+                        .toArray(JSONPair[]::new))),
+                new JSONPair(PADDING, new JSONObject(
+                        padding.keySet().stream().sorted()
+                                .map(e -> new JSONPair(e.name().toLowerCase(),
+                                        padding.get(e)))
+                                .toArray(JSONPair[]::new))),
+                new JSONPair(LAYOUT, new JSONObject(
+                        new JSONPair(ORIENTATION,
+                                animationOrientation.name().toLowerCase()),
+                        new JSONPair(MULTIPLE_ANIMS_PER_DIM,
+                                multipleAnimsPerDim),
+                        new JSONPair(SINGLE_DIM, singleDim),
+                        new JSONPair(FRAMES_PER_DIM, framesPerDim),
+                        new JSONPair(WRAP_ACROSS_DIMS, wrapAnimsAcrossDims))))));
 
         // sizing
         final Bounds2D spriteDims = getExportSpriteDims();
