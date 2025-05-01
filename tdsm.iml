@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/res" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/test-res" type="java-test-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -14,5 +15,6 @@
     <orderEntry type="library" name="delta-time-menu-extension" level="project" />
     <orderEntry type="library" name="delta-time-sprite" level="project" />
     <orderEntry type="library" name="stip-parser" level="project" />
+    <orderEntry type="library" name="json" level="project" />
   </component>
 </module>
