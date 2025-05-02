@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.json.*;
 import com.jordanbunke.stip_parser.ParserSerializer;
 import com.jordanbunke.tdsm.data.Animation;
@@ -12,8 +13,10 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
+import com.jordanbunke.tdsm.flow.ProgramState;
 
 import java.awt.*;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
@@ -75,7 +78,27 @@ public final class JSONHelper {
         return value;
     }
 
-    // TODO - GUI button
+    public static void loadFromJSON() {
+        FileIO.setDialogToFilesOnly();
+
+        final File file = FileIO.openFileFromSystem(
+                new String[] { "JSON files" },
+                new String[][] { { "json" } }
+        ).orElse(null);
+
+        if (file != null) {
+            final String content = FileIO.readFile(file.toPath());
+            final JSONPair[] pairs = JSONReader.readObject(content);
+
+            final List<String> errors = loadFromJSON(pairs, true);
+
+            if (!errors.isEmpty())
+                ProgramState.set(ProgramState.MENU,
+                        MenuAssembly.encounteredErrors(errors.stream()
+                                .map(s -> "> " + s).toArray(String[]::new)));
+        }
+    }
+
     @SuppressWarnings("unused")
     public static List<String> loadFromJSON(
             final JSONPair[] pairs, final boolean gui
@@ -227,24 +250,34 @@ public final class JSONHelper {
                             .toArray(String[]::new));
         else if (layer instanceof AssetChoiceLayer acl) {
             if (value instanceof JSONObject o)
-                setACLFromJSON(acl, o.get());
+                setACLFromJSON(acl, o.get(), errorList);
             else if (NONE.equals(value))
                 acl.chooseFromScript(AssetChoiceLayer.NONE);
+            else
+                errorList.add("Asset choice layer \"" + id +
+                        "\" expected a JSON object or \"" + NONE + "\"");
         }
         else if (layer instanceof DecisionLayer dl)
             setLayerFromJSON(dl.getDecision(), id, value, errorList);
     }
 
     private static void setACLFromJSON(
-            final AssetChoiceLayer acl, final JSONPair[] pairs
+            final AssetChoiceLayer acl, final JSONPair[] pairs,
+            final List<String> errorList
     ) {
         AssetChoice choice = null;
 
         for (JSONPair pair : pairs) {
             switch (pair.key()) {
                 case CHOICE -> {
-                    if (pair.value() instanceof String id && acl.choose(id))
-                        choice = acl.getChoice();
+                    if (pair.value() instanceof String id) {
+                        if (acl.choose(id))
+                            choice = acl.getChoice();
+                        else
+                            errorList.add("\"" + id +
+                                    "\" isn't a valid choice for layer \"" +
+                                    acl.id + "\"");
+                    }
                 }
                 case COLORS -> {
                     if (choice != null &&

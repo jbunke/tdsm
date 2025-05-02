@@ -127,9 +127,15 @@ public final class MenuAssembly {
         final IconButton randomSpriteButton = IconButton.init(
                 ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
                 style::randomize).setAnchor(Anchor.CENTRAL)
-                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
+                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build(),
+                loadFromJSONButton = IconButton.init(
+                        ResourceCodes.LOAD_FROM_JSON,
+                        randomSpriteButton.getRenderPosition(),
+                        JSONHelper::loadFromJSON)
+                        .setAnchor(Anchor.RIGHT_TOP).build();
 
-        mb.addAll(styleLabel, styleDropdown, styleInfo, randomSpriteButton);
+        mb.addAll(styleLabel, styleDropdown, styleInfo,
+                randomSpriteButton, loadFromJSONButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
@@ -587,6 +593,28 @@ public final class MenuAssembly {
             mb.add(b);
             buttonPos = buttonPos.displace(0, TEXT_BUTTON_INC_Y);
         }
+    }
+
+    public static Menu encounteredErrors(final String[] errors) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        menuTitle(mb, "Operation encountered errors");
+
+        final String concat = errors.length == 1 ? errors[0]
+                : Arrays.stream(errors)
+                .reduce((a, b) -> a + "\n" + b)
+                .orElse("");
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.7), concat);
+
+        final MenuElement close = StaticTextButton.make("Close",
+                ButtonType.STANDARD, Alignment.CENTER, atX(0.3),
+                new Coord2D(atX(0.5), CANVAS_H - BUFFER),
+                Anchor.CENTRAL_BOTTOM, () -> true,
+                () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
+        mb.add(close);
+
+        return mb.build();
     }
 
     public static Menu styleSettings() {

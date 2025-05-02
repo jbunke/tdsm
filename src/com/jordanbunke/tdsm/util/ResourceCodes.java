@@ -19,6 +19,7 @@ public final class ResourceCodes {
             UNLOCKED = "unlocked",
             BACK = "back",
             SETTINGS = "settings",
+            LOAD_FROM_JSON = "load_from_json",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
