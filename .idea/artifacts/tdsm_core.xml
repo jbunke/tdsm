@@ -2,6 +2,9 @@
   <artifact type="jar" name="tdsm-core">
     <output-path>$PROJECT_DIR$/out/artifacts/tdsm_core</output-path>
     <root id="archive" name="tdsm-core.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/res/META-INF/lib/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="tdsm" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-fonts.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-core.jar" path-in-jar="/" />
