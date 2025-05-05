@@ -16,5 +16,6 @@
     <orderEntry type="library" name="delta-time-sprite" level="project" />
     <orderEntry type="library" name="stip-parser" level="project" />
     <orderEntry type="library" name="json" level="project" />
+    <orderEntry type="library" name="tdsm-api-lib" level="project" />
   </component>
 </module>

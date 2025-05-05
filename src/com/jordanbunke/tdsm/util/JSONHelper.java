@@ -116,9 +116,7 @@ public final class JSONHelper {
             switch (pair.key()) {
                 case STYLE_ID -> {
                     final String value = String.valueOf(pair.value());
-                    style = EnumUtils.stream(Styles.class).map(Styles::get)
-                            .filter(s -> s.id.equals(value))
-                            .findFirst().orElse(null);
+                    style = Styles.get(value);
 
                     if (gui && style != null)
                         Sprite.get().setStyle(style);
