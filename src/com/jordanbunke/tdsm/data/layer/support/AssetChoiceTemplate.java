@@ -1,9 +1,11 @@
 package com.jordanbunke.tdsm.data.layer.support;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
-import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.StringUtils;
+
+import java.util.function.Function;
 
 public final class AssetChoiceTemplate {
     public final String id, name;
@@ -34,11 +36,16 @@ public final class AssetChoiceTemplate {
         this.colorReplacementFunc = colorReplacementFunc;
     }
 
-    public AssetChoice realize(final Style style, final CustomizationLayer layer) {
+    public AssetChoice realize(
+            final Function<String, GameImage> getter,
+            final CustomizationLayer layer
+    ) {
         for (ColorSelection selection : colorSelections)
             selection.addDependent(layer);
 
-        return new AssetChoice(id, name, style, layer,
+        final GameImage asset = getter.apply(id);
+
+        return new AssetChoice(id, name, asset, layer,
                 colorSelections, colorReplacementFunc);
     }
 }

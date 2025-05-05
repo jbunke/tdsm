@@ -15,6 +15,7 @@ import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
@@ -227,18 +228,17 @@ public final class HokkaidoStyle extends PokemonStyle {
         final AssetChoiceLayer hairLayer = buildHair();
         hairLayer.addInfluencingSelections(skinTones, hairColors);
 
-        final DependentComponentLayer hairBack = new DependentComponentLayer(
-                "hair-back", this, hairLayer, -1),
-                hairFront = new DependentComponentLayer(
-                        "hair-front", this, hairLayer, 1);
+        final DependentComponentLayer
+                hairBack = buildDCL("hair-back", hairLayer, -1),
+                hairFront = buildDCL("hair-front", hairLayer, 1);
 
         hatLayer = buildClothes(this, "hat", hatCS)
                 .setName("Headwear").setComposer(this::composeOnHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75))
                 .setDims(HEAD_DIMS).build();
 
-        final DependentComponentLayer hatBack = new DependentComponentLayer(
-                "hat-back", this, hatLayer, -1);
+        final DependentComponentLayer
+                hatBack = buildDCL("hat-back", hatLayer, -1);
 
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
                 .trySetNaiveLogic(this, hatLayer).build(),
@@ -311,6 +311,13 @@ public final class HokkaidoStyle extends PokemonStyle {
         layers.addToAssembly(
                 combinedHeadBackLayer, bodyLayer,
                 clothingLogic, combinedHeadLayer, headMask);
+    }
+
+    private DependentComponentLayer buildDCL(
+            final String layerID, final AssetChoiceLayer ref, final int relativeIndex
+    ) {
+        return new DependentComponentLayer(layerID,
+                AssetChoice.tempDefGetter(id, layerID), ref, relativeIndex);
     }
 
     private AssetChoiceLayer buildBody() {

@@ -1,11 +1,12 @@
 package com.jordanbunke.tdsm.data.layer;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
-import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.StringUtils;
 
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class DependentComponentLayer extends AbstractACLayer {
@@ -16,7 +17,7 @@ public class DependentComponentLayer extends AbstractACLayer {
     private final AssetChoice[] choices;
 
     public DependentComponentLayer(
-            final String id, final Style style,
+            final String id, final Function<String, GameImage> getter,
             final AssetChoiceLayer ref, final int relativeIndex
     ) {
         super(id, ref.dims, ref.composer);
@@ -30,7 +31,7 @@ public class DependentComponentLayer extends AbstractACLayer {
         choices = IntStream.range(0, choiceCount).mapToObj(ref::getChoiceAt)
                 .map(ac -> new AssetChoiceTemplate(ac.id,
                         ac.colorReplacementFunc, ac.getColorSelections()))
-                .map(act -> act.realize(style, this))
+                .map(act -> act.realize(getter, this))
                 .toArray(AssetChoice[]::new);
 
         addInfluencingSelections(ref.getInfluencingSelections()

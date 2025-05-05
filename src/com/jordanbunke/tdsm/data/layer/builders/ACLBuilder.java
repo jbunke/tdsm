@@ -1,9 +1,11 @@
 package com.jordanbunke.tdsm.data.layer.builders;
 
+import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
@@ -12,11 +14,12 @@ import com.jordanbunke.tdsm.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 
 public final class ACLBuilder {
     private final String id;
-    private final Style style;
 
+    private Function<String, GameImage> getter;
     private String name;
     private Bounds2D dims;
     private Coord2D previewCoord;
@@ -41,7 +44,7 @@ public final class ACLBuilder {
             final String id, final Style style
     ) {
         this.id = id;
-        this.style = style;
+        getter = AssetChoice.tempDefGetter(style.id, id);
 
         composer = style::defaultBuildComposer;
         dims = style.dims;
@@ -52,7 +55,7 @@ public final class ACLBuilder {
     }
 
     public AssetChoiceLayer build() {
-        return new AssetChoiceLayer(id, name, dims, style,
+        return new AssetChoiceLayer(id, name, dims, getter,
                 choices.toArray(AssetChoiceTemplate[]::new),
                 composer, noAssetChoice, previewCoord);
     }
@@ -64,6 +67,11 @@ public final class ACLBuilder {
 
     public ACLBuilder setDims(final Bounds2D dims) {
         this.dims = dims;
+        return this;
+    }
+
+    public ACLBuilder setGetter(final Function<String, GameImage> getter) {
+        this.getter = getter;
         return this;
     }
 
