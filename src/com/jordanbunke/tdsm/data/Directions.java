@@ -20,6 +20,8 @@ public record Directions(NumDirs numDirs, boolean horizontal, Dir... order) {
 
         private final Set<Dir> included;
 
+        // scripting inclusion
+        @SuppressWarnings("unused")
         public Set<Dir> getIncluded() {
             return new HashSet<>(included);
         }

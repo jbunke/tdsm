@@ -13,7 +13,6 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
-import com.jordanbunke.tdsm.flow.ProgramState;
 
 import java.awt.*;
 import java.io.File;
