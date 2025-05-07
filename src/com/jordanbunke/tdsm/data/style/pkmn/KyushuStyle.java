@@ -378,7 +378,7 @@ public final class KyushuStyle extends PokemonStyle {
                     SpriteStates.extractContributor(FRAME, id));
 
             if (!animID.equals(ANIM_ID_CAPSULE) ||
-                    !dir.equals(Dir.DOWN) || frame == 0)
+                    !Dir.DOWN.equals(dir) || frame == 0)
                 return sprite;
 
             final Coord2D offset = switch (frame) {
@@ -436,7 +436,7 @@ public final class KyushuStyle extends PokemonStyle {
             final String animID =
                     SpriteStates.extractContributor(ANIM, id);
 
-            if (animID.equals(ANIM_ID_CAPSULE) && !dir.equals(Directions.Dir.DOWN))
+            if (animID.equals(ANIM_ID_CAPSULE) && !Dir.DOWN.equals(dir))
                 return sprite;
 
             final Coord2D offset = headOffset(id);

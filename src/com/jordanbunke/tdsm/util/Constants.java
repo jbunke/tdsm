@@ -5,7 +5,9 @@ import java.nio.file.Path;
 public final class Constants {
     public static final String
             NAME_CODE = "name", VERSION_CODE = "version",
-            IS_DEVBUILD_CODE = "devbuild";
+            IS_DEVBUILD_CODE = "devbuild",
+            SCRIPT_EXT = "tds", STYLE_FILE_EXT = "tdsm",
+            STYLE_MANIFEST_FILENAME = "manifest." + SCRIPT_EXT;
 
     public static final Path PROGRAM_FILE = Path.of("program"),
             VERSION_FILE = Path.of("version"),
@@ -23,5 +25,5 @@ public final class Constants {
             DEF_FRAMES_PER_DIM = 8, DEF_TEXTBOX_CHAR_MAX = 12,
             FILE_NAME_MAX_LENGTH = 40, LOGO_FRAMES = 16,
             LOADING_FRAMES = 16, ANIM_TICKS = 6,
-            GBA_SPRITE_COL_LIMIT = 15;
+            GBA_SPRITE_COL_LIMIT = 15, STYLE_NAME_CUTOFF = 16;
 }

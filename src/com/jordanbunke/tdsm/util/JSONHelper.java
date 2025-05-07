@@ -93,9 +93,7 @@ public final class JSONHelper {
             final List<String> errors = loadFromJSON(pairs, true);
 
             if (!errors.isEmpty())
-                ProgramState.set(ProgramState.MENU,
-                        MenuAssembly.encounteredErrors(errors.stream()
-                                .map(s -> "> " + s).toArray(String[]::new)));
+                ErrorDisplay.show(errors.toArray(String[]::new));
         }
     }
 

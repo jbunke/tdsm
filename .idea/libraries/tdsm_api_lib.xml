@@ -4,6 +4,9 @@
       <root url="jar://$PROJECT_DIR$/../tdsm-api/out/artifacts/tdsm_api_lib/tdsm-api-lib.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../tdsm-api/src" />
+      <root url="file://$PROJECT_DIR$/../delta-time/script/src" />
+    </SOURCES>
   </library>
 </component>

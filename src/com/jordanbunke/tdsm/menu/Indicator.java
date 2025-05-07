@@ -23,6 +23,10 @@ public final class Indicator extends StaticMenuElement {
         this.tooltip = tooltip;
     }
 
+    public static Builder init(final Coord2D position) {
+        return new Builder(position);
+    }
+
     public static Indicator make(
             final String iconCode, final String tooltipCode,
             final Coord2D position, final Anchor anchor
@@ -38,6 +42,45 @@ public final class Indicator extends StaticMenuElement {
             final Coord2D position, final Anchor anchor
     ) {
         return make(ResourceCodes.INFO, tooltipCode, position, anchor);
+    }
+
+    public static class Builder {
+        private final Coord2D position;
+        private Anchor anchor;
+        private String tooltip, iconCode;
+
+        Builder(final Coord2D position) {
+            this.position = position;
+
+            anchor = Anchor.CENTRAL;
+            tooltip = " ";
+            iconCode = ResourceCodes.INFO;
+        }
+
+        public Builder setAnchor(final Anchor anchor) {
+            this.anchor = anchor;
+            return this;
+        }
+
+        public Builder setIconCode(final String iconCode) {
+            this.iconCode = iconCode;
+            return this;
+        }
+
+        public Builder setTooltip(final String tooltip) {
+            this.tooltip = tooltip;
+            return this;
+        }
+
+        public Builder setTooltipCode(final String tooltipCode) {
+            tooltip = ParserUtils.readTooltip(tooltipCode);
+            return this;
+        }
+
+        public Indicator build() {
+            return new Indicator(position, anchor,
+                    Graphics.readIcon(iconCode), tooltip);
+        }
     }
 
     @Override

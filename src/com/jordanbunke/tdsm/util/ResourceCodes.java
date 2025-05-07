@@ -15,6 +15,7 @@ public final class ResourceCodes {
             DRAG = "drag",
             RESET = "reset",
             NONE = "none",
+            ADD = "add",
             LOCKED = "locked",
             UNLOCKED = "unlocked",
             BACK = "back",
@@ -26,6 +27,7 @@ public final class ResourceCodes {
     // tooltips
     public static final String NO_TOOLTIP = "no_tooltip",
             INCLUSION = "inclusion",
+            UPLOAD_STYLE = "upload_style",
             PADDING = "padding",
             LAYOUT = "layout",
             INCREMENT = "increment",

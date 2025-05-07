@@ -26,6 +26,24 @@ public final class EnumUtils {
         return values[nextIndex];
     }
 
+    public static <T extends Enum<T>> T previous(final T following) {
+        final Class<T> enumClass = following.getDeclaringClass();
+
+        final T[] values = enumClass.getEnumConstants();
+
+        if (values == null || values.length == 0) {
+            GameError.send("The generic attempt to fetch the next enum element failed");
+            return following;
+        }
+
+        final List<T> vList = Arrays.stream(values).toList();
+
+        final int index = vList.indexOf(following),
+                nextIndex = (index == 0 ? values.length : index) - 1;
+
+        return values[nextIndex];
+    }
+
     public static <T extends Enum<T>> Stream<T> stream(final Class<T> enumClass) {
         return Arrays.stream(enumClass.getEnumConstants());
     }

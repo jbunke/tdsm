@@ -18,6 +18,7 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.data.style.FromFileStyle;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.StyleOption;
 import com.jordanbunke.tdsm.data.style.Styles;
@@ -111,18 +112,27 @@ public final class MenuAssembly {
 
             return s.shipping();
         }).sorted(Comparator.comparing(Style::name)).toArray(Style[]::new);
+        final int co = STYLE_NAME_CUTOFF;
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),
                 Arrays.stream(styles).map(Style::name)
+                        .map(s -> s.length() > co
+                                ? s.substring(0, co) + "..." : s)
                         .toArray(String[]::new),
                 Arrays.stream(styles)
                         .map(s -> (Runnable) () -> Sprite.get().setStyle(s))
                         .toArray(Runnable[]::new),
                 () -> Arrays.stream(styles).toList()
                         .indexOf(style));
-        final Indicator styleInfo = Indicator.make(
-                style.id, iconAfterTextButton(styleDropdown),
-                Anchor.LEFT_TOP);
+        final Indicator.Builder sib = Indicator.init(
+                iconAfterTextButton(styleDropdown)).setAnchor(Anchor.LEFT_TOP);
+
+        if (style instanceof FromFileStyle ffs)
+            sib.setTooltip(ffs.infoToolTip());
+        else
+            sib.setTooltipCode(style.id); // TODO - temp
+
+        final Indicator styleInfo = sib.build();
 
         final IconButton randomSpriteButton = IconButton.init(
                 ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
@@ -132,10 +142,15 @@ public final class MenuAssembly {
                         ResourceCodes.LOAD_FROM_JSON,
                         randomSpriteButton.getRenderPosition(),
                         JSONHelper::loadFromJSON)
-                        .setAnchor(Anchor.RIGHT_TOP).build();
+                        .setAnchor(Anchor.RIGHT_TOP).build(),
+                uploadStyleButton = IconButton.init(ResourceCodes.ADD,
+                                loadFromJSONButton.getRenderPosition(),
+                                Styles::uploadStyleDialog)
+                        .setAnchor(Anchor.RIGHT_TOP)
+                        .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo,
-                randomSpriteButton, loadFromJSONButton);
+                randomSpriteButton, loadFromJSONButton, uploadStyleButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
