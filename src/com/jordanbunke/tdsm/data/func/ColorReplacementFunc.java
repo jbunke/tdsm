@@ -1,15 +1,15 @@
 package com.jordanbunke.tdsm.data.func;
 
-import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.tdsm.data.Replacement;
 
 import java.awt.*;
 import java.util.function.Function;
 
 @FunctionalInterface
 public interface ColorReplacementFunc {
-    Pair<Integer, Function<Color, Color>> apply(final Color c);
+    Replacement apply(final Color c);
 
     static ColorReplacementFunc trivial() {
-        return c -> new Pair<>(-1, Function.identity());
+        return c -> new Replacement(-1, Function.identity());
     }
 }

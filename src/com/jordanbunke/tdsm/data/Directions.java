@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public record Directions(NumDirs numDirs, boolean horizontal, Dir... order) {
+public record Directions(NumDirs numDirs, boolean orientation, Dir... order) {
 
     public enum NumDirs {
         FOUR(Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT),

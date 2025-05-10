@@ -9,7 +9,7 @@ import com.jordanbunke.tdsm.util.StringUtils;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-public class DependentComponentLayer extends AbstractACLayer {
+public final class DependentComponentLayer extends AbstractACLayer {
     public final int relativeIndex;
 
     private final AssetChoiceLayer ref;

@@ -12,6 +12,7 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
+import com.jordanbunke.tdsm.data.func.CoordFunc;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
@@ -103,30 +104,38 @@ public final class KyushuStyle extends PokemonStyle {
     }
 
     private static Animation[] setUpAnimations() {
-        final boolean horizontal = true;
-
         return new Animation[] {
                 Animation.init(ANIM_ID_WALK, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(), HORIZONTAL_ANIMS))
                         .setFrameTiming(10).build(),
                 Animation.init(ANIM_ID_IDLE, 1)
-                        .setCoordFunc(new Coord2D(1, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(1, 0), HORIZONTAL_ANIMS))
+                        .build(),
                 Animation.init(ANIM_ID_RUN, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(3, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(3, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(6).build(),
                 Animation.init(ANIM_ID_CYCLE, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(6, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(6, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(6).build(),
                 Animation.init(ANIM_ID_FISH, 4)
-                        .setCoordFunc(new Coord2D(9, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(9, 0), HORIZONTAL_ANIMS))
+                        .build(),
                 Animation.init(ANIM_ID_SURF, 2)
-                        .setCoordFunc(new Coord2D(13, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(13, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(15).build(),
                 Animation.init(ANIM_ID_CAPSULE, 4)
-                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(15, 0), HORIZONTAL_ANIMS))
+                        .build(),
         };
     }
 
@@ -172,9 +181,9 @@ public final class KyushuStyle extends PokemonStyle {
                 hatBack = buildDCL("hat-back", hatLayer, -1);
 
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
-                .trySetNaiveLogic(this, hatLayer).build(),
+                .setLogic(MaskLayer.naiveLogic(hatLayer)).build(),
                 hatBackMaskLayer = MLBuilder.init("hat-back-mask", hairBack)
-                        .trySetNaiveLogic(this, hatBack).build();
+                        .setLogic(MaskLayer.naiveLogic(hatBack)).build();
 
         final ChoiceLayer clothingTypeLayer = new ChoiceLayer("outfit-type",
                 "Separate articles", COMBINED_OUTFIT);

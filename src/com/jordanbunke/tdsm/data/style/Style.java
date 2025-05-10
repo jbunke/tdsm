@@ -505,6 +505,8 @@ public abstract class Style {
             assembler.addLayer(layer.id, layer.compose());
     }
 
+    // TODO - remove once hard-coded styles are phased out
+    @Deprecated
     public final InterpretedSpriteSheet<String> defaultBuildComposer(
             final SpriteSheet sheet
     ) {
@@ -524,10 +526,10 @@ public abstract class Style {
             if (anim == null)
                 return FAIL;
 
-            if (directions.horizontal())
-                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
-            else
+            if (directions.orientation())
                 return anim.coordFunc.apply(frame).displace(0, dirIndex);
+            else
+                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
         });
     }
 

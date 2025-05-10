@@ -4,6 +4,9 @@
       <root url="jar://$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-sprite.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../color-processing/src" />
+      <root url="file://$PROJECT_DIR$/../delta-time/sprite/src" />
+    </SOURCES>
   </library>
 </component>

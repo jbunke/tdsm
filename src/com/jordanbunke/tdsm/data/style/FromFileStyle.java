@@ -18,7 +18,7 @@ public final class FromFileStyle extends Style {
      *      string id,
      *      int[] bounds,
      *      string[] directions,
-     *      bool dir_orientation,
+     *      bool anim_orientation,
      *      anim[] animations,
      *      {bool : layer<>} layers
      * )</code>

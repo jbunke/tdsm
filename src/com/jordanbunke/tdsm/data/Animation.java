@@ -58,16 +58,6 @@ public final class Animation {
             return this;
         }
 
-        public Builder setCoordFunc(
-                final Coord2D firstFrame, final boolean horizontal
-        ) {
-            coordFunc = f -> new Coord2D(
-                    firstFrame.x + (horizontal ? f : 0),
-                    firstFrame.y + (horizontal ? 0 : f)
-            );
-            return this;
-        }
-
         public Builder setFrameTiming(final int ticks) {
             Arrays.fill(ticksPerFrame, ticks);
             return this;

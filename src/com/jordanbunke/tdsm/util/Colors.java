@@ -2,8 +2,8 @@ package com.jordanbunke.tdsm.util;
 
 import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.stip_parser.ParserSerializer;
+import com.jordanbunke.tdsm.data.Replacement;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.style.Style;
 
@@ -146,12 +146,11 @@ public final class Colors {
             final ColorReplacementFunc colorReplacementFunc
     ) {
         final Function<Color, Color> replacement = c -> {
-            final Pair<Integer, Function<Color, Color>> out =
-                    colorReplacementFunc.apply(c);
-            final int index = out.a();
+            final Replacement out = colorReplacementFunc.apply(c);
+            final int index = out.index();
 
             return index < 0 || index >= colors.length ? c
-                    : out.b().apply(colors[index]);
+                    : out.func().apply(colors[index]);
         };
 
         return ColorAlgo.run(replacement, ref);

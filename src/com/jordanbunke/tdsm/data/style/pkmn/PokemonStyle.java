@@ -7,11 +7,11 @@ import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
-import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
+import com.jordanbunke.tdsm.data.Replacement;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
@@ -32,6 +32,8 @@ import static com.jordanbunke.color_proc.ColorProc.fromHSV;
 import static com.jordanbunke.tdsm.util.Colors.black;
 
 public abstract class PokemonStyle extends Style {
+    static final boolean HORIZONTAL_ANIMS = true;
+
     static final String COMBINED_OUTFIT = "Combined outfit";
 
     static final String ANIM_ID_IDLE = "idle", ANIM_ID_WALK = "walk",
@@ -163,7 +165,7 @@ public abstract class PokemonStyle extends Style {
     }
 
     private static Directions setUpDirections() {
-        return new Directions(NumDirs.FOUR, false,
+        return new Directions(NumDirs.FOUR, HORIZONTAL_ANIMS,
                 Dir.DOWN, Dir.LEFT, Dir.RIGHT, Dir.UP);
     }
 
@@ -180,9 +182,7 @@ public abstract class PokemonStyle extends Style {
         return new ColorSelection(name, true, CLOTHES_SWATCHES);
     }
 
-    static Pair<Integer, Function<Color, Color>> clothesReplace(
-            final Color input
-    ) {
+    static Replacement clothesReplace(final Color input) {
         final Color rgbInput = rgbOnly(input), base;
         final int index;
 
@@ -203,7 +203,7 @@ public abstract class PokemonStyle extends Style {
             base = black();
         }
 
-        return new Pair<>(index, c -> {
+        return new Replacement(index, c -> {
             final double is = rgbToSat(input), iv = rgbToValue(input),
                     ch = rgbToHue(c), cs = rgbToSat(c), cv = rgbToValue(c),
                     bs = rgbToSat(base), bv = rgbToValue(base),
@@ -243,15 +243,11 @@ public abstract class PokemonStyle extends Style {
                 .setNoAssetChoice(NoAssetChoice.prob(0.0));
     }
 
-    static Pair<Integer, Function<Color, Color>> replace(
-            final Color input
-    ) {
+    static Replacement replace(final Color input) {
         return replaceWithNSelections(input, 0);
     }
 
-    static Pair<Integer, Function<Color, Color>> replaceWithNSelections(
-            final Color input, final int n
-    ) {
+    static Replacement replaceWithNSelections(final Color input, final int n) {
         final Color rgbInput = rgbOnly(input);
 
         int index = -1;
@@ -292,7 +288,7 @@ public abstract class PokemonStyle extends Style {
 
         final Color base = b;
 
-        return new Pair<>(index, c -> {
+        return new Replacement(index, c -> {
             final double ih = rgbToHue(input),
                     is = rgbToSat(input), iv = rgbToValue(input),
                     ch = rgbToHue(c), cs = rgbToSat(c),

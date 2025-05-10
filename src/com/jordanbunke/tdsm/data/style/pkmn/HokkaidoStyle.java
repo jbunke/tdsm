@@ -12,6 +12,7 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
+import com.jordanbunke.tdsm.data.func.CoordFunc;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
@@ -118,8 +119,6 @@ public final class HokkaidoStyle extends PokemonStyle {
     }
 
     private static Animation[] setUpAnimations() {
-        final boolean horizontal = true;
-
         // TODO - uncomment animations as implemented
         return new Animation[] {
                 Animation.init(ANIM_ID_WALK, 3)
@@ -136,18 +135,18 @@ public final class HokkaidoStyle extends PokemonStyle {
                 Animation.init(ANIM_ID_IDLE, 1).build(),
                 Animation.init(ANIM_ID_RUN, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(3, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(new Coord2D(3, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(6).build(),
 //                Animation.init(ANIM_ID_FISH, 4)
-//                        .setCoordFunc(new Coord2D(6, 0), horizontal)
+//                        .setCoordFunc(new Coord2D(6, 0), orientation)
 //                        .build(),
 //                Animation.init(ANIM_ID_BIKE_IDLE, 1)
-//                        .setCoordFunc(new Coord2D(10, 0), horizontal).build(),
+//                        .setCoordFunc(new Coord2D(10, 0), orientation).build(),
 //                Animation.init(ANIM_ID_CYCLE, 4)
-//                        .setCoordFunc(new Coord2D(11, 0), horizontal)
+//                        .setCoordFunc(new Coord2D(11, 0), orientation)
 //                        .setFrameTiming(8).build(),
                 Animation.init(ANIM_ID_SURF, 1)
-                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(new Coord2D(15, 0), HORIZONTAL_ANIMS)).build(),
                 Animation.init(ANIM_ID_SWIM, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
                         .setCoordFunc(f -> {
@@ -160,7 +159,7 @@ public final class HokkaidoStyle extends PokemonStyle {
                             return new Coord2D(16 + x, y);
                         }).build(),
 //                Animation.init(ANIM_ID_CAPSULE, 4)
-//                        .setCoordFunc(new Coord2D(19, 0), horizontal).build(),
+//                        .setCoordFunc(new Coord2D(19, 0), orientation).build(),
         };
     }
 
@@ -241,9 +240,9 @@ public final class HokkaidoStyle extends PokemonStyle {
                 hatBack = buildDCL("hat-back", hatLayer, -1);
 
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
-                .trySetNaiveLogic(this, hatLayer).build(),
+                .setLogic(MaskLayer.naiveLogic(hatLayer)).build(),
                 hatBackMaskLayer = MLBuilder.init("hat-back-mask", hairBack)
-                        .trySetNaiveLogic(this, hatBack).build();
+                        .setLogic(MaskLayer.naiveLogic(hatBack)).build();
 
         // TODO - accessories, capsule
         layers.addToCustomization(
