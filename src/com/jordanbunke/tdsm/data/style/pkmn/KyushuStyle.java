@@ -181,9 +181,12 @@ public final class KyushuStyle extends PokemonStyle {
                 hatBack = buildDCL("hat-back", hatLayer, -1);
 
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
-                .setLogic(MaskLayer.naiveLogic(hatLayer)).build(),
+                .setLogic(MaskLayer.naiveLogic(hatLayer,
+                        AssetChoice.tempDefGetter(id, "hat-mask"))).build(),
                 hatBackMaskLayer = MLBuilder.init("hat-back-mask", hairBack)
-                        .setLogic(MaskLayer.naiveLogic(hatBack)).build();
+                        .setLogic(MaskLayer.naiveLogic(hatBack,
+                                AssetChoice.tempDefGetter(id,
+                                        "hat-back-mask"))).build();
 
         final ChoiceLayer clothingTypeLayer = new ChoiceLayer("outfit-type",
                 "Separate articles", COMBINED_OUTFIT);
