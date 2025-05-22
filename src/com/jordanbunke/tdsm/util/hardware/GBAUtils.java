@@ -59,7 +59,7 @@ public final class GBAUtils {
             final Consumer<Color> selector,
             final Coord2D warningPos
     ) {
-        style.resetPreExport();
+        style.settings.resetPreExport();
         final Map<Color, Integer> cs = Colors.colorOccurrences(style);
         final Color[] sequence = cs.keySet().stream()
                 .sorted(Comparator.comparingInt(cs::get))
@@ -90,7 +90,7 @@ public final class GBAUtils {
                 MenuElement.Anchor.LEFT_TOP);
         final IconButton replacementReset = IconButton.init(
                 ResourceCodes.RESET, replacementInfo.following(),
-                style::resetPreExport).build();
+                style.settings::resetPreExport).build();
 
         mb.addAll(replacementLabel, replacementInfo, replacementReset);
 

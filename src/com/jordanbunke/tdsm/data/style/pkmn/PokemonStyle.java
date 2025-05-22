@@ -1,10 +1,6 @@
 package com.jordanbunke.tdsm.data.style.pkmn;
 
-import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.menu.MenuBuilder;
-import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
-import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
@@ -17,8 +13,6 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.settings.StyleSetting;
-import com.jordanbunke.tdsm.data.style.settings.StyleSettings;
 import com.jordanbunke.tdsm.util.*;
 
 import java.awt.*;
@@ -27,7 +21,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
-import static com.jordanbunke.color_proc.ColorProc.fromHSV;
 import static com.jordanbunke.tdsm.util.Colors.black;
 
 public abstract class PokemonStyle extends Style {
@@ -51,9 +44,6 @@ public abstract class PokemonStyle extends Style {
     static final Color[]
             SKIN_SWATCHES, HAIR_SWATCHES,
             IRIS_SWATCHES, CLOTHES_SWATCHES;
-
-    // SETTINGS
-    private final StyleSettings settings;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -151,7 +141,6 @@ public abstract class PokemonStyle extends Style {
         super(id, dims, setUpDirections(), animations, new Layers());
 
         // Initialize settings
-        settings = new StyleSettings();
         settings.add(this, ResourceCodes.QUANTIZE_GBA);
         settings.add(this, ResourceCodes.WARN_ROM_15_COLS);
     }
@@ -310,43 +299,5 @@ public abstract class PokemonStyle extends Style {
     @Override
     public boolean shipping() {
         return true;
-    }
-
-    @Override
-    public boolean hasSettings() {
-        return settings.has();
-    }
-
-    @Override
-    public StyleSetting[] getSettings() {
-        return settings.array();
-    }
-
-    @Override
-    public boolean hasPreExportStep() {
-        return settings.hasPreExportStep();
-    }
-
-    @Override
-    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {
-        settings.buildPreExportMenu(mb, warningPos);
-    }
-
-    @Override
-    public GameImage preExportTransform(final GameImage input) {
-        return settings.preExportTransform(input);
-    }
-
-    @Override
-    public void resetPreExport() {
-        settings.resetPreExport();
-    }
-
-    @Override
-    protected void considerations(
-            final SpriteAssembler<String, String> assembler
-    ) {
-        if (settings != null)
-            settings.considerations(assembler);
     }
 }

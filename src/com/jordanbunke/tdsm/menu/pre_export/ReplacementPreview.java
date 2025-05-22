@@ -108,7 +108,7 @@ public final class ReplacementPreview extends MenuElement {
         final GameImage preview = new GameImage(getWidth(), getHeight());
 
         final GameImage sprite = ImageProcessing.scale(
-                style.preExportTransform(
+                style.settings.preExportTransform(
                         style.renderSprite(dir,
                                 Playback.get().getAnimation(),
                                 Playback.get().getFrame())),

@@ -59,7 +59,7 @@ public final class MenuAssembly {
         final Style style = Sprite.get().getStyle();
 
         // PREVIEW
-        if (style.hasSettings()) {
+        if (style.settings.has()) {
             IconButton settings = IconButton.init(
                     ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                     () -> ProgramState.set(ProgramState.MENU, styleSettings())
@@ -370,10 +370,10 @@ public final class MenuAssembly {
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, style::exportsASprite,
                 () -> {
-                    if (style.hasPreExportStep())
+                    if (style.settings.hasPreExportStep())
                         ProgramState.set(ProgramState.MENU, preExport());
                     else {
-                        style.resetPreExport();
+                        style.settings.resetPreExport();
                         ProgramState.set(ProgramState.MENU, export());
                     }
                 });
@@ -401,7 +401,7 @@ public final class MenuAssembly {
 
         mb.addAll(backButton, exportButton);
 
-        style.buildPreExportMenu(mb, iconAfterTextButton(backButton));
+        style.settings.buildPreExportMenu(mb, iconAfterTextButton(backButton));
 
         return mb.build();
     }
@@ -644,7 +644,7 @@ public final class MenuAssembly {
 
         int y = atY(0.2);
 
-        final StyleSetting[] settings = style.getSettings();
+        final StyleSetting[] settings = style.settings.array();
 
         if (settings.length > 0) {
             final StaticLabel optionsHeader = StaticLabel.init(
@@ -671,6 +671,7 @@ public final class MenuAssembly {
             }
         }
 
+        // TODO - consider for removal
         style.buildSettingsMenu(mb, y);
 
         final MenuElement close = StaticTextButton.make("Close",

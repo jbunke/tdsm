@@ -49,19 +49,20 @@ public final class Sprite {
     public GameImage renderSpriteSheet() {
         final GameImage spriteSheet = style.renderSpriteSheet();
 
-        return style.hasPreExportStep()
-                ? style.preExportTransform(spriteSheet) : spriteSheet;
+        return style.settings.hasPreExportStep()
+                ? style.settings.preExportTransform(spriteSheet)
+                : spriteSheet;
     }
 
     public List<Pair<String, GameImage>> renderStipExport() {
         final List<Pair<String, GameImage>> stipRep = style.renderStipExport();
 
-        if (style.hasPreExportStep()) {
+        if (style.settings.hasPreExportStep()) {
             for (int i = 0; i < stipRep.size(); i++) {
                 final Pair<String, GameImage> layer = stipRep.get(i);
 
                 stipRep.set(i, new Pair<>(layer.a(),
-                        style.preExportTransform(layer.b())));
+                        style.settings.preExportTransform(layer.b())));
             }
         }
 

@@ -43,7 +43,7 @@ public final class VigilanteStyle extends Style {
     }
 
     private static Directions setUpDirections() {
-        return new Directions(NumDirs.FOUR, true,
+        return new Directions(NumDirs.FOUR, false,
                 Dir.RIGHT, Dir.LEFT, Dir.DOWN, Dir.UP);
     }
 
@@ -126,11 +126,6 @@ public final class VigilanteStyle extends Style {
 
     @Override
     public boolean shipping() {
-        return false;
-    }
-
-    @Override
-    public boolean hasSettings() {
         return false;
     }
 }
