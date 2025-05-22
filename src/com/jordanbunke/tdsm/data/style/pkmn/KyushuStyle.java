@@ -12,9 +12,11 @@ import com.jordanbunke.tdsm.data.Animation.PlaybackMode;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
+import com.jordanbunke.tdsm.data.func.CoordFunc;
 import com.jordanbunke.tdsm.data.layer.*;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.builders.MLBuilder;
+import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
@@ -102,30 +104,38 @@ public final class KyushuStyle extends PokemonStyle {
     }
 
     private static Animation[] setUpAnimations() {
-        final boolean horizontal = true;
-
         return new Animation[] {
                 Animation.init(ANIM_ID_WALK, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(), HORIZONTAL_ANIMS))
                         .setFrameTiming(10).build(),
                 Animation.init(ANIM_ID_IDLE, 1)
-                        .setCoordFunc(new Coord2D(1, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(1, 0), HORIZONTAL_ANIMS))
+                        .build(),
                 Animation.init(ANIM_ID_RUN, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(3, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(3, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(6).build(),
                 Animation.init(ANIM_ID_CYCLE, 3)
                         .setPlaybackMode(PlaybackMode.PONG)
-                        .setCoordFunc(new Coord2D(6, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(6, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(6).build(),
                 Animation.init(ANIM_ID_FISH, 4)
-                        .setCoordFunc(new Coord2D(9, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(9, 0), HORIZONTAL_ANIMS))
+                        .build(),
                 Animation.init(ANIM_ID_SURF, 2)
-                        .setCoordFunc(new Coord2D(13, 0), horizontal)
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(13, 0), HORIZONTAL_ANIMS))
                         .setFrameTiming(15).build(),
                 Animation.init(ANIM_ID_CAPSULE, 4)
-                        .setCoordFunc(new Coord2D(15, 0), horizontal).build(),
+                        .setCoordFunc(CoordFunc.simple(
+                                new Coord2D(15, 0), HORIZONTAL_ANIMS))
+                        .build(),
         };
     }
 
@@ -158,23 +168,25 @@ public final class KyushuStyle extends PokemonStyle {
         final AssetChoiceLayer hairLayer = buildHair();
         hairLayer.addInfluencingSelections(skinTones, hairColors);
 
-        final DependentComponentLayer hairBack = new DependentComponentLayer(
-                "hair-back", this, hairLayer, -1),
-                hairFront = new DependentComponentLayer(
-                        "hair-front", this, hairLayer, 1);
+        final DependentComponentLayer
+                hairBack = buildDCL("hair-back", hairLayer, -1),
+                hairFront = buildDCL("hair-front", hairLayer, 1);
 
         final AssetChoiceLayer hatLayer = buildClothes(this, "hat", hatCS)
                 .setName("Headwear").setComposer(this::composeOnHead)
                 .setNoAssetChoice(NoAssetChoice.prob(0.75))
                 .setDims(HEAD_DIMS).build();
 
-        final DependentComponentLayer hatBack = new DependentComponentLayer(
-                "hat-back", this, hatLayer, -1);
+        final DependentComponentLayer
+                hatBack = buildDCL("hat-back", hatLayer, -1);
 
         final MaskLayer hatMaskLayer = MLBuilder.init("hat-mask", hairLayer)
-                .trySetNaiveLogic(this, hatLayer).build(),
+                .setLogic(MaskLayer.naiveLogic(hatLayer,
+                        AssetChoice.tempDefGetter(id, "hat-mask"))).build(),
                 hatBackMaskLayer = MLBuilder.init("hat-back-mask", hairBack)
-                        .trySetNaiveLogic(this, hatBack).build();
+                        .setLogic(MaskLayer.naiveLogic(hatBack,
+                                AssetChoice.tempDefGetter(id,
+                                        "hat-back-mask"))).build();
 
         final ChoiceLayer clothingTypeLayer = new ChoiceLayer("outfit-type",
                 "Separate articles", COMBINED_OUTFIT);
@@ -268,6 +280,13 @@ public final class KyushuStyle extends PokemonStyle {
         layers.addToAssembly(
                 combinedHeadBackLayer, bodyLayer, clothingLogic,
                 combinedHeadLayer, capsuleLayer);
+    }
+
+    private DependentComponentLayer buildDCL(
+            final String layerID, final AssetChoiceLayer ref, final int relativeIndex
+    ) {
+        return new DependentComponentLayer(layerID,
+                AssetChoice.tempDefGetter(id, layerID), ref, relativeIndex);
     }
 
     private AssetChoiceLayer buildHair() {
@@ -371,7 +390,7 @@ public final class KyushuStyle extends PokemonStyle {
                     SpriteStates.extractContributor(FRAME, id));
 
             if (!animID.equals(ANIM_ID_CAPSULE) ||
-                    !dir.equals(Dir.DOWN) || frame == 0)
+                    !Dir.DOWN.equals(dir) || frame == 0)
                 return sprite;
 
             final Coord2D offset = switch (frame) {
@@ -429,7 +448,7 @@ public final class KyushuStyle extends PokemonStyle {
             final String animID =
                     SpriteStates.extractContributor(ANIM, id);
 
-            if (animID.equals(ANIM_ID_CAPSULE) && !dir.equals(Directions.Dir.DOWN))
+            if (animID.equals(ANIM_ID_CAPSULE) && !Dir.DOWN.equals(dir))
                 return sprite;
 
             final Coord2D offset = headOffset(id);

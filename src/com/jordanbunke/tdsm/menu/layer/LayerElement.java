@@ -163,7 +163,7 @@ public final class LayerElement extends MenuElementContainer {
                         .mapToObj(cl::getChoiceAt).toArray(String[]::new),
                 IntStream.range(0, numChoices).mapToObj(i ->
                                 (Runnable) () -> cl.choose(i))
-                        .toArray(Runnable[]::new), cl::getSelection);
+                        .toArray(Runnable[]::new), cl::getChoiceIndex);
 
         cb.add(choices);
         ab.add(choices);

@@ -9,12 +9,12 @@ import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
-import com.jordanbunke.tdsm.data.style.Style;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -34,7 +34,7 @@ public final class AssetChoiceLayer extends AbstractACLayer
 
     public AssetChoiceLayer(
             final String id, final String name,
-            final Bounds2D dims, final Style style,
+            final Bounds2D dims, final Function<String, GameImage> getter,
             final AssetChoiceTemplate[] choices,
             final Composer composer,
             final NoAssetChoice noAssetChoice, final Coord2D previewCoord
@@ -43,7 +43,7 @@ public final class AssetChoiceLayer extends AbstractACLayer
 
         this.name = name;
         this.choices = Arrays.stream(choices)
-                .map(a -> a.realize(style, this))
+                .map(a -> a.realize(getter, this))
                 .toArray(AssetChoice[]::new);
 
         this.previews = new GameImage[this.choices.length];
@@ -274,6 +274,17 @@ public final class AssetChoiceLayer extends AbstractACLayer
         return choices[index];
     }
 
+    @Override
+    public String getChoiceID() {
+        return getChoice().id;
+    }
+
+    @Override
+    public String getChoiceIDAt(final int index) {
+        return getChoiceAt(index).id;
+    }
+
+    @Override
     public int getChoiceIndex() {
         return selection;
     }
@@ -287,6 +298,11 @@ public final class AssetChoiceLayer extends AbstractACLayer
     @Override
     public int getNumChoices() {
         return choices.length;
+    }
+
+    @Override
+    public boolean hasChoice() {
+        return super.hasChoice();
     }
 
     public GameImage getPreview(final int index) {

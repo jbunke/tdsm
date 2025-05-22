@@ -135,7 +135,7 @@ public final class Layout {
             MAX_SELECTORS_WO_SCROLL = 5, POST_ASSETS_COL_SEL_BASE_H = 33,
             SUBHEADING_INC_Y = 13, SCREEN_BOX_EDGE = 3, COL_REPL_OFF_DIM = 10;
 
-    public static double SEQUENCER_REL_H = 0.58;
+    public static final double SEQUENCER_REL_H = 0.58;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

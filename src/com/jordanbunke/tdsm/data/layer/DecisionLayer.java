@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.data.layer;
 
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
+import com.jordanbunke.tdsm.util.StringUtils;
 
 import java.util.function.Supplier;
 
@@ -26,7 +27,7 @@ public final class DecisionLayer extends ManualRefreshLayer {
 
     @Override
     public String name() {
-        return decision.name();
+        return StringUtils.nameFromID(id);
     }
 
     @Override

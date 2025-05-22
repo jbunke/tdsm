@@ -1,1 +1,1 @@
-Lock layer for randomization
+Lock layer: exclude from randomization

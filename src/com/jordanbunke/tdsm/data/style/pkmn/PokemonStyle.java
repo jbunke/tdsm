@@ -1,26 +1,19 @@
 package com.jordanbunke.tdsm.data.style.pkmn;
 
-import com.jordanbunke.color_proc.ColorAlgo;
-import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.menu.MenuBuilder;
-import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
-import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.MathPlus;
-import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
+import com.jordanbunke.tdsm.data.Replacement;
 import com.jordanbunke.tdsm.data.layer.Layers;
 import com.jordanbunke.tdsm.data.layer.builders.ACLBuilder;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.StyleOption;
 import com.jordanbunke.tdsm.util.*;
-import com.jordanbunke.tdsm.util.hardware.GBAUtils;
 
 import java.awt.*;
 import java.util.*;
@@ -28,10 +21,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
-import static com.jordanbunke.color_proc.ColorProc.fromHSV;
 import static com.jordanbunke.tdsm.util.Colors.black;
 
 public abstract class PokemonStyle extends Style {
+    static final boolean HORIZONTAL_ANIMS = true;
+
     static final String COMBINED_OUTFIT = "Combined outfit";
 
     static final String ANIM_ID_IDLE = "idle", ANIM_ID_WALK = "walk",
@@ -50,13 +44,6 @@ public abstract class PokemonStyle extends Style {
     static final Color[]
             SKIN_SWATCHES, HAIR_SWATCHES,
             IRIS_SWATCHES, CLOTHES_SWATCHES;
-
-    // SETTINGS
-    private boolean quantize, warnROMColLimit;
-
-    private final Function<Color, Color> quantizeToPalette;
-    private final Map<Color, Color> replacementMap;
-    private Color selectedToReplace;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -154,16 +141,12 @@ public abstract class PokemonStyle extends Style {
         super(id, dims, setUpDirections(), animations, new Layers());
 
         // Initialize settings
-        quantize = false;
-        warnROMColLimit = false;
-
-        quantizeToPalette = GBAUtils::quantize;
-        replacementMap = new HashMap<>();
-        selectedToReplace = null;
+        settings.add(this, ResourceCodes.QUANTIZE_GBA);
+        settings.add(this, ResourceCodes.WARN_ROM_15_COLS);
     }
 
     private static Directions setUpDirections() {
-        return new Directions(NumDirs.FOUR, false,
+        return new Directions(NumDirs.FOUR, HORIZONTAL_ANIMS,
                 Dir.DOWN, Dir.LEFT, Dir.RIGHT, Dir.UP);
     }
 
@@ -180,9 +163,7 @@ public abstract class PokemonStyle extends Style {
         return new ColorSelection(name, true, CLOTHES_SWATCHES);
     }
 
-    static Pair<Integer, Function<Color, Color>> clothesReplace(
-            final Color input
-    ) {
+    static Replacement clothesReplace(final Color input) {
         final Color rgbInput = rgbOnly(input), base;
         final int index;
 
@@ -203,7 +184,7 @@ public abstract class PokemonStyle extends Style {
             base = black();
         }
 
-        return new Pair<>(index, c -> {
+        return new Replacement(index, c -> {
             final double is = rgbToSat(input), iv = rgbToValue(input),
                     ch = rgbToHue(c), cs = rgbToSat(c), cv = rgbToValue(c),
                     bs = rgbToSat(base), bv = rgbToValue(base),
@@ -243,15 +224,11 @@ public abstract class PokemonStyle extends Style {
                 .setNoAssetChoice(NoAssetChoice.prob(0.0));
     }
 
-    static Pair<Integer, Function<Color, Color>> replace(
-            final Color input
-    ) {
+    static Replacement replace(final Color input) {
         return replaceWithNSelections(input, 0);
     }
 
-    static Pair<Integer, Function<Color, Color>> replaceWithNSelections(
-            final Color input, final int n
-    ) {
+    static Replacement replaceWithNSelections(final Color input, final int n) {
         final Color rgbInput = rgbOnly(input);
 
         int index = -1;
@@ -292,7 +269,7 @@ public abstract class PokemonStyle extends Style {
 
         final Color base = b;
 
-        return new Pair<>(index, c -> {
+        return new Replacement(index, c -> {
             final double ih = rgbToHue(input),
                     is = rgbToSat(input), iv = rgbToValue(input),
                     ch = rgbToHue(c), cs = rgbToSat(c),
@@ -322,64 +299,5 @@ public abstract class PokemonStyle extends Style {
     @Override
     public boolean shipping() {
         return true;
-    }
-
-    @Override
-    public boolean hasSettings() {
-        return true;
-    }
-
-    @Override
-    public StyleOption[] getOptionSettings() {
-        return new StyleOption[] {
-                new StyleOption("Quantize to Game Boy Advance colors",
-                        () -> quantize, b -> quantize = b,
-                        ResourceCodes.QUANTIZE_GBA),
-                new StyleOption("Warn if sprite contains more than 15 colors",
-                        () -> warnROMColLimit, b -> warnROMColLimit = b,
-                        ResourceCodes.WARN_ROM_15_COLS)
-        };
-    }
-
-    @Override
-    public boolean hasPreExportStep() {
-        if (!warnROMColLimit)
-            return false;
-
-        return Colors.colorOccurrences(this).size() >
-                Constants.GBA_SPRITE_COL_LIMIT;
-    }
-
-    @Override
-    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {
-        GBAUtils.buildReplacementMenu(mb, this, replacementMap,
-                () -> selectedToReplace, c -> selectedToReplace = c,
-                warningPos);
-    }
-
-    @Override
-    public GameImage preExportTransform(final GameImage input) {
-        if (replacementMap.isEmpty())
-            return input;
-
-        return ColorAlgo.run(c -> replacementMap.getOrDefault(c, c), input);
-    }
-
-    @Override
-    public void resetPreExport() {
-        replacementMap.clear();
-        selectedToReplace = null;
-    }
-
-    @Override
-    protected void considerations(final SpriteAssembler<String, String> assembler) {
-        if (quantize) {
-            final String quantizeID = "quantize-to-palette";
-
-            final List<String> layerIDs = assembler.getEnabledLayerIDs();
-
-            for (String layerID : layerIDs)
-                assembler.addFilter(quantizeID, quantizeToPalette, layerID);
-        }
     }
 }

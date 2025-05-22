@@ -13,7 +13,6 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.data.style.Styles;
-import com.jordanbunke.tdsm.flow.ProgramState;
 
 import java.awt.*;
 import java.io.File;
@@ -93,9 +92,7 @@ public final class JSONHelper {
             final List<String> errors = loadFromJSON(pairs, true);
 
             if (!errors.isEmpty())
-                ProgramState.set(ProgramState.MENU,
-                        MenuAssembly.encounteredErrors(errors.stream()
-                                .map(s -> "> " + s).toArray(String[]::new)));
+                ErrorDisplay.show(errors.toArray(String[]::new));
         }
     }
 
@@ -116,9 +113,7 @@ public final class JSONHelper {
             switch (pair.key()) {
                 case STYLE_ID -> {
                     final String value = String.valueOf(pair.value());
-                    style = EnumUtils.stream(Styles.class).map(Styles::get)
-                            .filter(s -> s.id.equals(value))
-                            .findFirst().orElse(null);
+                    style = Styles.get(value);
 
                     if (gui && style != null)
                         Sprite.get().setStyle(style);

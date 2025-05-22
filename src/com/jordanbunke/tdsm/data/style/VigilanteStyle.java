@@ -2,11 +2,12 @@ package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
-import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Directions.Dir;
 import com.jordanbunke.tdsm.data.Directions.NumDirs;
+import com.jordanbunke.tdsm.data.Replacement;
+import com.jordanbunke.tdsm.data.func.CoordFunc;
 import com.jordanbunke.tdsm.data.layer.AssetLayer;
 import com.jordanbunke.tdsm.data.layer.ColorSelectionLayer;
 import com.jordanbunke.tdsm.data.layer.Layers;
@@ -17,7 +18,6 @@ import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 import java.awt.*;
-import java.util.function.Function;
 
 import static com.jordanbunke.color_proc.ColorProc.*;
 
@@ -43,7 +43,7 @@ public final class VigilanteStyle extends Style {
     }
 
     private static Directions setUpDirections() {
-        return new Directions(NumDirs.FOUR, true,
+        return new Directions(NumDirs.FOUR, false,
                 Dir.RIGHT, Dir.LEFT, Dir.DOWN, Dir.UP);
     }
 
@@ -52,16 +52,16 @@ public final class VigilanteStyle extends Style {
 
         return new Animation[] {
                 Animation.init("idle", 1).build(),
-                Animation.init("walk", 2)
-                        .setCoordFunc(new Coord2D(0, 1), vertical).build(),
-                Animation.init("box", 2)
-                        .setCoordFunc(new Coord2D(0, 3), vertical).build(),
-                Animation.init("reload_1", 3)
-                        .setCoordFunc(new Coord2D(0, 18), vertical).build(),
-                Animation.init("reload_2", 3)
-                        .setCoordFunc(new Coord2D(0, 30), vertical).build(),
-                Animation.init("death", 5)
-                        .setCoordFunc(new Coord2D(0, 39), vertical).build()
+                Animation.init("walk", 2).setCoordFunc(
+                        CoordFunc.simple(new Coord2D(0, 1), vertical)).build(),
+                Animation.init("box", 2).setCoordFunc(
+                        CoordFunc.simple(new Coord2D(0, 3), vertical)).build(),
+                Animation.init("reload_1", 3).setCoordFunc(
+                        CoordFunc.simple(new Coord2D(0, 18), vertical)).build(),
+                Animation.init("reload_2", 3).setCoordFunc(
+                        CoordFunc.simple(new Coord2D(0, 30), vertical)).build(),
+                Animation.init("death", 5).setCoordFunc(
+                        CoordFunc.simple(new Coord2D(0, 39), vertical)).build()
                 // TODO
         };
     }
@@ -95,7 +95,7 @@ public final class VigilanteStyle extends Style {
         );
     }
 
-    private static Pair<Integer, Function<Color, Color>> skinReplacement(
+    private static Replacement skinReplacement(
             final Color input
     ) {
         final int TARGET_H = 120, LENIENCY = 2, MIN_SAT = 10,
@@ -108,7 +108,7 @@ public final class VigilanteStyle extends Style {
         else
             index = -1;
 
-        return new Pair<>(index, c -> {
+        return new Replacement(index, c -> {
             if (index == 1)
                 return c;
 
@@ -126,11 +126,6 @@ public final class VigilanteStyle extends Style {
 
     @Override
     public boolean shipping() {
-        return false;
-    }
-
-    @Override
-    public boolean hasSettings() {
         return false;
     }
 }

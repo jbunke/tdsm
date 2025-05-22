@@ -18,9 +18,10 @@ import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.data.style.FromFileStyle;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.StyleOption;
 import com.jordanbunke.tdsm.data.style.Styles;
+import com.jordanbunke.tdsm.data.style.settings.StyleSetting;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
 import com.jordanbunke.tdsm.menu.Checkbox;
@@ -42,6 +43,7 @@ import java.awt.*;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -57,7 +59,7 @@ public final class MenuAssembly {
         final Style style = Sprite.get().getStyle();
 
         // PREVIEW
-        if (style.hasSettings()) {
+        if (style.settings.has()) {
             IconButton settings = IconButton.init(
                     ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                     () -> ProgramState.set(ProgramState.MENU, styleSettings())
@@ -104,25 +106,33 @@ public final class MenuAssembly {
         final StaticLabel styleLabel = StaticLabel.init(
                 labelPosFor(TOP.pos()), "Sprite style:").build();
 
-        final Style[] styles = EnumUtils.stream(Styles.class)
-                .map(Styles::get).filter(s -> {
-                    if (Settings.isShowWIP())
-                        return true;
+        final Style[] styles = Styles.all().filter(s -> {
+            if (Settings.isShowWIP())
+                return true;
 
-                    return s.shipping();
-                }).toArray(Style[]::new);
+            return s.shipping();
+        }).sorted(Comparator.comparing(Style::name)).toArray(Style[]::new);
+        final int co = STYLE_NAME_CUTOFF;
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),
                 Arrays.stream(styles).map(Style::name)
+                        .map(s -> s.length() > co
+                                ? s.substring(0, co) + "..." : s)
                         .toArray(String[]::new),
                 Arrays.stream(styles)
                         .map(s -> (Runnable) () -> Sprite.get().setStyle(s))
                         .toArray(Runnable[]::new),
                 () -> Arrays.stream(styles).toList()
                         .indexOf(style));
-        final Indicator styleInfo = Indicator.make(
-                style.id, iconAfterTextButton(styleDropdown),
-                Anchor.LEFT_TOP);
+        final Indicator.Builder sib = Indicator.init(
+                iconAfterTextButton(styleDropdown)).setAnchor(Anchor.LEFT_TOP);
+
+        if (style instanceof FromFileStyle ffs)
+            sib.setTooltip(ffs.infoToolTip());
+        else
+            sib.setTooltipCode(style.id); // TODO - temp
+
+        final Indicator styleInfo = sib.build();
 
         final IconButton randomSpriteButton = IconButton.init(
                 ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
@@ -132,10 +142,15 @@ public final class MenuAssembly {
                         ResourceCodes.LOAD_FROM_JSON,
                         randomSpriteButton.getRenderPosition(),
                         JSONHelper::loadFromJSON)
-                        .setAnchor(Anchor.RIGHT_TOP).build();
+                        .setAnchor(Anchor.RIGHT_TOP).build(),
+                uploadStyleButton = IconButton.init(ResourceCodes.ADD,
+                                loadFromJSONButton.getRenderPosition(),
+                                Styles::uploadStyleDialog)
+                        .setAnchor(Anchor.RIGHT_TOP)
+                        .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo,
-                randomSpriteButton, loadFromJSONButton);
+                randomSpriteButton, loadFromJSONButton, uploadStyleButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
@@ -355,10 +370,10 @@ public final class MenuAssembly {
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, style::exportsASprite,
                 () -> {
-                    if (style.hasPreExportStep())
+                    if (style.settings.hasPreExportStep())
                         ProgramState.set(ProgramState.MENU, preExport());
                     else {
-                        style.resetPreExport();
+                        style.settings.resetPreExport();
                         ProgramState.set(ProgramState.MENU, export());
                     }
                 });
@@ -386,7 +401,7 @@ public final class MenuAssembly {
 
         mb.addAll(backButton, exportButton);
 
-        style.buildPreExportMenu(mb, iconAfterTextButton(backButton));
+        style.settings.buildPreExportMenu(mb, iconAfterTextButton(backButton));
 
         return mb.build();
     }
@@ -629,25 +644,25 @@ public final class MenuAssembly {
 
         int y = atY(0.2);
 
-        final StyleOption[] options = style.getOptionSettings();
+        final StyleSetting[] settings = style.settings.array();
 
-        if (options.length > 0) {
+        if (settings.length > 0) {
             final StaticLabel optionsHeader = StaticLabel.init(
                     new Coord2D(LEFT, y), "Options").build();
             mb.add(optionsHeader);
 
             y += INC_Y;
 
-            for (StyleOption option : options) {
+            for (StyleSetting setting : settings) {
                 final Checkbox checkbox = new Checkbox(new Coord2D(LEFT, y),
-                        Anchor.LEFT_TOP, option.checker(), option.setter());
+                        Anchor.LEFT_TOP, setting::get, setting::set);
                 final StaticLabel label = StaticLabel.init(
                                 checkbox.followMiniLabel(),
-                                option.description()).setMini().build();
+                                setting.description).setMini().build();
                 mb.addAll(checkbox, label);
 
-                if (option.infoCode() != null) {
-                    final Indicator info = Indicator.make(option.infoCode(),
+                if (setting.infoCode != null) {
+                    final Indicator info = Indicator.make(setting.infoCode,
                             label.follow(), Anchor.LEFT_TOP);
                     mb.add(info);
                 }
@@ -656,6 +671,7 @@ public final class MenuAssembly {
             }
         }
 
+        // TODO - consider for removal
         style.buildSettingsMenu(mb, y);
 
         final MenuElement close = StaticTextButton.make("Close",

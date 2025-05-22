@@ -17,11 +17,11 @@ import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.*;
+import com.jordanbunke.tdsm.data.style.settings.StyleSettings;
 import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.*;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
@@ -32,6 +32,8 @@ public abstract class Style {
     public static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
 
     public final String id;
+
+    public final StyleSettings settings;
 
     public final Bounds2D dims;
     public final Directions directions;
@@ -62,6 +64,8 @@ public abstract class Style {
         this.directions = directions;
         this.animations = animations;
         this.layers = layers;
+
+        settings = new StyleSettings();
 
         states = generateSpriteStates();
 
@@ -478,7 +482,7 @@ public abstract class Style {
         for (CustomizationLayer layer : layers.assembly())
             addLayerToAssembler(assembler, layer);
 
-        considerations(assembler);
+        settings.considerations(assembler);
 
         map = new SpriteMap<>(assembler, states);
     }
@@ -505,6 +509,8 @@ public abstract class Style {
             assembler.addLayer(layer.id, layer.compose());
     }
 
+    // TODO - remove once hard-coded styles are phased out
+    @Deprecated
     public final InterpretedSpriteSheet<String> defaultBuildComposer(
             final SpriteSheet sheet
     ) {
@@ -524,10 +530,10 @@ public abstract class Style {
             if (anim == null)
                 return FAIL;
 
-            if (directions.horizontal())
-                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
-            else
+            if (directions.orientation())
                 return anim.coordFunc.apply(frame).displace(0, dirIndex);
+            else
+                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
         });
     }
 
@@ -552,28 +558,11 @@ public abstract class Style {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
-    protected void considerations(final SpriteAssembler<String, String> assembler) {}
-
-    public boolean hasPreExportStep() {
-        return false;
-    }
-
-    public GameImage preExportTransform(final GameImage input) {
-        return input;
-    }
-
-    public void resetPreExport() {}
-
-    public StyleOption[] getOptionSettings() { return new StyleOption[0]; }
-
     @SuppressWarnings("unused")
     public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
 
-    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {}
-
     public abstract String name();
     public abstract boolean shipping();
-    public abstract boolean hasSettings();
 
     // SEQUENCING
     public void updateAnimationInclusion(
