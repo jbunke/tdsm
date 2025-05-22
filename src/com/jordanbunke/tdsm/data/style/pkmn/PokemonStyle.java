@@ -1,6 +1,5 @@
 package com.jordanbunke.tdsm.data.style.pkmn;
 
-import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
@@ -18,9 +17,9 @@ import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
 import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.StyleOption;
+import com.jordanbunke.tdsm.data.style.settings.StyleSetting;
+import com.jordanbunke.tdsm.data.style.settings.StyleSettings;
 import com.jordanbunke.tdsm.util.*;
-import com.jordanbunke.tdsm.util.hardware.GBAUtils;
 
 import java.awt.*;
 import java.util.*;
@@ -54,11 +53,7 @@ public abstract class PokemonStyle extends Style {
             IRIS_SWATCHES, CLOTHES_SWATCHES;
 
     // SETTINGS
-    private boolean quantize, warnROMColLimit;
-
-    private final Function<Color, Color> quantizeToPalette;
-    private final Map<Color, Color> replacementMap;
-    private Color selectedToReplace;
+    private final StyleSettings settings;
 
     static {
         BASE_SKIN = new Color(0xb8f8b8);
@@ -156,12 +151,9 @@ public abstract class PokemonStyle extends Style {
         super(id, dims, setUpDirections(), animations, new Layers());
 
         // Initialize settings
-        quantize = false;
-        warnROMColLimit = false;
-
-        quantizeToPalette = GBAUtils::quantize;
-        replacementMap = new HashMap<>();
-        selectedToReplace = null;
+        settings = new StyleSettings();
+        settings.add(this, ResourceCodes.QUANTIZE_GBA);
+        settings.add(this, ResourceCodes.WARN_ROM_15_COLS);
     }
 
     private static Directions setUpDirections() {
@@ -322,60 +314,39 @@ public abstract class PokemonStyle extends Style {
 
     @Override
     public boolean hasSettings() {
-        return true;
+        return settings.has();
     }
 
     @Override
-    public StyleOption[] getOptionSettings() {
-        return new StyleOption[] {
-                new StyleOption("Quantize to Game Boy Advance colors",
-                        () -> quantize, b -> quantize = b,
-                        ResourceCodes.QUANTIZE_GBA),
-                new StyleOption("Warn if sprite contains more than 15 colors",
-                        () -> warnROMColLimit, b -> warnROMColLimit = b,
-                        ResourceCodes.WARN_ROM_15_COLS)
-        };
+    public StyleSetting[] getSettings() {
+        return settings.array();
     }
 
     @Override
     public boolean hasPreExportStep() {
-        if (!warnROMColLimit)
-            return false;
-
-        return Colors.colorOccurrences(this).size() >
-                Constants.GBA_SPRITE_COL_LIMIT;
+        return settings.hasPreExportStep();
     }
 
     @Override
     public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {
-        GBAUtils.buildReplacementMenu(mb, this, replacementMap,
-                () -> selectedToReplace, c -> selectedToReplace = c,
-                warningPos);
+        settings.buildPreExportMenu(mb, warningPos);
     }
 
     @Override
     public GameImage preExportTransform(final GameImage input) {
-        if (replacementMap.isEmpty())
-            return input;
-
-        return ColorAlgo.run(c -> replacementMap.getOrDefault(c, c), input);
+        return settings.preExportTransform(input);
     }
 
     @Override
     public void resetPreExport() {
-        replacementMap.clear();
-        selectedToReplace = null;
+        settings.resetPreExport();
     }
 
     @Override
-    protected void considerations(final SpriteAssembler<String, String> assembler) {
-        if (quantize) {
-            final String quantizeID = "quantize-to-palette";
-
-            final List<String> layerIDs = assembler.getEnabledLayerIDs();
-
-            for (String layerID : layerIDs)
-                assembler.addFilter(quantizeID, quantizeToPalette, layerID);
-        }
+    protected void considerations(
+            final SpriteAssembler<String, String> assembler
+    ) {
+        if (settings != null)
+            settings.considerations(assembler);
     }
 }

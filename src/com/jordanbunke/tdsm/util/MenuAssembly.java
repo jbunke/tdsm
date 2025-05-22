@@ -20,8 +20,8 @@ import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.style.FromFileStyle;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.StyleOption;
 import com.jordanbunke.tdsm.data.style.Styles;
+import com.jordanbunke.tdsm.data.style.settings.StyleSetting;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
 import com.jordanbunke.tdsm.menu.Checkbox;
@@ -644,25 +644,25 @@ public final class MenuAssembly {
 
         int y = atY(0.2);
 
-        final StyleOption[] options = style.getOptionSettings();
+        final StyleSetting[] settings = style.getSettings();
 
-        if (options.length > 0) {
+        if (settings.length > 0) {
             final StaticLabel optionsHeader = StaticLabel.init(
                     new Coord2D(LEFT, y), "Options").build();
             mb.add(optionsHeader);
 
             y += INC_Y;
 
-            for (StyleOption option : options) {
+            for (StyleSetting setting : settings) {
                 final Checkbox checkbox = new Checkbox(new Coord2D(LEFT, y),
-                        Anchor.LEFT_TOP, option.checker(), option.setter());
+                        Anchor.LEFT_TOP, setting::get, setting::set);
                 final StaticLabel label = StaticLabel.init(
                                 checkbox.followMiniLabel(),
-                                option.description()).setMini().build();
+                                setting.description).setMini().build();
                 mb.addAll(checkbox, label);
 
-                if (option.infoCode() != null) {
-                    final Indicator info = Indicator.make(option.infoCode(),
+                if (setting.infoCode != null) {
+                    final Indicator info = Indicator.make(setting.infoCode,
                             label.follow(), Anchor.LEFT_TOP);
                     mb.add(info);
                 }

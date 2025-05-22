@@ -1,6 +1,7 @@
 package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.delta_time.io.FileIO;
+import com.jordanbunke.delta_time.scripting.ast.collection.ScriptArray;
 import com.jordanbunke.delta_time.scripting.ast.nodes.function.HeadFuncNode;
 import com.jordanbunke.delta_time.scripting.ast.nodes.function.HelperFuncNode;
 import com.jordanbunke.delta_time.scripting.ast.nodes.types.TypeNode;
@@ -12,6 +13,7 @@ import com.jordanbunke.tdsm.data.style.pkmn.HokkaidoStyle;
 import com.jordanbunke.tdsm.data.style.pkmn.KyushuStyle;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.ErrorDisplay;
+import com.jordanbunke.tdsm.util.Layout;
 import com.jordanbunke.tdsm_api.TDSMInterpreter;
 import com.jordanbunke.tdsm_api.ast.type.StyleTypeNode;
 import com.jordanbunke.tdsm_api.util.MetaFuncHelper;
@@ -80,7 +82,9 @@ public class Styles {
                 if (style instanceof FromFileStyle ffs) {
                     final FFSSetter[] setters = new FFSSetter[] {
                             Styles::setFFSName,
-                            Styles::setFFSTooltip
+                            Styles::setFFSTooltip,
+                            Styles::setFFSPreviewScale,
+                            Styles::setFFSSettings
                             // TODO - extend here
                     };
 
@@ -118,6 +122,23 @@ public class Styles {
         setFFSProperty(ffs, script, FromFileStyle.INFO_TOOLTIP, String.class,
                 FromFileStyle::setInfoTooltip, FromFileStyle.DEF_TOOLTIP,
                 TypeNode.getString(), path);
+    }
+
+    private static void setFFSPreviewScale(
+            final FromFileStyle ffs, final HeadFuncNode script, final Path path
+    ) {
+        setFFSProperty(ffs, script, FromFileStyle.PREVIEW_SCALE,
+                Integer.class, FromFileStyle::setPreviewScale,
+                Layout.SPRITE_PREVIEW_SCALE_UP, TypeNode.getInt(), path);
+    }
+
+    private static void setFFSSettings(
+            final FromFileStyle ffs, final HeadFuncNode script, final Path path
+    ) {
+        setFFSProperty(ffs, script, FromFileStyle.SETTINGS,
+                ScriptArray.class, FromFileStyle::setSettings,
+                FromFileStyle.DEF_SETTINGS,
+                TypeNode.arrayOf(TypeNode.getString()), path);
     }
 
     private static <T> void setFFSProperty(

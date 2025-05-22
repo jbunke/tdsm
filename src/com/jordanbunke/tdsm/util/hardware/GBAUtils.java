@@ -66,9 +66,9 @@ public final class GBAUtils {
                 .toArray(Color[]::new);
 
         MenuAssembly.preExportExplanation(mb, """
-                Warning: The sprite sheet has $cols non-transparent
-                colors, which is more that the $max-color maximum
-                permitted for Game Boy Advance sprites."""
+                Warning: The sprite sheet contains $cols unique non-transparent
+                colors, which is more that the $max-color maximum permitted
+                for Game Boy Advance sprites."""
                         .replace("$cols", String.valueOf(cs.size()))
                         .replace("$max", String.valueOf(Constants.GBA_SPRITE_COL_LIMIT)),
                 0.05, 0.15);
