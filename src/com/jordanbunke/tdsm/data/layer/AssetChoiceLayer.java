@@ -274,6 +274,17 @@ public final class AssetChoiceLayer extends AbstractACLayer
         return choices[index];
     }
 
+    @Override
+    public String getChoiceID() {
+        return getChoice().id;
+    }
+
+    @Override
+    public String getChoiceIDAt(final int index) {
+        return getChoiceAt(index).id;
+    }
+
+    @Override
     public int getChoiceIndex() {
         return selection;
     }
@@ -287,6 +298,11 @@ public final class AssetChoiceLayer extends AbstractACLayer
     @Override
     public int getNumChoices() {
         return choices.length;
+    }
+
+    @Override
+    public boolean hasChoice() {
+        return super.hasChoice();
     }
 
     public GameImage getPreview(final int index) {

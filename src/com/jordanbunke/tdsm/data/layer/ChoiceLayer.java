@@ -73,7 +73,7 @@ public final class ChoiceLayer extends ManualRefreshLayer
         return choices.length;
     }
 
-    public int getSelection() {
+    public int getChoiceIndex() {
         return selection;
     }
 
@@ -83,6 +83,24 @@ public final class ChoiceLayer extends ManualRefreshLayer
 
     public String getChoiceAt(final int index) {
         return choices[index];
+    }
+
+    // interface compliance
+    @Override
+    public String getChoiceID() {
+        return getChoice();
+    }
+
+    // interface compliance
+    @Override
+    public String getChoiceIDAt(int index) {
+        return getChoiceAt(index);
+    }
+
+    // interface compliance
+    @Override
+    public boolean hasChoice() {
+        return true;
     }
 
     @Override
