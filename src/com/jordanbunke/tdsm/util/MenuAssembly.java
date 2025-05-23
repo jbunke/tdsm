@@ -43,7 +43,6 @@ import java.awt.*;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Comparator;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -111,7 +110,7 @@ public final class MenuAssembly {
                 return true;
 
             return s.shipping();
-        }).sorted(Comparator.comparing(Style::name)).toArray(Style[]::new);
+        }).toArray(Style[]::new);
         final int co = STYLE_NAME_CUTOFF;
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),

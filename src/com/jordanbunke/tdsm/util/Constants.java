@@ -14,7 +14,8 @@ public final class Constants {
             ASSET_ROOT_FOLDER = Path.of("sprite_assets"),
             TOOLTIPS_FOLDER = Path.of("tooltips"),
             LOGO_FOLDER = Path.of("logo"),
-            LOADING_FOLDER = Path.of("loading");
+            LOADING_FOLDER = Path.of("loading"),
+            STYLES_FOLDER = Path.of("styles");
 
     public static final double TICK_HZ = 60d, FPS = 60d;
 

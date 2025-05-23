@@ -3,7 +3,7 @@ package com.jordanbunke.tdsm.data;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.pkmn.HokkaidoStyle;
+import com.jordanbunke.tdsm.data.style.Styles;
 import com.jordanbunke.tdsm.flow.screens.Configuration;
 import com.jordanbunke.tdsm.flow.screens.Customization;
 import com.jordanbunke.tdsm.menu.sampler.Sampler;
@@ -20,7 +20,7 @@ public final class Sprite {
     private Directions.Dir previewDir;
 
     static {
-        INSTANCE = new Sprite(HokkaidoStyle.get());
+        INSTANCE = new Sprite(Styles.all().findFirst().orElse(null));
         rebuildMenus();
     }
 
