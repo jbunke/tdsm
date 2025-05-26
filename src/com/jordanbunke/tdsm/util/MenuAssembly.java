@@ -43,6 +43,8 @@ import java.awt.*;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -106,7 +108,7 @@ public final class MenuAssembly {
                 labelPosFor(TOP.pos()), "Sprite style:").build();
 
         final Style[] styles = Styles.all().filter(s -> {
-            if (Settings.isShowWIP())
+            if (RuntimeSettings.isShowWIP())
                 return true;
 
             return s.shipping();
@@ -614,12 +616,32 @@ public final class MenuAssembly {
 
         menuTitle(mb, "Operation encountered errors");
 
-        final String concat = errors.length == 1 ? errors[0]
-                : Arrays.stream(errors)
+        final List<String> lines = new LinkedList<>();
+
+        for (int i = 0; i < errors.length; i++) {
+            final String error = errors[i];
+
+            if (error.length() > SMALL_FONT_LINE_CHAR_LIMIT) {
+                final Pair<String, String> splitError = splitLine(error);
+
+                if (splitError == null)
+                    lines.add(error);
+                else {
+                    lines.add(splitError.a());
+                    lines.add(" ".repeat(10) + splitError.b());
+                }
+            }
+
+            if (i + 1 < errors.length)
+                lines.add("\n");
+        }
+
+        final String concat = lines.size() == 1 ? lines.get(0)
+                : lines.stream()
                 .reduce((a, b) -> a + "\n" + b)
                 .orElse("");
 
-        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.7), concat);
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), concat);
 
         final MenuElement close = StaticTextButton.make("Close",
                 ButtonType.STANDARD, Alignment.CENTER, atX(0.3),
@@ -629,6 +651,16 @@ public final class MenuAssembly {
         mb.add(close);
 
         return mb.build();
+    }
+
+    private static Pair<String, String> splitLine(final String line) {
+        for (int i = SMALL_FONT_LINE_CHAR_LIMIT; i >= 0; i--) {
+            if (line.charAt(i) == ' ')
+                return new Pair<>(
+                        line.substring(0, i), line.substring(i + 1));
+        }
+
+        return null;
     }
 
     public static Menu styleSettings() {

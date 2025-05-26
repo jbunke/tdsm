@@ -2,7 +2,7 @@ package com.jordanbunke.tdsm.util;
 
 import com.jordanbunke.delta_time.utility.math.MathPlus;
 
-public class Settings {
+public class RuntimeSettings {
     private enum BoolSettings {
         CAPTURE(false), SHOW_WIP(false);
 

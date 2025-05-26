@@ -9,10 +9,10 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-sprite.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-fonts.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../stip-parser/out/artifacts/stip_parser/stip-parser.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-script.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-core.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-menu-extension.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../json/out/artifacts/json/json.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../tdsm-api/out/artifacts/tdsm_api_lib/tdsm-api-lib.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

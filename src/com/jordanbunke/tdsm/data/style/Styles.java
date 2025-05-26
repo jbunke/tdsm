@@ -114,7 +114,7 @@ public final class Styles {
                 ErrorDisplay.show(ScriptErrorLog.getErrors());
         } else
             ErrorDisplay.show(
-                    "Style archive contained does not contain the file \"" +
+                    "Uploaded archive does not contain the file \"" +
                             Constants.STYLE_MANIFEST_FILENAME + "\" at root");
     }
 

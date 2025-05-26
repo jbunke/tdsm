@@ -1,6 +1,6 @@
 package com.jordanbunke.tdsm;
 
-import com.jordanbunke.tdsm.util.Settings;
+import com.jordanbunke.tdsm.util.RuntimeSettings;
 
 public class Debug {
     private static final String
@@ -15,14 +15,14 @@ public class Debug {
     private static void processArgs(final String[] args) {
         for (String arg : args)
             switch (arg) {
-                case FLAG_CAPTURE -> Settings.setCapture(true);
-                case FLAG_WIP -> Settings.setShowWIP(true);
+                case FLAG_CAPTURE -> RuntimeSettings.setCapture(true);
+                case FLAG_WIP -> RuntimeSettings.setShowWIP(true);
                 default -> {
                     if (arg.startsWith(SCALE_PREFIX)) {
                         try {
                             final int value = Integer.parseInt(
                                     arg.substring(SCALE_PREFIX.length()));
-                            Settings.setScale(value);
+                            RuntimeSettings.setScale(value);
                         } catch (NumberFormatException ignored) {}
                     }
                 }
