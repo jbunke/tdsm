@@ -1,0 +1,8 @@
+The Pokemon trainer sprite styles previously hard-coded into TDSM are now
+available as separate free downloads. You can find them at the following links:
+
+Generation 3 (FireRed/LeafGreen) trainer sprite style:
+flinkerflitzer.itch.io/pokemon-gen-3-trainer
+
+Generation 4 (Diamond/Pearl/Platinum/HeartGold/SoulSilver) trainer sprite style:
+flinkerflitzer.itch.io/pokemon-gen-4-trainer

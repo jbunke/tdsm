@@ -77,7 +77,7 @@ public final class IconButton extends SimpleMenuButton {
             final GameImage iconImage = Graphics.readIcon(code);
 
             final String tooltip = tooltipCode.equals(ResourceCodes.NO_TOOLTIP)
-                    ? Tooltip.NONE : ParserUtils.readTooltip(tooltipCode);
+                    ? Tooltip.NONE : ParserUtils.readResourceText(tooltipCode);
 
             return new IconButton(position, anchor, behaviour, iconImage, tooltip);
         }

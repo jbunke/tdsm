@@ -6,7 +6,7 @@ import com.jordanbunke.delta_time.io.ResourceLoader;
 import java.nio.file.Path;
 
 public final class ParserUtils {
-    public static String readTooltip(final String code) {
+    public static String readResourceText(final String code) {
         return read(Constants.TOOLTIPS_FOLDER.resolve(code + ".txt"));
     }
 

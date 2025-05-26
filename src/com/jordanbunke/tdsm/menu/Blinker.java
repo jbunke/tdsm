@@ -25,7 +25,7 @@ public final class Blinker extends StaticLabel {
             final Coord2D position, final Anchor anchor
     ) {
         final String[] splashTexts = ParserUtils
-                .readTooltip(ResourceCodes.SPLASH)
+                .readResourceText(ResourceCodes.SPLASH)
                 .split("\n\n");
         final String choice =
                 splashTexts[RNG.randomInRange(0, splashTexts.length)];

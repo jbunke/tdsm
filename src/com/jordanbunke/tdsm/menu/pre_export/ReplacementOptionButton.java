@@ -80,7 +80,7 @@ public final class ReplacementOptionButton extends MenuButtonStub
     ) {
         final GameImage icon = readIcon(ResourceCodes.NONE);
         final int w = DIMS.width(), h = DIMS.height();
-        final String tooltip = ParserUtils.readTooltip(ResourceCodes.NO_REPL);
+        final String tooltip = ParserUtils.readResourceText(ResourceCodes.NO_REPL);
 
         return new ReplacementOptionButton(
                 position, selectedColor, null, map, tooltip,

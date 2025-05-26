@@ -130,7 +130,7 @@ public final class IconOptionsButton extends SimpleToggleMenuButton {
                     .toArray(Runnable[]::new);
             final String[] tooltips = this.tooltips != null
                     ? this.tooltips : (codes != null
-                    ? Arrays.stream(codes).map(ParserUtils::readTooltip)
+                    ? Arrays.stream(codes).map(ParserUtils::readResourceText)
                     .toArray(String[]::new)
                     : IntStream.range(0, options)
                     .mapToObj(i -> Tooltip.NONE).toArray(String[]::new));

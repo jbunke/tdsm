@@ -37,6 +37,7 @@ import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
+import com.jordanbunke.tdsm.settings.update.StartupMessage;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
@@ -451,7 +452,7 @@ public final class MenuAssembly {
                 canvasAt(0.5, 0.98),
                 Anchor.CENTRAL_BOTTOM,
                 Graphics.miniText(Colors.darkSystem())
-                        .addText(ProgramInfo.getVersion()).addLineBreak()
+                        .addText(ProgramInfo.formatVersion()).addLineBreak()
                         .addText("(c) 2025 Jordan Bunke").build().draw());
 
         mb.add(programLabel);
@@ -534,7 +535,7 @@ public final class MenuAssembly {
             final Text.Orientation orientation, final int height
     ) {
         menuBlurb(mb, orientation, 0.2,
-                height, ParserUtils.readTooltip(blurbCode));
+                height, ParserUtils.readResourceText(blurbCode));
     }
 
     private static void menuBlurb(
@@ -609,6 +610,38 @@ public final class MenuAssembly {
             mb.add(b);
             buttonPos = buttonPos.displace(0, TEXT_BUTTON_INC_Y);
         }
+    }
+
+    public static Menu updateInformation(final StartupMessage[] messages) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        menuTitle(mb, "Important update information");
+
+        final StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < messages.length; i++) {
+            final StartupMessage message = messages[i];
+
+            sb.append("[ ").append(i + 1)
+                    .append(" of ").append(messages.length)
+                    .append(" ]\nSince v").append(message.since.toString())
+                    .append(":").append("\n".repeat(2))
+                    .append(ParserUtils.readResourceText(message.id()));
+
+            if (i + 1 < messages.length)
+                sb.append("\n".repeat(3));
+        }
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), sb.toString());
+
+        final MenuElement close = StaticTextButton.make("Got it",
+                ButtonType.STANDARD, Alignment.CENTER, atX(0.3),
+                new Coord2D(atX(0.5), CANVAS_H - BUFFER),
+                Anchor.CENTRAL_BOTTOM, () -> true,
+                () -> ProgramState.set(ProgramState.MENU, mainMenu()));
+        mb.add(close);
+
+        return mb.build();
     }
 
     public static Menu encounteredErrors(final String[] errors) {

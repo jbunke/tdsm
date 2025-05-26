@@ -32,7 +32,7 @@ public final class Indicator extends StaticMenuElement {
             final Coord2D position, final Anchor anchor
     ) {
         final GameImage icon = Graphics.readIcon(iconCode);
-        final String tooltip = ParserUtils.readTooltip(tooltipCode);
+        final String tooltip = ParserUtils.readResourceText(tooltipCode);
 
         return new Indicator(position, anchor, icon, tooltip);
     }
@@ -73,7 +73,7 @@ public final class Indicator extends StaticMenuElement {
         }
 
         public Builder setTooltipCode(final String tooltipCode) {
-            tooltip = ParserUtils.readTooltip(tooltipCode);
+            tooltip = ParserUtils.readResourceText(tooltipCode);
             return this;
         }
 

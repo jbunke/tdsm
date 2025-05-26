@@ -9,6 +9,8 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.window.GameWindow;
 import com.jordanbunke.tdsm.flow.ProgramState;
+import com.jordanbunke.tdsm.settings.Settings;
+import com.jordanbunke.tdsm.settings.update.VersionHandler;
 import com.jordanbunke.tdsm.util.*;
 
 import static com.jordanbunke.tdsm.ProgramInfo.*;
@@ -18,7 +20,7 @@ public final class TDSM implements ProgramContext {
     public final GameWindow window;
 
     private TDSM() {
-        ProgramState.set(ProgramState.MENU, MenuAssembly.mainMenu());
+
 
         window = makeWindow();
         window.hideCursor();
@@ -31,7 +33,9 @@ public final class TDSM implements ProgramContext {
 
     public static void main(final String[] args) {
         OnStartup.run();
+        Settings.read();
         readProgramFile();
+        VersionHandler.startup();
 
         new TDSM();
     }
@@ -55,13 +59,13 @@ public final class TDSM implements ProgramContext {
     public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
 
     private GameWindow makeWindow() {
-        return new GameWindow(PROGRAM_NAME + " " + getVersion(),
+        return new GameWindow(PROGRAM_NAME + " " + formatVersion(),
                 Layout.width(), Layout.height(),
                 Graphics.readIcon(ResourceCodes.ICON), true, false, false);
     }
 
     public static void quitProgram() {
-        // TODO - potential write settings
+        Settings.write();
         System.exit(0);
     }
 }

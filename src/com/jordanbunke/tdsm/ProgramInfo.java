@@ -80,7 +80,11 @@ public final class ProgramInfo {
         }
     }
 
-    public static String getVersion() {
+    public static String formatVersion() {
         return "v" + VERSION + (IS_DEVBUILD ? " (devbuild)" : "");
+    }
+
+    public static Version getVersion() {
+        return VERSION;
     }
 }
