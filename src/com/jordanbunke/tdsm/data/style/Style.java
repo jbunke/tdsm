@@ -4,9 +4,7 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteMap;
-import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
-import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
@@ -28,9 +26,6 @@ import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.JSONHelper.*;
 
 public abstract class Style {
-
-    public static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
-
     public final String id;
 
     public final StyleSettings settings;
@@ -507,50 +502,6 @@ public abstract class Style {
             gl.all().forEach(l -> addLayerToAssembler(assembler, l));
         else if (layer.isRendered())
             assembler.addLayer(layer.id, layer.compose());
-    }
-
-    // TODO - remove once hard-coded styles are phased out
-    @Deprecated
-    public final InterpretedSpriteSheet<String> defaultBuildComposer(
-            final SpriteSheet sheet
-    ) {
-        final Coord2D FAIL = new Coord2D();
-
-        return new InterpretedSpriteSheet<>(sheet, id -> {
-            final Directions.Dir dir = Directions.get(
-                    SpriteStates.extractContributor(DIRECTION, id));
-            final String animID =
-                    SpriteStates.extractContributor(ANIM, id);
-            final int frame = Integer.parseInt(
-                    SpriteStates.extractContributor(FRAME, id));
-
-            final int dirIndex = indexOfDir(dir);
-            final Animation anim = animFromID(animID);
-
-            if (anim == null)
-                return FAIL;
-
-            if (directions.orientation())
-                return anim.coordFunc.apply(frame).displace(0, dirIndex);
-            else
-                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
-        });
-    }
-
-    protected final int indexOfDir(final Directions.Dir dir) {
-        for (int i = 0; i < directions.order().length; i++)
-            if (dir == directions.order()[i])
-                return i;
-
-        return -1;
-    }
-
-    final Animation animFromID(final String animID) {
-        for (Animation a : animations)
-            if (a.id.equals(animID))
-                return a;
-
-        return null;
     }
 
     // override in inheritors if different
