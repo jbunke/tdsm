@@ -33,7 +33,7 @@ public final class Styles {
     static {
         addShutdownHook();
 
-        fromResources("temp");
+        fromResources(Constants.DEFAULT_STYLE_NAME);
     }
 
     private static void addShutdownHook() {

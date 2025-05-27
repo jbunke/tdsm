@@ -7,7 +7,8 @@ public final class Constants {
             NAME_CODE = "name", VERSION_CODE = "version",
             IS_DEVBUILD_CODE = "devbuild",
             SCRIPT_EXT = "tds", STYLE_FILE_EXT = "tdsm",
-            STYLE_MANIFEST_FILENAME = "manifest." + SCRIPT_EXT;
+            STYLE_MANIFEST_FILENAME = "manifest." + SCRIPT_EXT,
+            DEFAULT_STYLE_NAME = "default";
 
     public static final Path PROGRAM_FILE = Path.of("program"),
             VERSION_FILE = Path.of("version"),
