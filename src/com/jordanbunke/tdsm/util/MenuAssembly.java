@@ -433,6 +433,8 @@ public final class MenuAssembly {
     public static Menu mainMenu() {
         final MenuBuilder mb = new MenuBuilder();
 
+        mb.add(new BackgroundElement());
+
         addMenuButtons(mb,
                 new Pair<>("Start editing",
                         MenuAssembly::loadCustomization),
@@ -592,8 +594,6 @@ public final class MenuAssembly {
     private static void addMenuButtons(
             final MenuBuilder mb, final Pair<String, Runnable>... buttons
     ) {
-        mb.add(new BackgroundElement());
-
         Coord2D buttonPos = canvasAt(0.5, 37 / 60.0);
 
         if (buttons.length < 3)

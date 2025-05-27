@@ -1,5 +1,3 @@
-Officially official! More coming soon!
-
 Buy "Stipple Effect"!
 
 You can rearrange the order in which directions and
@@ -16,10 +14,8 @@ in the cycle are the same.
 Please respect the terms of the license.
 Credit is appreciated but not required.
 
-Help develop TDSM by identifying bugs... or even by
-making art! Visit "jbunke/tdsm" on GitHub for more.
+Help me develop TDSM by reporting bugs and requesting
+features! Visit "jbunke/tdsm" on GitHub for more.
 
-Locking some layers will produce better-looking
-randomized sprites more consistently. For example,
-consider locking the "Eye Height" layer at a value
-of "Average".
+Make your own sprite styles and share them with the
+world! See the "About" section for more information.
