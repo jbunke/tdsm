@@ -5,5 +5,5 @@ Its modular design gives you, the user, full control over
 how you want to customize your characters and configure
 their sprite sheets for use in your own games/projects.
 
-It also makes TDSM easily extensible. Expect the program to
-be frequently updated with new sprite styles and animations!
+TDSM also allows users to make their own sprite styles,
+either by modifying existing ones or starting from scratch!

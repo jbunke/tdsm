@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public final class ParserUtils {
     public static String readResourceText(final String code) {
-        return read(Constants.TOOLTIPS_FOLDER.resolve(code + ".txt"));
+        return read(Constants.TEXT_FOLDER.resolve(code + ".txt"));
     }
 
     public static String read(final Path resource) {
