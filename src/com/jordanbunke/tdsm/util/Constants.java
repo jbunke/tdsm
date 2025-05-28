@@ -12,7 +12,6 @@ public final class Constants {
 
     public static final Path PROGRAM_FILE = Path.of("program"),
             VERSION_FILE = Path.of("version"),
-            ASSET_ROOT_FOLDER = Path.of("sprite_assets"),
             TEXT_FOLDER = Path.of("text"),
             LOGO_FOLDER = Path.of("logo"),
             LOADING_FOLDER = Path.of("loading"),
