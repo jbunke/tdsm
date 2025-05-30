@@ -7,6 +7,7 @@ import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementGrouping;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElement;
+import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
@@ -43,8 +44,7 @@ import com.jordanbunke.tdsm.visual_misc.Playback;
 import java.awt.*;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
@@ -541,11 +541,41 @@ public final class MenuAssembly {
                         .map(c -> (Runnable) () -> Tutorials.setActive(c))
                         .toArray(Runnable[]::new),
                 () -> 0);
-        mb.addAll(pageLabel, pageDropdown);
 
-        // TODO - tutorial display element
+        final Map<String, MenuElementGrouping> tutorialMenus = new HashMap<>();
+
+        for (String code : codes)
+            tutorialMenus.put(code, buildTutorialMenu(code));
+
+        final ThinkingMenuElement tutorialDisplayLogic =
+                new ThinkingMenuElement(() ->
+                        tutorialMenus.get(Tutorials.getActive()));
+        mb.addAll(pageLabel, pageDropdown, tutorialDisplayLogic);
 
         return mb.build();
+    }
+
+    private static MenuElementGrouping buildTutorialMenu(final String code) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        final Pair<String, Runnable>[] buttons = Tutorials.getButtons(code);
+        final double BASE_HEIGHT = 0.8;
+        final int height = buttons == null
+                ? atY(BASE_HEIGHT)
+                : atY(BASE_HEIGHT) - (TEXT_BUTTON_INC_Y * buttons.length);
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.12,
+                height, ParserUtils.readResourceText(code));
+
+        if (buttons != null) {
+            final Coord2D buttonPos = canvasAt(0.5, 0.98)
+                    .displaceY(-TEXT_BUTTON_INC_Y * buttons.length);
+            addMenuButtons(mb, buttonPos, buttons);
+        }
+
+        // TODO
+
+        return new MenuElementGrouping(mb.build().getMenuElements());
     }
 
     private static Menu moreStyles() {

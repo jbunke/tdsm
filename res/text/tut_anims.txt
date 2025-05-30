@@ -1,0 +1,21 @@
+Animations, along with directions and layers, are one of the fundamental building
+blocks of a sprite style in "Top Down Sprite Maker". An animation consists of a
+set number of frames, each of which lasts a set number of program ticks. Generally,
+an animation represents an action, such as walking, running, or idle.
+
+Here
+
+Here
+
+Here
+
+Here
+
+Here
+
+Here
+
+Here
+
+Here
+

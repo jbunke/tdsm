@@ -12,18 +12,21 @@ public final class Tutorials {
     private static final Map<String, String> codeTitleMap;
     private static final Map<String, Pair<String, Runnable>[]> codeButtonMap;
 
+    private static String active;
+
     static {
         codeButtonMap = new HashMap<>();
         codeTitleMap = new HashMap<>();
 
         init();
+
+        setActive(codes()[0]);
     }
 
     private static void init() {
         codeTitleMap.put(TUT_MAKE_STYLE, "Make a sprite style");
         codeButtonMap.put(TUT_MAKE_STYLE, array(
-                new Pair<>("YouTube",
-                        () -> visitSite("https://youtube.com" /* TODO */)),
+                // TODO - YouTube tutorial
                 new Pair<>("Scripting API",
                         () -> visitSite("https://github.com/jbunke/tdsm-api")),
                 new Pair<>("DeltaScript",
@@ -60,7 +63,11 @@ public final class Tutorials {
     }
 
     public static void setActive(final String code) {
-        // TODO
+        active = code;
+    }
+
+    public static String getActive() {
+        return active;
     }
 
     public static boolean hasButtons(final String code) {
@@ -68,6 +75,6 @@ public final class Tutorials {
     }
 
     public static Pair<String, Runnable>[] getButtons(final String code) {
-        return codeButtonMap.get(code);
+        return codeButtonMap.getOrDefault(code, null);
     }
 }
