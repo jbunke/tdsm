@@ -475,7 +475,7 @@ public final class MenuAssembly {
                 new Pair<>("Changelog", () -> ProgramState.to(changelog())),
                 new Pair<>("Roadmap", () -> ProgramState.to(roadmap())),
                 new Pair<>("License", () -> ProgramState.to(license())),
-                new Pair<>("Links", () -> ProgramState.to(links())));
+                new Pair<>("Help", () -> ProgramState.to(help())));
     }
 
     private static Menu changelog() {
@@ -500,15 +500,104 @@ public final class MenuAssembly {
                 Text.Orientation.LEFT, license());
     }
 
-    private static Menu links() {
-        return openingMenu("Links", ResourceCodes.LINKS,
-                Text.Orientation.CENTER, about(),
-                new Pair<>("My store",
-                        () -> visitSite("https://flinkerflitzer.itch.io")),
+    private static Menu help() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, about());
+
+        menuTitle(mb, "Help");
+
+        Coord2D buttonPos = canvasAt(0.5, 0.3);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Concepts and tutorials",
+                        () -> ProgramState.to(tutorials())),
+                new Pair<>("Get more sprite styles",
+                        () -> ProgramState.to(moreStyles())),
+                new Pair<>("Technical resources",
+                        () -> ProgramState.to(technical())),
                 new Pair<>("Stipple Effect",
-                        () -> visitSite("https://stipple-effect.github.io")),
+                        () -> ProgramState.to(stippleEffect())));
+
+        return mb.build();
+    }
+
+    private static Menu tutorials() {
+        // TODO
+        return new MenuBuilder().build();
+    }
+
+    private static Menu moreStyles() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        menuTitle(mb, "Get more sprite styles");
+
+        menuBlurb(mb, Text.Orientation.CENTER, 0.2, atY(0.5),
+                ParserUtils.readResourceText(ResourceCodes.MORE_STYLES));
+
+        final Coord2D buttonPos = canvasAt(0.5, 0.3)
+                .displaceY(TEXT_BUTTON_INC_Y * 5);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Approved collection",
+                        () -> visitSite("https://itch.io/c/5834066/top-down-sprite-maker-approved-sprite-styles")),
+                new Pair<>("Share your styles",
+                        () -> visitSite("https://github.com/jbunke/tdsm/discussions/61")));
+
+        return mb.build();
+    }
+
+    private static Menu technical() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        menuTitle(mb, "Technical resources");
+
+        menuBlurb(mb, Text.Orientation.CENTER, 0.2, atY(0.2),
+                ParserUtils.readResourceText(ResourceCodes.TECHNICAL));
+
+        final Coord2D buttonPos = canvasAt(0.5, 0.3)
+                .displaceY(TEXT_BUTTON_INC_Y);
+        addMenuButtons(mb, buttonPos,
                 new Pair<>("Source code",
-                        () -> visitSite("https://github.com/jbunke/tdsm")));
+                        () -> visitSite("https://github.com/jbunke/tdsm")),
+                new Pair<>("Scripting API",
+                        () -> visitSite("https://github.com/jbunke/tdsm-api")),
+                // TODO - command-line interface
+                new Pair<>("Report a bug",
+                        () -> visitSite("https://github.com/jbunke/tdsm/issues/new?template=bug_report.md")));
+
+        return mb.build();
+    }
+
+    private static Menu stippleEffect() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        menuTitle(mb, "Stipple Effect");
+
+        menuBlurb(mb, Text.Orientation.CENTER, 0.2, atY(0.4),
+                ParserUtils.readResourceText(ResourceCodes.STIPPLE_EFFECT));
+
+        final Coord2D buttonPos = canvasAt(0.5, 0.3)
+                .displaceY(TEXT_BUTTON_INC_Y * 4);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Buy",
+                        () -> visitSite("https://flinkerflitzer.itch.io/stipple-effect")),
+                new Pair<>("Website",
+                        () -> visitSite("https://stipple-effect.github.io")));
+
+        return mb.build();
     }
 
     private static void visitSite(final String link) {
@@ -600,6 +689,14 @@ public final class MenuAssembly {
             buttonPos = buttonPos.displace(0,
                     TEXT_BUTTON_INC_Y * (4 - buttons.length));
 
+        addMenuButtons(mb, buttonPos, buttons);
+    }
+
+    @SafeVarargs
+    private static void addMenuButtons(
+            final MenuBuilder mb, Coord2D buttonPos,
+            final Pair<String, Runnable>... buttons
+    ) {
         final int BUTTON_W = atX(0.3);
 
         for (Pair<String, Runnable> button : buttons) {

@@ -47,5 +47,7 @@ public final class ResourceCodes {
     // blurbs
     public static final String SPLASH = "splash", ABOUT = "about",
             CHANGELOG = "changelog", ROADMAP = "roadmap",
-            LICENSE = "LICENSE", SUMMARY = "license_summary", LINKS = "links";
+            LICENSE = "LICENSE", SUMMARY = "license_summary",
+            STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
+            MORE_STYLES = "more_styles";
 }

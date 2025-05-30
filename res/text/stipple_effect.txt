@@ -1,0 +1,10 @@
+"Stipple Effect" is a pixel art editor made by the same
+developer as "Top Down Sprite Maker". It is designed to
+encourage the use of scripts to automate tasks. If you
+are interested in making your own sprite styles for TDSM,
+or modifying existing ones, "Stipple Effect" is the best
+program for the job.
+
+Additionally, layer-separated sprite sheet exports from
+TDSM can only be viewed and edited in "Stipple Effect",
+as these are exported as ".stip" project files.

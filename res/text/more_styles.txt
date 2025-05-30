@@ -1,0 +1,16 @@
+You can buy/download more sprite styles for TDSM online.
+Sprite styles approved by the developer (either made by
+the developer or community members) are compiled in the
+collection linked below.
+
+Note that some sprite styles feature assets adapted from
+or inspired by established IPs, and that the use of such
+sprites in commercial software may infringe the copyright
+of the original owners.
+
+Please visit the "Tutorials" page to learn how to make
+sprite styles yourself.
+
+You can upload your original sprite styles to itch.io and
+post their link in the forum linked below to be featured
+in the developer-approved collection of sprite styles.
