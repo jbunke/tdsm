@@ -524,8 +524,28 @@ public final class MenuAssembly {
     }
 
     private static Menu tutorials() {
-        // TODO
-        return new MenuBuilder().build();
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        final StaticLabel pageLabel = StaticLabel.init(
+                labelPosFor(BUFFER, 0), " ").build();
+        final String[] codes = Tutorials.codes();
+        final Dropdown pageDropdown = Dropdown.create(
+                pageLabel.followTB(),
+                Arrays.stream(codes).map(Tutorials::getTitle)
+                        .toArray(String[]::new),
+                Arrays.stream(codes)
+                        .map(c -> (Runnable) () -> Tutorials.setActive(c))
+                        .toArray(Runnable[]::new),
+                () -> 0);
+        mb.addAll(pageLabel, pageDropdown);
+
+        // TODO - tutorial display element
+
+        return mb.build();
     }
 
     private static Menu moreStyles() {
@@ -600,7 +620,7 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    private static void visitSite(final String link) {
+    public static void visitSite(final String link) {
         try {
             Desktop.getDesktop().browse(new URI(link));
         } catch (Exception ignored) {}

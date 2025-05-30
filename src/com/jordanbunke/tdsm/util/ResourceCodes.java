@@ -50,4 +50,10 @@ public final class ResourceCodes {
             LICENSE = "LICENSE", SUMMARY = "license_summary",
             STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
             MORE_STYLES = "more_styles";
+
+    // tutorials
+    public static final String TUT_MAKE_STYLE = "tut_make_style",
+            TUT_EXPORT = "tut_export", TUT_CONFIG = "tut_config",
+            TUT_LOCK = "tut_lock", TUT_LAYERS = "tut_layers",
+            TUT_DIRS = "tut_dirs", TUT_ANIMS = "tut_anims";
 }
