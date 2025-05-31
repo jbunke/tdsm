@@ -45,6 +45,10 @@ public final class Tutorials {
         codeTitleMap.put(TUT_LOCK, "Locking layers");
 
         codeTitleMap.put(TUT_EXPORT, "Export");
+
+        codeTitleMap.put(TUT_RANDOM, "Randomization");
+
+        codeTitleMap.put(TUT_COL_SEL, "Color selections");
     }
 
     @SafeVarargs
@@ -68,10 +72,6 @@ public final class Tutorials {
 
     public static String getActive() {
         return active;
-    }
-
-    public static boolean hasButtons(final String code) {
-        return codeButtonMap.containsKey(code);
     }
 
     public static Pair<String, Runnable>[] getButtons(final String code) {

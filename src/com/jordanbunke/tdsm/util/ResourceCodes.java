@@ -55,5 +55,6 @@ public final class ResourceCodes {
     public static final String TUT_MAKE_STYLE = "tut_make_style",
             TUT_EXPORT = "tut_export", TUT_CONFIG = "tut_config",
             TUT_LOCK = "tut_lock", TUT_LAYERS = "tut_layers",
-            TUT_DIRS = "tut_dirs", TUT_ANIMS = "tut_anims";
+            TUT_DIRS = "tut_dirs", TUT_ANIMS = "tut_anims",
+            TUT_RANDOM = "tut_random", TUT_COL_SEL = "tut_col_sel";
 }
