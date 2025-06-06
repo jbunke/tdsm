@@ -32,8 +32,6 @@ public final class Tutorials {
                 new Pair<>("DeltaScript",
                         () -> visitSite("https://github.com/jbunke/deltascript"))));
 
-        // TODO
-
         codeTitleMap.put(TUT_ANIMS, "Animations");
 
         codeTitleMap.put(TUT_DIRS, "Directions");

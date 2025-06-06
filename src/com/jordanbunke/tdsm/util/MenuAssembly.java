@@ -573,8 +573,6 @@ public final class MenuAssembly {
             addMenuButtons(mb, buttonPos, buttons);
         }
 
-        // TODO
-
         return new MenuElementGrouping(mb.build().getMenuElements());
     }
 
