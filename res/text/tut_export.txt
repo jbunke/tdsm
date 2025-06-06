@@ -7,6 +7,9 @@ project.
 
 JSON metadata
 
+    JSON (short for JavaScript Object Notation) is a text file format used to
+    represent data as a series of key-value pairs.
+
     Exporting a sprite sheet's metadata has a few potential uses. The metadata
     includes information about the ID of each animation frame and its position
     in the sprite sheet, the sprite style, customization choices, as well as

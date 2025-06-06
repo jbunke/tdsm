@@ -1,4 +1,4 @@
-v1.2.0 - 2025-05-29 - Major update
+v1.2.0 - 2025-06-07 - Major update
 
 [General]
 
@@ -7,9 +7,10 @@ v1.2.0 - 2025-05-29 - Major update
   > Sprite styles are now stored in archives; can be uploaded and distributed
   > Added JSON data for style ID, customization layers, and configuration data
   > Load a sprite into TDSM by uploading a JSON file
-  > Added program settings
+  > Added hidden program settings
   > Added startup messages that highlight new features if the program is opened
       for the first time since an update that introduced them
+  > Added help menus with guides and additional resources
 
   Removed:
   - Removed "Hokkaido" sprite style; now available as free download

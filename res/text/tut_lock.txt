@@ -1,0 +1,10 @@
+Locking a layer excludes it from randomization. This is an effective strategy for
+constraining randomization.
+
+Constraining randomization means to control certain variables and characteristics
+of a customization. When such layers are locked, their value will persist when
+the sprite style is randomized. For example, if you want to randomize a sprite
+style, but you want the hairstyle, hat, and skin color to remain the same, you can
+simply lock those layers and click the die in the top-right corner. The result
+will be a newly randomized set of traits, but those defined by locked layers will
+remain the same.
