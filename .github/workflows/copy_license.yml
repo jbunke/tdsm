@@ -16,7 +16,7 @@ jobs:
       - name: Check if LICENSE file needs to be updated
         id: check_license
         run: |
-          if [ ! -f LICENSE ] || ! cmp -s res/tooltips/LICENSE.txt LICENSE; then
+          if [ ! -f LICENSE ] || ! cmp -s res/text/LICENSE.txt LICENSE; then
             echo "needs_update=true" >> $GITHUB_ENV
           else
             echo "needs_update=false" >> $GITHUB_ENV
@@ -25,7 +25,7 @@ jobs:
       - name: Copy LICENSE file
         if: env.needs_update == 'true'
         run: |
-          cp res/tooltips/LICENSE.txt LICENSE
+          cp res/text/LICENSE.txt LICENSE
           
       - name: Commit and push changes
         if: env.needs_update == 'true'

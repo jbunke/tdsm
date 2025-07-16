@@ -20,8 +20,8 @@ manifest.tds
     The "manifest.tds" file must be written in DeltaScript with the TDSM scripting
     API. DeltaScript is a scripting language designed by the same developer as
     TDSM, which serves as a base to design domain-specific languages. In this case,
-    the DeltaScript + the TDSM scripting API gives you all the tools you need to
-    define complex behaviours for "Top Down Sprite Maker" sprite styles.
+    DeltaScript and the scripting API give you all the tools you need to define
+    complex behaviours for "Top Down Sprite Maker" sprite styles.
 
     The TDSM scripting API and the DeltaScript language reference are linked below.
 
@@ -100,7 +100,7 @@ Tips
     You can download these sprite styles, extract the contents of the ZIP files,
     and...
     > read through the code in "manifest.tds"
-    > see what other assets and resources are packaged as part of the sprite style
+    > see what other assets and resources are packaged as part of ZIP file
 
     It is especially recommended to look at the Pokemon Gen III and IV styles, as
     these demonstrate many of the important techniques and span a large chunk of
@@ -114,4 +114,5 @@ Tips
     and all the valid selection IDs as a CSV file. This way, sprite styles can be
     updated iteratively without having to make any code changes to "manifest.tds",
     which simply parses the CSV file and reads in the corresponding image assets.
-    The Pokemon sprite styles cited in tip 1) utilize this technique.
+    The Pokemon sprite styles cited in tip 1) utilize this technique, and the
+    relevant "Stipple Effect" projects are included in the downloadable ZIP files.

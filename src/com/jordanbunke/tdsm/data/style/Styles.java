@@ -66,6 +66,11 @@ public final class Styles {
         ).ifPresent(Styles::uploadFromFile);
     }
 
+    @SuppressWarnings("unused")
+    public static void uploadFromScript(final Path path) {
+        uploadFromFile(path.toFile());
+    }
+
     private static void uploadFromFile(final File archive) {
         try {
             uploadStyle(new FileInputStream(archive), true);

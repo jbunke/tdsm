@@ -1,4 +1,4 @@
-v1.2.0 - 2025-06-07 - Major update
+v1.2.0 - 2025-07-16 - Major update
 
 [General]
 
