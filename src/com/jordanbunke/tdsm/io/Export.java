@@ -90,7 +90,7 @@ public final class Export {
         if (exportJSON) exportJSON();
         if (exportStip) exportStip();
 
-        ProgramState.set(ProgramState.MENU, MenuAssembly.main());
+        ProgramState.set(ProgramState.MENU, MenuAssembly.mainMenu());
     }
 
     private void exportJSON() {
@@ -149,6 +149,12 @@ public final class Export {
             return;
 
         folder = opened.get().toPath();
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setFolder(final Path folder) {
+        this.folder = folder;
     }
 
     public String getFileName() {

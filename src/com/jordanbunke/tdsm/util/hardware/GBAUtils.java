@@ -59,16 +59,16 @@ public final class GBAUtils {
             final Consumer<Color> selector,
             final Coord2D warningPos
     ) {
-        style.resetPreExport();
+        style.settings.resetPreExport();
         final Map<Color, Integer> cs = Colors.colorOccurrences(style);
         final Color[] sequence = cs.keySet().stream()
                 .sorted(Comparator.comparingInt(cs::get))
                 .toArray(Color[]::new);
 
         MenuAssembly.preExportExplanation(mb, """
-                Warning: The sprite sheet has $cols non-transparent
-                colors, which is more that the $max-color maximum
-                permitted for Game Boy Advance sprites."""
+                Warning: The sprite sheet contains $cols unique non-transparent
+                colors, which is more that the $max-color maximum permitted
+                for Game Boy Advance sprites."""
                         .replace("$cols", String.valueOf(cs.size()))
                         .replace("$max", String.valueOf(Constants.GBA_SPRITE_COL_LIMIT)),
                 0.05, 0.15);
@@ -90,7 +90,7 @@ public final class GBAUtils {
                 MenuElement.Anchor.LEFT_TOP);
         final IconButton replacementReset = IconButton.init(
                 ResourceCodes.RESET, replacementInfo.following(),
-                style::resetPreExport).build();
+                style.settings::resetPreExport).build();
 
         mb.addAll(replacementLabel, replacementInfo, replacementReset);
 

@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 public final class MathLayer extends CustomizationLayer {
     private final String name;
-    private final int min, max;
+    public final int min, max;
     private final Function<Integer, String> formatFunc;
 
     private int value;
@@ -67,6 +67,12 @@ public final class MathLayer extends CustomizationLayer {
             value--;
             Sprite.get().getStyle().update();
         }
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setValue(final int value) {
+        this.value = MathPlus.bounded(min, value, max);
     }
 
     @Override

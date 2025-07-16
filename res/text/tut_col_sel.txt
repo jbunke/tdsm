@@ -1,0 +1,13 @@
+Color selections are used to assign customizable color components, such as skin
+color, hair color, or the color of an item of clothing.
+
+Color selections can provide a pre-determined set of colors - "swatches" - to
+choose from. Providing no swatches will automatically populate a color selection
+with 12 default swatches of various colors.
+
+Randomizing a color selection will randomly assign its color to one of its swatches.
+
+Additionally, color selections may or may not allow for the assignment of any RGB
+color, even if it is not among the color selection's swatches. For color selections
+that permit this, it can be done by using the color matrix or inputting the color's
+hex code in the appropriate textbox and clicking "Submit".

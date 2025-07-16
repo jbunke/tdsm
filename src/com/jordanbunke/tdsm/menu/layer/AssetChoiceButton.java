@@ -41,7 +41,7 @@ public final class AssetChoiceButton extends MenuButton implements Button {
             final AssetChoiceLayer layer
     ) {
         final String code = ResourceCodes.NONE,
-                tooltip = ParserUtils.readTooltip(code);
+                tooltip = ParserUtils.readResourceText(code);
         final GameImage preview = Graphics.readIcon(code);
 
         return new AssetChoiceButton(position, dims, layer,

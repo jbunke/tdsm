@@ -7,7 +7,6 @@ import com.jordanbunke.tdsm.menu.DynamicTextbox;
 import com.jordanbunke.tdsm.util.Layout;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public final class PaddingTextbox extends DynamicTextbox {

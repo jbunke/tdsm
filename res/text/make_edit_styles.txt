@@ -1,0 +1,16 @@
+Huge news!
+Sprite styles can now be created, edited, distributed, and uploaded to TDSM.
+
+In previous versions of TDSM, the available sprite styles were hard-coded into
+the program's source code. Now, sprite styles are housed in archives (a single
+".zip" or ".tdsm" file). This archive houses a manifest file that defines the
+style's customization and assembly logic - including animations and layers - and
+any of the sprite styles base assets.
+
+This allows you to:
+
+> Easily modify existing sprite styles, like adding hairstyles or clothing options
+> Create a sprite style of your own from scratch. Make sprite styles as simple
+      or complex as you like with full control over sprite customization and
+      assembly logic.
+> Distribute your sprite styles online by simply uploading the archive

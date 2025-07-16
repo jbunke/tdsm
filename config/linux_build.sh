@@ -21,7 +21,7 @@ jlink --module-path "$JAVA_HOME/jmods" --add-modules "$MODULES" --output "$OUTPU
 echo "2/3: Generated runtime image"
 
 # Package application with jpackage for Linux
-ICON_PATH="../out/artifacts/_to bundle with releases/icons/sources/icon-256px.png"
+ICON_PATH="../out/artifacts/bundle/icons/sources/icon-256px.png"
 VERSION_FILE="../res/version"
 
 VERSION=$(cat "$VERSION_FILE")

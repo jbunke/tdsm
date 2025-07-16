@@ -7,19 +7,22 @@ import com.jordanbunke.delta_time.menu.menu_elements.MenuElement.Anchor;
 import com.jordanbunke.delta_time.menu.menu_elements.container.MenuElementGrouping;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.scroll.Scrollable;
 import com.jordanbunke.delta_time.menu.menu_elements.invisible.GatewayMenuElement;
+import com.jordanbunke.delta_time.menu.menu_elements.invisible.ThinkingMenuElement;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.tdsm.ProgramInfo;
 import com.jordanbunke.tdsm.TDSM;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.Sprite;
+import com.jordanbunke.tdsm.data.style.FromFileStyle;
 import com.jordanbunke.tdsm.data.style.Style;
-import com.jordanbunke.tdsm.data.style.StyleOption;
 import com.jordanbunke.tdsm.data.style.Styles;
+import com.jordanbunke.tdsm.data.style.settings.StyleSetting;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.io.Export;
 import com.jordanbunke.tdsm.menu.Checkbox;
@@ -35,12 +38,14 @@ import com.jordanbunke.tdsm.menu.scrollable.VertScrollBox;
 import com.jordanbunke.tdsm.menu.text_button.Alignment;
 import com.jordanbunke.tdsm.menu.text_button.ButtonType;
 import com.jordanbunke.tdsm.menu.text_button.StaticTextButton;
+import com.jordanbunke.tdsm.settings.update.StartupMessage;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.*;
+import java.util.List;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
 import static com.jordanbunke.tdsm.util.Layout.*;
@@ -56,7 +61,7 @@ public final class MenuAssembly {
         final Style style = Sprite.get().getStyle();
 
         // PREVIEW
-        if (style.hasSettings()) {
+        if (style.settings.has()) {
             IconButton settings = IconButton.init(
                     ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                     () -> ProgramState.set(ProgramState.MENU, styleSettings())
@@ -103,32 +108,51 @@ public final class MenuAssembly {
         final StaticLabel styleLabel = StaticLabel.init(
                 labelPosFor(TOP.pos()), "Sprite style:").build();
 
-        final Style[] styles = EnumUtils.stream(Styles.class)
-                .map(Styles::get).filter(s -> {
-                    if (Settings.isShowWIP())
-                        return true;
+        final Style[] styles = Styles.all().filter(s -> {
+            if (RuntimeSettings.isShowWIP())
+                return true;
 
-                    return s.shipping();
-                }).toArray(Style[]::new);
+            return s.shipping();
+        }).toArray(Style[]::new);
+        final int co = STYLE_NAME_CUTOFF;
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),
                 Arrays.stream(styles).map(Style::name)
+                        .map(s -> s.length() > co
+                                ? s.substring(0, co) + "..." : s)
                         .toArray(String[]::new),
                 Arrays.stream(styles)
                         .map(s -> (Runnable) () -> Sprite.get().setStyle(s))
                         .toArray(Runnable[]::new),
                 () -> Arrays.stream(styles).toList()
                         .indexOf(style));
-        final Indicator styleInfo = Indicator.make(
-                style.id, iconAfterTextButton(styleDropdown),
-                Anchor.LEFT_TOP);
+        final Indicator.Builder sib = Indicator.init(
+                iconAfterTextButton(styleDropdown)).setAnchor(Anchor.LEFT_TOP);
+
+        if (style instanceof FromFileStyle ffs)
+            sib.setTooltip(ffs.infoToolTip());
+        else
+            sib.setTooltipCode(style.id); // TODO - temp
+
+        final Indicator styleInfo = sib.build();
 
         final IconButton randomSpriteButton = IconButton.init(
                 ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
                 style::randomize).setAnchor(Anchor.CENTRAL)
-                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
+                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build(),
+                loadFromJSONButton = IconButton.init(
+                        ResourceCodes.LOAD_FROM_JSON,
+                        randomSpriteButton.getRenderPosition(),
+                        JSONHelper::loadFromJSON)
+                        .setAnchor(Anchor.RIGHT_TOP).build(),
+                uploadStyleButton = IconButton.init(ResourceCodes.ADD,
+                                loadFromJSONButton.getRenderPosition(),
+                                Styles::uploadStyleDialog)
+                        .setAnchor(Anchor.RIGHT_TOP)
+                        .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build();
 
-        mb.addAll(styleLabel, styleDropdown, styleInfo, randomSpriteButton);
+        mb.addAll(styleLabel, styleDropdown, styleInfo,
+                randomSpriteButton, loadFromJSONButton, uploadStyleButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
@@ -138,7 +162,7 @@ public final class MenuAssembly {
                 "< Main Menu", BOTTOM.at(0.0, 0.5)
                         .displace(BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
-                () -> ProgramState.set(ProgramState.MENU, main()));
+                () -> ProgramState.set(ProgramState.MENU, mainMenu()));
         final MenuElement toConfigButton = StaticTextButton.make(
                 "Configure... >", BOTTOM.at(1.0, 0.5)
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
@@ -348,10 +372,10 @@ public final class MenuAssembly {
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, style::exportsASprite,
                 () -> {
-                    if (style.hasPreExportStep())
+                    if (style.settings.hasPreExportStep())
                         ProgramState.set(ProgramState.MENU, preExport());
                     else {
-                        style.resetPreExport();
+                        style.settings.resetPreExport();
                         ProgramState.set(ProgramState.MENU, export());
                     }
                 });
@@ -379,7 +403,7 @@ public final class MenuAssembly {
 
         mb.addAll(backButton, exportButton);
 
-        style.buildPreExportMenu(mb, iconAfterTextButton(backButton));
+        style.settings.buildPreExportMenu(mb, iconAfterTextButton(backButton));
 
         return mb.build();
     }
@@ -406,8 +430,10 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    public static Menu main() {
+    public static Menu mainMenu() {
         final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
 
         addMenuButtons(mb,
                 new Pair<>("Start editing",
@@ -428,7 +454,7 @@ public final class MenuAssembly {
                 canvasAt(0.5, 0.98),
                 Anchor.CENTRAL_BOTTOM,
                 Graphics.miniText(Colors.darkSystem())
-                        .addText(TDSM.getVersion()).addLineBreak()
+                        .addText(ProgramInfo.formatVersion()).addLineBreak()
                         .addText("(c) 2025 Jordan Bunke").build().draw());
 
         mb.add(programLabel);
@@ -445,11 +471,11 @@ public final class MenuAssembly {
 
     private static Menu about() {
         return openingMenu("About", ResourceCodes.ABOUT,
-                Text.Orientation.CENTER, main(),
+                Text.Orientation.CENTER, mainMenu(),
                 new Pair<>("Changelog", () -> ProgramState.to(changelog())),
                 new Pair<>("Roadmap", () -> ProgramState.to(roadmap())),
                 new Pair<>("License", () -> ProgramState.to(license())),
-                new Pair<>("Links", () -> ProgramState.to(links())));
+                new Pair<>("Help", () -> ProgramState.to(help())));
     }
 
     private static Menu changelog() {
@@ -474,18 +500,155 @@ public final class MenuAssembly {
                 Text.Orientation.LEFT, license());
     }
 
-    private static Menu links() {
-        return openingMenu("Links", ResourceCodes.LINKS,
-                Text.Orientation.CENTER, about(),
-                new Pair<>("My store",
-                        () -> visitSite("https://flinkerflitzer.itch.io")),
+    private static Menu help() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, about());
+
+        menuTitle(mb, "Help");
+
+        Coord2D buttonPos = canvasAt(0.5, 0.3);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Concepts and tutorials",
+                        () -> ProgramState.to(tutorials())),
+                new Pair<>("Get more sprite styles",
+                        () -> ProgramState.to(moreStyles())),
+                new Pair<>("Technical resources",
+                        () -> ProgramState.to(technical())),
                 new Pair<>("Stipple Effect",
-                        () -> visitSite("https://stipple-effect.github.io")),
-                new Pair<>("Source code",
-                        () -> visitSite("https://github.com/jbunke/tdsm")));
+                        () -> ProgramState.to(stippleEffect())));
+
+        return mb.build();
     }
 
-    private static void visitSite(final String link) {
+    private static Menu tutorials() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        final StaticLabel pageLabel = StaticLabel.init(
+                labelPosFor(BUFFER, 0), " ").build();
+        final String[] codes = Tutorials.codes();
+        final Dropdown pageDropdown = Dropdown.create(
+                pageLabel.followTB(),
+                Arrays.stream(codes).map(Tutorials::getTitle)
+                        .toArray(String[]::new),
+                Arrays.stream(codes)
+                        .map(c -> (Runnable) () -> Tutorials.setActive(c))
+                        .toArray(Runnable[]::new),
+                () -> 0);
+
+        final Map<String, MenuElementGrouping> tutorialMenus = new HashMap<>();
+
+        for (String code : codes)
+            tutorialMenus.put(code, buildTutorialMenu(code));
+
+        final ThinkingMenuElement tutorialDisplayLogic =
+                new ThinkingMenuElement(() ->
+                        tutorialMenus.get(Tutorials.getActive()));
+        mb.addAll(pageLabel, pageDropdown, tutorialDisplayLogic);
+
+        return mb.build();
+    }
+
+    private static MenuElementGrouping buildTutorialMenu(final String code) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        final Pair<String, Runnable>[] buttons = Tutorials.getButtons(code);
+        final double BASE_HEIGHT = 0.8;
+        final int height = buttons == null
+                ? atY(BASE_HEIGHT)
+                : atY(BASE_HEIGHT) - (TEXT_BUTTON_INC_Y * buttons.length);
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.12,
+                height, ParserUtils.readResourceText(code));
+
+        if (buttons != null) {
+            final Coord2D buttonPos = canvasAt(0.5, 0.98)
+                    .displaceY(-TEXT_BUTTON_INC_Y * buttons.length);
+            addMenuButtons(mb, buttonPos, buttons);
+        }
+
+        return new MenuElementGrouping(mb.build().getMenuElements());
+    }
+
+    private static Menu moreStyles() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        menuTitle(mb, "Get more sprite styles");
+
+        menuBlurb(mb, Text.Orientation.CENTER, 0.2, atY(0.5),
+                ParserUtils.readResourceText(ResourceCodes.MORE_STYLES));
+
+        final Coord2D buttonPos = canvasAt(0.5, 0.3)
+                .displaceY(TEXT_BUTTON_INC_Y * 5);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Approved collection",
+                        () -> visitSite("https://itch.io/c/5834066/top-down-sprite-maker-approved-sprite-styles")),
+                new Pair<>("Share your styles",
+                        () -> visitSite("https://github.com/jbunke/tdsm/discussions/61")));
+
+        return mb.build();
+    }
+
+    private static Menu technical() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        menuTitle(mb, "Technical resources");
+
+        menuBlurb(mb, Text.Orientation.CENTER, 0.2, atY(0.2),
+                ParserUtils.readResourceText(ResourceCodes.TECHNICAL));
+
+        final Coord2D buttonPos = canvasAt(0.5, 0.3)
+                .displaceY(TEXT_BUTTON_INC_Y);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Source code",
+                        () -> visitSite("https://github.com/jbunke/tdsm")),
+                new Pair<>("Scripting API",
+                        () -> visitSite("https://github.com/jbunke/tdsm-api")),
+                // TODO - command-line interface
+                new Pair<>("Report a bug",
+                        () -> visitSite("https://github.com/jbunke/tdsm/issues/new?template=bug_report.md")));
+
+        return mb.build();
+    }
+
+    private static Menu stippleEffect() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        addBackButton(mb, help());
+
+        menuTitle(mb, "Stipple Effect");
+
+        menuBlurb(mb, Text.Orientation.CENTER, 0.2, atY(0.4),
+                ParserUtils.readResourceText(ResourceCodes.STIPPLE_EFFECT));
+
+        final Coord2D buttonPos = canvasAt(0.5, 0.3)
+                .displaceY(TEXT_BUTTON_INC_Y * 4);
+        addMenuButtons(mb, buttonPos,
+                new Pair<>("Buy",
+                        () -> visitSite("https://flinkerflitzer.itch.io/stipple-effect")),
+                new Pair<>("Website",
+                        () -> visitSite("https://stipple-effect.github.io")));
+
+        return mb.build();
+    }
+
+    public static void visitSite(final String link) {
         try {
             Desktop.getDesktop().browse(new URI(link));
         } catch (Exception ignored) {}
@@ -511,7 +674,7 @@ public final class MenuAssembly {
             final Text.Orientation orientation, final int height
     ) {
         menuBlurb(mb, orientation, 0.2,
-                height, ParserUtils.readTooltip(blurbCode));
+                height, ParserUtils.readResourceText(blurbCode));
     }
 
     private static void menuBlurb(
@@ -568,14 +731,20 @@ public final class MenuAssembly {
     private static void addMenuButtons(
             final MenuBuilder mb, final Pair<String, Runnable>... buttons
     ) {
-        mb.add(new BackgroundElement());
-
         Coord2D buttonPos = canvasAt(0.5, 37 / 60.0);
 
         if (buttons.length < 3)
             buttonPos = buttonPos.displace(0,
                     TEXT_BUTTON_INC_Y * (4 - buttons.length));
 
+        addMenuButtons(mb, buttonPos, buttons);
+    }
+
+    @SafeVarargs
+    private static void addMenuButtons(
+            final MenuBuilder mb, Coord2D buttonPos,
+            final Pair<String, Runnable>... buttons
+    ) {
         final int BUTTON_W = atX(0.3);
 
         for (Pair<String, Runnable> button : buttons) {
@@ -586,6 +755,90 @@ public final class MenuAssembly {
             mb.add(b);
             buttonPos = buttonPos.displace(0, TEXT_BUTTON_INC_Y);
         }
+    }
+
+    public static Menu updateInformation(final StartupMessage[] messages) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        menuTitle(mb, "Important update information");
+
+        final StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < messages.length; i++) {
+            final StartupMessage message = messages[i];
+
+            sb.append("[ ").append(i + 1)
+                    .append(" of ").append(messages.length)
+                    .append(" ]\nSince v").append(message.since.toString())
+                    .append(":").append("\n".repeat(2))
+                    .append(ParserUtils.readResourceText(message.id()));
+
+            if (i + 1 < messages.length)
+                sb.append("\n".repeat(3));
+        }
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), sb.toString());
+
+        final MenuElement close = StaticTextButton.make("Got it",
+                ButtonType.STANDARD, Alignment.CENTER, atX(0.3),
+                new Coord2D(atX(0.5), CANVAS_H - BUFFER),
+                Anchor.CENTRAL_BOTTOM, () -> true,
+                () -> ProgramState.set(ProgramState.MENU, mainMenu()));
+        mb.add(close);
+
+        return mb.build();
+    }
+
+    public static Menu encounteredErrors(final String[] errors) {
+        final MenuBuilder mb = new MenuBuilder();
+
+        menuTitle(mb, "Operation encountered errors");
+
+        final List<String> lines = new LinkedList<>();
+
+        for (int i = 0; i < errors.length; i++) {
+            final String error = errors[i];
+
+            if (error.length() > SMALL_FONT_LINE_CHAR_LIMIT) {
+                final Pair<String, String> splitError = splitLine(error);
+
+                if (splitError == null)
+                    lines.add(error);
+                else {
+                    lines.add(splitError.a());
+                    lines.add(" ".repeat(10) + splitError.b());
+                }
+            }
+
+            if (i + 1 < errors.length)
+                lines.add("\n");
+        }
+
+        final String concat = lines.size() == 1 ? lines.get(0)
+                : lines.stream()
+                .reduce((a, b) -> a + "\n" + b)
+                .orElse("");
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), concat);
+
+        final MenuElement close = StaticTextButton.make("Close",
+                ButtonType.STANDARD, Alignment.CENTER, atX(0.3),
+                new Coord2D(atX(0.5), CANVAS_H - BUFFER),
+                Anchor.CENTRAL_BOTTOM, () -> true,
+                () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
+        mb.add(close);
+
+        return mb.build();
+    }
+
+    private static Pair<String, String> splitLine(final String line) {
+        for (int i = SMALL_FONT_LINE_CHAR_LIMIT; i >= 0; i--) {
+            if (line.charAt(i) == ' ')
+                return new Pair<>(
+                        line.substring(0, i), line.substring(i + 1));
+        }
+
+        return null;
     }
 
     public static Menu styleSettings() {
@@ -600,25 +853,25 @@ public final class MenuAssembly {
 
         int y = atY(0.2);
 
-        final StyleOption[] options = style.getOptionSettings();
+        final StyleSetting[] settings = style.settings.array();
 
-        if (options.length > 0) {
+        if (settings.length > 0) {
             final StaticLabel optionsHeader = StaticLabel.init(
                     new Coord2D(LEFT, y), "Options").build();
             mb.add(optionsHeader);
 
             y += INC_Y;
 
-            for (StyleOption option : options) {
+            for (StyleSetting setting : settings) {
                 final Checkbox checkbox = new Checkbox(new Coord2D(LEFT, y),
-                        Anchor.LEFT_TOP, option.checker(), option.setter());
+                        Anchor.LEFT_TOP, setting::get, setting::set);
                 final StaticLabel label = StaticLabel.init(
                                 checkbox.followMiniLabel(),
-                                option.description()).setMini().build();
+                                setting.description).setMini().build();
                 mb.addAll(checkbox, label);
 
-                if (option.infoCode() != null) {
-                    final Indicator info = Indicator.make(option.infoCode(),
+                if (setting.infoCode != null) {
+                    final Indicator info = Indicator.make(setting.infoCode,
                             label.follow(), Anchor.LEFT_TOP);
                     mb.add(info);
                 }
@@ -627,6 +880,7 @@ public final class MenuAssembly {
             }
         }
 
+        // TODO - consider for removal
         style.buildSettingsMenu(mb, y);
 
         final MenuElement close = StaticTextButton.make("Close",

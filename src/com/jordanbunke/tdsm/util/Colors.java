@@ -2,8 +2,8 @@ package com.jordanbunke.tdsm.util;
 
 import com.jordanbunke.color_proc.ColorAlgo;
 import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.utility.math.Pair;
 import com.jordanbunke.stip_parser.ParserSerializer;
+import com.jordanbunke.tdsm.data.Replacement;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.style.Style;
 
@@ -30,8 +30,8 @@ public final class Colors {
             SHADOW = new Color(0x20, 0x20, 0x20, 0x60),
             LINE_1 = new Color(0x20, 0x20, 0x20),
             TRANSPARENT = new Color(0, 0, 0, 0),
-            CB_1 = new Color(0xa0, 0xa0, 0xa0),
-            CB_2 = new Color(0xc0, 0xc0, 0xc0),
+            CB_1 = new Color(0xa0, 0xa0, 0xa0, 0x64),
+            CB_2 = new Color(0xc0, 0xc0, 0xc0, 0x64),
             INVALID = new Color(0x80, 0, 0),
             DARK_SYSTEM = new Color(0x291f66),
             LIGHT_SYSTEM = new Color(0xe8e8e8),
@@ -146,12 +146,11 @@ public final class Colors {
             final ColorReplacementFunc colorReplacementFunc
     ) {
         final Function<Color, Color> replacement = c -> {
-            final Pair<Integer, Function<Color, Color>> out =
-                    colorReplacementFunc.apply(c);
-            final int index = out.a();
+            final Replacement out = colorReplacementFunc.apply(c);
+            final int index = out.index();
 
             return index < 0 || index >= colors.length ? c
-                    : out.b().apply(colors[index]);
+                    : out.func().apply(colors[index]);
         };
 
         return ColorAlgo.run(replacement, ref);

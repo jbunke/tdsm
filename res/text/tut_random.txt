@@ -1,0 +1,49 @@
+Randomization in "Top Down Sprite Maker" is represented by the die icon.
+
+Randomization can occur at multiple levels: color selection, layer, or the sprite
+style itself.
+
+Randomizing a color selection
+
+    Randomizing the value of a color selection is quite trivial. The color is
+    assigned to one of the color selection's swatches at random.
+
+Randomizing a layer
+
+    All layers can be randomized. Layers of different types process randomization
+    differently. Please read the dedicated page about layers to learn more about
+    layer types.
+
+    Choice layers
+
+        Chooses one of the choice texts at random
+
+    Math layers
+
+        Chooses a random value from within the layer's minimum and maximum bounds
+
+    Color selection layers
+
+        Each color selection in the layer is randomized
+
+    Asset choice layers
+
+        An asset choice layer consists of one or more assets (images) to choose
+        from. A hairstyle layer is an obvious example. Asset choice layers may
+        include a "no choice" option, where not choosing any asset is a valid
+        choice. As per our example, this might be the way a sprite style represents
+        baldness as a choice.
+
+        Asset choice layers that support a "no choice" option must define logic
+        that determines the randomization behaviour of no choice. Such layers can
+        either assign an explicit percentage chance of randomization coming up
+        with no choice, or can treat "no choice" as any other choice and give them
+        equal odds of being assigned by randomization.
+
+Randomizing a sprite style
+
+    An entire character can be randomized at once by clicking the die in the top-
+    right corner of the customization screen. Clicking this die will sequentially
+    randomize every one of a sprite style's customization layers that isn't locked.
+
+    Layers that are locked are exempted from randomization.

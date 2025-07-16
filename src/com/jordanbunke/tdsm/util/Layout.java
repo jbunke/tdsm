@@ -12,8 +12,8 @@ public final class Layout {
             SPRITE_PREVIEW_SCALE_UP = 2;
 
     static {
-        if (Settings.isCapture()) {
-            SCALE_UP = Settings.getScale();
+        if (RuntimeSettings.isCapture()) {
+            SCALE_UP = RuntimeSettings.getScale();
         } else {
             final int TASKBAR_ALLOCATION_H = 100,
                     screenH = Toolkit.getDefaultToolkit()
@@ -133,9 +133,10 @@ public final class Layout {
             INNER_ASSET_BUFFER_X = 20, INNER_ASSET_BUFFER_Y = 10,
             ASSETS_BASE_H = ASSET_BUFFER_Y + INNER_ASSET_BUFFER_Y + 23,
             MAX_SELECTORS_WO_SCROLL = 5, POST_ASSETS_COL_SEL_BASE_H = 33,
-            SUBHEADING_INC_Y = 13, SCREEN_BOX_EDGE = 3, COL_REPL_OFF_DIM = 10;
+            SUBHEADING_INC_Y = 13, SCREEN_BOX_EDGE = 3, COL_REPL_OFF_DIM = 10,
+            SMALL_FONT_LINE_CHAR_LIMIT = 80;
 
-    public static double SEQUENCER_REL_H = 0.58;
+    public static final double SEQUENCER_REL_H = 0.58;
 
     public static Coord2D labelPosFor(final int x, final int y) {
         return new Coord2D(x + LABEL_OFFSET_X, y + LABEL_OFFSET_Y);

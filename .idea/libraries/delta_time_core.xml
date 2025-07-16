@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="delta-time-core">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-core.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../delta-time/.core/src" />
+    </SOURCES>
+  </library>
+</component>

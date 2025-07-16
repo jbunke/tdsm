@@ -4,22 +4,18 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.menu.MenuBuilder;
 import com.jordanbunke.delta_time.sprite.SpriteAssembler;
 import com.jordanbunke.delta_time.sprite.SpriteMap;
-import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.SpriteStates;
-import com.jordanbunke.delta_time.sprite.constituents.InterpretedSpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.delta_time.utility.math.Pair;
+import com.jordanbunke.json.*;
 import com.jordanbunke.tdsm.data.Animation;
 import com.jordanbunke.tdsm.data.Directions;
 import com.jordanbunke.tdsm.data.Edge;
 import com.jordanbunke.tdsm.data.Orientation;
 import com.jordanbunke.tdsm.data.layer.*;
-import com.jordanbunke.tdsm.io.json.JSONArray;
-import com.jordanbunke.tdsm.io.json.JSONBuilder;
-import com.jordanbunke.tdsm.io.json.JSONObject;
-import com.jordanbunke.tdsm.io.json.JSONPair;
+import com.jordanbunke.tdsm.data.style.settings.StyleSettings;
 import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.Layout;
 
@@ -27,12 +23,12 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
+import static com.jordanbunke.tdsm.util.JSONHelper.*;
 
 public abstract class Style {
-
-    public static final int DIRECTION = 0, ANIM = 1, FRAME = 2;
-
     public final String id;
+
+    public final StyleSettings settings;
 
     public final Bounds2D dims;
     public final Directions directions;
@@ -63,6 +59,8 @@ public abstract class Style {
         this.directions = directions;
         this.animations = animations;
         this.layers = layers;
+
+        settings = new StyleSettings();
 
         states = generateSpriteStates();
 
@@ -135,6 +133,43 @@ public abstract class Style {
     public String buildJSON() {
         final JSONBuilder jb = new JSONBuilder();
 
+        jb.add(new JSONPair(STYLE_ID, id));
+
+        // customization choices
+        final List<JSONPair> choices = new LinkedList<>();
+
+        for (CustomizationLayer layer : layers.customization())
+            choices.add(new JSONPair(layer.id, getLayerJSONValue(layer)));
+
+        jb.add(new JSONPair(CUSTOMIZATION,
+                new JSONObject(choices.toArray(JSONPair[]::new))));
+
+        // config
+        final Directions.Dir[] dirs = exportDirections();
+        final Animation[] anims = exportAnimations();
+
+        jb.add(new JSONPair(CONFIG, new JSONObject(
+                new JSONPair(DIRECTIONS, new JSONArray<>(
+                        Arrays.stream(dirs).map(directions::name)
+                                .toArray(String[]::new))),
+                new JSONPair(ANIMATIONS, new JSONObject(Arrays.stream(anims)
+                        .map(a -> new JSONPair(a.id, a.frameCount()))
+                        .toArray(JSONPair[]::new))),
+                new JSONPair(PADDING, new JSONObject(
+                        padding.keySet().stream().sorted()
+                                .map(e -> new JSONPair(e.name().toLowerCase(),
+                                        padding.get(e)))
+                                .toArray(JSONPair[]::new))),
+                new JSONPair(LAYOUT, new JSONObject(
+                        new JSONPair(ORIENTATION,
+                                animationOrientation.name().toLowerCase()),
+                        new JSONPair(MULTIPLE_ANIMS_PER_DIM,
+                                multipleAnimsPerDim),
+                        new JSONPair(SINGLE_DIM, singleDim),
+                        new JSONPair(FRAMES_PER_DIM, framesPerDim),
+                        new JSONPair(WRAP_ACROSS_DIMS, wrapAnimsAcrossDims))))));
+
+        // sizing
         final Bounds2D spriteDims = getExportSpriteDims();
         final int spriteW = spriteDims.width(), spriteH = spriteDims.height(),
                 spritesX = getSpritesX(), spritesY = getSpritesY(),
@@ -146,20 +181,6 @@ public abstract class Style {
                 new JSONPair("sprite_h", spriteH))));
 
         final List<JSONObject> frames = new ArrayList<>();
-
-        final Directions.Dir[] dirs = exportDirections();
-        final Animation[] anims = exportAnimations();
-
-        jb.add(new JSONPair("data", new JSONObject(
-                new JSONPair("directions", new JSONArray<>(
-                        Arrays.stream(dirs).map(directions::name)
-                                .map(s -> "\"" + s + "\"")
-                                .toArray(String[]::new))),
-                new JSONPair("animations", new JSONArray<>(
-                        Arrays.stream(anims).map(a -> new JSONObject(
-                                new JSONPair("id", a.id),
-                                new JSONPair("frame_count", a.frameCount())
-                        )).toArray(JSONObject[]::new))))));
 
         for (int d = 0; d < dirs.length; d++) {
             final Directions.Dir dir = dirs[d];
@@ -190,7 +211,7 @@ public abstract class Style {
             }
         }
 
-        jb.add(new JSONPair("frames",
+        jb.add(new JSONPair(FRAMES,
                 new JSONArray<>(frames.toArray(JSONObject[]::new))));
 
         return jb.write();
@@ -456,7 +477,7 @@ public abstract class Style {
         for (CustomizationLayer layer : layers.assembly())
             addLayerToAssembler(assembler, layer);
 
-        considerations(assembler);
+        settings.considerations(assembler);
 
         map = new SpriteMap<>(assembler, states);
     }
@@ -483,75 +504,16 @@ public abstract class Style {
             assembler.addLayer(layer.id, layer.compose());
     }
 
-    public final InterpretedSpriteSheet<String> defaultBuildComposer(
-            final SpriteSheet sheet
-    ) {
-        final Coord2D FAIL = new Coord2D();
-
-        return new InterpretedSpriteSheet<>(sheet, id -> {
-            final Directions.Dir dir = Directions.get(
-                    SpriteStates.extractContributor(DIRECTION, id));
-            final String animID =
-                    SpriteStates.extractContributor(ANIM, id);
-            final int frame = Integer.parseInt(
-                    SpriteStates.extractContributor(FRAME, id));
-
-            final int dirIndex = indexOfDir(dir);
-            final Animation anim = animFromID(animID);
-
-            if (anim == null)
-                return FAIL;
-
-            if (directions.horizontal())
-                return anim.coordFunc.apply(frame).displace(dirIndex, 0);
-            else
-                return anim.coordFunc.apply(frame).displace(0, dirIndex);
-        });
-    }
-
-    protected final int indexOfDir(final Directions.Dir dir) {
-        for (int i = 0; i < directions.order().length; i++)
-            if (dir == directions.order()[i])
-                return i;
-
-        return -1;
-    }
-
-    final Animation animFromID(final String animID) {
-        for (Animation a : animations)
-            if (a.id.equals(animID))
-                return a;
-
-        return null;
-    }
-
     // override in inheritors if different
     public int getPreviewScaleUp() {
         return Layout.SPRITE_PREVIEW_SCALE_UP;
     }
 
-    protected void considerations(final SpriteAssembler<String, String> assembler) {}
-
-    public boolean hasPreExportStep() {
-        return false;
-    }
-
-    public GameImage preExportTransform(final GameImage input) {
-        return input;
-    }
-
-    public void resetPreExport() {}
-
-    public StyleOption[] getOptionSettings() { return new StyleOption[0]; }
-
     @SuppressWarnings("unused")
     public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
 
-    public void buildPreExportMenu(final MenuBuilder mb, final Coord2D warningPos) {}
-
     public abstract String name();
     public abstract boolean shipping();
-    public abstract boolean hasSettings();
 
     // SEQUENCING
     public void updateAnimationInclusion(
@@ -571,6 +533,18 @@ public abstract class Style {
     ) {
         animationOrder.remove(animation);
         animationOrder.add(newIndex, animation);
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setExportAnimations(final Animation[] animations) {
+        animationOrder.clear();
+        animationInclusion.clear();
+
+        for (Animation animation : animations) {
+            animationOrder.add(animation);
+            animationInclusion.add(animation);
+        }
     }
 
     public boolean isAnimationIncluded(
@@ -597,6 +571,18 @@ public abstract class Style {
     ) {
         directionOrder.remove(dir);
         directionOrder.add(newIndex, dir);
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setExportDirections(final Directions.Dir[] dirs) {
+        directionOrder.clear();
+        directionInclusion.clear();
+
+        for (Directions.Dir dir : dirs) {
+            directionOrder.add(dir);
+            directionInclusion.add(dir);
+        }
     }
 
     public boolean isDirectionIncluded(
@@ -663,6 +649,13 @@ public abstract class Style {
                 l = edge == Edge.LEFT ? px : padding.get(Edge.LEFT),
                 b = edge == Edge.BOTTOM ? px : padding.get(Edge.BOTTOM),
                 r = edge == Edge.RIGHT ? px : padding.get(Edge.RIGHT);
+
+        return validateEdgePadding(l, r, t, b);
+    }
+
+    public boolean validateEdgePadding(
+            final int l, final int r, final int t, final int b
+    ) {
         final int w = l + dims.width() + r, h = t + dims.height() + b;
 
         return w >= MIN_SPRITE_EXPORT_W && w <= MAX_SPRITE_EXPORT_W &&
@@ -671,6 +664,17 @@ public abstract class Style {
 
     public void setEdgePadding(final Edge edge, final int px) {
         padding.put(edge, px);
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public void setEdgePadding(
+            final int l, final int r, final int t, final int b
+    ) {
+        setEdgePadding(Edge.LEFT, l);
+        setEdgePadding(Edge.RIGHT, r);
+        setEdgePadding(Edge.TOP, t);
+        setEdgePadding(Edge.BOTTOM, b);
     }
 
     public int getEdgePadding(final Edge edge) {

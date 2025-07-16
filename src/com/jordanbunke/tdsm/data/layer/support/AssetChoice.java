@@ -1,22 +1,17 @@
 package com.jordanbunke.tdsm.data.layer.support;
 
 import com.jordanbunke.delta_time.image.GameImage;
-import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.tdsm.data.func.ColorReplacementFunc;
 import com.jordanbunke.tdsm.data.layer.CustomizationLayer;
-import com.jordanbunke.tdsm.data.style.Style;
 import com.jordanbunke.tdsm.util.Colors;
-import com.jordanbunke.tdsm.util.Constants;
 
 import java.awt.*;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public final class AssetChoice {
     public final String id, name;
-    private final Style style;
     private final CustomizationLayer layer;
 
     private final ColorSelection[] colorSelections;
@@ -27,19 +22,18 @@ public final class AssetChoice {
 
     AssetChoice(
             final String id, final String name,
-            final Style style,
+            final GameImage asset,
             final CustomizationLayer layer,
             final ColorSelection[] colorSelections,
             final ColorReplacementFunc colorReplacementFunc
     ) {
         this.id = id;
         this.name = name;
-        this.style = style;
         this.layer = layer;
         this.colorSelections = colorSelections;
         this.colorReplacementFunc = colorReplacementFunc;
 
-        this.asset = fetchAsset();
+        this.asset = asset;
         redraw();
     }
 
@@ -71,13 +65,6 @@ public final class AssetChoice {
         }
 
         render = Colors.runColorReplacement(asset, colors, colorReplacementFunc);
-    }
-
-    private GameImage fetchAsset() {
-        final Path filepath = Constants.ASSET_ROOT_FOLDER
-                .resolve(Path.of(style.id, layer.id, id + ".png"));
-
-        return ResourceLoader.loadImageResource(filepath);
     }
 
     public ColorSelection[] getColorSelections() {

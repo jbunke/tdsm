@@ -1,0 +1,3 @@
+"Top Down Sprite Maker" is source-available software.
+You can read through the code and get involved with
+development on GitHub.

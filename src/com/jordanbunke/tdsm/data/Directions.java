@@ -1,9 +1,30 @@
 package com.jordanbunke.tdsm.data;
 
-public record Directions(NumDirs numDirs, boolean horizontal, Dir... order) {
+import com.jordanbunke.tdsm.util.EnumUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+public record Directions(NumDirs numDirs, boolean orientation, Dir... order) {
 
     public enum NumDirs {
-        FOUR, SIX, EIGHT;
+        FOUR(Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT),
+        SIX(Dir.UP, Dir.NE, Dir.SE, Dir.DOWN, Dir.SW, Dir.NW),
+        EIGHT(Dir.UP, Dir.NE, Dir.RIGHT, Dir.SE, Dir.DOWN, Dir.SW, Dir.LEFT, Dir.NW);
+
+        NumDirs(final Dir... dirs) {
+            included = new HashSet<>();
+            included.addAll(Arrays.asList(dirs));
+        }
+
+        private final Set<Dir> included;
+
+        // scripting inclusion
+        @SuppressWarnings("unused")
+        public Set<Dir> getIncluded() {
+            return new HashSet<>(included);
+        }
 
         @Override
         public String toString() {
@@ -16,65 +37,26 @@ public record Directions(NumDirs numDirs, boolean horizontal, Dir... order) {
     }
 
     public enum Dir {
-        LEFT, UP, RIGHT, DOWN,
-        NW, NE, SE, SW;
+        UP, NE, RIGHT, SE, DOWN, SW, LEFT, NW, INVALID;
 
         public Dir cw(final NumDirs numDirs) {
-            return switch (numDirs) {
-                case FOUR -> switch (this) {
-                    case LEFT -> UP;
-                    case UP -> RIGHT;
-                    case RIGHT -> DOWN;
-                    default -> LEFT;
-                };
-                case SIX -> switch (this) {
-                    case DOWN -> SW;
-                    case SW -> NW;
-                    case NW -> UP;
-                    case UP -> NE;
-                    case NE -> SE;
-                    default -> DOWN;
-                };
-                case EIGHT -> switch (this) {
-                    case LEFT -> NW;
-                    case UP -> NE;
-                    case RIGHT -> SE;
-                    case DOWN -> SW;
-                    case SW -> LEFT;
-                    case NW -> UP;
-                    case NE -> RIGHT;
-                    case SE -> DOWN;
-                };
-            };
+            Dir next = this;
+
+            do {
+                next = EnumUtils.next(next);
+            } while (!numDirs.included.contains(next));
+
+            return next;
         }
 
         public Dir ccw(final NumDirs numDirs) {
-            return switch (numDirs) {
-                case FOUR -> switch (this) {
-                    case LEFT -> DOWN;
-                    case DOWN -> RIGHT;
-                    case RIGHT -> UP;
-                    default -> LEFT;
-                };
-                case SIX -> switch (this) {
-                    case DOWN -> SE;
-                    case SE -> NE;
-                    case NE -> UP;
-                    case UP -> NW;
-                    case NW -> SW;
-                    default -> DOWN;
-                };
-                case EIGHT -> switch (this) {
-                    case LEFT -> SW;
-                    case UP -> NW;
-                    case RIGHT -> NE;
-                    case DOWN -> SE;
-                    case SW -> DOWN;
-                    case NW -> LEFT;
-                    case NE -> UP;
-                    case SE -> RIGHT;
-                };
-            };
+            Dir previous = this;
+
+            do {
+                previous = EnumUtils.previous(previous);
+            } while (!numDirs.included.contains(previous));
+
+            return previous;
         }
 
         @Override
@@ -101,11 +83,12 @@ public record Directions(NumDirs numDirs, boolean horizontal, Dir... order) {
         try {
             return Dir.valueOf(id.toUpperCase());
         } catch (IllegalArgumentException iae) {
-            return switch (id) {
+            return switch (id.toLowerCase()) {
                 case "w" -> Dir.LEFT;
                 case "e" -> Dir.RIGHT;
                 case "n" -> Dir.UP;
-                default -> Dir.DOWN;
+                case "s" -> Dir.DOWN;
+                default -> Dir.INVALID;
             };
         }
     }

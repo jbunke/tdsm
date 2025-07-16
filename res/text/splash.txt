@@ -1,0 +1,21 @@
+Buy "Stipple Effect"!
+
+You can rearrange the order in which directions and
+animations are sequenced in exported sprite sheets
+
+You can constrain sprite randomization by locking
+customization layers that you don't want to modify
+
+Animations are efficient with their frames. A walk
+cycle may be four frames long, but only represented
+as three frames in a pong loop because two frames
+in the cycle are the same.
+
+Please respect the terms of the license.
+Credit is appreciated but not required.
+
+Help me develop TDSM by reporting bugs and requesting
+features! Visit "jbunke/tdsm" on GitHub for more.
+
+Make your own sprite styles and share them with the
+world! See the "About" section for more information.

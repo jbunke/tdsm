@@ -1,0 +1,11 @@
+You may:
+
+- Use TDSM for personal or commercial projects
+- Clone the TDSM source code and privately modify it to suit your needs
+- Distribute or sell TDSM sprite styles consisting of original work
+
+You may not:
+
+- Distribute or sell copies of the TDSM software (whether modified or not)
+- Use TDSM for NFT or crypto-related projects
+- Use TDSM to train generative AI models

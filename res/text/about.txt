@@ -1,0 +1,9 @@
+"Top Down Sprite Maker" (TDSM) is a pixel art character
+creation tool developed by Jordan Bunke (Flinker Flitzer).
+
+Its modular design gives you, the user, full control over
+how you want to customize your characters and configure
+their sprite sheets for use in your own games/projects.
+
+TDSM also allows users to make their own sprite styles,
+either by modifying existing ones or starting from scratch!

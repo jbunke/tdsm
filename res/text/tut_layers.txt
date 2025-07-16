@@ -1,0 +1,82 @@
+Layers, along with animations and directions, are one of the fundamental building
+blocks of a sprite style in "Top Down Sprite Maker". Sprite styles are designed
+to use compose layers in a paper doll system to generate sprites.
+
+Layers in TDSM have two purposes: assembly and customization. Layers that have a
+visual component and constitute a part of the sprite composition are known as
+"assembly layers" or "visual layers", while layers that have a choice for users
+to make are known as "customization layers" or "non-trivial layers" (in contrast
+to "trivial layers" that have no choice). These categories are not mutually
+exclusive. Certain layer types, such as "asset choice layers", for example, can
+be both assembly and customization layers.
+
+Layer types
+
+    "Top Down Sprite Maker" supports several types of layers. These are:
+
+    Asset layer
+
+        Trivial visual layer that composes an image asset
+
+    Asset choice layer
+
+        Non-trivial visual layer that has the user choose from multiple image
+        assets. It may be possible for users to choose to assign no selection.
+        Asset choice layers can be combined with dependent layers that match
+        their choice to facilitate asset selections that span multiple layers.
+        (Example: defining hairstyle as an asset choice layer with a dependent
+        layer to represent the back of the head, rendered below the base head)
+
+    Choice layer
+
+        Customization layer that has the user choose from multiple text prompts.
+        Choice layers are usually queried by other logic-based layers like decision
+        layers or composed layers to determine their contents.
+
+    Color selection layer
+
+        Customization layer consisting of one or more color selections.
+
+        Note:
+        Perhaps counterintuitively, color selection layers are not visual/assembly
+        layers. Though changing the value assigned to a color selection has visual
+        consequences for the assembled sprite sheet, color selections are not an
+        assembled visual component in and of themselves.
+
+    Composed layer
+
+        Assembly layer consisting of a function that takes a sprite ID (such as
+        "left-walk-1" as input) returns an image representing the layer's assembly
+        component.
+
+        > Often depends on the values of other layers
+
+    Decision layer
+
+        An ambiguous layer that uses logic to determine which layer it yields to...
+        > the user for customization
+        > to the assembler for sprite sheet assembly
+
+        Decision layers should either always or never return customization layers.
+
+    Dependent layer
+
+        Dependent layers complement asset choice layers. However, they are trivial,
+        as their selections are tied to a specific asset choice layer's selection.
+
+    Group layer
+
+        A collection of multiple layers. Group layers are useful for cases where
+        multiple layers have to be represented as a single layer, such as when
+        such a layer should serve as potential output for a decision layer.
+
+    Mask layer
+
+        Auxiliary layer that uses logic to determine an alpha mask. Mask layers can
+        affect one or multiple layers, erasing pixels of its target layers that are
+        captured by its alpha mask.
+
+    Math layer
+
+        Customization layer that can be assigned an integer value from within a
+        range. This value is then operated on by other layers.

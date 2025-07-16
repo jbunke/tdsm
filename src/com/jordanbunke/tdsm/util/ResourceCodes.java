@@ -15,16 +15,19 @@ public final class ResourceCodes {
             DRAG = "drag",
             RESET = "reset",
             NONE = "none",
+            ADD = "add",
             LOCKED = "locked",
             UNLOCKED = "unlocked",
             BACK = "back",
             SETTINGS = "settings",
+            LOAD_FROM_JSON = "load_from_json",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
     // tooltips
     public static final String NO_TOOLTIP = "no_tooltip",
             INCLUSION = "inclusion",
+            UPLOAD_STYLE = "upload_style",
             PADDING = "padding",
             LAYOUT = "layout",
             INCREMENT = "increment",
@@ -44,5 +47,14 @@ public final class ResourceCodes {
     // blurbs
     public static final String SPLASH = "splash", ABOUT = "about",
             CHANGELOG = "changelog", ROADMAP = "roadmap",
-            LICENSE = "LICENSE", SUMMARY = "license_summary", LINKS = "links";
+            LICENSE = "LICENSE", SUMMARY = "license_summary",
+            STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
+            MORE_STYLES = "more_styles";
+
+    // tutorials
+    public static final String TUT_MAKE_STYLE = "tut_make_style",
+            TUT_EXPORT = "tut_export", TUT_CONFIG = "tut_config",
+            TUT_LOCK = "tut_lock", TUT_LAYERS = "tut_layers",
+            TUT_DIRS = "tut_dirs", TUT_ANIMS = "tut_anims",
+            TUT_RANDOM = "tut_random", TUT_COL_SEL = "tut_col_sel";
 }

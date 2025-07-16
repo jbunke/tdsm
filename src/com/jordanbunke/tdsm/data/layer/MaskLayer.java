@@ -1,7 +1,11 @@
 package com.jordanbunke.tdsm.data.layer;
 
+import com.jordanbunke.delta_time.image.GameImage;
+import com.jordanbunke.delta_time.sprite.SpriteSheet;
 import com.jordanbunke.delta_time.sprite.constituents.SpriteConstituent;
 import com.jordanbunke.tdsm.util.StringUtils;
+
+import java.util.function.Function;
 
 public final class MaskLayer extends CustomizationLayer {
     private final String name;
@@ -18,6 +22,28 @@ public final class MaskLayer extends CustomizationLayer {
 
         this.targets = targets;
         this.logic = logic;
+    }
+
+    public static SpriteConstituent<String> naiveLogic(
+            final AbstractACLayer projector, final Function<String, GameImage> getter
+    ) {
+        return s -> {
+            final GameImage ifFail = new GameImage(
+                    projector.dims.width(), projector.dims.height());
+
+            try {
+                if (!projector.hasChoice())
+                    return ifFail;
+
+                final GameImage source = getter.apply(projector.getChoice().id);
+                final SpriteSheet sheet = new SpriteSheet(source,
+                        projector.dims.width(), projector.dims.height());
+
+                return projector.composer.build(sheet).getSprite(s);
+            } catch (Exception e) {
+                return ifFail;
+            }
+        };
     }
 
     public CustomizationLayer[] getTargets() {
