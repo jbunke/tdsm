@@ -30,7 +30,7 @@ You can download/buy additional sprite styles online. Sprite styles made or appr
 
 ### Making your own sprite styles
 
-> As of the release of v1.2.0, the scripting API has not yet been properly documented, and the DeltaScript language specification is outdated and does not reflect the semantics of the language interpreter that runs in *TDSM*. These resources will be updated as soon as possible.
+> As of the release of v1.2.0, the *DeltaScript* language specification is outdated and does not reflect the semantics of the language interpreter that runs in *TDSM*. These resources will be updated as soon as possible.
 
 Making sprite styles for TDSM consists of two main components:
 

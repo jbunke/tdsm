@@ -1,6 +1,6 @@
-Layers, along with animations and directions, are one of the fundamental building
-blocks of a sprite style in "Top Down Sprite Maker". Sprite styles are designed
-to use compose layers in a paper doll system to generate sprites.
+Layers, along with animations and directions, are the fundamental building blocks
+of a sprite style in "Top Down Sprite Maker". Sprite styles are designed to compose
+layers in a paper doll system to generate sprites.
 
 Layers in TDSM have two purposes: assembly and customization. Layers that have a
 visual component and constitute a part of the sprite composition are known as
