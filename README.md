@@ -10,12 +10,6 @@
 
 ---
 
-## Trailer
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/lYOh-t0OZ1Q?si=UUOihXgc2IR9mAzo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
----
-
 ## Sprite styles
 
 While most similar programs are built around a specific sprite style (art style, directions, supported animations, etc.), *TDSM* is built to support **multiple** sprite styles. *TDSM* sprite styles are modular, packaged in **ZIP archives**, and can thus be **created, modified, and shared** by the community.
@@ -41,9 +35,7 @@ Making sprite styles for TDSM consists of two main components:
 
 Scripts are written in [*DeltaScript*](https://github.com/jbunke/deltascript) (a scripting language I designed for use with specific applications) and the [*TDSM* scripting API](https://github.com/jbunke/tdsm-api).
 
-Here is a full step-by-step tutorial:
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/jqZTsHniSUE?si=rNxG0-Sz3Ol5Oncn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+There is a [step-by-step tutorial](https://youtu.be/jqZTsHniSUE) available on YouTube.
 
 ---
 
