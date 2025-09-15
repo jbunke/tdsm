@@ -2,13 +2,12 @@ This is a rough outline of planned features for upcoming updates:
 
 [Content]
 
-> More animations and customization options for the default sprite style
+> More sprite styles
+> More animations and customization options for existing sprite styles
 
 [Features]
 
 [Documentation & Quality of Life]
 
-> Documenting the scripting API
-> More documentation for DeltaScript
-> "DeltaScript for Top Down Sprite Maker" - VS Code extension
 > Releasing a command-line interface
+> More documentation for DeltaScript

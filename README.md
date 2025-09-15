@@ -3,20 +3,22 @@
 ***Top Down Sprite Maker*** (*TDSM*) is a flexible and powerful **pixel art character creation tool**. It is a desktop GUI application with executable binaries distributed for Windows, macOS, and Linux distributions.
 
 [![Buy on itch.io](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png)](https://flinkerflitzer.itch.io/tdsm)
+
 [![API](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/api-button.png)](https://github.com/jbunke/tdsm-api)
-[![Art repository](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/art-repo-button.png)](https://github.com/jbunke/tdsm-art)
 [![Changelog](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/changelog-button.png)](https://github.com/jbunke/tdsm/blob/master/res/text/changelog.txt)
 [![Roadmap](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/roadmap-button.png)](https://github.com/jbunke/tdsm/blob/master/res/text/roadmap.txt)
 
 ---
 
+## Trailer
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lYOh-t0OZ1Q?si=UUOihXgc2IR9mAzo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+---
+
 ## Sprite styles
 
-While most similar programs are built around a specific sprite style (art style, directions, supported animations, etc.), *TDSM* is built to support **multiple** sprite styles. Furthermore, these sprite styles can be distributed as **ZIP files**, and can thus be **created, modified, and shared** by the community.
-
-![Example](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/runthrough.gif)
-
-<div align="center">Customizing a character in a sprite style based on the Generation IV Pokémon games</div>
+While most similar programs are built around a specific sprite style (art style, directions, supported animations, etc.), *TDSM* is built to support **multiple** sprite styles. *TDSM* sprite styles are modular, packaged in **ZIP archives**, and can thus be **created, modified, and shared** by the community.
 
 ### Flexibility
 
@@ -30,7 +32,7 @@ You can download/buy additional sprite styles online. Sprite styles made or appr
 
 ### Making your own sprite styles
 
-> As of the release of v1.2.0, the scripting API has not yet been properly documented, and the DeltaScript language specification is outdated and does not reflect the semantics of the language interpreter that runs in *TDSM*. These resources will be updated as soon as possible.
+> As of the release of v1.2.0, the *DeltaScript* language specification is outdated and does not reflect the semantics of the language interpreter that runs in *TDSM*. This resource will be updated as soon as possible.
 
 Making sprite styles for TDSM consists of two main components:
 
@@ -39,7 +41,9 @@ Making sprite styles for TDSM consists of two main components:
 
 Scripts are written in [*DeltaScript*](https://github.com/jbunke/deltascript) (a scripting language I designed for use with specific applications) and the [*TDSM* scripting API](https://github.com/jbunke/tdsm-api).
 
-> A full tutorial and additional resources will be available shortly.
+Here is a full step-by-step tutorial:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jqZTsHniSUE?si=rNxG0-Sz3Ol5Oncn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ---
 

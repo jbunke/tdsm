@@ -24,6 +24,8 @@ public final class MaskLayer extends CustomizationLayer {
         this.logic = logic;
     }
 
+    // scripting inclusion
+    @SuppressWarnings("unused")
     public static SpriteConstituent<String> naiveLogic(
             final AbstractACLayer projector, final Function<String, GameImage> getter
     ) {
