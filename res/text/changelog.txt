@@ -1,3 +1,24 @@
+v1.3.0 - 2025-10-?? - Major update
+
+[General]
+
+  Added:
+  > No choice tooltip now includes randomization probability
+
+  Changed:
+  > Adjusted sprite preview position to always be centered on blueprint backdrop
+  > Moved "Generate a random sprite in this style" button to preview panel
+
+  Removed:
+  - Here
+
+[Scripting API]
+
+  Added:
+  > Documentation for scripting API, live at GitHub repo jbunke/tdsm-api
+
+-----------------------------------------------------------
+
 v1.2.0 - 2025-07-16 - Major update
 
 [General]

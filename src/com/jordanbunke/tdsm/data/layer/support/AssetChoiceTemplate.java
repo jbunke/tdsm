@@ -41,7 +41,7 @@ public final class AssetChoiceTemplate {
             final CustomizationLayer layer
     ) {
         for (ColorSelection selection : colorSelections)
-            selection.addDependent(layer);
+            selection.addDependent(layer); /* TODO: selection is potentially null here */
 
         final GameImage asset = getter.apply(id);
 

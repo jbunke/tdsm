@@ -24,4 +24,10 @@ public final class NoAssetChoice {
     public static NoAssetChoice prob(final double randomProb) {
         return new NoAssetChoice(true, false, randomProb);
     }
+
+    @Override
+    public String toString() {
+        return valid ? ((equalRandomOdds ? "Equal" :
+                ((int) (randomProb * 100)) + "%") + " chance") : "Invalid";
+    }
 }

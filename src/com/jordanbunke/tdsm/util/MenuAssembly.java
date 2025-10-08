@@ -62,12 +62,20 @@ public final class MenuAssembly {
 
         // PREVIEW
         if (style.settings.has()) {
-            IconButton settings = IconButton.init(
+            final IconButton settings = IconButton.init(
                     ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                     () -> ProgramState.set(ProgramState.MENU, styleSettings())
             ).setTooltipCode(ResourceCodes.STYLE_SETTINGS).build();
             mb.add(settings);
         }
+
+        final IconButton randomSpriteButton = IconButton.init(
+                    ResourceCodes.RANDOM,
+                        PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
+                    style::randomize).setAnchor(Anchor.RIGHT_TOP)
+                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
+        // TODO - reset customization button
+        mb.addAll(randomSpriteButton/*TODO , resetCustomizationButton */);
 
         final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
                 PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
@@ -136,23 +144,18 @@ public final class MenuAssembly {
 
         final Indicator styleInfo = sib.build();
 
-        final IconButton randomSpriteButton = IconButton.init(
-                ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
-                style::randomize).setAnchor(Anchor.CENTRAL)
-                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build(),
+        final IconButton uploadStyleButton = IconButton.init(
+                ResourceCodes.ADD, TOP.at(0.95, 0.5),
+                Styles::uploadStyleDialog).setAnchor(Anchor.CENTRAL)
+                .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build(),
                 loadFromJSONButton = IconButton.init(
                         ResourceCodes.LOAD_FROM_JSON,
-                        randomSpriteButton.getRenderPosition(),
+                        uploadStyleButton.getRenderPosition(),
                         JSONHelper::loadFromJSON)
-                        .setAnchor(Anchor.RIGHT_TOP).build(),
-                uploadStyleButton = IconButton.init(ResourceCodes.ADD,
-                                loadFromJSONButton.getRenderPosition(),
-                                Styles::uploadStyleDialog)
-                        .setAnchor(Anchor.RIGHT_TOP)
-                        .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build();
+                        .setAnchor(Anchor.RIGHT_TOP).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo,
-                randomSpriteButton, loadFromJSONButton, uploadStyleButton);
+                loadFromJSONButton, uploadStyleButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
