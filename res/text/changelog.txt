@@ -1,9 +1,9 @@
-v1.3.0 - 2025-10-?? - Major update
+v1.3.0 - 2025-11-?? - Major update
 
 [General]
 
   Added:
-  > No choice tooltip now includes randomization probability
+  + No choice tooltip now includes randomization probability
 
   Changed:
   > Adjusted sprite preview position to always be centered on blueprint backdrop
@@ -15,7 +15,11 @@ v1.3.0 - 2025-10-?? - Major update
 [Scripting API]
 
   Added:
-  > Documentation for scripting API, live at GitHub repo jbunke/tdsm-api
+  + Documentation for scripting API, live at GitHub repo "jbunke/tdsm-api"
+  + "script" type
+
+  Fixed:
+  * #75 - "col_sel::randomize" invocation throws compile error
 
 -----------------------------------------------------------
 
@@ -24,14 +28,14 @@ v1.2.0 - 2025-07-16 - Major update
 [General]
 
   Added:
-  > Added scripting API
-  > Sprite styles are now stored in archives; can be uploaded and distributed
-  > Added JSON data for style ID, customization layers, and configuration data
-  > Load a sprite into TDSM by uploading a JSON file
-  > Added hidden program settings
-  > Added startup messages that highlight new features if the program is opened
+  + Added scripting API
+  + Sprite styles are now stored in archives; can be uploaded and distributed
+  + Added JSON data for style ID, customization layers, and configuration data
+  + Load a sprite into TDSM by uploading a JSON file
+  + Added hidden program settings
+  + Added startup messages that highlight new features if the program is opened
       for the first time since an update that introduced them
-  > Added help menus with guides and additional resources
+  + Added help menus with guides and additional resources
 
   Removed:
   - Removed "Hokkaido" sprite style; now available as free download
@@ -40,7 +44,7 @@ v1.2.0 - 2025-07-16 - Major update
 [Scripting API]
 
   Added:
-  > Added scripting API; not yet documented
+  + Added scripting API; not yet documented
 
 -----------------------------------------------------------
 
@@ -49,8 +53,8 @@ v1.1.0 - 2025-03-28 - Content update
 [General]
 
   Added:
-  > Style-specific settings
-  > Color replacement menu
+  + Style-specific settings
+  + Color replacement menu
 
   Changed:
   > New build and distribution pipeline produces dedicated Windows, macOS, and
@@ -60,11 +64,11 @@ v1.1.0 - 2025-03-28 - Content update
 [Hokkaido]
 
   Added:
-  > Added animations: Run, Surf, Swim
-  > Added settings:
-    > Quantize to GBA colors
-    > Warn if sprite contains more than 15 non-transparent colors
-  > Added customization options
+  + Added animations: Run, Surf, Swim
+  + Added settings:
+    + Quantize to GBA colors
+    + Warn if sprite contains more than 15 non-transparent colors
+  + Added customization options
 
   Changed:
   > Renamed "Pokemon Trainer [Gen 4]" style to "Hokkaido"
@@ -73,7 +77,7 @@ v1.1.0 - 2025-03-28 - Content update
 [Kyushu]
 
   Added:
-  > Added "Kyushu" sprite style
+  + Added "Kyushu" sprite style
 
 -----------------------------------------------------------
 
