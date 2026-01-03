@@ -36,7 +36,7 @@ echo 2/3: Generated runtime image
 set "VERSION_FILE=..\res\version"
 set /p VERSION=<"%VERSION_FILE%"
 
-set ICON_PATH="..\out\artifacts\bundle\icons\win-icon.ico"
+set ICON_PATH=".\icons\win-icon.ico"
 
 jpackage ^
     --type exe ^
@@ -51,7 +51,7 @@ jpackage ^
     --win-shortcut ^
     --win-menu ^
     --win-menu-group "Top Down Sprite Maker" ^
-    --description "%NAME% is a tool for customizing and exporting pixel art sprites."
+    --description "%NAME%"
 echo 3/3: Built Windows executable with jpackage
 
 endlocal

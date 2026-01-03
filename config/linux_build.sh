@@ -21,7 +21,7 @@ jlink --module-path "$JAVA_HOME/jmods" --add-modules "$MODULES" --output "$OUTPU
 echo "2/3: Generated runtime image"
 
 # Package application with jpackage for Linux
-ICON_PATH="../out/artifacts/bundle/icons/sources/icon-256px.png"
+ICON_PATH="./icons/sources/icon-256px.png"
 VERSION_FILE="../res/version"
 
 VERSION=$(cat "$VERSION_FILE")
@@ -37,8 +37,8 @@ jpackage \
     --runtime-image "$OUTPUT_DIR/runtime" \
     --icon "$ICON_PATH" \
     --linux-package-name "tdsm" \
-    --linux-deb-maintainer "Jordan Bunke <schlankundflink@gmail.com>" \
-    --description "$NAME is a tool for customizing and exporting pixel art sprites."
+    --linux-deb-maintainer "Jordan Bunke <jordanbunkework@gmail.com>" \
+    --description "$NAME"
 
 if [[ $? -eq 0 ]]; then
   echo "3/3: Built $NAME for Linux"
