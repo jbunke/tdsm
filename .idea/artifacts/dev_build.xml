@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/dev_build</output-path>
     <root id="archive" name="tdsm.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/res/META-INF/dev/MANIFEST.MF" />
       </element>
       <element id="module-output" name="tdsm" />
       <element id="module-test-output" name="tdsm" />
@@ -14,6 +14,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-fonts.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../stip-parser/out/artifacts/stip_parser/stip-parser.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../json/out/artifacts/json/json.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../animation-encoder/out/artifacts/animation_encoder/animation-encoder.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

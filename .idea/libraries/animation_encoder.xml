@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="animation-encoder">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../animation-encoder/out/artifacts/animation_encoder/animation-encoder.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
