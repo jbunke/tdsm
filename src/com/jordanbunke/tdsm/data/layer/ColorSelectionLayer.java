@@ -64,6 +64,12 @@ public final class ColorSelectionLayer extends CustomizationLayer {
     }
 
     @Override
+    public void reset() {
+        for (ColorSelection selection : selections)
+            selection.reset();
+    }
+
+    @Override
     public int calculateExpandedHeight() {
         return COL_SEL_LAYER_BASE_H + (isSingle() ? 0 : COL_SEL_DROPOFF +
                 (selections.length > MAX_SELECTORS_WO_SCROLL

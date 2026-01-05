@@ -61,6 +61,12 @@ public final class DecisionLayer extends ManualRefreshLayer {
     }
 
     @Override
+    public void reset() {
+        think();
+        decision.reset();
+    }
+
+    @Override
     public int calculateExpandedHeight() {
         return decision.calculateExpandedHeight();
     }

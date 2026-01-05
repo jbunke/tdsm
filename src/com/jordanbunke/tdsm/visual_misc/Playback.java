@@ -25,12 +25,10 @@ public final class Playback {
     }
 
     public void setAnimation(final Animation animation) {
-        if (!animation.equals(this.animation)) {
-            frame = 0;
-            ticks = 0;
-            playing = true;
-            forwards = true;
-        }
+        frame = 0;
+        ticks = 0;
+        playing = true;
+        forwards = true;
 
         this.animation = animation;
     }

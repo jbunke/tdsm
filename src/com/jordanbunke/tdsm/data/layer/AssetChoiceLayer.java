@@ -8,6 +8,7 @@ import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.data.func.Composer;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoice;
 import com.jordanbunke.tdsm.data.layer.support.AssetChoiceTemplate;
+import com.jordanbunke.tdsm.data.layer.support.ColorSelection;
 import com.jordanbunke.tdsm.data.layer.support.NoAssetChoice;
 
 import java.util.ArrayList;
@@ -236,7 +237,7 @@ public final class AssetChoiceLayer extends AbstractACLayer
         select(index);
 
         if (hasChoice())
-            choices[selection].randomize();
+            getChoice().randomize();
 
         update();
 
@@ -245,6 +246,20 @@ public final class AssetChoiceLayer extends AbstractACLayer
 
         if (updateSprite)
             Sprite.get().getStyle().update();
+    }
+
+    @Override
+    public void reset() {
+        select(noAssetChoice.valid ? NONE : 0);
+
+        if (hasChoice())
+            Arrays.stream(getChoice().getColorSelections())
+                    .forEach(ColorSelection::reset);
+
+        update();
+
+        updateMatchers();
+        updateDependents();
     }
 
     public int maxSelectors() {

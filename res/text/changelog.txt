@@ -1,16 +1,22 @@
-v1.3.0 - 2025-11-?? - Major update
+v1.3.0 - 2026-01-?? - Major update
 
 [General]
 
   Added:
+  + Reset sprite customization functionality
   + No choice tooltip now includes randomization probability
 
   Changed:
   > Adjusted sprite preview position to always be centered on blueprint backdrop
   > Moved "Generate a random sprite in this style" button to preview panel
+  > Changed default sprite style to limited version of "Pixel Citizen" style
 
   Removed:
   - Here
+
+  Fixed:
+  * #79 - Switching sprite styles can sometimes cause the program to crash
+  * #80 - Asset choice buttons can still be clicked when partially beyond scroll box
 
 [Scripting API]
 
@@ -20,6 +26,7 @@ v1.3.0 - 2025-11-?? - Major update
 
   Fixed:
   * #75 - "col_sel::randomize" invocation throws compile error
+  * #78 - "col_sel::set_from_swatch" invocation leads to runtime error
 
 -----------------------------------------------------------
 

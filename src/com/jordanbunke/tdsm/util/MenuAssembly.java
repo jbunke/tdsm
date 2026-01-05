@@ -73,9 +73,13 @@ public final class MenuAssembly {
                     ResourceCodes.RANDOM,
                         PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
                     style::randomize).setAnchor(Anchor.RIGHT_TOP)
-                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build();
-        // TODO - reset customization button
-        mb.addAll(randomSpriteButton/*TODO , resetCustomizationButton */);
+                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build(),
+                resetSpriteButton = IconButton.init(
+                        ResourceCodes.RESET,
+                                randomSpriteButton.getRenderPosition(),
+                                style::reset).setAnchor(Anchor.RIGHT_TOP)
+                        .setTooltipCode(ResourceCodes.RESET_SPRITE).build();
+        mb.addAll(randomSpriteButton, resetSpriteButton);
 
         final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
                 PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
@@ -458,7 +462,8 @@ public final class MenuAssembly {
                 Anchor.CENTRAL_BOTTOM,
                 Graphics.miniText(Colors.darkSystem())
                         .addText(ProgramInfo.formatVersion()).addLineBreak()
-                        .addText("(c) 2025 Jordan Bunke").build().draw());
+                        .addText(ParserUtils.readResourceText(ResourceCodes.COPYRIGHT))
+                        .build().draw());
 
         mb.add(programLabel);
 
