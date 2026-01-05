@@ -57,7 +57,7 @@ jpackage ^
     --win-menu ^
     --win-menu-group "Top Down Sprite Maker" ^
     --description "%NAME%"
-move "%OUTPUT_DIR%\installer\%NAME%-%VERSION%.exe" "%OUTPUT_DIR%\installer\%ID%-%VERSION%.exe"
+move "%OUTPUT_DIR%\installer\%NAME%-%VERSION%.exe" "%OUTPUT_DIR%\installer\%ID%-%VERSION%-installer.exe"
 
 echo 3/4: Built Windows installer with jpackage
 
