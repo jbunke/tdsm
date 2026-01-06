@@ -79,6 +79,9 @@ public final class MaskLayer extends CustomizationLayer {
     public void randomize(final boolean updateSprite) {}
 
     @Override
+    public void reset() {}
+
+    @Override
     public int calculateExpandedHeight() {
         return 0;
     }

@@ -92,6 +92,11 @@ public final class CustomizationElement extends MenuElementContainer {
     }
 
     @Override
+    public boolean mouseIsWithinBounds(final Coord2D mousePosition) {
+        return scrollBox.mouseIsWithinBounds(mousePosition);
+    }
+
+    @Override
     public MenuElement[] getMenuElements() {
         return new MenuElement[] { scrollBox };
     }

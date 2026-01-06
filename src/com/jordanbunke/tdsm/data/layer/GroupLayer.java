@@ -70,6 +70,12 @@ public final class GroupLayer extends CustomizationLayer {
     }
 
     @Override
+    public void reset() {
+        all().forEach(CustomizationLayer::reset);
+        updateDependents();
+    }
+
+    @Override
     public int calculateExpandedHeight() {
         return all().map(l -> {
             final int eh = l.calculateExpandedHeight();

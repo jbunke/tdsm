@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 public final class MathLayer extends CustomizationLayer {
     private final String name;
+    private final int defaultValue;
     public final int min, max;
     private final Function<Integer, String> formatFunc;
 
@@ -25,11 +26,12 @@ public final class MathLayer extends CustomizationLayer {
         assert max > min;
 
         this.name = name;
+        this.defaultValue = defaultValue;
         this.min = min;
         this.max = max;
         this.formatFunc = formatFunc;
 
-        value = MathPlus.bounded(min, defaultValue, max);
+        setValue(defaultValue);
     }
 
     public MathLayer(
@@ -69,8 +71,6 @@ public final class MathLayer extends CustomizationLayer {
         }
     }
 
-    // scripting inclusion
-    @SuppressWarnings("unused")
     public void setValue(final int value) {
         this.value = MathPlus.bounded(min, value, max);
     }
@@ -107,6 +107,11 @@ public final class MathLayer extends CustomizationLayer {
 
         if (updateSprite)
             Sprite.get().getStyle().update();
+    }
+
+    @Override
+    public void reset() {
+        setValue(defaultValue);
     }
 
     @Override

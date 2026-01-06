@@ -226,6 +226,10 @@ public final class LayerElement extends MenuElementContainer {
         cb.add(choicesBox);
         ab.add(choicesBox);
 
+        Arrays.stream(acbs.build().getMenuElements())
+                .map(AssetChoiceButton.class::cast)
+                .forEach(acb -> acb.setChoicesBox(choicesBox));
+
         if (acl.maxSelectors() == 0)
             return;
 

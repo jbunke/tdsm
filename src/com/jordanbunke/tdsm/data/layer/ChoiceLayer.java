@@ -141,6 +141,14 @@ public final class ChoiceLayer extends ManualRefreshLayer
     }
 
     @Override
+    public void reset() {
+        selection = 0;
+        refreshElement();
+
+        updateDependents();
+    }
+
+    @Override
     public int calculateExpandedHeight() {
         return Layout.BASE_EXPANDED_H;
     }

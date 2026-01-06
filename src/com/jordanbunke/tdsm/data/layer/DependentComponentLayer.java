@@ -73,6 +73,9 @@ public final class DependentComponentLayer extends AbstractACLayer {
     public void randomize(final boolean updateSprite) {}
 
     @Override
+    public void reset() {}
+
+    @Override
     public int calculateExpandedHeight() {
         return 0;
     }
