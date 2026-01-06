@@ -77,7 +77,7 @@ public final class MenuAssembly {
                 resetSpriteButton = IconButton.init(
                         ResourceCodes.RESET,
                                 randomSpriteButton.getRenderPosition(),
-                                style::reset).setAnchor(Anchor.RIGHT_TOP)
+                                style::resetCustomization).setAnchor(Anchor.RIGHT_TOP)
                         .setTooltipCode(ResourceCodes.RESET_SPRITE).build();
         mb.addAll(randomSpriteButton, resetSpriteButton);
 

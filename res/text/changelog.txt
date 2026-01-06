@@ -23,6 +23,7 @@ v1.3.0 - 2026-01-?? - Major update
   Added:
   + Documentation for scripting API, live at GitHub repo "jbunke/tdsm-api"
   + "script" type
+  + "style::reset_custom" function
 
   Fixed:
   * #75 - "col_sel::randomize" invocation throws compile error

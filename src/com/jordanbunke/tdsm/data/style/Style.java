@@ -470,7 +470,7 @@ public abstract class Style {
         update();
     }
 
-    public void reset() {
+    public void resetCustomization() {
         layers.customization().forEach(CustomizationLayer::reset);
         update();
     }
