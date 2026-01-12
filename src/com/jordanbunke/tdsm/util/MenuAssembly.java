@@ -42,6 +42,7 @@ import com.jordanbunke.tdsm.settings.update.StartupMessage;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.*;
@@ -415,11 +416,19 @@ public final class MenuAssembly {
         return mb.build();
     }
 
+    public static void loadSpriteStyle(final File file) {
+        load(() -> Styles.uploadFromFile(file));
+    }
+
     private static void loadCustomization() {
-        ProgramState.to(loading());
+        load(Sprite::tap);
+    }
+
+    private static void load(final Runnable action) {
+        ProgramState.set(ProgramState.MENU, loading());
 
         final Thread backgroundThread = new Thread(() -> {
-            Sprite.tap();
+            action.run();
             ProgramState.set(ProgramState.CUSTOMIZATION, null);
         }, "Loader");
         backgroundThread.start();
@@ -808,15 +817,13 @@ public final class MenuAssembly {
             final String error = errors[i];
 
             if (error.length() > SMALL_FONT_LINE_CHAR_LIMIT) {
-                final Pair<String, String> splitError = splitLine(error);
+                final List<String> splitError = splitLine(error);
 
-                if (splitError == null)
-                    lines.add(error);
-                else {
-                    lines.add(splitError.a());
-                    lines.add(" ".repeat(10) + splitError.b());
-                }
-            }
+                for (int j = 0; j < splitError.size(); j++)
+                    lines.add((j == 0 ? "" : " ".repeat(4)) +
+                            splitError.get(j));
+            } else
+                lines.add(error);
 
             if (i + 1 < errors.length)
                 lines.add("\n");
@@ -839,14 +846,22 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    private static Pair<String, String> splitLine(final String line) {
-        for (int i = SMALL_FONT_LINE_CHAR_LIMIT; i >= 0; i--) {
-            if (line.charAt(i) == ' ')
-                return new Pair<>(
-                        line.substring(0, i), line.substring(i + 1));
+    private static List<String> splitLine(String line) {
+        final List<String> split = new ArrayList<>();
+
+        while (line.length() > SMALL_FONT_LINE_CHAR_LIMIT) {
+            for (int i = SMALL_FONT_LINE_CHAR_LIMIT; i >= 0; i--)
+                if (line.charAt(i) == ' ') {
+                    split.add(line.substring(0, i));
+                    line = line.substring(i + 1);
+                    break;
+                }
         }
 
-        return null;
+        if (!line.isEmpty())
+            split.add(line);
+
+        return split;
     }
 
     public static Menu styleSettings() {

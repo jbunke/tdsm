@@ -13,6 +13,7 @@ import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.ErrorDisplay;
 import com.jordanbunke.tdsm.util.Layout;
+import com.jordanbunke.tdsm.util.MenuAssembly;
 import com.jordanbunke.tdsm_api.TDSMInterpreter;
 import com.jordanbunke.tdsm_api.ast.type.StyleTypeNode;
 import com.jordanbunke.tdsm_api.util.MetaFuncHelper;
@@ -63,7 +64,7 @@ public final class Styles {
         FileIO.openFileFromSystem(
                 new String[]{"TDSM style archives"},
                 new String[][]{{Constants.STYLE_FILE_EXT, "zip"}}
-        ).ifPresent(Styles::uploadFromFile);
+        ).ifPresent(MenuAssembly::loadSpriteStyle);
     }
 
     @SuppressWarnings("unused")
@@ -71,7 +72,7 @@ public final class Styles {
         uploadFromFile(path.toFile());
     }
 
-    private static void uploadFromFile(final File archive) {
+    public static void uploadFromFile(final File archive) {
         try {
             uploadStyle(new FileInputStream(archive), true);
         } catch (FileNotFoundException e) {
