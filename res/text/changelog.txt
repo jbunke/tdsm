@@ -1,15 +1,17 @@
 v1.3.0 - 2026-01-?? - Major update
 
-[General]
+[Core]
 
   Added:
   + Reset sprite customization functionality
   + No choice tooltip now includes randomization probability
+  + "Close" button to color selection panel to dismiss active color selection
 
   Changed:
   > Adjusted sprite preview position to always be centered on blueprint backdrop
   > Moved "Generate a random sprite in this style" button to preview panel
   > Changed default sprite style to limited version of "Pixel Citizen" style
+  > Changed translucent grey veil over sampler to "No active color selection" message
 
   Removed:
   - Here
@@ -34,7 +36,7 @@ v1.3.0 - 2026-01-?? - Major update
 
 v1.2.0 - 2025-07-16 - Major update
 
-[General]
+[Core]
 
   Added:
   + Added scripting API
@@ -59,7 +61,7 @@ v1.2.0 - 2025-07-16 - Major update
 
 v1.1.0 - 2025-03-28 - Content update
 
-[General]
+[Core]
 
   Added:
   + Style-specific settings
