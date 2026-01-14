@@ -425,11 +425,12 @@ public final class MenuAssembly {
     }
 
     private static void load(final Runnable action) {
-        ProgramState.set(ProgramState.MENU, loading());
+        ProgramState.setLoading(loading());
 
         final Thread backgroundThread = new Thread(() -> {
             action.run();
-            ProgramState.set(ProgramState.CUSTOMIZATION, null);
+            if (ProgramState.isLoading())
+                ProgramState.set(ProgramState.CUSTOMIZATION, null);
         }, "Loader");
         backgroundThread.start();
     }
@@ -813,6 +814,8 @@ public final class MenuAssembly {
 
         final List<String> lines = new LinkedList<>();
 
+        final String NEWLINE = "\n";
+
         for (int i = 0; i < errors.length; i++) {
             final String error = errors[i];
 
@@ -826,15 +829,19 @@ public final class MenuAssembly {
                 lines.add(error);
 
             if (i + 1 < errors.length)
-                lines.add("\n");
+                lines.add(NEWLINE);
         }
 
-        final String concat = lines.size() == 1 ? lines.get(0)
-                : lines.stream()
-                .reduce((a, b) -> a + "\n" + b)
-                .orElse("");
+        final StringBuilder concat = new StringBuilder();
 
-        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), concat);
+        for (String line : lines) {
+            concat.append(line);
+
+            if (!line.equals(NEWLINE))
+                concat.append(NEWLINE);
+        }
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), concat.toString());
 
         final MenuElement close = StaticTextButton.make("Close",
                 ButtonType.STANDARD, Alignment.CENTER, atX(0.3),

@@ -34,6 +34,7 @@ public final class Styles {
     static {
         addShutdownHook();
 
+        // upload default sprite style
         fromResources(Constants.DEFAULT_STYLE_NAME);
     }
 
@@ -92,11 +93,35 @@ public final class Styles {
 
         if (manifestPath.toFile().isFile()) {
             final String content = FileIO.readFile(manifestPath);
+            final TDSMInterpreter interpreter = TDSMInterpreter.get();
 
-            final TDSMInterpreter interpreter = new TDSMInterpreter();
+            // syntax
             final HeadFuncNode script = interpreter.build(content);
-            final Object out = new TDSMInterpreter().runScript(
-                    script, manifestPath, StyleTypeNode.get());
+
+            if (script == null || !ScriptErrorLog.hasNoErrors()) {
+                ErrorDisplay.showScriptErrors();
+                ScriptErrorLog.clearErrors();
+                return;
+            }
+
+            final Object out;
+
+            if (MetaFuncHelper.validate(script, StyleTypeNode.get()))
+                out = interpreter.run(script, manifestPath);
+            else {
+                ErrorDisplay.show("\"" + Constants.STYLE_MANIFEST_FILENAME +
+                        "\" script does not match the required signature: " +
+                        "expected \"( -> style)\" but got \"" +
+                        script.signature.toString() + "\"");
+                return;
+            }
+
+            if (out == null && !ScriptErrorLog.hasNoErrors()) {
+                ErrorDisplay.showScriptErrors();
+                ScriptErrorLog.clearErrors();
+                return;
+            }
+
             final Style style = MetaFuncHelper.asClass(
                     Style.class, out, TextPosition.N_A);
 
@@ -117,7 +142,7 @@ public final class Styles {
                 styles.put(style.id, style);
                 if (set) Sprite.get().setStyle(style);
             } else
-                ErrorDisplay.show(ScriptErrorLog.getErrors());
+                ErrorDisplay.showScriptErrors();
         } else
             ErrorDisplay.show(
                     "Uploaded archive does not contain the file \"" +
