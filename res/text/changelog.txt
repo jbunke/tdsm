@@ -12,6 +12,7 @@ v1.3.0 - 2026-01-?? - Major update
   > Moved "Generate a random sprite in this style" button to preview panel
   > Changed default sprite style to limited version of "Pixel Citizen" style
   > Changed translucent grey veil over sampler to "No active color selection" message
+  > Redesigned loading screen sprites in the "Pixel Citizen" style
 
   Removed:
   - Here
