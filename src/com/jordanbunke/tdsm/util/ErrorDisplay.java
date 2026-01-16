@@ -14,6 +14,7 @@ public final class ErrorDisplay {
     }
 
     public static void showScriptErrors() {
-        show(ScriptErrorLog.getErrors());
+        show(Arrays.stream(ScriptErrorLog.getErrors())
+                .map(String::valueOf).toArray(String[]::new));
     }
 }

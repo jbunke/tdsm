@@ -1,4 +1,4 @@
-v1.3.0 - 2026-01-?? - Major update
+v1.3.0 - 2026-01-19 - Major update
 
 [Core]
 
@@ -13,6 +13,8 @@ v1.3.0 - 2026-01-?? - Major update
   > Changed default sprite style to limited version of "Pixel Citizen" style
   > Changed translucent grey veil over sampler to "No active color selection" message
   > Redesigned loading screen sprites in the "Pixel Citizen" style
+  > Improved script error reporting
+  > Improved DeltaScript interpreter error handling
 
   Removed:
   - Here
@@ -27,7 +29,16 @@ v1.3.0 - 2026-01-?? - Major update
   Added:
   + Documentation for scripting API, live at GitHub repo "jbunke/tdsm-api"
   + "script" type
-  + "style::reset_custom" function
+    + Constructor: "$Init::script"
+  + "asset_choice" properties and functions
+    + Property "id"
+    + "asset_choice::get_col_sels"
+    + "asset_choice::randomize"
+  + "layer" functions
+    + "layer::get_asset_choice"
+    + "layer::get_asset_choice_at"
+  + "style" functions
+    + "style::reset_custom"
 
   Fixed:
   #75 - "col_sel::randomize" invocation throws compile error
