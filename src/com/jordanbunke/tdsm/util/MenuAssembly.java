@@ -789,7 +789,7 @@ public final class MenuAssembly {
                     .append(" of ").append(messages.length)
                     .append(" ]\nSince v").append(message.since.toString())
                     .append(":").append("\n".repeat(2))
-                    .append(ParserUtils.readResourceText(message.id()));
+                    .append(ParserUtils.readUpdateInfo(message.id()));
 
             if (i + 1 < messages.length)
                 sb.append("\n".repeat(3));

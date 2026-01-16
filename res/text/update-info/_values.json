@@ -1,0 +1,12 @@
+{
+    "updates": [
+        {
+            "id": "make_edit_styles",
+            "since": "1.2.0"
+        },
+        {
+            "id": "pokemon_sprites_now_separate_downloads",
+            "since": "1.4.0"
+        }
+    ]
+}

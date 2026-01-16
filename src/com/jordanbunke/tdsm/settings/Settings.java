@@ -33,14 +33,28 @@ public final class Settings {
     }
 
     private static Path determineSettingsFile() {
-        final Path internal = Path.of("data", ".settings"),
-                medial = Path.of(ProgramInfo.PROGRAM_NAME).resolve(internal);
+        final Path internal = Path.of("data", ".settings");
+        final String name = ProgramInfo.PROGRAM_NAME,
+                unixFriendlyName = name.toLowerCase().replace(" ", "-");
 
         if (OSUtils.isWindows()) {
             final String appData = System.getenv("APPDATA");
-            return Path.of(appData).resolve(medial);
-        } else
-            return internal;
+            return Path.of(appData, name).resolve(internal);
+        }
+
+        if (OSUtils.isMacOS()) {
+            return Path.of(System.getProperty("user.home"),
+                    "Library", "Application Support", unixFriendlyName)
+                    .resolve(internal);
+        }
+
+        // Assume Linux/Unix
+        final String xdgConfig = System.getenv("XDG_CONFIG_HOME");
+        if (xdgConfig != null && !xdgConfig.isBlank())
+            return Path.of(xdgConfig, unixFriendlyName).resolve(internal);
+        else
+            return Path.of(System.getProperty("user.home"),
+                    ".config", unixFriendlyName).resolve(internal);
     }
 
     private static void initialize() {
@@ -165,6 +179,11 @@ public final class Settings {
 
         private T get() {
             return value;
+        }
+
+        @Override
+        public String toString() {
+            return type.getSimpleName() + " " + id + " = " + value;
         }
     }
 }

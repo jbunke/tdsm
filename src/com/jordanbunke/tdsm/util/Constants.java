@@ -13,6 +13,7 @@ public final class Constants {
     public static final Path PROGRAM_FILE = Path.of("program"),
             VERSION_FILE = Path.of("version"),
             TEXT_FOLDER = Path.of("text"),
+            UPDATE_INFO_FOLDER = Path.of("text", "update-info"),
             LOGO_FOLDER = Path.of("logo"),
             LOADING_FOLDER = Path.of("loading"),
             STYLES_FOLDER = Path.of("styles");

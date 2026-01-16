@@ -31,26 +31,8 @@ public final class ProgramInfo {
         for (SerialBlock block : blocks) {
             switch (block.tag()) {
                 case Constants.NAME_CODE -> PROGRAM_NAME = block.value();
-                case Constants.VERSION_CODE -> {
-                    try {
-                        final Integer[] components = Arrays
-                                .stream(block.value().split("\\."))
-                                .map(Integer::parseInt).toArray(Integer[]::new);
-
-                        final int MAJOR = 0, MINOR = 1, PATCH = 2,
-                                BUILD = 3, HAS_BUILD_LENGTH = 4;
-
-                        if (components.length == HAS_BUILD_LENGTH)
-                            VERSION = new Version(components[MAJOR],
-                                    components[MINOR], components[PATCH],
-                                    components[BUILD]);
-                        else if (components.length > PATCH)
-                            VERSION = new Version(components[MAJOR],
-                                    components[MINOR], components[PATCH]);
-                    } catch (NumberFormatException e) {
-                        GameError.send("Could not read program version from data file.");
-                    }
-                }
+                case Constants.VERSION_CODE ->
+                        VERSION = Version.parse(block.value());
                 case Constants.IS_DEVBUILD_CODE ->
                         IS_DEVBUILD = Boolean.parseBoolean(block.value());
             }
