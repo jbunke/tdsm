@@ -1,6 +1,5 @@
 package com.jordanbunke.tdsm;
 
-import com.jordanbunke.delta_time.error.GameError;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.Version;
@@ -10,7 +9,6 @@ import com.jordanbunke.stip_parser.SerialBlock;
 import com.jordanbunke.tdsm.util.Constants;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public final class ProgramInfo {
     public static String PROGRAM_NAME = "Top Down Sprite Maker";
