@@ -190,7 +190,11 @@ public final class MenuAssembly {
         final Indicator firstSpriteInfo = Indicator.make(
                 ResourceCodes.FIRST_SPRITE, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                 Anchor.LEFT_TOP);
-        mb.add(firstSpriteInfo);
+        final IconButton previewSheetButton = IconButton.init(
+                        ResourceCodes.PREVIEW,
+                        PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
+                        () -> {} /* TODO */).setAnchor(Anchor.RIGHT_TOP).build();
+        mb.addAll(firstSpriteInfo, previewSheetButton);
 
         // SEQUENCING
         final StaticLabel sequencingLabel = StaticLabel.init(
@@ -371,7 +375,7 @@ public final class MenuAssembly {
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
-                "< Edit...", BOTTOM.at(0.0, 0.5)
+                "< Customize...", BOTTOM.at(0.0, 0.5)
                         .displace(BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));

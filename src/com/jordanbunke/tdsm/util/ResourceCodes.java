@@ -6,6 +6,7 @@ public final class ResourceCodes {
             COLLAPSE = "collapse",
             EXPAND = "expand",
             RANDOM = "random",
+            PREVIEW = "preview",
             TURN_CLOCKWISE = "turn_cw",
             TURN_COUNTERCLOCKWISE = "turn_ccw",
             BLUEPRINT = "blueprint",

@@ -3,10 +3,11 @@ package com.jordanbunke.tdsm.settings;
 import com.jordanbunke.delta_time.error.GameError;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.utility.Version;
-import com.jordanbunke.delta_time.utility.math.Pair;
-import com.jordanbunke.stip_parser.ParserSerializer;
-import com.jordanbunke.stip_parser.SerialBlock;
+import com.jordanbunke.json.JSONBuilder;
+import com.jordanbunke.json.JSONPair;
+import com.jordanbunke.json.JSONReader;
 import com.jordanbunke.tdsm.ProgramInfo;
+import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.OSUtils;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public final class Settings {
     }
 
     private static Path determineSettingsFile() {
-        final Path internal = Path.of("data", ".settings");
+        final Path internal = Constants.INTERNAL_SETTINGS_FILEPATH;
         final String name = ProgramInfo.PROGRAM_NAME,
                 unixFriendlyName = name.toLowerCase().replace(" ", "-");
 
@@ -72,14 +73,16 @@ public final class Settings {
         if (file == null)
             return;
 
-        final SerialBlock[] blocks = ParserSerializer
-                .deserializeBlocksAtDepthLevel(file);
+        final JSONPair[] pairs = JSONReader.readObject(file);
 
-        for (SerialBlock block : blocks) {
-            final String id = block.tag();
+        if (pairs == null)
+            return;
+
+        for (JSONPair pair : pairs) {
+            final String id = pair.key();
 
             if (settingsMap.containsKey(id)) {
-                final String valueString = block.value();
+                final String valueString = String.valueOf(pair.value());
                 final Setting<?> setting = settingsMap.get(id);
 
                 setting.read(valueString);
@@ -87,7 +90,6 @@ public final class Settings {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void write() {
         final Path settingsFolder = SETTINGS_FILE.getParent();
 
@@ -106,14 +108,23 @@ public final class Settings {
             }
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final JSONBuilder jb = new JSONBuilder();
 
-        ParserSerializer.serializeSimpleAttributes(sb, -1,
-                settingsMap.keySet().stream().sorted()
-                        .map(id -> new Pair<>(id, settingsMap.get(id).value))
-                        .toArray(Pair[]::new));
+        settingsMap.keySet().stream().sorted().map(id -> {
+            final Object value = settingsMap.get(id).value;
 
-        FileIO.writeFile(SETTINGS_FILE, sb.toString());
+            if (validJSONDataType(value))
+                return new JSONPair(id, value);
+
+            return new JSONPair(id, String.valueOf(value));
+        }).forEach(jb::add);
+
+        FileIO.writeFile(SETTINGS_FILE, jb.write());
+    }
+
+    private static boolean validJSONDataType(final Object value) {
+        return value == null || value instanceof Double ||
+                value instanceof Integer || value instanceof Boolean;
     }
 
     public static void set(final String id, final Object value) {

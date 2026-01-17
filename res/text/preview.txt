@@ -1,0 +1,1 @@
+Preview sprite sheet based on current configuration

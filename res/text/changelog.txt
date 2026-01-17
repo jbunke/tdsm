@@ -15,6 +15,7 @@ v1.3.0 - 2026-01-19 - Major update
   > Redesigned loading screen sprites in the "Pixel Citizen" style
   > Improved script error reporting
   > Improved DeltaScript interpreter error handling
+  > Changed user settings file to "/data/.settings.json" in program user data directory
 
   Removed:
   - Here
