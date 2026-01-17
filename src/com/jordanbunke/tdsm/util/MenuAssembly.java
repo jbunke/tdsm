@@ -189,7 +189,9 @@ public final class MenuAssembly {
                         ResourceCodes.PREVIEW,
                         PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
                         () -> {} /* TODO */).setAnchor(Anchor.RIGHT_TOP).build();
-        mb.addAll(firstSpriteInfo, previewSheetButton);
+        final GatewayMenuElement canPreview =
+                new GatewayMenuElement(previewSheetButton, style::exportsASprite);
+        mb.addAll(firstSpriteInfo, canPreview);
 
         // SEQUENCING
         final StaticLabel sequencingLabel = StaticLabel.init(
