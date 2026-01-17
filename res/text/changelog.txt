@@ -16,6 +16,7 @@ v1.3.0 - 2026-01-19 - Major update
   > Improved script error reporting
   > Improved DeltaScript interpreter error handling
   > Changed user settings file to "/data/.settings.json" in program user data directory
+  > Last used export folder now persists across program sessions
 
   Removed:
   - Here

@@ -2,6 +2,7 @@ package com.jordanbunke.tdsm.settings;
 
 import com.jordanbunke.delta_time.error.GameError;
 import com.jordanbunke.delta_time.io.FileIO;
+import com.jordanbunke.delta_time.scripting.util.PathHelper;
 import com.jordanbunke.delta_time.utility.Version;
 import com.jordanbunke.json.JSONBuilder;
 import com.jordanbunke.json.JSONPair;
@@ -22,7 +23,9 @@ public final class Settings {
 
     private static final Map<String, Setting<?>> settingsMap;
 
-    public static final String SET_ID_VERSION = "last-opened-version";
+    public static final String
+            SET_ID_VERSION = "last-opened-version",
+            SET_ID_EXPORT_FOLDER = "export-folder";
 
     static {
         SETTINGS_FILE = determineSettingsFile();
@@ -61,6 +64,8 @@ public final class Settings {
     private static void initialize() {
         addSetting(new Setting<>(Version.class, SET_ID_VERSION,
                 Version::parse, new Version(1, 0, 0)));
+        addSetting(new Setting<>(Path.class, SET_ID_EXPORT_FOLDER,
+                s -> Path.of(PathHelper.formatPathString(s)), null));
     }
 
     private static <T> void addSetting(final Setting<T> setting) {
@@ -110,14 +115,16 @@ public final class Settings {
 
         final JSONBuilder jb = new JSONBuilder();
 
-        settingsMap.keySet().stream().sorted().map(id -> {
-            final Object value = settingsMap.get(id).value;
+        settingsMap.keySet().stream().sorted()
+                .filter(id -> settingsMap.get(id).value != null)
+                .map(id -> {
+                    final Object value = settingsMap.get(id).value;
 
-            if (validJSONDataType(value))
-                return new JSONPair(id, value);
+                    if (validJSONDataType(value))
+                        return new JSONPair(id, value);
 
-            return new JSONPair(id, String.valueOf(value));
-        }).forEach(jb::add);
+                    return new JSONPair(id, String.valueOf(value));
+                }).forEach(jb::add);
 
         FileIO.writeFile(SETTINGS_FILE, jb.write());
     }
@@ -127,11 +134,14 @@ public final class Settings {
                 value instanceof Integer || value instanceof Boolean;
     }
 
-    public static void set(final String id, final Object value) {
-        if (!settingsMap.containsKey(id))
-            return;
+    public static void reset(final String id) {
+        if (settingsMap.containsKey(id))
+            settingsMap.get(id).reset();
+    }
 
-        settingsMap.get(id).set(value);
+    public static void set(final String id, final Object value) {
+        if (settingsMap.containsKey(id))
+            settingsMap.get(id).set(value);
     }
 
     public static <T> T get(final String id, final Class<T> type) {
@@ -140,7 +150,7 @@ public final class Settings {
 
         final Setting<?> setting = settingsMap.get(id);
 
-        if (type == setting.type)
+        if (type.isAssignableFrom(setting.type))
             return type.cast(setting.get());
 
         return null;
@@ -186,6 +196,10 @@ public final class Settings {
                 if (validator.test(cast))
                     this.value = cast;
             }
+        }
+
+        private void reset() {
+            value = defaultValue;
         }
 
         private T get() {
