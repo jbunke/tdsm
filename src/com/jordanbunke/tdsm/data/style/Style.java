@@ -518,7 +518,6 @@ public abstract class Style {
     public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
 
     public abstract String name();
-    public abstract boolean shipping();
 
     // SEQUENCING
     public void updateAnimationInclusion(

@@ -5,6 +5,7 @@ import com.jordanbunke.tdsm.ProgramInfo;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.settings.Settings;
 import com.jordanbunke.tdsm.util.MenuAssembly;
+import com.jordanbunke.tdsm.util.RuntimeSettings;
 
 import java.util.Arrays;
 
@@ -25,8 +26,18 @@ public final class VersionHandler {
         final Version lastOpened =
                 Settings.get(Settings.SET_ID_VERSION, Version.class);
 
-        return Arrays.stream(StartupMessage.values())
-                .filter(sm -> sm.since.isLaterVersion(lastOpened))
+        return Arrays.stream(StartupMessage.readAll())
+                .filter(sm -> showMessage(sm, lastOpened))
                 .toArray(StartupMessage[]::new);
+    }
+
+    private static boolean showMessage(
+            final StartupMessage message, final Version lastOpened
+    ) {
+        final boolean later = message.since.isLaterVersion(lastOpened),
+                showUpcoming = RuntimeSettings.isUpcomingUpdates(),
+                isUpcoming = lastOpened.toString().startsWith(message.since.toString());
+
+        return later || (showUpcoming && isUpcoming);
     }
 }

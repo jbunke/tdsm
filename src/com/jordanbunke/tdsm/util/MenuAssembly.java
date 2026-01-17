@@ -121,12 +121,7 @@ public final class MenuAssembly {
         final StaticLabel styleLabel = StaticLabel.init(
                 labelPosFor(TOP.pos()), "Sprite style:").build();
 
-        final Style[] styles = Styles.all().filter(s -> {
-            if (RuntimeSettings.isShowWIP())
-                return true;
-
-            return s.shipping();
-        }).toArray(Style[]::new);
+        final Style[] styles = Styles.all().toArray(Style[]::new);
         final int co = STYLE_NAME_CUTOFF;
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),
@@ -792,8 +787,13 @@ public final class MenuAssembly {
             sb.append("[ ").append(i + 1)
                     .append(" of ").append(messages.length)
                     .append(" ]\nSince v").append(message.since.toString())
-                    .append(":").append("\n".repeat(2))
-                    .append(ParserUtils.readUpdateInfo(message.id()));
+                    .append(":").append("\n".repeat(2));
+
+            try {
+                sb.append(ParserUtils.readUpdateInfo(message.id));
+            } catch (Exception e) {
+                sb.append("Failed to read update message");
+            }
 
             if (i + 1 < messages.length)
                 sb.append("\n".repeat(3));

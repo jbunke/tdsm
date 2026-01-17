@@ -1,12 +1,16 @@
 {
     "updates": [
         {
-            "id": "make_edit_styles",
+            "id": "make-edit-styles",
             "since": "1.2.0"
         },
         {
-            "id": "pokemon_sprites_now_separate_downloads",
-            "since": "1.4.0"
+            "id": "pokemon-sprites-now-separate-downloads",
+            "since": "1.2.0"
+        },
+        {
+            "id": "pixel-citizen",
+            "since": "1.3.0"
         }
     ]
 }

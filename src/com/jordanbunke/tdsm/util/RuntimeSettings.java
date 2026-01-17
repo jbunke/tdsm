@@ -4,7 +4,7 @@ import com.jordanbunke.delta_time.utility.math.MathPlus;
 
 public class RuntimeSettings {
     private enum BoolSettings {
-        CAPTURE(false), SHOW_WIP(false);
+        CAPTURE(false), UPCOMING_UPDATES(false);
 
         private boolean enabled;
 
@@ -45,12 +45,12 @@ public class RuntimeSettings {
         BoolSettings.CAPTURE.set(value);
     }
 
-    public static boolean isShowWIP() {
-        return BoolSettings.SHOW_WIP.enabled;
+    public static boolean isUpcomingUpdates() {
+        return BoolSettings.UPCOMING_UPDATES.enabled;
     }
 
-    public static void setShowWIP(final boolean value) {
-        BoolSettings.SHOW_WIP.set(value);
+    public static void setUpcomingUpdates(final boolean value) {
+        BoolSettings.UPCOMING_UPDATES.set(value);
     }
 
     public static int getScale() {

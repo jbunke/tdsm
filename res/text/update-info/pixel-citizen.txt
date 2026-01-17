@@ -1,0 +1,6 @@
+TDSM has a new default sprite style. It is a demo version of the new "Pixel Citizen"
+sprite style. The full sprite style features more layers and customization options.
+It will also be updated with even more content and animations going forward.
+
+Full "Pixel Citizen" sprite style:
+flinkerflitzer.itch.io/pixel-citizen
