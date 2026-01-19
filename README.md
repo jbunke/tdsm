@@ -1,12 +1,10 @@
 # ![Top Down Sprite Maker](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/logo/banner.gif)
 
-<div style="margin: auto; text-align: center; width: 70%;">
-    <div style="text-wrap: pretty;">
+<div align="center">
+    <div>
         <strong>Top Down Sprite Maker (TDSM)</strong> is a flexible and powerful <strong>pixel art character creation tool</strong>. It is a desktop GUI application with executable binaries distributed for Windows, macOS, and Linux distributions.
     </div>
-</div>
-
-<div style="text-align: center; margin-top: 50px; margin-bottom: 20px;">
+    <br><br>
     <div class="store-page-line">
         <a href="https://flinkerflitzer.itch.io/tdsm" target="_blank">
             <img alt="Buy on itch.io" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png">
