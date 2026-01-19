@@ -185,10 +185,11 @@ public final class MenuAssembly {
         final Indicator firstSpriteInfo = Indicator.make(
                 ResourceCodes.FIRST_SPRITE, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                 Anchor.LEFT_TOP);
-        final IconButton previewSheetButton = IconButton.init(
+        final MenuElement previewSheetButton = IconButton.init(
                         ResourceCodes.PREVIEW,
                         PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
-                        () -> {} /* TODO */).setAnchor(Anchor.RIGHT_TOP).build();
+                        () -> ProgramState.set(ProgramState.MENU, previewSpriteSheet()))
+                .setAnchor(Anchor.RIGHT_TOP).buildForWhen(style::exportsASprite);
         mb.addAll(firstSpriteInfo, previewSheetButton);
 
         // SEQUENCING
@@ -475,6 +476,22 @@ public final class MenuAssembly {
                         .build().draw());
 
         mb.add(programLabel);
+
+        return mb.build();
+    }
+
+    public static Menu previewSpriteSheet() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        mb.add(new SpriteSheetPreview());
+
+        final IconButton back = IconButton.init(ResourceCodes.BACK,
+                        new Coord2D(BUFFER / 2, BUFFER / 2),
+                        () -> ProgramState.set(ProgramState.CONFIGURATION, null))
+                .setTooltipCode(ResourceCodes.BACK_TO_CONFIG).build();
+        mb.add(back);
 
         return mb.build();
     }

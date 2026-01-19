@@ -44,7 +44,8 @@ public final class ResourceCodes {
             NO_REPL = "no_repl",
             BACK_FROM_REPL = "back_from_repl",
             RANDOM_SPRITE = "random_sprite",
-            RESET_SPRITE = "reset_sprite";
+            RESET_SPRITE = "reset_sprite",
+            BACK_TO_CONFIG = "back_to_config";
 
     // blurbs
     public static final String SPLASH = "splash", ABOUT = "about",
