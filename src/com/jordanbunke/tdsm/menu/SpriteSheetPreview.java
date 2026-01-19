@@ -3,6 +3,7 @@ package com.jordanbunke.tdsm.menu;
 import com.jordanbunke.delta_time.debug.GameDebugger;
 import com.jordanbunke.delta_time.events.GameEvent;
 import com.jordanbunke.delta_time.events.GameMouseEvent;
+import com.jordanbunke.delta_time.events.GameMouseScrollEvent;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
@@ -17,10 +18,13 @@ import static com.jordanbunke.tdsm.util.Layout.*;
 
 public final class SpriteSheetPreview extends MenuElement {
     private static final Coord2D CENTER_SCREEN = canvasAt(0.5, 0.5);
+    private static final int ZOOM_TO_SCALE = 1, ZOOM_OUT = 2;
 
     private final GameImage spriteSheet;
+    private GameImage spriteSheetCanvas;
 
     private boolean moving;
+    private int zoom;
     private Coord2D lastMousePos;
 
     private SpriteSheetPreview(final GameImage spriteSheet) {
@@ -31,6 +35,7 @@ public final class SpriteSheetPreview extends MenuElement {
         this.spriteSheet = spriteSheet;
 
         moving = false;
+        zoom(ZOOM_TO_SCALE, CENTER_SCREEN);
     }
 
     public SpriteSheetPreview() {
@@ -54,7 +59,7 @@ public final class SpriteSheetPreview extends MenuElement {
 
     @Override
     public void render(final GameImage canvas) {
-        draw(spriteSheet, canvas);
+        draw(spriteSheetCanvas, canvas);
     }
 
     @Override
@@ -83,6 +88,11 @@ public final class SpriteSheetPreview extends MenuElement {
                         }
                     }
                 }
+            } else if (e instanceof GameMouseScrollEvent sme) {
+                final int zoom = sme.clicksScrolled < 0 ? ZOOM_TO_SCALE : ZOOM_OUT;
+
+                if (this.zoom != zoom)
+                    zoom(zoom, mousePos);
             }
         }
     }
@@ -102,6 +112,29 @@ public final class SpriteSheetPreview extends MenuElement {
             incrementY(CENTER_SCREEN.y - rp.y);
         if (br.y < CENTER_SCREEN.y)
             incrementY(CENTER_SCREEN.y - br.y);
+    }
+
+    private void zoom(final int zoom, final Coord2D mousePos) {
+        this.zoom = zoom;
+
+        final int w = spriteSheet.getWidth() / zoom,
+                h = spriteSheet.getHeight() / zoom;
+
+        spriteSheetCanvas = new GameImage(w, h);
+        spriteSheetCanvas.draw(spriteSheet, 0, 0, w, h);
+        spriteSheetCanvas.free();
+
+        final Coord2D mouseToPos = getPosition().displace(mousePos.scale(-1)),
+                zoomShift = zoom == ZOOM_TO_SCALE ? mouseToPos :
+                        new Coord2D(mouseToPos.x / 2, mouseToPos.y / 2).scale(-1);
+
+        incrementX(zoomShift.x);
+        incrementY(zoomShift.y);
+
+        setWidth(w);
+        setHeight(h);
+
+        move(new Coord2D());
     }
 
     @Override

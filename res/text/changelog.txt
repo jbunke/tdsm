@@ -4,6 +4,7 @@ v1.3.0 - 2026-01-19 - Major update
 
   Added:
   + Reset sprite customization functionality
+  + Preview sprite sheet button and behaviour on configuration screen
   + No choice tooltip now includes randomization probability
   + "Close" button to color selection panel to dismiss active color selection
 
@@ -17,9 +18,6 @@ v1.3.0 - 2026-01-19 - Major update
   > Improved DeltaScript interpreter error handling
   > Changed user settings file to "/data/.settings.json" in program user data directory
   > Last used export folder now persists across program sessions
-
-  Removed:
-  - Here
 
   Fixed:
   #79 - Switching sprite styles can sometimes cause the program to crash
