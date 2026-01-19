@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 import static com.jordanbunke.tdsm.util.Constants.*;
 
-public class LoadingAnimation extends MenuAnimation {
+public final class LoadingAnimation extends MenuAnimation {
     private LoadingAnimation(
             final Coord2D position, final Anchor anchor,
             final GameImage... frames

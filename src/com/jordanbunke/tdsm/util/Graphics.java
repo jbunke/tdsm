@@ -480,14 +480,27 @@ public final class Graphics {
     public static GameImage drawCheckerboard(
             final int w, final int h
     ) {
-        final int px = CHECKERBOARD_SQUARE;
+        return drawCheckerboard(w, h, CHECKERBOARD_SQUARE,
+                CHECKERBOARD_SQUARE, Colors::checkerboard);
+    }
+
+    public static GameImage drawSpriteSheetPreviewCheckerboard(
+            final int w, final int h, final int squareW, final int squareH
+    ) {
+        return drawCheckerboard(w, h, squareW, squareH,
+                b -> new Color(checkerboard(b).getRGB()));
+    }
+
+    public static GameImage drawCheckerboard(
+            final int w, final int h, final int squareW, final int squareH,
+            final Function<Boolean, Color> fColor
+    ) {
         final GameImage checkerboard = new GameImage(w, h);
 
-        for (int x = 0; x < w / px; x++)
-            for (int y = 0; y < h / px; y++)
-                checkerboard.fillRectangle(
-                        checkerboard((x + y) % 2 == 0),
-                        x * px, y * px, px, px);
+        for (int x = 0; x < w / squareW; x++)
+            for (int y = 0; y < h / squareH; y++)
+                checkerboard.fillRectangle(fColor.apply((x + y) % 2 == 0),
+                        x * squareW, y * squareH, squareW, squareH);
 
         return checkerboard.submit();
     }
