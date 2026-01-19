@@ -1,9 +1,9 @@
 # ![Top Down Sprite Maker](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/logo/banner.gif)
 
 <div style="margin: auto; text-align: center; width: 70%;">
-    <p style="text-wrap: pretty;">
+    <div style="text-wrap: pretty;">
         <strong>Top Down Sprite Maker (TDSM)</strong> is a flexible and powerful <strong>pixel art character creation tool</strong>. It is a desktop GUI application with executable binaries distributed for Windows, macOS, and Linux distributions.
-    </dpiv>
+    </div>
 </div>
 
 <div style="text-align: center; margin-top: 50px; margin-bottom: 20px;">
