@@ -1,5 +1,5 @@
 {
 	"name": "Top Down Sprite Maker",
-	"version": "1.3.0.171",
-	"devbuild": true
+	"version": "1.3.0",
+	"devbuild": false
 }

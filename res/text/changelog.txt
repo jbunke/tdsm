@@ -20,6 +20,7 @@ v1.3.0 - 2026-01-19 - Major update
   > Last used export folder now persists across program sessions
 
   Fixed:
+  #64 - macOS app icon is default Java icon
   #79 - Switching sprite styles can sometimes cause the program to crash
   #80 - Asset choice buttons can still be clicked when partially beyond scroll box
   #82 - App crashes or shows unhelpful error screen when loading JSON metadata

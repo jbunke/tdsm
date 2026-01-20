@@ -55,7 +55,7 @@ jpackage ^
     --win-dir-chooser ^
     --win-shortcut ^
     --win-menu ^
-    --win-menu-group "Top Down Sprite Maker" ^
+    --win-menu-group "%NAME%" ^
     --description "%NAME%"
 move "%OUTPUT_DIR%\installer\%NAME%-%VERSION%.exe" "%OUTPUT_DIR%\installer\%ID%-%VERSION%-installer.exe"
 
