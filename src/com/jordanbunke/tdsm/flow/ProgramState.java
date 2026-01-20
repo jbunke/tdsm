@@ -21,18 +21,33 @@ public enum ProgramState implements ProgramContext {
     private static ProgramState state;
     private static Menu menu;
 
+    private static boolean loading;
+
     public static ProgramState get() {
         return state;
     }
 
     public static void set(final ProgramState state, final Menu menu) {
+        loading = false;
         ProgramState.state = state;
 
         if (state == MENU)
             ProgramState.menu = menu;
     }
 
+    public static boolean isLoading() {
+        return loading;
+    }
+
+    public static void setLoading(final Menu menu) {
+        state = MENU;
+        ProgramState.menu = menu;
+        loading = true;
+    }
+
     public static void to(final Menu menu) {
+        loading = false;
+
         if (state != MENU)
             return;
 

@@ -67,6 +67,10 @@ public final class AssetChoice {
         render = Colors.runColorReplacement(asset, colors, colorReplacementFunc);
     }
 
+    public CustomizationLayer getLayer() {
+        return layer;
+    }
+
     public ColorSelection[] getColorSelections() {
         return colorSelections;
     }

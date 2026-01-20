@@ -83,9 +83,4 @@ public final class FromFileStyle extends Style {
         for (String code : codes)
             settings.add(this, code);
     }
-
-    @Override
-    public boolean shipping() {
-        return true;
-    }
 }

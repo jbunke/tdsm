@@ -46,7 +46,8 @@ public final class Customization implements ProgramContext {
 
     public void render(final GameImage canvas) {
         final GameImage blueprint = Graphics.BLUEPRINT;
-        final int bHalfW = blueprint.getWidth() / 2;
+        final int bHalfW = blueprint.getWidth() / 2,
+                bMidY = BUFFER + blueprint.getHeight() / 2;
         canvas.draw(blueprint, PREVIEW.atX(0.5) - bHalfW, BUFFER);
 
         final GameImage sprite = ImageProcessing.scale(
@@ -54,7 +55,7 @@ public final class Customization implements ProgramContext {
                 Sprite.get().getStyle().getPreviewScaleUp());
 
         canvas.draw(sprite, (PREVIEW.width - sprite.getWidth()) / 2,
-                (int) ((PREVIEW.height - sprite.getHeight()) * 0.3));
+                bMidY - sprite.getHeight() / 2);
 
         Arrays.stream(customizationBoxes())
                 .forEach(box -> Graphics.renderScreenBox(canvas, box));

@@ -42,6 +42,7 @@ import com.jordanbunke.tdsm.settings.update.StartupMessage;
 import com.jordanbunke.tdsm.visual_misc.Playback;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.*;
@@ -62,12 +63,24 @@ public final class MenuAssembly {
 
         // PREVIEW
         if (style.settings.has()) {
-            IconButton settings = IconButton.init(
+            final IconButton settings = IconButton.init(
                     ResourceCodes.SETTINGS, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                     () -> ProgramState.set(ProgramState.MENU, styleSettings())
             ).setTooltipCode(ResourceCodes.STYLE_SETTINGS).build();
             mb.add(settings);
         }
+
+        final IconButton randomSpriteButton = IconButton.init(
+                    ResourceCodes.RANDOM,
+                        PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
+                    style::randomize).setAnchor(Anchor.RIGHT_TOP)
+                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build(),
+                resetSpriteButton = IconButton.init(
+                        ResourceCodes.RESET,
+                                randomSpriteButton.getRenderPosition(),
+                                style::resetCustomization).setAnchor(Anchor.RIGHT_TOP)
+                        .setTooltipCode(ResourceCodes.RESET_SPRITE).build();
+        mb.addAll(randomSpriteButton, resetSpriteButton);
 
         final StaticLabel animationLabel = StaticLabel.init(labelPosFor(
                 PREVIEW.x, PREVIEW.atY(0.75)), "Animation:").build();
@@ -108,12 +121,7 @@ public final class MenuAssembly {
         final StaticLabel styleLabel = StaticLabel.init(
                 labelPosFor(TOP.pos()), "Sprite style:").build();
 
-        final Style[] styles = Styles.all().filter(s -> {
-            if (RuntimeSettings.isShowWIP())
-                return true;
-
-            return s.shipping();
-        }).toArray(Style[]::new);
+        final Style[] styles = Styles.all().toArray(Style[]::new);
         final int co = STYLE_NAME_CUTOFF;
         final Dropdown styleDropdown = Dropdown.create(
                 styleLabel.followTB(),
@@ -136,23 +144,18 @@ public final class MenuAssembly {
 
         final Indicator styleInfo = sib.build();
 
-        final IconButton randomSpriteButton = IconButton.init(
-                ResourceCodes.RANDOM, TOP.at(0.95, 0.5),
-                style::randomize).setAnchor(Anchor.CENTRAL)
-                .setTooltipCode(ResourceCodes.RANDOM_SPRITE).build(),
+        final IconButton uploadStyleButton = IconButton.init(
+                ResourceCodes.ADD, TOP.at(0.95, 0.5),
+                Styles::uploadStyleDialog).setAnchor(Anchor.CENTRAL)
+                .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build(),
                 loadFromJSONButton = IconButton.init(
                         ResourceCodes.LOAD_FROM_JSON,
-                        randomSpriteButton.getRenderPosition(),
+                        uploadStyleButton.getRenderPosition(),
                         JSONHelper::loadFromJSON)
-                        .setAnchor(Anchor.RIGHT_TOP).build(),
-                uploadStyleButton = IconButton.init(ResourceCodes.ADD,
-                                loadFromJSONButton.getRenderPosition(),
-                                Styles::uploadStyleDialog)
-                        .setAnchor(Anchor.RIGHT_TOP)
-                        .setTooltipCode(ResourceCodes.UPLOAD_STYLE).build();
+                        .setAnchor(Anchor.RIGHT_TOP).build();
 
         mb.addAll(styleLabel, styleDropdown, styleInfo,
-                randomSpriteButton, loadFromJSONButton, uploadStyleButton);
+                loadFromJSONButton, uploadStyleButton);
 
         // LAYER
         mb.add(CustomizationElement.make());
@@ -182,7 +185,12 @@ public final class MenuAssembly {
         final Indicator firstSpriteInfo = Indicator.make(
                 ResourceCodes.FIRST_SPRITE, PREVIEW.at(BUFFER / 2, BUFFER / 2),
                 Anchor.LEFT_TOP);
-        mb.add(firstSpriteInfo);
+        final MenuElement previewSheetButton = IconButton.init(
+                        ResourceCodes.PREVIEW,
+                        PREVIEW.at(PREVIEW.width - BUFFER / 2, BUFFER / 2),
+                        () -> ProgramState.set(ProgramState.MENU, previewSpriteSheet()))
+                .setAnchor(Anchor.RIGHT_TOP).buildForWhen(style::exportsASprite);
+        mb.addAll(firstSpriteInfo, previewSheetButton);
 
         // SEQUENCING
         final StaticLabel sequencingLabel = StaticLabel.init(
@@ -363,7 +371,7 @@ public final class MenuAssembly {
 
         // BOTTOM BAR
         final MenuElement toCustomButton = StaticTextButton.make(
-                "< Edit...", BOTTOM.at(0.0, 0.5)
+                "< Customize...", BOTTOM.at(0.0, 0.5)
                         .displace(BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.LEFT_CENTRAL, () -> true,
                 () -> ProgramState.set(ProgramState.CUSTOMIZATION, null));
@@ -408,12 +416,21 @@ public final class MenuAssembly {
         return mb.build();
     }
 
+    public static void loadSpriteStyle(final File file) {
+        load(() -> Styles.uploadFromFile(file));
+    }
+
     private static void loadCustomization() {
-        ProgramState.to(loading());
+        load(Sprite::tap);
+    }
+
+    private static void load(final Runnable action) {
+        ProgramState.setLoading(loading());
 
         final Thread backgroundThread = new Thread(() -> {
-            Sprite.tap();
-            ProgramState.set(ProgramState.CUSTOMIZATION, null);
+            action.run();
+            if (ProgramState.isLoading())
+                ProgramState.set(ProgramState.CUSTOMIZATION, null);
         }, "Loader");
         backgroundThread.start();
     }
@@ -455,9 +472,26 @@ public final class MenuAssembly {
                 Anchor.CENTRAL_BOTTOM,
                 Graphics.miniText(Colors.darkSystem())
                         .addText(ProgramInfo.formatVersion()).addLineBreak()
-                        .addText("(c) 2025 Jordan Bunke").build().draw());
+                        .addText(ParserUtils.readResourceText(ResourceCodes.COPYRIGHT))
+                        .build().draw());
 
         mb.add(programLabel);
+
+        return mb.build();
+    }
+
+    public static Menu previewSpriteSheet() {
+        final MenuBuilder mb = new MenuBuilder();
+
+        mb.add(new BackgroundElement());
+
+        mb.add(new SpriteSheetPreview());
+
+        final IconButton back = IconButton.init(ResourceCodes.BACK,
+                        new Coord2D(BUFFER / 2, BUFFER / 2),
+                        () -> ProgramState.set(ProgramState.CONFIGURATION, null))
+                .setTooltipCode(ResourceCodes.BACK_TO_CONFIG).build();
+        mb.add(back);
 
         return mb.build();
     }
@@ -770,8 +804,13 @@ public final class MenuAssembly {
             sb.append("[ ").append(i + 1)
                     .append(" of ").append(messages.length)
                     .append(" ]\nSince v").append(message.since.toString())
-                    .append(":").append("\n".repeat(2))
-                    .append(ParserUtils.readResourceText(message.id()));
+                    .append(":").append("\n".repeat(2));
+
+            try {
+                sb.append(ParserUtils.readUpdateInfo(message.id));
+            } catch (Exception e) {
+                sb.append("Failed to read update message");
+            }
 
             if (i + 1 < messages.length)
                 sb.append("\n".repeat(3));
@@ -796,30 +835,34 @@ public final class MenuAssembly {
 
         final List<String> lines = new LinkedList<>();
 
+        final String NEWLINE = "\n";
+
         for (int i = 0; i < errors.length; i++) {
             final String error = errors[i];
 
             if (error.length() > SMALL_FONT_LINE_CHAR_LIMIT) {
-                final Pair<String, String> splitError = splitLine(error);
+                final List<String> splitError = splitLine(error);
 
-                if (splitError == null)
-                    lines.add(error);
-                else {
-                    lines.add(splitError.a());
-                    lines.add(" ".repeat(10) + splitError.b());
-                }
-            }
+                for (int j = 0; j < splitError.size(); j++)
+                    lines.add((j == 0 ? "" : " ".repeat(4)) +
+                            splitError.get(j));
+            } else
+                lines.add(error);
 
             if (i + 1 < errors.length)
-                lines.add("\n");
+                lines.add(NEWLINE);
         }
 
-        final String concat = lines.size() == 1 ? lines.get(0)
-                : lines.stream()
-                .reduce((a, b) -> a + "\n" + b)
-                .orElse("");
+        final StringBuilder concat = new StringBuilder();
 
-        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), concat);
+        for (String line : lines) {
+            concat.append(line);
+
+            if (!line.equals(NEWLINE))
+                concat.append(NEWLINE);
+        }
+
+        menuBlurb(mb, Text.Orientation.LEFT, 0.2, atY(0.65), concat.toString());
 
         final MenuElement close = StaticTextButton.make("Close",
                 ButtonType.STANDARD, Alignment.CENTER, atX(0.3),
@@ -831,14 +874,22 @@ public final class MenuAssembly {
         return mb.build();
     }
 
-    private static Pair<String, String> splitLine(final String line) {
-        for (int i = SMALL_FONT_LINE_CHAR_LIMIT; i >= 0; i--) {
-            if (line.charAt(i) == ' ')
-                return new Pair<>(
-                        line.substring(0, i), line.substring(i + 1));
+    private static List<String> splitLine(String line) {
+        final List<String> split = new ArrayList<>();
+
+        while (line.length() > SMALL_FONT_LINE_CHAR_LIMIT) {
+            for (int i = SMALL_FONT_LINE_CHAR_LIMIT; i >= 0; i--)
+                if (line.charAt(i) == ' ') {
+                    split.add(line.substring(0, i));
+                    line = line.substring(i + 1);
+                    break;
+                }
         }
 
-        return null;
+        if (!line.isEmpty())
+            split.add(line);
+
+        return split;
     }
 
     public static Menu styleSettings() {

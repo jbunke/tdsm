@@ -10,6 +10,7 @@ import com.jordanbunke.stip_parser.rep.IRLayer;
 import com.jordanbunke.stip_parser.rep.IRState;
 import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
+import com.jordanbunke.tdsm.settings.Settings;
 import com.jordanbunke.tdsm.util.EnumUtils;
 import com.jordanbunke.tdsm.util.MenuAssembly;
 
@@ -47,7 +48,7 @@ public final class Export {
     }
 
     private Export() {
-        folder = null;
+        readFolder();
         fileName = "";
         exportJSON = false;
         exportStip = false;
@@ -55,6 +56,17 @@ public final class Export {
 
     public static Export get() {
         return INSTANCE;
+    }
+
+    private void readFolder() {
+        final Path fromSettings = Settings.get(Settings.SET_ID_EXPORT_FOLDER, Path.class);
+
+        if (fromSettings == null || fromSettings.toFile().isDirectory())
+            folder = fromSettings;
+        else {
+            folder = null;
+            Settings.reset(Settings.SET_ID_EXPORT_FOLDER);
+        }
     }
 
     public boolean canExport() {
@@ -148,13 +160,15 @@ public final class Export {
         if (opened.isEmpty())
             return;
 
-        folder = opened.get().toPath();
+        setFolder(opened.get().toPath());
     }
 
-    // scripting inclusion
+    // public for scripting access
     @SuppressWarnings("unused")
     public void setFolder(final Path folder) {
         this.folder = folder;
+
+        Settings.set(Settings.SET_ID_EXPORT_FOLDER, folder);
     }
 
     public String getFileName() {

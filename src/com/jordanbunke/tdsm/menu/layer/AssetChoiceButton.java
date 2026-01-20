@@ -8,6 +8,7 @@ import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.layer.AssetChoiceLayer;
 import com.jordanbunke.tdsm.menu.Button;
+import com.jordanbunke.tdsm.menu.scrollable.HorzScrollBox;
 import com.jordanbunke.tdsm.util.*;
 
 public final class AssetChoiceButton extends MenuButton implements Button {
@@ -18,6 +19,8 @@ public final class AssetChoiceButton extends MenuButton implements Button {
     private final String tooltip;
 
     private GameImage base, highlight, selected;
+
+    private HorzScrollBox choicesBox;
 
     private AssetChoiceButton(
             final Coord2D position, final Bounds2D dimensions,
@@ -33,6 +36,8 @@ public final class AssetChoiceButton extends MenuButton implements Button {
         this.preview = preview;
         this.tooltip = tooltip;
 
+        choicesBox = null;
+
         redraw();
     }
 
@@ -41,7 +46,8 @@ public final class AssetChoiceButton extends MenuButton implements Button {
             final AssetChoiceLayer layer
     ) {
         final String code = ResourceCodes.NONE,
-                tooltip = ParserUtils.readResourceText(code);
+                tooltip = ParserUtils.readResourceText(code) +
+                        "\n(" + layer.noAssetChoice + ")";
         final GameImage preview = Graphics.readIcon(code);
 
         return new AssetChoiceButton(position, dims, layer,
@@ -68,6 +74,10 @@ public final class AssetChoiceButton extends MenuButton implements Button {
                 Button.sim(false, true), w, h);
         selected = Graphics.drawAssetChoiceButton(preview,
                 Button.sim(true, false), w, h);
+    }
+
+    public void setChoicesBox(final HorzScrollBox choicesBox) {
+        this.choicesBox = choicesBox;
     }
 
     @Override
@@ -100,9 +110,19 @@ public final class AssetChoiceButton extends MenuButton implements Button {
 
     @Override
     public void process(final InputEventLogger eventLogger) {
-        super.process(eventLogger);
-
         final Coord2D mousePos = eventLogger.getAdjustedMousePosition();
+
+        final boolean inCustomizationBox =
+                CustomizationElement.get().mouseIsWithinBounds(mousePos),
+                inChoicesBox = choicesBox == null ||
+                        choicesBox.mouseIsWithinBounds(mousePos);
+
+        if (!inCustomizationBox || !inChoicesBox) {
+            setHighlighted(false);
+            return;
+        }
+
+        super.process(eventLogger);
 
         if (mouseIsWithinBounds(mousePos)) {
             Tooltip.get().ping(tooltip, mousePos);

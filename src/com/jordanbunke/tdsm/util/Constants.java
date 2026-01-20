@@ -10,9 +10,11 @@ public final class Constants {
             STYLE_MANIFEST_FILENAME = "manifest." + SCRIPT_EXT,
             DEFAULT_STYLE_NAME = "default";
 
-    public static final Path PROGRAM_FILE = Path.of("program"),
+    public static final Path PROGRAM_FILE = Path.of("program.json"),
             VERSION_FILE = Path.of("version"),
             TEXT_FOLDER = Path.of("text"),
+            UPDATE_INFO_FOLDER = Path.of("text", "update-info"),
+            INTERNAL_SETTINGS_FILEPATH = Path.of("data", ".settings.json"),
             LOGO_FOLDER = Path.of("logo"),
             LOADING_FOLDER = Path.of("loading"),
             STYLES_FOLDER = Path.of("styles");
@@ -25,6 +27,6 @@ public final class Constants {
             MAX_SPRITE_EXPORT_W = 128, MAX_SPRITE_EXPORT_H = 128,
             DEF_FRAMES_PER_DIM = 8, DEF_TEXTBOX_CHAR_MAX = 12,
             FILE_NAME_MAX_LENGTH = 40, LOGO_FRAMES = 16,
-            LOADING_FRAMES = 16, ANIM_TICKS = 6,
+            LOADING_FRAMES = 36, ANIM_TICKS = 6,
             GBA_SPRITE_COL_LIMIT = 15, STYLE_NAME_CUTOFF = 16;
 }

@@ -4,7 +4,8 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 
 public enum Cursor {
-    MAIN, POINTER, RETICLE, TEXT, VERT_SCROLL, HORZ_SCROLL, NONE;
+    MAIN, POINTER, RETICLE, TEXT,
+    VERT_SCROLL, HORZ_SCROLL, HAND_OPEN, HAND_GRAB, NONE;
 
     private static Cursor cursor;
     private static Coord2D mousePos;

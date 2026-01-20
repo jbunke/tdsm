@@ -6,18 +6,16 @@ import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.MenuElement;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
-import com.jordanbunke.tdsm.util.Colors;
-import com.jordanbunke.tdsm.util.Layout;
 
-import java.awt.*;
+import static com.jordanbunke.tdsm.util.Layout.ScreenBox.SAMPLER;
+
 import java.util.function.Supplier;
 
 public final class Veil extends MenuElement {
-    private static final Color VEIL_COLOR = Colors.veil();
-
     private boolean passing;
     private final Supplier<Boolean> condition;
     private final MenuElement content;
+    private final StaticLabel disabled;
 
     public Veil(
             final Coord2D position, final Bounds2D dimensions,
@@ -27,6 +25,10 @@ public final class Veil extends MenuElement {
 
         this.content = content;
         this.condition = condition;
+
+        disabled = StaticLabel
+                .init(SAMPLER.at(0.5, 0.5), "No active color selection")
+                .setMini().setAnchor(Anchor.CENTRAL).build();
 
         passing = condition.get();
     }
@@ -47,14 +49,10 @@ public final class Veil extends MenuElement {
 
     @Override
     public void render(final GameImage canvas) {
-        content.render(canvas);
-
-        if (!passing) {
-            final int VO = Layout.VEIL_OFFSET;
-
-            canvas.fillRectangle(VEIL_COLOR, getX() + VO, getY() + VO,
-                    getWidth() - (2 * VO), getHeight() - (2 * VO));
-        }
+        if (passing)
+            content.render(canvas);
+        else
+            disabled.render(canvas);
     }
 
     @Override

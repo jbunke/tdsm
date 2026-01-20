@@ -10,6 +10,10 @@ public final class ParserUtils {
         return read(Constants.TEXT_FOLDER.resolve(code + ".txt"));
     }
 
+    public static String readUpdateInfo(final String code) {
+        return read(Constants.UPDATE_INFO_FOLDER.resolve(code + ".txt"));
+    }
+
     public static String read(final Path resource) {
         return FileIO.readResource(ResourceLoader.loadResource(resource), "");
     }

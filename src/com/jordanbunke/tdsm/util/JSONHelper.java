@@ -117,6 +117,14 @@ public final class JSONHelper {
 
                     if (gui && style != null)
                         Sprite.get().setStyle(style);
+                    else if (style == null) {
+                        errorList.add("The sprite style ID \"" + value +
+                                "\" indicated by the JSON is not among the " +
+                                "sprite styles currently loaded in the program." +
+                                " Please upload the corresponding sprite style " +
+                                "before attempting to load JSON data.");
+                        return errorList;
+                    }
                 }
                 case CUSTOMIZATION -> {
                     if (style != null && pair.value() instanceof JSONObject o) {

@@ -82,6 +82,8 @@ public abstract class CustomizationLayer {
 
     public abstract void randomize(final boolean updateSprite);
 
+    public abstract void reset();
+
     public abstract int calculateExpandedHeight();
 
     @Override

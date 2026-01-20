@@ -1,16 +1,14 @@
 package com.jordanbunke.tdsm;
 
-import com.jordanbunke.delta_time.error.GameError;
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.ResourceLoader;
 import com.jordanbunke.delta_time.utility.Version;
-import com.jordanbunke.delta_time.utility.math.Pair;
-import com.jordanbunke.stip_parser.ParserSerializer;
-import com.jordanbunke.stip_parser.SerialBlock;
+import com.jordanbunke.json.JSONBuilder;
+import com.jordanbunke.json.JSONPair;
+import com.jordanbunke.json.JSONReader;
 import com.jordanbunke.tdsm.util.Constants;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 
 public final class ProgramInfo {
     public static String PROGRAM_NAME = "Top Down Sprite Maker";
@@ -25,34 +23,16 @@ public final class ProgramInfo {
         final String programFile = FileIO.readResource(ResourceLoader
                 .loadResource(Constants.PROGRAM_FILE), "prg");
 
-        final SerialBlock[] blocks = ParserSerializer
-                .deserializeBlocksAtDepthLevel(programFile);
+        final JSONPair[] pairs = JSONReader.readObject(programFile);
 
-        for (SerialBlock block : blocks) {
-            switch (block.tag()) {
-                case Constants.NAME_CODE -> PROGRAM_NAME = block.value();
-                case Constants.VERSION_CODE -> {
-                    try {
-                        final Integer[] components = Arrays
-                                .stream(block.value().split("\\."))
-                                .map(Integer::parseInt).toArray(Integer[]::new);
-
-                        final int MAJOR = 0, MINOR = 1, PATCH = 2,
-                                BUILD = 3, HAS_BUILD_LENGTH = 4;
-
-                        if (components.length == HAS_BUILD_LENGTH)
-                            VERSION = new Version(components[MAJOR],
-                                    components[MINOR], components[PATCH],
-                                    components[BUILD]);
-                        else if (components.length > PATCH)
-                            VERSION = new Version(components[MAJOR],
-                                    components[MINOR], components[PATCH]);
-                    } catch (NumberFormatException e) {
-                        GameError.send("Could not read program version from data file.");
-                    }
-                }
+        for (JSONPair pair : pairs) {
+            switch (pair.key()) {
+                case Constants.NAME_CODE ->
+                        PROGRAM_NAME = String.valueOf(pair.value());
+                case Constants.VERSION_CODE ->
+                        VERSION = Version.parse(String.valueOf(pair.value()));
                 case Constants.IS_DEVBUILD_CODE ->
-                        IS_DEVBUILD = Boolean.parseBoolean(block.value());
+                        IS_DEVBUILD = Boolean.parseBoolean(String.valueOf(pair.value()));
             }
         }
 
@@ -64,15 +44,13 @@ public final class ProgramInfo {
 
                 final Path toSave = RES_ROOT.resolve(Constants.PROGRAM_FILE);
 
-                final StringBuilder updated = new StringBuilder();
+                final JSONBuilder updated = new JSONBuilder();
 
-                ParserSerializer.serializeSimpleAttributes(updated, -1,
-                        new Pair<>(Constants.NAME_CODE, PROGRAM_NAME),
-                        new Pair<>(Constants.VERSION_CODE, VERSION.toString()),
-                        new Pair<>(Constants.IS_DEVBUILD_CODE,
-                                String.valueOf(IS_DEVBUILD)));
+                updated.add(new JSONPair(Constants.NAME_CODE, PROGRAM_NAME));
+                updated.add(new JSONPair(Constants.VERSION_CODE, String.valueOf(VERSION)));
+                updated.add(new JSONPair(Constants.IS_DEVBUILD_CODE, IS_DEVBUILD));
 
-                FileIO.writeFile(toSave, updated.toString());
+                FileIO.writeFile(toSave, updated.write());
             }
 
             final Path versionFile = RES_ROOT.resolve(Constants.VERSION_FILE);

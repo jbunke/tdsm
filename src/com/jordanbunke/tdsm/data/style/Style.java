@@ -470,6 +470,11 @@ public abstract class Style {
         update();
     }
 
+    public void resetCustomization() {
+        layers.customization().forEach(CustomizationLayer::reset);
+        update();
+    }
+
     public void update() {
         final SpriteAssembler<String, String> assembler =
                 new SpriteAssembler<>(dims.width(), dims.height());
@@ -513,7 +518,6 @@ public abstract class Style {
     public void buildSettingsMenu(final MenuBuilder mb, final int startingY) {}
 
     public abstract String name();
-    public abstract boolean shipping();
 
     // SEQUENCING
     public void updateAnimationInclusion(

@@ -40,6 +40,10 @@ public final class ColorSelection {
         setColor(swatches[index], updateSprite);
     }
 
+    public void reset() {
+        setColor(swatches[0], false);
+    }
+
     public void setColor(final Color color, final boolean updateSprite) {
         if (this.color.equals(color))
             return;

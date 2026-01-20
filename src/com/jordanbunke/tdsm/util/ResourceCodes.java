@@ -6,6 +6,7 @@ public final class ResourceCodes {
             COLLAPSE = "collapse",
             EXPAND = "expand",
             RANDOM = "random",
+            PREVIEW = "preview",
             TURN_CLOCKWISE = "turn_cw",
             TURN_COUNTERCLOCKWISE = "turn_ccw",
             BLUEPRINT = "blueprint",
@@ -42,14 +43,16 @@ public final class ResourceCodes {
             REPLACEMENT = "replacement",
             NO_REPL = "no_repl",
             BACK_FROM_REPL = "back_from_repl",
-            RANDOM_SPRITE = "random_sprite";
+            RANDOM_SPRITE = "random_sprite",
+            RESET_SPRITE = "reset_sprite",
+            BACK_TO_CONFIG = "back_to_config";
 
     // blurbs
     public static final String SPLASH = "splash", ABOUT = "about",
             CHANGELOG = "changelog", ROADMAP = "roadmap",
             LICENSE = "LICENSE", SUMMARY = "license_summary",
             STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
-            MORE_STYLES = "more_styles";
+            MORE_STYLES = "more_styles", COPYRIGHT = "copyright";
 
     // tutorials
     public static final String TUT_MAKE_STYLE = "tut_make_style",

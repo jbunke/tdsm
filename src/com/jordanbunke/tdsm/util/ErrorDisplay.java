@@ -1,5 +1,6 @@
 package com.jordanbunke.tdsm.util;
 
+import com.jordanbunke.delta_time.scripting.util.ScriptErrorLog;
 import com.jordanbunke.tdsm.flow.ProgramState;
 
 import java.util.Arrays;
@@ -10,5 +11,10 @@ public final class ErrorDisplay {
             ProgramState.set(ProgramState.MENU,
                     MenuAssembly.encounteredErrors(Arrays.stream(errors)
                             .map(s -> "> " + s).toArray(String[]::new)));
+    }
+
+    public static void showScriptErrors() {
+        show(Arrays.stream(ScriptErrorLog.getErrors())
+                .map(String::valueOf).toArray(String[]::new));
     }
 }

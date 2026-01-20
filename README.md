@@ -1,43 +1,42 @@
 # ![Top Down Sprite Maker](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/logo/banner.gif)
 
-***Top Down Sprite Maker*** (*TDSM*) is a flexible and powerful **pixel art character creation tool**. It is a desktop GUI application with executable binaries distributed for Windows, macOS, and Linux distributions.
-
-[![Buy on itch.io](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png)](https://flinkerflitzer.itch.io/tdsm)
-
-[![API](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/api-button.png)](https://github.com/jbunke/tdsm-api)
-[![Changelog](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/changelog-button.png)](https://github.com/jbunke/tdsm/blob/master/res/text/changelog.txt)
-[![Roadmap](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/roadmap-button.png)](https://github.com/jbunke/tdsm/blob/master/res/text/roadmap.txt)
-
----
+<div align="center">
+    <div>
+        <strong>Top Down Sprite Maker (TDSM)</strong> is a flexible and powerful <strong>pixel art character creation tool</strong>. It is a desktop GUI application with executable binaries distributed for Windows, macOS, and Linux distributions.
+    </div>
+    <br><br>
+    <div class="store-page-line">
+        <a href="https://flinkerflitzer.itch.io/tdsm" target="_blank">
+            <img alt="Buy on itch.io" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png">
+        </a>
+    </div>
+    <div>
+        <a href="https://github.com/jbunke/tdsm-api" target="_blank">
+            <img alt="API" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/api-button.png">
+        </a>
+        <a href="https://github.com/jbunke/tdsm/blob/master/res/text/changelog.txt" target="_blank">
+            <img alt="Changelog" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/changelog-button.png">
+        </a>
+        <a href="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/roadmap-button.png" target="_blank">
+            <img alt="Roadmap" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/roadmap-button.png">
+        </a>
+    </div>
+</div>
 
 ## Sprite styles
 
-While most similar programs are built around a specific sprite style (art style, directions, supported animations, etc.), *TDSM* is built to support **multiple** sprite styles. *TDSM* sprite styles are modular, packaged in **ZIP archives**, and can thus be **created, modified, and shared** by the community.
+TDSM is unique among character customization programs in that it supports multiple **sprite styles**, which are distributed separately from the program as ZIP files.
 
-### Flexibility
+Each sprite style is its own art style, and defines its own...
 
-*TDSM* sprite styles define their own composition **layers**, supported **directions** (whether 4, 6, or 8), and **animations**.
+* Animations
+* Layers
+* Customization options
+* Frame dimensions
 
-### Getting and using sprite styles
+Some sprite styles are paid add-ons, while others can be downloaded for free.
 
-The program launches with a basic "Default" 8-directional 32-bit sprite style that acts as a sort of tech demo.
-
-You can download/buy additional sprite styles online. Sprite styles made or approved by me are added to [this Itch.io collection](https://itch.io/c/5834066/top-down-sprite-maker-approved-sprite-styles). Sprite styles inspired by established IPs, such as *Pokémon*, are always distributed for free.
-
-### Making your own sprite styles
-
-> As of the release of v1.2.0, the *DeltaScript* language specification is outdated and does not reflect the semantics of the language interpreter that runs in *TDSM*. This resource will be updated as soon as possible.
-
-Making sprite styles for TDSM consists of two main components:
-
-* Programming a `manifest.tds` script file that defines the sprite style's composition logic
-* Drawing the assets that are composed according to the rules defined in the script
-
-Scripts are written in [*DeltaScript*](https://github.com/jbunke/deltascript) (a scripting language I designed for use with specific applications) and the [*TDSM* scripting API](https://github.com/jbunke/tdsm-api).
-
-There is a [step-by-step tutorial](https://youtu.be/jqZTsHniSUE) available on YouTube.
-
----
+The **full list of sprite styles** made or approved by the developer is available [here](https://itch.io/c/5834066/top-down-sprite-maker-approved-sprite-styles).
 
 ## Features
 
@@ -45,34 +44,32 @@ There is a [step-by-step tutorial](https://youtu.be/jqZTsHniSUE) available on Yo
 
 *TDSM* gives you complete freedom to customize every facet of your character, yet the sprite assembly rules still ensure that sprites always look good and production-ready.
 
-* **Controlled randomization**: Generate random sprites with the click of a button. Randomization can be constrained by **locking** customization layers you wish to exclude. [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/logo/itch/feat-lock-layers.gif)
-* **Smart layering rules**: Customization layers update dynamically based on changes to other layers they depend on. For example, changing your body type from "average" to "small" in the [*Pokémon* Gen. 4 Trainer](https://flinkerflitzer.itch.io/pokemon-gen-4-trainer) style will render your head a pixel lower and switch to the small body clothing assets, but the outfit choice will stay the same.
+* **Controlled randomization**: Generate random sprites with the click of a button. Randomization can be constrained by **locking** customization layers you wish to exclude. [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/randomization.gif)
+* **Smart layering rules**: Customization layers update dynamically based on changes to other layers they depend on. For example, when using the [*Pixel Citizen*](https://flinkerflitzer.itch.io/pixel-citizen) sprite style, changing your body type will dynamically update your clothes to fit your character's new body, while preserving the selection. [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/dynamic-choice.gif)
 
 ### Configure
 
-Configure your sprite sheet to your exact needs. Have *TDSM* adapt to your existing projects rather than having to rework code or sprite sheet slicing configurations.
+Configure your sprite sheet to your exact needs. Have TDSM adapt to your existing projects rather than having to rework code or sprite sheet slicing configurations.
 
 * **Sizing**: Crop or pad individual sprites to your liking, ranging from 1x1 px to 128x128 px [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/padding.gif)
 * **Sequencing**: Determine which directions and animations to include in the export, and **in which order** [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/sequencing.gif)
 * **Layout**: Determine the axis along which directions and animations are exported in the sprite sheet, as well as how distinct animations follow one another [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/layout.gif)
 
-### Export
+### Export options
 
-Export sprite sheets and associated data from TDSM in seconds.
+In addition to the sprite sheet as a PNG image file with a transparent background, TDSM gives you the option to export:
 
-* Sprite sheet as a PNG image
-* Sprite sheet metadata as JSON *\[optional\]*
-* Sprite sheet with customization layers separated as [*Stipple Effect*](https://github.com/stipple-effect/stipple-effect) project (`.stip`) *\[optional\]*
+* Sprite sheet metadata as a JSON file
+* Sprite sheet with customization layers separated onto distinct layers as a [*Stipple Effect*](https://github.com/stipple-effect/stipple-effect) project
 
 ### Save and load sprite data
 
-Sprite customization data can be loaded into *TDSM* by uploading a JSON metadata file that matches a sprite style present in the current program session.
-
----
+A character from a previously exported sprite sheet can be reloaded into TDSM by uploading its JSON metadata file, provided that the sprite style that produced the sheet is currently loaded into TDSM. [**[ screenshot ]**](https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/captures/reupload.gif)
 
 ## Contribute
 
-You can help me develop *TDSM* by [reporting bugs](https://github.com/jbunke/tdsm/issues/new?template=bug_report.md).
+* [Report a bug](https://github.com/jbunke/tdsm/issues/new?template=bug_report.md)
+* [Request a feature](https://github.com/jbunke/tdsm/issues/new?template=feature_request.md)
 
 ## License
 

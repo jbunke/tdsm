@@ -2,11 +2,13 @@ package com.jordanbunke.tdsm.settings;
 
 import com.jordanbunke.delta_time.error.GameError;
 import com.jordanbunke.delta_time.io.FileIO;
+import com.jordanbunke.delta_time.scripting.util.PathHelper;
 import com.jordanbunke.delta_time.utility.Version;
-import com.jordanbunke.delta_time.utility.math.Pair;
-import com.jordanbunke.stip_parser.ParserSerializer;
-import com.jordanbunke.stip_parser.SerialBlock;
+import com.jordanbunke.json.JSONBuilder;
+import com.jordanbunke.json.JSONPair;
+import com.jordanbunke.json.JSONReader;
 import com.jordanbunke.tdsm.ProgramInfo;
+import com.jordanbunke.tdsm.util.Constants;
 import com.jordanbunke.tdsm.util.OSUtils;
 
 import java.io.IOException;
@@ -21,7 +23,9 @@ public final class Settings {
 
     private static final Map<String, Setting<?>> settingsMap;
 
-    public static final String SET_ID_VERSION = "last-opened-version";
+    public static final String
+            SET_ID_VERSION = "last-opened-version",
+            SET_ID_EXPORT_FOLDER = "export-folder";
 
     static {
         SETTINGS_FILE = determineSettingsFile();
@@ -33,19 +37,35 @@ public final class Settings {
     }
 
     private static Path determineSettingsFile() {
-        final Path internal = Path.of("data", ".settings"),
-                medial = Path.of(ProgramInfo.PROGRAM_NAME).resolve(internal);
+        final Path internal = Constants.INTERNAL_SETTINGS_FILEPATH;
+        final String name = ProgramInfo.PROGRAM_NAME,
+                unixFriendlyName = name.toLowerCase().replace(" ", "-");
 
         if (OSUtils.isWindows()) {
             final String appData = System.getenv("APPDATA");
-            return Path.of(appData).resolve(medial);
-        } else
-            return internal;
+            return Path.of(appData, name).resolve(internal);
+        }
+
+        if (OSUtils.isMacOS()) {
+            return Path.of(System.getProperty("user.home"),
+                    "Library", "Application Support", unixFriendlyName)
+                    .resolve(internal);
+        }
+
+        // Assume Linux/Unix
+        final String xdgConfig = System.getenv("XDG_CONFIG_HOME");
+        if (xdgConfig != null && !xdgConfig.isBlank())
+            return Path.of(xdgConfig, unixFriendlyName).resolve(internal);
+        else
+            return Path.of(System.getProperty("user.home"),
+                    ".config", unixFriendlyName).resolve(internal);
     }
 
     private static void initialize() {
         addSetting(new Setting<>(Version.class, SET_ID_VERSION,
                 Version::parse, new Version(1, 0, 0)));
+        addSetting(new Setting<>(Path.class, SET_ID_EXPORT_FOLDER,
+                s -> Path.of(PathHelper.formatPathString(s)), null));
     }
 
     private static <T> void addSetting(final Setting<T> setting) {
@@ -58,14 +78,16 @@ public final class Settings {
         if (file == null)
             return;
 
-        final SerialBlock[] blocks = ParserSerializer
-                .deserializeBlocksAtDepthLevel(file);
+        final JSONPair[] pairs = JSONReader.readObject(file);
 
-        for (SerialBlock block : blocks) {
-            final String id = block.tag();
+        if (pairs == null)
+            return;
+
+        for (JSONPair pair : pairs) {
+            final String id = pair.key();
 
             if (settingsMap.containsKey(id)) {
-                final String valueString = block.value();
+                final String valueString = String.valueOf(pair.value());
                 final Setting<?> setting = settingsMap.get(id);
 
                 setting.read(valueString);
@@ -73,7 +95,6 @@ public final class Settings {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static void write() {
         final Path settingsFolder = SETTINGS_FILE.getParent();
 
@@ -92,21 +113,35 @@ public final class Settings {
             }
         }
 
-        final StringBuilder sb = new StringBuilder();
+        final JSONBuilder jb = new JSONBuilder();
 
-        ParserSerializer.serializeSimpleAttributes(sb, -1,
-                settingsMap.keySet().stream().sorted()
-                        .map(id -> new Pair<>(id, settingsMap.get(id).value))
-                        .toArray(Pair[]::new));
+        settingsMap.keySet().stream().sorted()
+                .filter(id -> settingsMap.get(id).value != null)
+                .map(id -> {
+                    final Object value = settingsMap.get(id).value;
 
-        FileIO.writeFile(SETTINGS_FILE, sb.toString());
+                    if (validJSONDataType(value))
+                        return new JSONPair(id, value);
+
+                    return new JSONPair(id, String.valueOf(value));
+                }).forEach(jb::add);
+
+        FileIO.writeFile(SETTINGS_FILE, jb.write());
+    }
+
+    private static boolean validJSONDataType(final Object value) {
+        return value == null || value instanceof Double ||
+                value instanceof Integer || value instanceof Boolean;
+    }
+
+    public static void reset(final String id) {
+        if (settingsMap.containsKey(id))
+            settingsMap.get(id).reset();
     }
 
     public static void set(final String id, final Object value) {
-        if (!settingsMap.containsKey(id))
-            return;
-
-        settingsMap.get(id).set(value);
+        if (settingsMap.containsKey(id))
+            settingsMap.get(id).set(value);
     }
 
     public static <T> T get(final String id, final Class<T> type) {
@@ -115,7 +150,7 @@ public final class Settings {
 
         final Setting<?> setting = settingsMap.get(id);
 
-        if (type == setting.type)
+        if (type.isAssignableFrom(setting.type))
             return type.cast(setting.get());
 
         return null;
@@ -163,8 +198,17 @@ public final class Settings {
             }
         }
 
+        private void reset() {
+            value = defaultValue;
+        }
+
         private T get() {
             return value;
+        }
+
+        @Override
+        public String toString() {
+            return type.getSimpleName() + " " + id + " = " + value;
         }
     }
 }
