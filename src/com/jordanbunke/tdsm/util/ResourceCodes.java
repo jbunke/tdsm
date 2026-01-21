@@ -52,7 +52,8 @@ public final class ResourceCodes {
             CHANGELOG = "changelog", ROADMAP = "roadmap",
             LICENSE = "LICENSE", SUMMARY = "license_summary",
             STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
-            MORE_STYLES = "more_styles", COPYRIGHT = "copyright";
+            MORE_STYLES = "more_styles", COPYRIGHT = "copyright",
+            NO_EXPORT_IN_DEMO = "no_export_in_demo";
 
     // tutorials
     public static final String TUT_MAKE_STYLE = "tut_make_style",

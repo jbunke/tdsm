@@ -379,20 +379,23 @@ public final class MenuAssembly {
                 "Export... >", BOTTOM.at(1.0, 0.5)
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, style::exportsASprite,
-                () -> {
-                    if (style.settings.hasPreExportStep())
-                        ProgramState.set(ProgramState.MENU, preExport());
-                    else {
-                        style.settings.resetPreExport();
-                        ProgramState.set(ProgramState.MENU, export());
-                    }
-                });
+                () -> ProgramState.set(ProgramState.MENU, noExportInDemo()));
 
         mb.addAll(toCustomButton, toExportButton);
 
         return mb.build();
     }
 
+    private static Menu noExportInDemo() {
+        return openingMenu("Buy full program to export",
+                ResourceCodes.NO_EXPORT_IN_DEMO, Text.Orientation.CENTER, null,
+                new Pair<>("Buy on itch.io",
+                        () -> visitSite("https://flinkerflitzer.itch.io/tdsm")),
+                new Pair<>("Main Menu",
+                        () -> ProgramState.to(mainMenu())));
+    }
+
+    @SuppressWarnings("unused")
     private static Menu preExport() {
         final MenuBuilder mb = new MenuBuilder();
         final Style style = Sprite.get().getStyle();
@@ -455,6 +458,8 @@ public final class MenuAssembly {
         addMenuButtons(mb,
                 new Pair<>("Start editing",
                         MenuAssembly::loadCustomization),
+                new Pair<>("Buy on itch.io",
+                        () -> visitSite("https://flinkerflitzer.itch.io/tdsm")),
                 new Pair<>("About", () -> ProgramState.to(about())),
                 new Pair<>("Quit", TDSM::quitProgram));
 
@@ -468,10 +473,10 @@ public final class MenuAssembly {
 
         // Version and credits
         final StaticLabel programLabel = new StaticLabel(
-                canvasAt(0.5, 0.98),
-                Anchor.CENTRAL_BOTTOM,
-                Graphics.miniText(Colors.darkSystem())
-                        .addText(ProgramInfo.formatVersion()).addLineBreak()
+                canvasAt(0.02, 0.98),
+                Anchor.LEFT_BOTTOM,
+                ProgramFont.MINI.getBuilder(Text.Orientation.LEFT)
+                        .addText(ProgramInfo.formatVersion() + " (demo build)").addLineBreak()
                         .addText(ParserUtils.readResourceText(ResourceCodes.COPYRIGHT))
                         .build().draw());
 

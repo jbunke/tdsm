@@ -4,7 +4,6 @@ import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.text.Text;
 import com.jordanbunke.delta_time.text.TextBuilder;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
-import com.jordanbunke.delta_time.utility.math.RNG;
 import com.jordanbunke.tdsm.util.ParserUtils;
 import com.jordanbunke.tdsm.util.ProgramFont;
 import com.jordanbunke.tdsm.util.ResourceCodes;
@@ -24,11 +23,8 @@ public final class Blinker extends StaticLabel {
     public static Blinker make(
             final Coord2D position, final Anchor anchor
     ) {
-        final String[] splashTexts = ParserUtils
-                .readResourceText(ResourceCodes.SPLASH)
-                .split("\n\n");
-        final String choice =
-                splashTexts[RNG.randomInRange(0, splashTexts.length)];
+        final String choice = ParserUtils
+                .readResourceText(ResourceCodes.SPLASH);
         final TextBuilder tb = ProgramFont.MINI
                 .getBuilder(Text.Orientation.CENTER);
         final String[] lines = choice.split("\n");

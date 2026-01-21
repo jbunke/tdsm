@@ -59,7 +59,7 @@ public final class TDSM implements ProgramContext {
     public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
 
     private GameWindow makeWindow() {
-        return new GameWindow(PROGRAM_NAME + " " + formatVersion(),
+        return new GameWindow(PROGRAM_NAME + " (demo) " + formatVersion(),
                 Layout.width(), Layout.height(),
                 Graphics.readIcon(ResourceCodes.ICON), true, false, false);
     }
