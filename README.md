@@ -6,8 +6,11 @@
     </div>
     <br><br>
     <div class="store-page-line">
+        <a href="https://store.steampowered.com/app/3672340/Top_Down_Sprite_Maker/" target="_blank">
+            <img alt="Steam store page" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/steam-button.png">
+        </a>
         <a href="https://flinkerflitzer.itch.io/tdsm" target="_blank">
-            <img alt="Buy on itch.io" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png">
+            <img alt="itch.io store page" src="https://raw.githubusercontent.com/jbunke/tdsm-art/refs/heads/master/_tdsm/assets/itch-button.png">
         </a>
     </div>
     <div>
