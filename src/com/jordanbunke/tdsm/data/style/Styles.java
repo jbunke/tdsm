@@ -2,6 +2,8 @@ package com.jordanbunke.tdsm.data.style;
 
 import com.jordanbunke.delta_time.io.FileIO;
 import com.jordanbunke.delta_time.io.ResourceLoader;
+import com.jordanbunke.tdsm.util.MacFileDialog;
+import com.jordanbunke.tdsm.util.OSUtils;
 import com.jordanbunke.delta_time.scripting.ast.collection.ScriptArray;
 import com.jordanbunke.delta_time.scripting.ast.nodes.function.HeadFuncNode;
 import com.jordanbunke.delta_time.scripting.ast.nodes.function.HelperFuncNode;
@@ -60,12 +62,19 @@ public final class Styles {
     }
 
     public static void uploadStyleDialog() {
-        FileIO.setDialogToFilesOnly();
+        final Optional<File> opened;
 
-        FileIO.openFileFromSystem(
-                new String[]{"TDSM style archives"},
-                new String[][]{{Constants.STYLE_FILE_EXT, "zip"}}
-        ).ifPresent(MenuAssembly::loadSpriteStyle);
+        if (OSUtils.isMacOS())
+            opened = MacFileDialog.openFile(Constants.STYLE_FILE_EXT, "zip");
+        else {
+            FileIO.setDialogToFilesOnly();
+            opened = FileIO.openFileFromSystem(
+                    new String[]{"TDSM style archives"},
+                    new String[][]{{Constants.STYLE_FILE_EXT, "zip"}}
+            );
+        }
+
+        opened.ifPresent(MenuAssembly::loadSpriteStyle);
     }
 
     @SuppressWarnings("unused")

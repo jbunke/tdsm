@@ -12,7 +12,9 @@ import com.jordanbunke.tdsm.data.Sprite;
 import com.jordanbunke.tdsm.flow.ProgramState;
 import com.jordanbunke.tdsm.settings.Settings;
 import com.jordanbunke.tdsm.util.EnumUtils;
+import com.jordanbunke.tdsm.util.MacFileDialog;
 import com.jordanbunke.tdsm.util.MenuAssembly;
+import com.jordanbunke.tdsm.util.OSUtils;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -154,8 +156,14 @@ public final class Export {
     }
 
     public void chooseFolder() {
-        FileIO.setDialogToFoldersOnly();
-        final Optional<File> opened = FileIO.openFileFromSystem();
+        final Optional<File> opened;
+
+        if (OSUtils.isMacOS())
+            opened = MacFileDialog.openFolder();
+        else {
+            FileIO.setDialogToFoldersOnly();
+            opened = FileIO.openFileFromSystem();
+        }
 
         if (opened.isEmpty())
             return;
