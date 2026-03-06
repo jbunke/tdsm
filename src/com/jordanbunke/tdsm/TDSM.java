@@ -32,12 +32,26 @@ public final class TDSM implements ProgramContext {
     }
 
     public static void main(final String[] args) {
-        OnStartup.run();
-        Settings.read();
-        readProgramFile();
-        VersionHandler.startup();
-
-        new TDSM();
+        if (OSUtils.isMacOS()) {
+            // On macOS with -XstartOnFirstThread, main() runs on the AppKit
+            // thread. OnStartup.run() initializes a JFileChooser (via sorkin's
+            // GenericFileDialog), which deadlocks if called on the AppKit thread.
+            // Running the full startup on a new thread avoids this.
+            final Thread startup = new Thread(() -> {
+                OnStartup.run();
+                Settings.read();
+                readProgramFile();
+                VersionHandler.startup();
+                new TDSM();
+            }, "startup");
+            startup.start();
+        } else {
+            OnStartup.run();
+            Settings.read();
+            readProgramFile();
+            VersionHandler.startup();
+            new TDSM();
+        }
     }
 
     @Override
