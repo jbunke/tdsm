@@ -3,7 +3,6 @@ package com.jordanbunke.tdsm.menu;
 import com.jordanbunke.delta_time.image.GameImage;
 import com.jordanbunke.delta_time.io.InputEventLogger;
 import com.jordanbunke.delta_time.menu.menu_elements.ext.AbstractTextbox;
-import com.jordanbunke.delta_time.menu.menu_elements.ext.drawing_functions.TextboxDrawingFunction;
 import com.jordanbunke.delta_time.utility.math.Bounds2D;
 import com.jordanbunke.delta_time.utility.math.Coord2D;
 import com.jordanbunke.tdsm.data.Sprite;
@@ -25,21 +24,16 @@ public class Textbox extends AbstractTextbox {
     ) {
         super(position, new Bounds2D(width, TEXT_BUTTON_H), anchor,
                 () -> prefix, initialText, () -> suffix,
-                textValidator::test, setter, Textbox::draw, maxLength);
+                textValidator, setter, Textbox::draw, maxLength);
     }
 
-    /**
-     * The method signature reflects a mistake in Delta Time:
-     * @param dims Should be of type {@code Bounds2D}
-     * @see TextboxDrawingFunction
-     * */
     public static GameImage draw(
-            final Coord2D dims,
+            final Bounds2D dims,
             final String prefix, final String text, final String suffix,
             final int cursorIndex, final int selectionIndex,
             final boolean valid, final boolean highlighted, final boolean typing
     ) {
-        return Graphics.drawTextbox(dims.x, prefix, text, suffix,
+        return Graphics.drawTextbox(dims.width(), prefix, text, suffix,
                 cursorIndex, selectionIndex, valid, highlighted, typing);
     }
 
