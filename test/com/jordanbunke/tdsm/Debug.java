@@ -5,6 +5,7 @@ import com.jordanbunke.tdsm.util.RuntimeSettings;
 public class Debug {
     private static final String
             FLAG_CAPTURE = "-c",
+            FLAG_OVERWRITE = "-o",
             FLAG_UPCOMING_UPDATES = "-u",
             SCALE_PREFIX = "-s:";
 
@@ -17,6 +18,7 @@ public class Debug {
         for (String arg : args)
             switch (arg) {
                 case FLAG_CAPTURE -> RuntimeSettings.setCapture(true);
+                case FLAG_OVERWRITE -> RuntimeSettings.setOverwrite(true);
                 case FLAG_UPCOMING_UPDATES -> RuntimeSettings.setUpcomingUpdates(true);
                 default -> {
                     if (arg.startsWith(SCALE_PREFIX)) {

@@ -1,6 +1,5 @@
-TDSM has a new default sprite style. It is a demo version of the new "Pixel Citizen"
-sprite style. The full sprite style features more layers and customization options.
-It will also be updated with even more content and animations going forward.
+I have listened to your feedback from v1.3.0 and decided to have the full "Pixel Citizen"
+sprite style serve as the default sprite style when you launch Top Down Sprite Maker.
 
-Full "Pixel Citizen" sprite style:
+If you want to modify it, you can download it for free at this link:
 flinkerflitzer.itch.io/pixel-citizen

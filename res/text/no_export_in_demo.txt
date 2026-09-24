@@ -1,0 +1,4 @@
+You cannot export sprite sheets in this demo.
+
+Please buy the full version of the program if you
+wish to export your customized character sprite sheets.

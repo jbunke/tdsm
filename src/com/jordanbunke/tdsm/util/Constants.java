@@ -6,11 +6,14 @@ public final class Constants {
     public static final String
             NAME_CODE = "name", VERSION_CODE = "version",
             IS_DEVBUILD_CODE = "devbuild",
+            IS_DEMO_CODE = "demo",
+            IS_RELEASE_CODE = "release",
             SCRIPT_EXT = "tds", STYLE_FILE_EXT = "tdsm",
             STYLE_MANIFEST_FILENAME = "manifest." + SCRIPT_EXT,
             DEFAULT_STYLE_NAME = "default";
 
     public static final Path PROGRAM_FILE = Path.of("program.json"),
+            RELEASE_FILE = Path.of("release"),
             VERSION_FILE = Path.of("version"),
             TEXT_FOLDER = Path.of("text"),
             UPDATE_INFO_FOLDER = Path.of("text", "update-info"),

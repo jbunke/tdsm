@@ -48,11 +48,13 @@ public final class ResourceCodes {
             BACK_TO_CONFIG = "back_to_config";
 
     // blurbs
-    public static final String SPLASH = "splash", ABOUT = "about",
+    public static final String ABOUT = "about",
+            SPLASH = "splash", SPLASH_DEMO = "splash_demo",
             CHANGELOG = "changelog", ROADMAP = "roadmap",
             LICENSE = "LICENSE", SUMMARY = "license_summary",
             STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
-            MORE_STYLES = "more_styles", COPYRIGHT = "copyright";
+            MORE_STYLES = "more_styles", COPYRIGHT = "copyright",
+            NO_EXPORT_IN_DEMO = "no_export_in_demo";
 
     // tutorials
     public static final String TUT_MAKE_STYLE = "tut_make_style",

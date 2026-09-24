@@ -4,7 +4,9 @@ import com.jordanbunke.delta_time.utility.math.MathPlus;
 
 public class RuntimeSettings {
     private enum BoolSettings {
-        CAPTURE(false), UPCOMING_UPDATES(false);
+        CAPTURE(false),
+        OVERWRITE_PROGRAM_FILE(false),
+        UPCOMING_UPDATES(false);
 
         private boolean enabled;
 
@@ -43,6 +45,14 @@ public class RuntimeSettings {
 
     public static void setCapture(final boolean value) {
         BoolSettings.CAPTURE.set(value);
+    }
+
+    public static boolean isOverwrite() {
+        return BoolSettings.OVERWRITE_PROGRAM_FILE.enabled;
+    }
+
+    public static void setOverwrite(final boolean value) {
+        BoolSettings.OVERWRITE_PROGRAM_FILE.set(value);
     }
 
     public static boolean isUpcomingUpdates() {

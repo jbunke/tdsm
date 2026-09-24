@@ -1,0 +1,3 @@
+This is a demo version of "Top Down Sprite Maker".
+Please buy the full version of the program if you
+wish to export your customized character sprite sheets.

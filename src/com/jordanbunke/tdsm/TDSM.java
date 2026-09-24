@@ -20,12 +20,12 @@ public final class TDSM implements ProgramContext {
     public final GameWindow window;
 
     private TDSM() {
-
-
         window = makeWindow();
-        window.hideCursor();
-        program = new Program(window, new GameManager(0, this),
-                Constants.TICK_HZ, Constants.FPS);
+
+        final GameManager manager = new GameManager(0, this);
+        program = new Program(window, manager, Constants.TICK_HZ, Constants.FPS);
+
+        // config
         program.setCanvasSize(Layout.CANVAS_W, Layout.CANVAS_H);
         program.setScheduleUpdates(false);
         program.getDebugger().muteChannel(GameDebugger.FRAME_RATE);
@@ -59,9 +59,22 @@ public final class TDSM implements ProgramContext {
     public void debugRender(final GameImage canvas, final GameDebugger debugger) {}
 
     private GameWindow makeWindow() {
-        return new GameWindow(PROGRAM_NAME + " " + formatVersion(),
-                Layout.width(), Layout.height(),
-                Graphics.readIcon(ResourceCodes.ICON), true, false, false);
+        final GameWindow.Builder wb = new GameWindow.Builder();
+        final int w = Layout.width(), h = Layout.height();
+
+        wb.setTitle(PROGRAM_NAME + " " + formatVersion())
+                .setIcon(Graphics.readIcon(ResourceCodes.ICON))
+                .setExitOnClose(true)
+                .setCanResize(false)
+                .setFullscreen(false)
+                .setMinWidth(w).setMinHeight(h)
+                .setWidth(w, false)
+                .setHeight(h, false);
+
+        final GameWindow window = wb.build();
+        window.hideCursor();
+
+        return window;
     }
 
     public static void quitProgram() {
