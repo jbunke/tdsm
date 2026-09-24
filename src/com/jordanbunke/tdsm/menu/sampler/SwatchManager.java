@@ -65,7 +65,7 @@ public final class SwatchManager extends InvisibleMenuElement
 
     public void setColor(final Color color) {
         this.color = color;
-        send();
+        sendToSampler();
     }
 
     ColorSelection getSelection() {

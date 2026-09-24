@@ -5,7 +5,7 @@ import java.awt.*;
 public interface ColorTransmitter {
     void receive(final Color color);
 
-    default void send() {
+    default void sendToSampler() {
         Sampler.get().setColor(getColor(), this);
     }
 
