@@ -495,7 +495,9 @@ public final class MenuAssembly {
         final StaticLabel programLabel = new StaticLabel(
                 canvasAt(release ? 0.5 : 0.02, 0.98),
                 release ? Anchor.CENTRAL_BOTTOM : Anchor.LEFT_BOTTOM,
-                Graphics.miniText(Colors.darkSystem())
+                ProgramFont.MINI.getBuilder(release
+                                ? Text.Orientation.CENTER
+                                : Text.Orientation.LEFT)
                         .addText(ProgramInfo.formatVersion()).addLineBreak()
                         .addText(ParserUtils.readResourceText(ResourceCodes.COPYRIGHT))
                         .build().draw());
