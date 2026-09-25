@@ -22,6 +22,7 @@ public final class ResourceCodes {
             BACK = "back",
             SETTINGS = "settings",
             LOAD_FROM_JSON = "load_from_json",
+            FEEDBACK = "feedback",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
@@ -45,14 +46,18 @@ public final class ResourceCodes {
             BACK_FROM_REPL = "back_from_repl",
             RANDOM_SPRITE = "random_sprite",
             RESET_SPRITE = "reset_sprite",
-            BACK_TO_CONFIG = "back_to_config";
+            BACK_TO_CONFIG = "back_to_config",
+            FEEDBACK_ITCH = "feedback_itch",
+            FEEDBACK_STEAM = "feedback_steam";
 
     // blurbs
-    public static final String SPLASH = "splash", ABOUT = "about",
+    public static final String ABOUT = "about",
+            SPLASH = "splash", SPLASH_DEMO = "splash_demo",
             CHANGELOG = "changelog", ROADMAP = "roadmap",
             LICENSE = "LICENSE", SUMMARY = "license_summary",
             STIPPLE_EFFECT = "stipple_effect", TECHNICAL = "technical",
-            MORE_STYLES = "more_styles", COPYRIGHT = "copyright";
+            MORE_STYLES = "more_styles", COPYRIGHT = "copyright",
+            NO_EXPORT_IN_DEMO = "no_export_in_demo";
 
     // tutorials
     public static final String TUT_MAKE_STYLE = "tut_make_style",

@@ -230,6 +230,6 @@ public final class ColorPicker extends MenuElement implements ColorTransmitter {
 
         updateHSV(hsv[0], hsv[1], hsv[2], getFreeze());
         updateAsset();
-        send();
+        sendToSampler();
     }
 }

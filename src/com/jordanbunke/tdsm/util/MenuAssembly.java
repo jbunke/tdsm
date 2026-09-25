@@ -380,17 +380,32 @@ public final class MenuAssembly {
                         .displace(-BOTTOM_BAR_BUTTON_X, 0),
                 Anchor.RIGHT_CENTRAL, style::exportsASprite,
                 () -> {
-                    if (style.settings.hasPreExportStep())
-                        ProgramState.set(ProgramState.MENU, preExport());
-                    else {
-                        style.settings.resetPreExport();
-                        ProgramState.set(ProgramState.MENU, export());
+                    if (ProgramInfo.isFullRelease()) {
+                        if (style.settings.hasPreExportStep())
+                            ProgramState.set(ProgramState.MENU, preExport());
+                        else {
+                            style.settings.resetPreExport();
+                            ProgramState.set(ProgramState.MENU, export());
+                        }
+                    } else {
+                        ProgramState.set(ProgramState.MENU, noExportInDemo());
                     }
                 });
 
         mb.addAll(toCustomButton, toExportButton);
 
         return mb.build();
+    }
+
+    private static Menu noExportInDemo() {
+        final Marketplace marketplace = ProgramInfo.getMarketplace();
+
+        return openingMenu("Buy full program to export",
+                ResourceCodes.NO_EXPORT_IN_DEMO, Text.Orientation.CENTER, null,
+                new Pair<>("Buy on " + marketplace.name,
+                        () -> visitSite(marketplace.storeLink)),
+                new Pair<>("Main Menu",
+                        () -> ProgramState.to(mainMenu())));
     }
 
     private static Menu preExport() {
@@ -449,14 +464,24 @@ public final class MenuAssembly {
 
     public static Menu mainMenu() {
         final MenuBuilder mb = new MenuBuilder();
+        final boolean release = ProgramInfo.isFullRelease();
+        final Marketplace marketplace = ProgramInfo.getMarketplace();
 
         mb.add(new BackgroundElement());
 
-        addMenuButtons(mb,
-                new Pair<>("Start editing",
-                        MenuAssembly::loadCustomization),
-                new Pair<>("About", () -> ProgramState.to(about())),
-                new Pair<>("Quit", TDSM::quitProgram));
+        final Pair<String, Runnable>
+                start = new Pair<>("Start editing", MenuAssembly::loadCustomization),
+                about = new Pair<>("About", () -> ProgramState.to(about())),
+                quit = new Pair<>("Quit", TDSM::quitProgram);
+
+        if (release || !marketplace.isValid())
+            addMenuButtons(mb, start, about, quit);
+        else {
+            final Pair<String, Runnable> buy =
+                    new Pair<>("Buy on " + marketplace.name,
+                            () -> visitSite(marketplace.storeLink));
+            addMenuButtons(mb, start, buy, about, quit);
+        }
 
         // Logo
         final Logo logo = Logo.make(canvasAt(0.5, 0.1), Anchor.CENTRAL_TOP);
@@ -468,14 +493,27 @@ public final class MenuAssembly {
 
         // Version and credits
         final StaticLabel programLabel = new StaticLabel(
-                canvasAt(0.5, 0.98),
-                Anchor.CENTRAL_BOTTOM,
-                Graphics.miniText(Colors.darkSystem())
+                canvasAt(release ? 0.5 : 0.02, 0.98),
+                release ? Anchor.CENTRAL_BOTTOM : Anchor.LEFT_BOTTOM,
+                ProgramFont.MINI.getBuilder(release
+                                ? Text.Orientation.CENTER
+                                : Text.Orientation.LEFT)
                         .addText(ProgramInfo.formatVersion()).addLineBreak()
                         .addText(ParserUtils.readResourceText(ResourceCodes.COPYRIGHT))
                         .build().draw());
 
         mb.add(programLabel);
+
+        // Feedback icon
+        if (marketplace.isValid() && release) {
+            final IconButton feedback = IconButton.init(ResourceCodes.FEEDBACK,
+                    new Coord2D(atX(1.0) - (BUFFER / 2), atY(1.0) - (BUFFER / 2)),
+                    () -> visitSite(marketplace.feedbackLink()))
+                    .setAnchor(Anchor.RIGHT_BOTTOM)
+                    .setTooltipCode(marketplace.feedbackResourceCode)
+                    .build();
+            mb.add(feedback);
+        }
 
         return mb.build();
     }

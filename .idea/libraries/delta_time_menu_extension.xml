@@ -4,6 +4,8 @@
       <root url="jar://$PROJECT_DIR$/../delta-time/out/artifacts/dt_modules/delta-time-menu-extension.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../delta-time/menu-extension/src" />
+    </SOURCES>
   </library>
 </component>

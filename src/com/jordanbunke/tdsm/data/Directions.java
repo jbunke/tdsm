@@ -6,55 +6,30 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public record Directions(NumDirs numDirs, boolean orientation, Dir... order) {
-
-    public enum NumDirs {
-        FOUR(Dir.UP, Dir.RIGHT, Dir.DOWN, Dir.LEFT),
-        SIX(Dir.UP, Dir.NE, Dir.SE, Dir.DOWN, Dir.SW, Dir.NW),
-        EIGHT(Dir.UP, Dir.NE, Dir.RIGHT, Dir.SE, Dir.DOWN, Dir.SW, Dir.LEFT, Dir.NW);
-
-        NumDirs(final Dir... dirs) {
-            included = new HashSet<>();
-            included.addAll(Arrays.asList(dirs));
-        }
-
-        private final Set<Dir> included;
-
-        // scripting inclusion
-        @SuppressWarnings("unused")
-        public Set<Dir> getIncluded() {
-            return new HashSet<>(included);
-        }
-
-        @Override
-        public String toString() {
-            return switch (this) {
-                case FOUR -> "4";
-                case SIX -> "6";
-                case EIGHT -> "8";
-            };
-        }
-    }
+public class Directions {
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public static final int MAX_DIRECTIONS = 8;
 
     public enum Dir {
         UP, NE, RIGHT, SE, DOWN, SW, LEFT, NW, INVALID;
 
-        public Dir cw(final NumDirs numDirs) {
+        public Dir cw(final Directions directions) {
             Dir next = this;
 
             do {
                 next = EnumUtils.next(next);
-            } while (!numDirs.included.contains(next));
+            } while (!directions.included.contains(next));
 
             return next;
         }
 
-        public Dir ccw(final NumDirs numDirs) {
+        public Dir ccw(final Directions directions) {
             Dir previous = this;
 
             do {
                 previous = EnumUtils.previous(previous);
-            } while (!numDirs.included.contains(previous));
+            } while (!directions.included.contains(previous));
 
             return previous;
         }
@@ -65,8 +40,27 @@ public record Directions(NumDirs numDirs, boolean orientation, Dir... order) {
         }
     }
 
+    public final boolean orientation;
+    public final Dir[] order;
+
+    private final Set<Dir> included;
+    public final boolean noDuplicates;
+
+    public Directions(
+            final boolean orientation,
+            final Dir... order
+    ) {
+        this.orientation = orientation;
+        this.order = order;
+
+        included = new HashSet<>();
+        included.addAll(Arrays.asList(order));
+
+        noDuplicates = order.length == included.size();
+    }
+
     public String name(final Dir dir) {
-        if (numDirs == NumDirs.FOUR)
+        if (order.length <= 4)
             return dir.toString();
         else {
             return switch (dir) {
@@ -91,5 +85,15 @@ public record Directions(NumDirs numDirs, boolean orientation, Dir... order) {
                 default -> Dir.INVALID;
             };
         }
+    }
+
+    // scripting inclusion
+    @SuppressWarnings("unused")
+    public boolean containsInvalid() {
+        for (final Dir dir : order)
+            if (dir == Dir.INVALID)
+                return true;
+
+        return false;
     }
 }

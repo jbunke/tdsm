@@ -15,11 +15,14 @@ public final class Layout {
         if (RuntimeSettings.isCapture()) {
             SCALE_UP = RuntimeSettings.getScale();
         } else {
-            final int TASKBAR_ALLOCATION_H = 100,
-                    screenH = Toolkit.getDefaultToolkit()
-                            .getScreenSize().height;
+            final Dimension screenSize =
+                    Toolkit.getDefaultToolkit().getScreenSize();
+            final float NO_TASKBAR = 0.85f;
+            final int screenW = screenSize.width, screenH = screenSize.height,
+                    scaleUpX = (int) (screenW * NO_TASKBAR) / CANVAS_W,
+                    scaleUpY = (int) (screenH * NO_TASKBAR) / CANVAS_H;
 
-            SCALE_UP = (screenH - TASKBAR_ALLOCATION_H) / CANVAS_H;
+            SCALE_UP = Math.min(scaleUpX, scaleUpY);
         }
     }
 
