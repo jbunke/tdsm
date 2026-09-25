@@ -7,9 +7,17 @@ v1.3.1 - 2026-09-25
 
   Changed:
   > Changed default sprite style to full version of "Pixel Citizen" style
+  > Sprite styles may now support any number of directions from 1 to 8
 
   Fixed:
   #94 - Window doesn't fit on monitor
+
+[Scripting API]
+
+  Changed:
+  > Eased restrictions on the directions array parameter of the following functions:
+    > "$Init::default_composer"
+    > "$Init::style"
 
 -----------------------------------------------------------
 

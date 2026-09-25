@@ -45,10 +45,10 @@ public final class ReplacementPreview extends MenuElement {
                 .displace(getWidth() / 2, getHeight() / 2);
         final int divergence = (int) (getWidth() * 0.5);
         cwButton = IconButton.init(ResourceCodes.TURN_CLOCKWISE,
-                middle.displaceX(-divergence), () -> turn(false))
+                middle.displaceX(-divergence), () -> turn(true))
                 .setAnchor(Anchor.CENTRAL).build();
         ccwButton = IconButton.init(ResourceCodes.TURN_COUNTERCLOCKWISE,
-                middle.displaceX(divergence), () -> turn(true))
+                middle.displaceX(divergence), () -> turn(false))
                 .setAnchor(Anchor.CENTRAL).build();
 
         animDropdown = Dropdown.create(
@@ -62,11 +62,11 @@ public final class ReplacementPreview extends MenuElement {
                         .indexOf(Playback.get().getAnimation()));
     }
 
-    private void turn(final boolean ccw) {
-        final Directions.NumDirs numDirs = style.directions.numDirs();
-
+    private void turn(final boolean clockwise) {
         do {
-            dir = ccw ? dir.ccw(numDirs) : dir.cw(numDirs);
+            dir = clockwise
+                    ? dir.cw(style.directions)
+                    : dir.ccw(style.directions);
         } while (!dirIncluded(dir));
     }
 

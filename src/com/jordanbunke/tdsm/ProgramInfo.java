@@ -18,7 +18,7 @@ public final class ProgramInfo {
     private static Marketplace MARKETPLACE = Marketplace.NONE;
     private static boolean IS_DEVBUILD = false, IS_DEMO = false;
 
-    static void readProgramFile() {
+    public static void readProgramFile() {
         final String programFile = FileIO.readResource(ResourceLoader
                 .loadResource(Constants.PROGRAM_FILE), "prg");
 

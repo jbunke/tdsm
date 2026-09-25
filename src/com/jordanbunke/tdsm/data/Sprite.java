@@ -42,7 +42,7 @@ public final class Sprite {
     }
 
     private void setup() {
-        previewDir = this.style.directions.order()[0];
+        previewDir = this.style.directions.order[0];
         Playback.get().setAnimation(this.style.animations[0]);
     }
 
@@ -87,7 +87,7 @@ public final class Sprite {
 
     public void turn(final boolean clockwise) {
         previewDir = clockwise
-                ? previewDir.cw(style.directions.numDirs())
-                : previewDir.ccw(style.directions.numDirs());
+                ? previewDir.cw(style.directions)
+                : previewDir.ccw(style.directions);
     }
 }

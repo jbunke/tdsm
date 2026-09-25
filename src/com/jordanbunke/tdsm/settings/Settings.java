@@ -2,7 +2,7 @@ package com.jordanbunke.tdsm.settings;
 
 import com.jordanbunke.delta_time.error.GameError;
 import com.jordanbunke.delta_time.io.FileIO;
-import com.jordanbunke.delta_time.scripting.util.PathHelper;
+import com.jordanbunke.delta_time.io.PathUtils;
 import com.jordanbunke.delta_time.utility.Version;
 import com.jordanbunke.json.JSONBuilder;
 import com.jordanbunke.json.JSONPair;
@@ -65,7 +65,7 @@ public final class Settings {
         addSetting(new Setting<>(Version.class, SET_ID_VERSION,
                 Version::parse, new Version(1, 0, 0)));
         addSetting(new Setting<>(Path.class, SET_ID_EXPORT_FOLDER,
-                s -> Path.of(PathHelper.formatPathString(s)), null));
+                s -> Path.of(PathUtils.formatPathString(s)), null));
     }
 
     private static <T> void addSetting(final Setting<T> setting) {

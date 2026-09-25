@@ -420,7 +420,7 @@ public abstract class Style {
             animationOrder.add(a);
         });
 
-        Arrays.stream(directions.order()).forEach(d -> {
+        Arrays.stream(directions.order).forEach(d -> {
             directionInclusion.add(d);
             directionOrder.add(d);
         });
@@ -444,7 +444,7 @@ public abstract class Style {
                 .map(Animation::frameCount).reduce(1, Math::max);
 
         final SpriteStates<String> states = new SpriteStates<>(
-                Arrays.stream(directions.order())
+                Arrays.stream(directions.order)
                         .map(directions::name)
                         .toArray(String[]::new),
                 Arrays.stream(animations)
