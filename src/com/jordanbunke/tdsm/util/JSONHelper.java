@@ -78,12 +78,17 @@ public final class JSONHelper {
     }
 
     public static void loadFromJSON() {
-        FileIO.setDialogToFilesOnly();
+        final File file;
 
-        final File file = FileIO.openFileFromSystem(
-                new String[] { "JSON files" },
-                new String[][] { { "json" } }
-        ).orElse(null);
+        if (OSUtils.isMacOS())
+            file = MacFileDialog.openFile("json").orElse(null);
+        else {
+            FileIO.setDialogToFilesOnly();
+            file = FileIO.openFileFromSystem(
+                    new String[] { "JSON files" },
+                    new String[][] { { "json" } }
+            ).orElse(null);
+        }
 
         if (file != null) {
             final String content = FileIO.readFile(file.toPath());
