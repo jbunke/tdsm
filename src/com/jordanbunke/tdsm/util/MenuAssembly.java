@@ -398,10 +398,12 @@ public final class MenuAssembly {
     }
 
     private static Menu noExportInDemo() {
+        final Marketplace marketplace = ProgramInfo.getMarketplace();
+
         return openingMenu("Buy full program to export",
                 ResourceCodes.NO_EXPORT_IN_DEMO, Text.Orientation.CENTER, null,
-                new Pair<>("Buy on itch.io",
-                        () -> visitSite("https://flinkerflitzer.itch.io/tdsm")),
+                new Pair<>("Buy on " + marketplace.name,
+                        () -> visitSite(marketplace.storeLink)),
                 new Pair<>("Main Menu",
                         () -> ProgramState.to(mainMenu())));
     }
@@ -463,20 +465,23 @@ public final class MenuAssembly {
     public static Menu mainMenu() {
         final MenuBuilder mb = new MenuBuilder();
         final boolean release = ProgramInfo.isFullRelease();
+        final Marketplace marketplace = ProgramInfo.getMarketplace();
 
         mb.add(new BackgroundElement());
 
         final Pair<String, Runnable>
                 start = new Pair<>("Start editing", MenuAssembly::loadCustomization),
-                buy = new Pair<>("Buy on itch.io",
-                        () -> visitSite("https://flinkerflitzer.itch.io/tdsm")),
                 about = new Pair<>("About", () -> ProgramState.to(about())),
                 quit = new Pair<>("Quit", TDSM::quitProgram);
 
-        if (release)
+        if (release || !marketplace.isValid())
             addMenuButtons(mb, start, about, quit);
-        else
+        else {
+            final Pair<String, Runnable> buy =
+                    new Pair<>("Buy on " + marketplace.name,
+                            () -> visitSite(marketplace.storeLink));
             addMenuButtons(mb, start, buy, about, quit);
+        }
 
         // Logo
         final Logo logo = Logo.make(canvasAt(0.5, 0.1), Anchor.CENTRAL_TOP);
@@ -496,6 +501,17 @@ public final class MenuAssembly {
                         .build().draw());
 
         mb.add(programLabel);
+
+        // Feedback icon
+        if (marketplace.isValid() && release) {
+            final IconButton feedback = IconButton.init(ResourceCodes.FEEDBACK,
+                    new Coord2D(atX(1.0) - (BUFFER / 2), atY(1.0) - (BUFFER / 2)),
+                    () -> visitSite(marketplace.feedbackLink()))
+                    .setAnchor(Anchor.RIGHT_BOTTOM)
+                    .setTooltipCode(marketplace.feedbackResourceCode)
+                    .build();
+            mb.add(feedback);
+        }
 
         return mb.build();
     }

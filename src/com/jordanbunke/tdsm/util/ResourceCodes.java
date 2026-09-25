@@ -22,6 +22,7 @@ public final class ResourceCodes {
             BACK = "back",
             SETTINGS = "settings",
             LOAD_FROM_JSON = "load_from_json",
+            FEEDBACK = "feedback",
             HUE_SLIDER = "hue_slider",
             SV_MATRIX = "sv_matrix";
 
@@ -45,7 +46,9 @@ public final class ResourceCodes {
             BACK_FROM_REPL = "back_from_repl",
             RANDOM_SPRITE = "random_sprite",
             RESET_SPRITE = "reset_sprite",
-            BACK_TO_CONFIG = "back_to_config";
+            BACK_TO_CONFIG = "back_to_config",
+            FEEDBACK_ITCH = "feedback_itch",
+            FEEDBACK_STEAM = "feedback_steam";
 
     // blurbs
     public static final String ABOUT = "about",

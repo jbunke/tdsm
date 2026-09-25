@@ -1,4 +1,19 @@
-v1.3.0 - 2026-01-19 - Major update
+v1.3.1 - 2026-09-25
+
+[Core]
+
+  Added:
+  + Feedback button on main menu
+
+  Changed:
+  > Changed default sprite style to full version of "Pixel Citizen" style
+
+  Fixed:
+  #94 - Window doesn't fit on monitor
+
+-----------------------------------------------------------
+
+v1.3.0 - 2026-01-19
 
 [Core]
 
@@ -47,7 +62,7 @@ v1.3.0 - 2026-01-19 - Major update
 
 -----------------------------------------------------------
 
-v1.2.0 - 2025-07-16 - Major update
+v1.2.0 - 2025-07-16
 
 [Core]
 
@@ -72,7 +87,7 @@ v1.2.0 - 2025-07-16 - Major update
 
 -----------------------------------------------------------
 
-v1.1.0 - 2025-03-28 - Content update
+v1.1.0 - 2025-03-28
 
 [Core]
 
